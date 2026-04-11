@@ -237,22 +237,26 @@ function HeroSection() {
               </div>
             </motion.div>
 
-            {/* Glass card wrapper */}
+            {/* Video player wrapper */}
             <motion.div
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               className="relative"
             >
-              <Image
-                src="/robot-hero.jpg"
-                alt="AI agents powering sales and marketing automation"
-                width={1360}
-                height={768}
-                className="w-full rounded-2xl shadow-2xl shadow-[#374151]/15"
-                priority
-              />
-              {/* Glass overlay bottom edge - blend with yellow */}
-              <div className="absolute bottom-0 left-4 right-4 h-24 bg-gradient-to-t from-[#F3D840]/80 to-transparent rounded-b-2xl" />
+              <div className="relative rounded-2xl shadow-2xl shadow-[#374151]/15 overflow-hidden border-2 border-white/30">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  poster="/robot-hero.jpg"
+                  className="w-full aspect-video object-cover rounded-2xl"
+                >
+                  <source src="https://paperclip.ing/videos/full-tour.webm" type="video/webm" />
+                </video>
+                {/* Subtle top/bottom vignette for polish */}
+                <div className="absolute inset-0 rounded-2xl pointer-events-none ring-1 ring-inset ring-black/5" />
+              </div>
             </motion.div>
 
             {/* Floating glass metric card - AI Agents */}
