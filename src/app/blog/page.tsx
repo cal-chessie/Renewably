@@ -65,31 +65,33 @@ export default function BlogPage() {
     <>
       <Header />
       <main>
-        <section className="pt-32 pb-20 bg-gradient-to-br from-gray-900 to-gray-800">
+        {/* Hero Banner */}
+        <section className="bg-[#F3D840] pt-8 pb-16 md:pb-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="text-teal-400 font-semibold text-sm tracking-wider uppercase mb-3">Blog</p>
-            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+            <p className="text-[#895A18] font-semibold text-sm tracking-wider uppercase mb-3">Blog</p>
+            <h1 className="text-4xl sm:text-5xl font-bold text-[#333333] mb-6">
               Insights for Renewable Energy Marketing
             </h1>
-            <p className="text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
+            <p className="text-[#535353] text-lg max-w-2xl mx-auto leading-relaxed">
               Expert analysis, strategies, and trends to help you stay ahead in digital marketing for the renewable energy sector.
             </p>
           </div>
         </section>
 
-        <section className="section-padding bg-white">
-          <div className="max-w-4xl mx-auto">
+        {/* Blog Posts */}
+        <section className="py-16 md:py-24 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="space-y-8">
               {blogPosts.map((post) => (
-                <article key={post.slug} className="group p-6 sm:p-8 rounded-xl border border-gray-200 hover:border-teal-200 hover:shadow-md transition-all">
+                <article key={post.slug} className="group p-6 sm:p-8 rounded-xl border border-gray-100 hover:border-[#F3D840] hover:shadow-md transition-all bg-white">
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="px-3 py-1 text-xs font-medium bg-teal-100 text-teal-700 rounded-full">{post.category}</span>
+                    <span className="px-3 py-1 text-xs font-medium bg-[#F3D840] text-[#895A18] rounded-full">{post.category}</span>
                     <span className="text-sm text-gray-400">{post.readTime}</span>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 group-hover:text-teal-700 transition-colors">
+                  <h2 className="text-xl sm:text-2xl font-bold text-[#333333] mb-3 group-hover:text-[#895A18] transition-colors">
                     <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                   </h2>
-                  <p className="text-gray-600 leading-relaxed mb-4">{post.excerpt}</p>
+                  <p className="text-[#535353] leading-relaxed mb-4">{post.excerpt}</p>
                   <time className="text-sm text-gray-400" dateTime={post.date}>
                     {new Date(post.date).toLocaleDateString("en-IE", { year: "numeric", month: "long", day: "numeric" })}
                   </time>

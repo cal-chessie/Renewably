@@ -163,35 +163,40 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     <>
       <Header />
       <main>
-        <article className="pt-32 pb-20 bg-gradient-to-br from-gray-900 to-gray-800">
+        {/* Article Header */}
+        <article className="bg-[#F3D840] pt-8 pb-16 md:pb-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Link href="/blog" className="text-teal-400 hover:text-teal-300 text-sm font-medium mb-6 inline-block">
+            <Link href="/blog" className="text-[#895A18] hover:text-[#6B4510] text-sm font-medium mb-6 inline-block">
               &larr; Back to Blog
             </Link>
-            <span className="inline-block px-3 py-1 text-xs font-medium bg-teal-900 text-teal-300 rounded-full mb-4">
+            <span className="inline-block px-3 py-1 text-xs font-medium bg-[#895A18]/20 text-[#895A18] rounded-full mb-4">
               {post.category}
             </span>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#333333] leading-tight mb-4">
               {post.title}
             </h1>
-            <time className="text-gray-400" dateTime={post.date}>
+            <time className="text-[#535353]" dateTime={post.date}>
               {new Date(post.date).toLocaleDateString("en-IE", { year: "numeric", month: "long", day: "numeric" })}
             </time>
           </div>
         </article>
-        <section className="section-padding bg-white">
-          <div className="max-w-3xl mx-auto">
+
+        {/* Article Content */}
+        <section className="py-16 md:py-24 bg-white">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             {paragraphs.map((p, i) => {
               if (p.startsWith("## ")) {
-                return <h2 key={i} className="text-2xl font-bold text-gray-900 mt-10 mb-4">{p.replace("## ", "")}</h2>;
+                return <h2 key={i} className="text-2xl font-bold text-[#333333] mt-10 mb-4">{p.replace("## ", "")}</h2>;
               }
-              return <p key={i} className="text-gray-600 leading-relaxed mb-6">{p}</p>;
+              return <p key={i} className="text-[#535353] leading-relaxed mb-6">{p}</p>;
             })}
           </div>
         </section>
-        <section className="py-12 bg-gray-50">
-          <div className="max-w-3xl mx-auto px-4 text-center">
-            <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-lg transition-colors">
+
+        {/* CTA */}
+        <section className="py-12 bg-[#FAFAFA]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-[#895A18] hover:bg-[#6B4510] text-white font-semibold rounded-lg transition-colors">
               Ready to Transform Your Lead Generation?
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
             </Link>

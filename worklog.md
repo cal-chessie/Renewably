@@ -57,3 +57,43 @@ Stage Summary:
 - Key architecture: Single-page home with all content, additional routes (about/services/blog/contact), JSON file-based content API, comprehensive structured data, security middleware
 - SEO: Full OpenGraph, Twitter cards, FAQ schema, Organization schema, WebSite schema, sitemap.xml, robots.txt
 - Security: CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
+
+---
+Task ID: 2 (Redesign)
+Agent: Full-Stack Developer
+Task: Rebuild homepage to match ORIGINAL yellow design from live site
+
+Work Log:
+- Read worklog.md and examined all existing project files
+- Identified that current build uses teal/dark theme (wrong), needed to match original yellow theme
+- Extracted exact color palette from live site: Primary Yellow #F3D840, Brown CTA #895A18, Dark #333333, Body #535353, Footer #1A1A1A
+- Updated globals.css: Replaced teal brand variables with yellow/brown palette, changed font reference from --font-inter to --font-poppins, updated selection highlight color, removed gradient-text/gradient-border utilities
+- Updated layout.tsx: Changed from Inter to Poppins font (weights 300-800), updated CSS variable reference
+- Rebuilt Header.tsx: Removed fixed positioning and backdrop-blur, removed teal CTA button, made header transparent (sits on yellow bg), added leaf SVG icon, changed nav links to brown hover, matched original site nav labels ("About us", "Contact us")
+- Rebuilt Footer.tsx: Changed to dark #1A1A1A background, updated logo icon to brown bg, changed hover colors from teal to yellow (#F3D840), added leaf SVG icon matching header
+- Complete rewrite of page.tsx homepage with 8 sections matching original:
+  - Section 0+1: Hero on yellow bg with exact H2 text, subtitle, brown CTA button, isometric analytics SVG illustration
+  - Section 2: Audience Targeting (white bg, two-col layout, funnel SVG illustration)
+  - Section 3: Sustainable System (white bg, two-col layout, basketball/+1 SVG illustration, feature checklist)
+  - Section 4: Yellow stripe divider with barrier text
+  - Section 5: Barriers section (6 numbered items with emoji icons in yellow squares)
+  - Section 6: Unfair Advantage (service cards on light bg)
+  - FAQ section with yellow-themed accordion
+  - Section 7+8: Yellow CTA stripe leading into dark footer
+- Preserved all structured data schemas (HomePageSchema, FAQSchema) from original page.tsx
+- Updated /about page: Yellow hero banner, yellow value card borders, brown CTA button
+- Updated /services page: Yellow hero banner, yellow service number badges, light gray illustration cards
+- Updated /blog page: Yellow hero banner, yellow category badges, yellow hover states
+- Updated /contact page: Yellow hero banner, brown form focus states, yellow info card border
+- Updated /blog/[slug] page: Yellow article header, brown category badge, brown CTA button
+- Ran lint: 0 errors, 0 warnings
+- Restarted dev server, verified all routes returning 200
+
+Stage Summary:
+- Total files modified: 10 (globals.css, layout.tsx, Header.tsx, Footer.tsx, page.tsx, about/page.tsx, services/page.tsx, blog/page.tsx, contact/page.tsx, blog/[slug]/page.tsx)
+- Lint: CLEAN (0 errors, 0 warnings)
+- Dev server: Running on port 3000, all routes returning 200
+- All teal references replaced with yellow (#F3D840) and brown (#895A18) theme
+- Font changed from Inter to Poppins with full weight range
+- All structured data schemas preserved unchanged
+- next.config.ts, sitemap.ts, robots.ts, api/agent/route.ts left untouched as required
