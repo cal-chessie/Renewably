@@ -244,9 +244,9 @@ function HeroSection() {
               className="relative"
             >
               <Image
-                src="/hero-visual.png"
+                src="/robot-hero.jpg"
                 alt="AI agents powering sales and marketing automation"
-                width={1344}
+                width={1360}
                 height={768}
                 className="w-full rounded-2xl shadow-2xl shadow-[#374151]/15"
                 priority
@@ -322,6 +322,9 @@ function HeroSection() {
           </motion.div>
         </div>
       </div>
+
+      {/* Smooth yellow-to-white fade at bottom of hero */}
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-white via-white/60 to-transparent z-10 pointer-events-none" />
 
       {/* Bottom stats bar */}
       <div ref={statsRef} className="absolute bottom-0 left-0 right-0 z-20">

@@ -111,14 +111,14 @@ export default function AboutPageClient() {
         </section>
 
         {/* CTA */}
-        <section className="bg-[#F9F9F9] py-20 md:py-24">
+        <section className="bg-[#F3D840] py-20 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <ScrollReveal>
               <h2 className="text-3xl font-bold text-[#1A1A1A] mb-4">Ready to Transform Your Operations?</h2>
-              <p className="text-[#535353] mb-8 leading-relaxed">
+              <p className="text-[#374151] mb-8 leading-relaxed">
                 Let us show you how AI agents can automate your sales pipeline, supercharge your marketing, and free your team to focus on closing deals.
               </p>
-              <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-[#374151] hover:bg-[#1F2937] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
+              <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
                 Book a Strategy Call
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </Link>

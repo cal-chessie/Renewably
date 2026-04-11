@@ -144,7 +144,7 @@ export default function BlogPostClient() {
         <Header />
         <main className="pt-20">
           <section className="py-32 text-center">
-            <h1 className="text-4xl font-bold text-[#333333] mb-4">Post Not Found</h1>
+            <h1 className="text-4xl font-bold text-[#1A1A1A] mb-4">Post Not Found</h1>
             <Link href="/blog" className="text-[#374151] hover:text-[#1F2937]">
               &larr; Back to Blog
             </Link>
@@ -171,7 +171,7 @@ export default function BlogPostClient() {
               <span className="inline-block px-3 py-1 text-xs font-medium bg-[#374151]/20 text-[#374151] rounded-full mb-4">
                 {post.category}
               </span>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#333333] leading-tight mb-4">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1A1A1A] leading-tight mb-4">
                 {post.title}
               </h1>
               <time className="text-[#535353]" dateTime={post.date}>
@@ -188,7 +188,7 @@ export default function BlogPostClient() {
               if (p.startsWith("## ")) {
                 return (
                   <ScrollReveal key={i}>
-                    <h2 className="text-2xl font-bold text-[#333333] mt-10 mb-4">{p.replace("## ", "")}</h2>
+                    <h2 className="text-2xl font-bold text-[#1A1A1A] mt-10 mb-4">{p.replace("## ", "")}</h2>
                   </ScrollReveal>
                 );
               }

@@ -46,7 +46,7 @@ export default function LoadingScreen() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.4 }}
-              className="text-xl font-bold text-[#333333]"
+              className="text-xl font-bold text-[#1A1A1A]"
             >
               Renewably
             </motion.span>

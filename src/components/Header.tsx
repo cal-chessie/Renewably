@@ -63,8 +63,8 @@ export default function Header() {
                 href={link.href}
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-300 ${
                   scrolled
-                    ? "text-[#333333] hover:text-[#374151] hover:bg-[#F3D840]/10"
-                    : "text-[#333333] hover:text-[#374151] hover:bg-white/20"
+                    ? "text-[#1A1A1A] hover:text-[#374151] hover:bg-[#F3D840]/10"
+                    : "text-[#1A1A1A] hover:text-[#374151] hover:bg-white/20"
                 }`}
               >
                 {link.label}
@@ -100,17 +100,17 @@ export default function Header() {
             >
               <div className="w-6 h-5 flex flex-col justify-between relative">
                 <span
-                  className={`absolute left-0 w-6 h-0.5 bg-[#333333] transition-all duration-300 ${
+                  className={`absolute left-0 w-6 h-0.5 bg-[#1A1A1A] transition-all duration-300 ${
                     mobileOpen ? "top-2 rotate-45" : "top-0"
                   }`}
                 />
                 <span
-                  className={`absolute left-0 top-2 w-6 h-0.5 bg-[#333333] transition-all duration-300 ${
+                  className={`absolute left-0 top-2 w-6 h-0.5 bg-[#1A1A1A] transition-all duration-300 ${
                     mobileOpen ? "opacity-0" : "opacity-100"
                   }`}
                 />
                 <span
-                  className={`absolute left-0 w-6 h-0.5 bg-[#333333] transition-all duration-300 ${
+                  className={`absolute left-0 w-6 h-0.5 bg-[#1A1A1A] transition-all duration-300 ${
                     mobileOpen ? "top-2 -rotate-45" : "top-4"
                   }`}
                 />
@@ -159,7 +159,7 @@ export default function Header() {
                     aria-label="Close menu"
                   >
                     <svg
-                      className="w-5 h-5 text-[#333333]"
+                      className="w-5 h-5 text-[#1A1A1A]"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -185,7 +185,7 @@ export default function Header() {
                       <Link
                         href={link.href}
                         onClick={() => setMobileOpen(false)}
-                        className="block px-6 py-4 text-base font-medium text-[#333333] hover:text-[#374151] hover:bg-[#F3D840]/10 transition-colors"
+                        className="block px-6 py-4 text-base font-medium text-[#1A1A1A] hover:text-[#374151] hover:bg-[#F3D840]/10 transition-colors"
                       >
                         {link.label}
                       </Link>

@@ -66,7 +66,7 @@ export default function BlogPageClient() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <ScrollReveal>
               <p className="text-[#374151] font-semibold text-sm tracking-wider uppercase mb-3">Blog</p>
-              <h1 className="text-4xl sm:text-5xl font-bold text-[#333333] mb-6">
+              <h1 className="text-4xl sm:text-5xl font-bold text-[#1A1A1A] mb-6">
                 AI Insights for Modern Growth Teams
               </h1>
               <p className="text-[#535353] text-lg max-w-2xl mx-auto leading-relaxed">
@@ -87,7 +87,7 @@ export default function BlogPageClient() {
                       <span className="px-3 py-1 text-xs font-medium bg-[#F3D840] text-[#374151] rounded-full">{post.category}</span>
                       <span className="text-sm text-gray-400">{post.readTime}</span>
                     </div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-[#333333] mb-3 group-hover:text-[#374151] transition-colors">
+                    <h2 className="text-xl sm:text-2xl font-bold text-[#1A1A1A] mb-3 group-hover:text-[#374151] transition-colors">
                       <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                     </h2>
                     <p className="text-[#535353] leading-relaxed mb-4">{post.excerpt}</p>
