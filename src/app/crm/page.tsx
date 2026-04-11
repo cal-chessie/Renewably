@@ -18,6 +18,9 @@ import {
   ArrowDownRight,
   Clock,
   Users,
+  Sun,
+  Zap,
+  MapPin,
 } from 'lucide-react'
 import {
   AreaChart,
@@ -116,6 +119,7 @@ export default function DashboardPage() {
     overdueTasks = 0,
     avgDealCycleDays = 0,
     activitiesThisWeek = 0,
+    installers = {},
   } = data || {}
 
   const safeTasks = tasksByStatus || {}
@@ -146,36 +150,37 @@ export default function DashboardPage() {
       {/* Header */}
       <motion.div variants={fadeUp} className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
-          <p className="text-gray-500 text-sm mt-1">Welcome back! Here&apos;s your overview.</p>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">SolarPilot Dashboard</h1>
+          <p className="text-gray-500 text-sm mt-1">Installer management &amp; pipeline overview.</p>
         </div>
         <div className="text-sm text-gray-400 hidden sm:block">
           {format(new Date(), 'EEEE, MMMM d, yyyy')}
         </div>
       </motion.div>
 
-      {/* Row 1: KPI Cards */}
+      {/* Row 1: Solar Installer KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <StatCard
+          title="Active Installers"
+          value={installers.total || 0}
+          subtitle={`${installers.newThisMonth || 0} new this month`}
+          icon={Sun}
+          trend={{ value: installers.total > 0 ? 12 : 0, positive: true }}
+          delay={0}
+        />
+        <StatCard
+          title="Monthly Recurring"
+          value={formatCurrency(installers.mrr || 0)}
+          subtitle={`${installers.onboardingRate || 0}% onboarding complete`}
+          icon={Zap}
+          delay={0.1}
+        />
         <StatCard
           title="Pipeline Value"
           value={formatCurrency(kpis.totalPipelineValue || 0)}
           subtitle={`${kpis.activeDeals || 0} active deals`}
           icon={DollarSign}
           trend={{ value: pipelineTrend, positive: pipelineTrend >= 0 }}
-          delay={0}
-        />
-        <StatCard
-          title="Active Deals"
-          value={kpis.activeDeals || 0}
-          subtitle={`Total: ${kpis.totalDeals || 0} deals`}
-          icon={Handshake}
-          delay={0.1}
-        />
-        <StatCard
-          title="New Contacts"
-          value={kpis.newContactsThisMonth || 0}
-          subtitle={`${kpis.totalContacts || 0} total contacts`}
-          icon={UserPlus}
           delay={0.2}
         />
         <StatCard
@@ -384,6 +389,15 @@ export default function DashboardPage() {
             <CardContent>
               <div className="grid grid-cols-2 gap-3">
                 <Link
+                  href="/crm/installers"
+                  className="flex flex-col items-center gap-2 p-4 bg-gray-50 rounded-xl hover:bg-[#F3D840]/10 hover:border-[#F3D840]/30 border border-transparent transition-all group"
+                >
+                  <div className="h-10 w-10 rounded-lg bg-[#F3D840]/15 flex items-center justify-center group-hover:bg-[#F3D840]/25 transition-colors">
+                    <Sun className="h-5 w-5 text-[#C79828]" />
+                  </div>
+                  <span className="text-xs font-medium text-gray-600">Installers</span>
+                </Link>
+                <Link
                   href="/crm/pipeline"
                   className="flex flex-col items-center gap-2 p-4 bg-gray-50 rounded-xl hover:bg-[#F3D840]/10 hover:border-[#F3D840]/30 border border-transparent transition-all group"
                 >
@@ -409,15 +423,6 @@ export default function DashboardPage() {
                     <UserPlus className="h-5 w-5 text-[#C79828]" />
                   </div>
                   <span className="text-xs font-medium text-gray-600">Add Contact</span>
-                </Link>
-                <Link
-                  href="/crm/tasks"
-                  className="flex flex-col items-center gap-2 p-4 bg-gray-50 rounded-xl hover:bg-[#F3D840]/10 hover:border-[#F3D840]/30 border border-transparent transition-all group"
-                >
-                  <div className="h-10 w-10 rounded-lg bg-[#F3D840]/15 flex items-center justify-center group-hover:bg-[#F3D840]/25 transition-colors">
-                    <CheckSquare className="h-5 w-5 text-[#C79828]" />
-                  </div>
-                  <span className="text-xs font-medium text-gray-600">Create Task</span>
                 </Link>
               </div>
             </CardContent>

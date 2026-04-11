@@ -17,6 +17,7 @@ import {
   Calendar as CalendarIcon,
   BarChart3,
   Receipt,
+  Sun,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -27,6 +28,7 @@ import Image from 'next/image'
 
 const navItems = [
   { href: '/crm', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/crm/installers', label: 'Installers', icon: Sun },
   { href: '/crm/contacts', label: 'People', icon: Users },
   { href: '/crm/pipeline', label: 'Pipeline', icon: Kanban },
   { href: '/crm/activities', label: 'Activities', icon: Activity },
@@ -55,8 +57,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             className="rounded-lg"
           />
           <div>
-            <h1 className="text-white font-bold text-lg leading-tight">Renewably</h1>
-            <p className="text-white/40 text-xs">CRM Dashboard</p>
+            <h1 className="text-white font-bold text-lg leading-tight">SolarPilot</h1>
+            <p className="text-white/40 text-xs">by Renewably</p>
           </div>
         </div>
       </div>

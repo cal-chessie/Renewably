@@ -29,6 +29,25 @@ export async function GET(request: NextRequest) {
     sevenDaysAgo.setHours(0, 0, 0, 0)
 
     // Run all queries in parallel
+    // Ensure solar pipeline stages exist
+    const solarStages = [
+      { name: 'Lead', order: 1, color: '#9CA3AF', isDefault: true },
+      { name: 'Survey', order: 2, color: '#60A5FA' },
+      { name: 'Quote', order: 3, color: '#F3D840' },
+      { name: 'Approved', order: 4, color: '#34D399' },
+      { name: 'Install', order: 5, color: '#F97316' },
+      { name: 'Commissioned', order: 6, color: '#8B5CF6' },
+      { name: 'Won', order: 7, color: '#22C55E' },
+      { name: 'Lost', order: 8, color: '#EF4444' },
+    ]
+    for (const stage of solarStages) {
+      await db.pipelineStage.upsert({
+        where: { name: stage.name },
+        update: {},
+        create: stage,
+      })
+    }
+
     const [
       totalContacts,
       newContactsThisMonth,
@@ -45,6 +64,7 @@ export async function GET(request: NextRequest) {
       topContactsData,
       overdueTasksCount,
       wonDealsWithActivities,
+      installerStats,
     ] = await Promise.all([
       // Total contacts
       db.contact.count(),
@@ -180,6 +200,36 @@ export async function GET(request: NextRequest) {
           },
         },
       }),
+
+      // Installer stats for dashboard
+      (async () => {
+        const total = await db.installerProfile.count()
+        const complete = await db.installerProfile.count({ where: { onboardingComplete: true } })
+        const subscriptions = await db.subscription.findMany()
+        const plans = await db.installerProfile.groupBy({ by: ['planId'] })
+        const seaiCount = await db.installerProfile.count({ where: { seaiRegistered: true } })
+        const reciCount = await db.installerProfile.count({ where: { reciRegistered: true } })
+        const activeSubs = subscriptions.filter(s => s.status === 'active' || s.status === 'trialing')
+        const planPricing: Record<string, number> = { starter: 199, pro: 349, enterprise: 699 }
+        const mrr = activeSubs.reduce((sum, s) => sum + (planPricing[s.planId] || 349), 0)
+        const newThisMonth = await db.installerProfile.count({ where: { createdAt: { gte: startOfMonth } } })
+        const recentInstallers = await db.installerProfile.findMany({
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+          include: { subscription: true },
+        })
+        return {
+          total,
+          complete,
+          onboardingRate: total > 0 ? Math.round((complete / total) * 100) : 0,
+          mrr,
+          plans: plans.reduce((acc, p) => { acc[p.planId] = (acc[p.planId] || 0) + 1; return acc }, {} as Record<string, number>),
+          seaiCount,
+          reciCount,
+          newThisMonth,
+          recentInstallers,
+        }
+      })(),
     ])
 
     // Calculate KPIs
@@ -428,6 +478,8 @@ export async function GET(request: NextRequest) {
       topContacts,
       overdueTasks,
       avgDealCycleDays,
+      // Installer/solar data
+      installers: installerStats,
     })
   } catch (error) {
     console.error('Dashboard error:', error)
