@@ -4,40 +4,40 @@ import type { Metadata } from "next";
 import BlogPostClient from "@/components/BlogPostClient";
 
 const posts: Record<string, { title: string; date: string; category: string; content: string }> = {
-  "ai-powered-lead-generation-renewable-energy": {
-    title: "How AI-Powered Lead Generation Is Transforming Renewable Energy Marketing in 2026",
+  "ai-sales-agents-2026-guide": {
+    title: "The Complete Guide to AI Sales Agents in 2026: From Prospect to Close",
     date: "2026-04-01",
-    category: "Lead Generation",
+    category: "Sales AI",
     content: "",
   },
-  "google-ads-strategy-renewable-energy": {
-    title: "The Complete Google Ads Strategy for Renewable Energy Companies in Ireland",
+  "marketing-automation-stack-2026": {
+    title: "Building the Ultimate Marketing Automation Stack in 2026: Tools, Strategies & AI Integration",
     date: "2026-03-15",
-    category: "Paid Media",
+    category: "Automation",
     content: "",
   },
-  "conversion-rate-optimisation-energy-sector": {
-    title: "Conversion Rate Optimisation: Why Energy Sector Landing Pages Need a Different Approach",
+  "ai-crm-integration-guide": {
+    title: "AI + CRM Integration: How to Turn Your Customer Data into a Revenue Machine",
     date: "2026-03-01",
-    category: "CRO",
+    category: "CRM",
     content: "",
   },
-  "smart-bidding-strategies-2026": {
-    title: "Smart Bidding Strategies That Actually Work in 2026: A Data-Driven Analysis",
+  "workflow-automation-roi": {
+    title: "The ROI of Workflow Automation: How AI-Driven Processes Save 20+ Hours Per Week",
     date: "2026-02-15",
-    category: "PPC",
+    category: "Productivity",
     content: "",
   },
-  "aio-seo-renewable-energy-brands": {
-    title: "AIO and AEO: How to Optimise Your Renewable Energy Brand for AI Search Engines",
+  "predictive-revenue-forecasting": {
+    title: "Predictive Revenue Forecasting: Why AI Beats Spreadsheets Every Time",
     date: "2026-02-01",
-    category: "SEO",
+    category: "Analytics",
     content: "",
   },
-  "crm-integration-lead-quality": {
-    title: "CRM Integration Secrets: How to Improve Lead Quality by 40% Without Spending More on Ads",
+  "ai-lead-generation-strategies": {
+    title: "7 AI Lead Generation Strategies That Outperform Manual Prospecting by 5x",
     date: "2026-01-15",
-    category: "Strategy",
+    category: "Lead Gen",
     content: "",
   },
 };
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   return {
     title: post.title,
-    description: `Read our expert analysis on ${post.category.toLowerCase()} for renewable energy brands. Published ${new Date(post.date).toLocaleDateString("en-IE", { year: "numeric", month: "long", day: "numeric" })}.`,
+    description: `Read our expert analysis on ${post.category.toLowerCase()} for modern growth teams. Published ${new Date(post.date).toLocaleDateString("en-IE", { year: "numeric", month: "long", day: "numeric" })}.`,
     alternates: { canonical: `https://renewably.ie/blog/${slug}` },
     openGraph: {
       title: post.title,

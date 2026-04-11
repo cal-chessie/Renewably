@@ -3,11 +3,11 @@ import Image from "next/image";
 
 const footerLinks = {
   services: [
-    { label: "Smart Campaigns", href: "/services#campaigns" },
-    { label: "Smart Conversions", href: "/services#conversions" },
-    { label: "Smart Bidding", href: "/services#bidding" },
-    { label: "CRM Integration", href: "/services#crm" },
+    { label: "AI Sales Agents", href: "/services" },
+    { label: "Marketing Automation", href: "/services" },
     { label: "Lead Generation", href: "/services" },
+    { label: "Workflow Automation", href: "/services" },
+    { label: "Revenue Intelligence", href: "/services" },
   ],
   company: [
     { label: "About Us", href: "/about" },
@@ -35,9 +35,8 @@ export default function Footer() {
               />
             </Link>
             <p className="text-gray-500 max-w-xs leading-relaxed mb-6 text-sm">
-              Ireland&apos;s leading digital marketing agency for renewable energy
-              brands. We combine AI-powered technology with data-driven strategy to
-              deliver qualified leads and sustainable growth.
+              Ireland&apos;s leading AI as a Service provider. We deploy AI agents, automations,
+              and intelligent systems that transform how businesses sell, market, and operate.
             </p>
             <div className="flex gap-3">
               <a

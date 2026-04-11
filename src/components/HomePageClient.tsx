@@ -9,17 +9,17 @@ import AnimatedCounter from "@/components/AnimatedCounter";
 import ScrollReveal from "@/components/ScrollReveal";
 
 /* ============================================================
-   HERO SECTION — Agentic AI + Renewables | Yellow-Dominant
+   HERO SECTION — AI as a Service | Solid Yellow Background
    ============================================================ */
 function HeroSection() {
   const statsRef = useRef<HTMLDivElement>(null);
   const statsInView = useInView(statsRef, { once: true, margin: "-50px" });
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-[#FFFDF5] via-white to-[#FFF9E0]">
-      {/* Animated gradient mesh background */}
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-[#F3D840]">
+      {/* Animated gradient mesh background - darker/white tones to contrast yellow */}
       <div className="absolute inset-0 z-0">
-        {/* Primary yellow glow - top right */}
+        {/* Primary white glow - top right */}
         <motion.div
           animate={{
             x: [0, 30, -20, 0],
@@ -29,11 +29,11 @@ function HeroSection() {
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -top-32 -right-32 w-[700px] h-[700px] rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(243,216,64,0.3) 0%, rgba(243,216,64,0) 70%)",
+            background: "radial-gradient(circle, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 70%)",
             filter: "blur(80px)",
           }}
         />
-        {/* Secondary yellow glow - bottom left */}
+        {/* Secondary dark glow - bottom left */}
         <motion.div
           animate={{
             x: [0, -25, 15, 0],
@@ -43,11 +43,11 @@ function HeroSection() {
           transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -bottom-48 -left-48 w-[600px] h-[600px] rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(243,216,64,0.18) 0%, rgba(243,216,64,0) 70%)",
+            background: "radial-gradient(circle, rgba(55,65,81,0.08) 0%, rgba(55,65,81,0) 70%)",
             filter: "blur(100px)",
           }}
         />
-        {/* Subtle warm accent glow - center */}
+        {/* Subtle white accent glow - center */}
         <motion.div
           animate={{
             x: [0, 15, -10, 0],
@@ -56,28 +56,28 @@ function HeroSection() {
           transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(243,216,64,0.08) 0%, rgba(243,216,64,0) 70%)",
+            background: "radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%)",
             filter: "blur(120px)",
           }}
         />
-        {/* Dot grid pattern */}
+        {/* Dot grid pattern - white dots on yellow */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.08]"
           style={{
-            backgroundImage: `radial-gradient(circle, #374151 1px, transparent 1px)`,
+            backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px)`,
             backgroundSize: "40px 40px",
           }}
         />
-        {/* Neural network node pattern - subtle */}
-        <div className="absolute inset-0 opacity-[0.015]">
+        {/* Neural network node pattern - subtle white on yellow */}
+        <div className="absolute inset-0 opacity-[0.04]">
           <svg width="100%" height="100%" className="absolute inset-0">
             <defs>
               <pattern id="neuralGrid" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
                 <circle cx="40" cy="40" r="2" fill="#374151" />
-                <line x1="40" y1="0" x2="40" y2="40" stroke="#F3D840" strokeWidth="0.5" />
-                <line x1="40" y1="40" x2="80" y2="40" stroke="#F3D840" strokeWidth="0.5" />
-                <line x1="0" y1="40" x2="40" y2="40" stroke="#F3D840" strokeWidth="0.5" />
-                <line x1="40" y1="40" x2="40" y2="80" stroke="#F3D840" strokeWidth="0.5" />
+                <line x1="40" y1="0" x2="40" y2="40" stroke="#374151" strokeWidth="0.5" />
+                <line x1="40" y1="40" x2="80" y2="40" stroke="#374151" strokeWidth="0.5" />
+                <line x1="0" y1="40" x2="40" y2="40" stroke="#374151" strokeWidth="0.5" />
+                <line x1="40" y1="40" x2="40" y2="80" stroke="#374151" strokeWidth="0.5" />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#neuralGrid)" />
@@ -110,14 +110,14 @@ function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/15 border border-[#F3D840]/30 backdrop-blur-sm mb-8"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#374151]/10 border border-[#374151]/20 backdrop-blur-sm mb-8"
             >
               <motion.span
-                className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
-                style={{ boxShadow: "0 0 8px rgba(243,216,64,0.6)" }}
+                className="w-2 h-2 rounded-full bg-[#374151] animate-pulse"
+                style={{ boxShadow: "0 0 8px rgba(55,65,81,0.6)" }}
               />
               <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
-                Agentic AI for Renewable Energy
+                AI as a Service
               </span>
             </motion.div>
 
@@ -130,7 +130,7 @@ function HeroSection() {
             >
               <span className="text-[#1A1A1A]">AI Agents That</span>
               <br />
-              <span className="bg-gradient-to-r from-[#F3D840] via-[#E5C832] to-[#D4BA28] bg-clip-text text-transparent">
+              <span className="text-[#374151]">
                 Power Your Growth.
               </span>
             </motion.h1>
@@ -140,9 +140,9 @@ function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.6 }}
-              className="text-[#535353] text-base sm:text-lg lg:text-xl leading-relaxed mb-10 max-w-lg"
+              className="text-[#374151]/80 text-base sm:text-lg lg:text-xl leading-relaxed mb-10 max-w-lg"
             >
-              Autonomous AI agents that find, nurture, and convert leads for renewable energy brands — 24/7, on autopilot.
+              Autonomous AI agents that find, nurture, and close deals for your business — 24/7, on autopilot. Built for sales, marketing, and automation.
             </motion.p>
 
             {/* CTAs */}
@@ -153,16 +153,16 @@ function HeroSection() {
               className="flex flex-col sm:flex-row gap-4"
             >
               <MagneticButton href="/contact" className="animate-subtle-pulse">
-                Book Your Free Call
+                Get Started
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </MagneticButton>
               <Link
                 href="/services"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold text-[#374151] hover:text-[#1F2937] border border-[#374151]/20 hover:border-[#374151]/40 hover:bg-[#374151]/5 transition-all duration-300"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold text-[#374151] hover:text-[#1A1A1A] border border-[#374151]/20 hover:border-[#374151]/40 hover:bg-[#374151]/5 transition-all duration-300"
               >
-                Explore Services
+                See How It Works
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
@@ -174,26 +174,26 @@ function HeroSection() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2, duration: 0.8 }}
-              className="flex items-center gap-6 mt-10 pt-8 border-t border-[#F3D840]/20"
+              className="flex items-center gap-6 mt-10 pt-8 border-t border-[#374151]/15"
             >
               <div className="flex items-center gap-2">
                 <div className="flex -space-x-2">
-                  {[{ bg: 'bg-[#F3D840]', label: 'SE' }, { bg: 'bg-[#E5C832]', label: 'FD' }, { bg: 'bg-[#D4BA28]', label: 'AK' }, { bg: 'bg-[#374151]', label: 'RM' }].map((item, i) => (
-                    <div key={i} className={`w-8 h-8 rounded-full ${item.bg} border-2 border-white flex items-center justify-center`}>
-                      <span className="text-[10px] font-bold text-[#1A1A1A]">{item.label}</span>
+                  {[{ bg: 'bg-white', label: 'SE' }, { bg: 'bg-white/90', label: 'FD' }, { bg: 'bg-white/80', label: 'AK' }, { bg: 'bg-[#374151]', label: 'RM' }].map((item, i) => (
+                    <div key={i} className={`w-8 h-8 rounded-full ${item.bg} border-2 border-[#F3D840] flex items-center justify-center`}>
+                      <span className={`text-[10px] font-bold ${item.bg === 'bg-[#374151]' ? 'text-white' : 'text-[#1A1A1A]'}`}>{item.label}</span>
                     </div>
                   ))}
                 </div>
-                <span className="text-sm text-[#535353] font-medium">150+ clients</span>
+                <span className="text-sm text-[#374151] font-medium">150+ clients</span>
               </div>
-              <div className="w-px h-8 bg-[#F3D840]/30" />
+              <div className="w-px h-8 bg-[#374151]/20" />
               <div className="flex items-center gap-1.5">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-4 h-4 text-[#F3D840]" fill="currentColor" viewBox="0 0 20 20">
+                  <svg key={i} className="w-4 h-4 text-[#374151]" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 ))}
-                <span className="text-sm text-[#535353] font-medium ml-1">5.0 on Google</span>
+                <span className="text-sm text-[#374151] font-medium ml-1">5.0 rating</span>
               </div>
             </motion.div>
           </div>
@@ -210,14 +210,14 @@ function HeroSection() {
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                className="w-[520px] h-[520px] rounded-full border border-[#F3D840]/10"
+                className="w-[520px] h-[520px] rounded-full border border-[#374151]/10"
               />
             </div>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <motion.div
                 animate={{ rotate: -360 }}
                 transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-                className="w-[440px] h-[440px] rounded-full border border-dashed border-[#374151]/[0.08]"
+                className="w-[440px] h-[440px] rounded-full border border-dashed border-white/20"
               />
             </div>
 
@@ -231,8 +231,8 @@ function HeroSection() {
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-3 h-3 rounded-full bg-[#F3D840]"
-                  style={{ boxShadow: "0 0 12px rgba(243,216,64,0.6)" }}
+                  className="w-3 h-3 rounded-full bg-[#374151]"
+                  style={{ boxShadow: "0 0 12px rgba(55,65,81,0.6)" }}
                 />
               </div>
             </motion.div>
@@ -245,14 +245,14 @@ function HeroSection() {
             >
               <Image
                 src="/hero-visual.png"
-                alt="AI agents powering renewable energy marketing"
+                alt="AI agents powering sales and marketing automation"
                 width={1344}
                 height={768}
-                className="w-full rounded-2xl shadow-2xl shadow-[#F3D840]/15"
+                className="w-full rounded-2xl shadow-2xl shadow-[#374151]/15"
                 priority
               />
-              {/* Glass overlay bottom edge */}
-              <div className="absolute bottom-0 left-4 right-4 h-24 bg-gradient-to-t from-white/60 to-transparent rounded-b-2xl" />
+              {/* Glass overlay bottom edge - blend with yellow */}
+              <div className="absolute bottom-0 left-4 right-4 h-24 bg-gradient-to-t from-[#F3D840]/80 to-transparent rounded-b-2xl" />
             </motion.div>
 
             {/* Floating glass metric card - AI Agents */}
@@ -262,7 +262,7 @@ function HeroSection() {
               transition={{ delay: 1.2, duration: 0.6 }}
               className="absolute -left-8 top-1/4"
             >
-              <div className="bg-white/90 backdrop-blur-xl border border-[#F3D840]/20 rounded-2xl px-5 py-4 shadow-xl shadow-[#F3D840]/10">
+              <div className="bg-white/95 backdrop-blur-xl border border-[#F3D840]/30 rounded-2xl px-5 py-4 shadow-xl shadow-[#374151]/10">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[#F3D840] flex items-center justify-center">
                     <svg className="w-5 h-5 text-[#374151]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -284,7 +284,7 @@ function HeroSection() {
               transition={{ delay: 1.4, duration: 0.6 }}
               className="absolute -right-6 bottom-1/4"
             >
-              <div className="bg-white/90 backdrop-blur-xl border border-[#F3D840]/20 rounded-2xl px-5 py-4 shadow-xl shadow-[#F3D840]/10">
+              <div className="bg-white/95 backdrop-blur-xl border border-[#F3D840]/30 rounded-2xl px-5 py-4 shadow-xl shadow-[#374151]/10">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[#374151]/10 flex items-center justify-center">
                     <svg className="w-5 h-5 text-[#374151]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -306,7 +306,7 @@ function HeroSection() {
               transition={{ delay: 1.6, duration: 0.6 }}
               className="absolute -right-2 top-12"
             >
-              <div className="bg-white/90 backdrop-blur-xl border border-[#F3D840]/20 rounded-xl px-4 py-3 shadow-lg shadow-[#F3D840]/8">
+              <div className="bg-white/95 backdrop-blur-xl border border-[#F3D840]/30 rounded-xl px-4 py-3 shadow-lg shadow-[#374151]/8">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-green-500/15 flex items-center justify-center">
                     <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -336,14 +336,14 @@ function HeroSection() {
               { value: 3, suffix: "x", label: "Lead Volume", desc: "Average increase" },
               { value: 40, suffix: "%", label: "Lower CPA", desc: "Cost per acquisition" },
               { value: 24, suffix: "/7", label: "AI Monitoring", desc: "Always optimising" },
-              { value: 150, suffix: "+", label: "Clients Served", desc: "Across Ireland" },
+              { value: 150, suffix: "+", label: "Clients Served", desc: "Worldwide" },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 20 }}
                 animate={statsInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.5 + i * 0.15, duration: 0.5 }}
-                className="bg-white/80 backdrop-blur-md border border-[#F3D840]/15 rounded-2xl px-5 py-4 hover:bg-white/95 hover:border-[#F3D840]/30 transition-all duration-300"
+                className="bg-white/90 backdrop-blur-md border border-[#374151]/10 rounded-2xl px-5 py-4 hover:bg-white hover:border-[#F3D840]/40 transition-all duration-300"
               >
                 <div className="text-2xl sm:text-3xl font-bold text-[#374151] mb-1">
                   <AnimatedCounter end={stat.value} suffix={stat.suffix} duration={2} />
@@ -360,18 +360,28 @@ function HeroSection() {
 }
 
 /* ============================================================
-   AI AGENTS SHOWCASE — New Section
+   AI AGENTS SHOWCASE
    ============================================================ */
 function AIAgentsSection() {
   const agents = [
     {
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+        </svg>
+      ),
+      title: "Sales Agent",
+      desc: "Identifies high-intent prospects, qualifies leads automatically, and routes them to your sales team when they're ready to buy.",
+      status: "Active",
+    },
+    {
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
         </svg>
       ),
-      title: "Campaign Agent",
-      desc: "Autonomously generates, tests, and optimises ad creatives across channels — learning what resonates with your ideal customer.",
+      title: "Marketing Agent",
+      desc: "Autonomously generates, tests, and optimises campaigns across every channel — learning what converts in real-time.",
       status: "Active",
     },
     {
@@ -381,17 +391,7 @@ function AIAgentsSection() {
         </svg>
       ),
       title: "Analytics Agent",
-      desc: "Monitors every metric in real-time — spotting trends, anomalies, and opportunities before your competitors see them.",
-      status: "Active",
-    },
-    {
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-        </svg>
-      ),
-      title: "Bidding Agent",
-      desc: "Machine learning algorithms that adjust bids in real-time across Google, Meta, and LinkedIn to maximise your return.",
+      desc: "Monitors every metric in real-time — spotting trends, anomalies, and revenue opportunities before your competitors see them.",
       status: "Active",
     },
     {
@@ -400,8 +400,8 @@ function AIAgentsSection() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
         </svg>
       ),
-      title: "Nurture Agent",
-      desc: "Automated email, SMS, and voice sequences that warm up cold leads and move prospects through your pipeline.",
+      title: "Automation Agent",
+      desc: "Orchestrates email sequences, follow-ups, task routing, and workflow triggers that keep your pipeline moving without manual effort.",
       status: "Active",
     },
   ];
@@ -433,7 +433,7 @@ function AIAgentsSection() {
               </span>
             </h2>
             <p className="text-[#535353] text-lg leading-relaxed">
-              Each agent specialises in a specific domain — together they create an autonomous marketing machine that never sleeps.
+              Each agent specialises in sales, marketing, or automation — together they create an autonomous growth engine that never sleeps.
             </p>
           </div>
         </ScrollReveal>
@@ -474,7 +474,7 @@ function AIAgentsSection() {
    ============================================================ */
 function MarqueeSection() {
   const text =
-    "AGENTIC AI • LEAD GENERATION • RENEWABLE ENERGY • SMART BIDDING • AI OPTIMISATION • CRM INTEGRATION • PAID MEDIA • IRELAND • ";
+    "AI AS A SERVICE • SALES AUTOMATION • MARKETING AI • LEAD GENERATION • WORKFLOW AUTOMATION • CRM INTELLIGENCE • REVENUE OPERATIONS • AI AGENTS • ";
 
   return (
     <section className="bg-[#F3D840] py-4 overflow-hidden">
@@ -501,10 +501,10 @@ function AboutSection() {
           <ScrollReveal>
             <div>
               <h2 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] leading-tight mb-6">
-                We Find Your Buying Audience, by{" "}
+                We Build AI Systems That{" "}
                 <span className="relative inline-block">
                   <span className="text-[#F3D840] bg-[#F3D840]/20 px-1">
-                    Hyper-Targeting
+                    Find
                   </span>
                   <motion.span
                     className="absolute bottom-0 left-0 right-0 h-1 bg-[#F3D840] rounded-full"
@@ -514,11 +514,25 @@ function AboutSection() {
                     transition={{ delay: 0.5, duration: 0.6 }}
                     style={{ originX: 0 }}
                   />
+                </span>
+                ,{" "}
+                <span className="relative inline-block">
+                  <span className="text-[#F3D840] bg-[#F3D840]/20 px-1">
+                    Close
+                  </span>
+                  <motion.span
+                    className="absolute bottom-0 left-0 right-0 h-1 bg-[#F3D840] rounded-full"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.6, duration: 0.6 }}
+                    style={{ originX: 0 }}
+                  />
                 </span>{" "}
                 and{" "}
                 <span className="relative inline-block">
                   <span className="text-[#F3D840] bg-[#F3D840]/20 px-1">
-                    Re-Targeting
+                    Scale
                   </span>
                   <motion.span
                     className="absolute bottom-0 left-0 right-0 h-1 bg-[#F3D840] rounded-full"
@@ -532,14 +546,10 @@ function AboutSection() {
                 Your Customers!
               </h2>
               <p className="text-[#535353] leading-relaxed mb-4">
-                We start by analyzing your company processes, competitors, and market
-                position. This deep dive helps us define the parameters of success and
-                identify untapped opportunities for growth in the renewable energy sector.
+                We start by analysing your sales process, marketing funnel, and automation gaps. This deep dive helps us define the parameters of success and identify where AI can deliver the biggest impact for your business.
               </p>
               <p className="text-[#535353] leading-relaxed mb-8">
-                Through advanced hyper-targeting and retargeting strategies powered by agentic AI,
-                we find the people most likely to buy from you and ensure your brand stays
-                visible throughout their decision-making journey.
+                Through intelligent prospect targeting and automated outreach powered by agentic AI, we find the people most likely to buy from you and ensure your brand stays visible throughout their entire buying journey.
               </p>
               <Link
                 href="/services"
@@ -563,7 +573,7 @@ function AboutSection() {
               >
                 <Image
                   src="/funnel-illustration.png"
-                  alt="AI-powered marketing funnel"
+                  alt="AI-powered customer acquisition engine"
                   width={1152}
                   height={864}
                   className="w-full max-w-md drop-shadow-xl rounded-2xl"
@@ -578,19 +588,19 @@ function AboutSection() {
 }
 
 /* ============================================================
-   SUSTAINABLE SYSTEM SECTION
+   AI PLATFORM SECTION
    ============================================================ */
-function SustainableSystemSection() {
+function AIPlatformSection() {
   const checklistRef = useRef<HTMLDivElement>(null);
   const checklistInView = useInView(checklistRef, { once: true, margin: "-80px" });
 
   const items = [
-    "Autonomous AI agents managing your campaigns 24/7",
-    "Data-driven cross-channel strategies",
-    "Engineered to drive higher conversions",
+    "Autonomous AI agents managing your sales pipeline 24/7",
+    "Intelligent cross-channel marketing automation",
+    "Engineered to drive higher conversion rates",
     "Continuous optimisation through machine learning",
-    "Full CRM integration and lead pipeline",
-    "Transparent reporting and real-time analytics",
+    "Full CRM integration and revenue pipeline",
+    "Transparent reporting and real-time revenue analytics",
   ];
 
   return (
@@ -600,16 +610,12 @@ function SustainableSystemSection() {
           <ScrollReveal>
             <div>
               <h2 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] leading-tight mb-6">
-                We Build You A{" "}
-                <span className="text-[#374151]">Sustainable System</span>, Where You
-                Take All The Points!
+                We Build You An{" "}
+                <span className="text-[#374151]">AI-Powered Platform</span>, Where You
+                Close Every Deal!
               </h2>
               <p className="text-[#535353] leading-relaxed mb-8">
-                We design and implement our proven technology stack with data-driven
-                cross-channel strategies engineered to drive and sustain higher
-                conversions. Using text, email, and voice automation, we sustain
-                growth and maintain healthy communication with your prospects until
-                they convert.
+                We design and deploy a unified AI platform that connects your sales, marketing, and automation into one intelligent system. Our AI agents work around the clock — prospecting, engaging, qualifying, and routing leads so your team only talks to people ready to buy.
               </p>
 
               {/* Animated Checklist */}
@@ -646,7 +652,7 @@ function SustainableSystemSection() {
             >
               <Image
                 src="/system-illustration.png"
-                alt="AI agent ecosystem for renewable energy"
+                alt="AI automation ecosystem"
                 width={1152}
                 height={864}
                 className="w-full max-w-md drop-shadow-xl rounded-2xl"
@@ -674,7 +680,7 @@ function YellowDivider() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            The Barriers Between You and Your Future Customers, Can Be Tough!
+            The Gap Between Your Sales Goals and Reality, Just Got Smaller.
           </motion.h2>
         </div>
       </ScrollReveal>
@@ -690,38 +696,38 @@ function ServicesGrid() {
     {
       num: "01",
       icon: "🤖",
-      title: "AI Campaign Agent",
-      desc: "Autonomous AI agents that generate, test, and optimise ad copy across channels — learning what converts in real-time.",
+      title: "AI Sales Agents",
+      desc: "Autonomous agents that prospect, qualify, and nurture leads — handing your sales team warm opportunities ready to close.",
     },
     {
       num: "02",
       icon: "🔄",
-      title: "Smart Conversions",
-      desc: "Personalised landing pages with dynamic titles and CTAs matched to every search query for maximum conversion.",
+      title: "Marketing Automation",
+      desc: "End-to-end campaign automation across email, social, and paid channels — driven by AI that learns and adapts.",
     },
     {
       num: "03",
       icon: "📊",
-      title: "Smart Bidding",
-      desc: "ML-driven bid strategies that adapt in real-time to reduce cost per acquisition and maximise returns.",
+      title: "Smart Lead Generation",
+      desc: "AI-powered prospecting that identifies and engages your ideal customers across multiple channels simultaneously.",
     },
     {
       num: "04",
-      icon: "🔗",
-      title: "CRM Integration",
-      desc: "Seamless data flow from lead capture directly into your CRM with custom field mapping and real-time sync.",
+      icon: "📈",
+      title: "Revenue Intelligence",
+      desc: "Real-time dashboards tracking every metric from lead to closed-won deal with predictive revenue forecasting.",
     },
     {
       num: "05",
       icon: "⚡",
-      title: "AI Optimisation",
-      desc: "Continuous multivariate testing where the machine optimises the conversion path in response to user interactions.",
+      title: "Workflow Automation",
+      desc: "Automated sequences for follow-ups, task routing, approvals, and notifications that eliminate manual busywork.",
     },
     {
       num: "06",
-      icon: "📈",
-      title: "Analytics Agent",
-      desc: "Real-time dashboards tracking every metric from impression to conversion with transparent ROI reporting.",
+      icon: "🔗",
+      title: "CRM + AI Integration",
+      desc: "Seamless data flow from every touchpoint into your CRM with AI-powered scoring, routing, and insights.",
     },
   ];
 
@@ -772,9 +778,9 @@ function ServicesGrid() {
    ============================================================ */
 function ResultsSection() {
   const stats = [
-    { value: 3, suffix: "x", label: "Lead Volume Increase" },
-    { value: 150, suffix: "%", label: "Conversion Rate Improvement" },
-    { value: 40, suffix: "%", label: "Cost Per Acquisition Reduction" },
+    { value: 3, suffix: "x", label: "Pipeline Growth" },
+    { value: 150, suffix: "%", label: "Sales Efficiency Gain" },
+    { value: 40, suffix: "%", label: "Lower Customer Acq. Cost" },
     { value: 95, suffix: "%", label: "Client Retention Rate" },
   ];
 
@@ -818,21 +824,21 @@ function TestimonialsSection() {
   const testimonials = [
     {
       quote:
-        "Renewably transformed our lead generation completely. We went from struggling to find qualified leads to having a consistent pipeline of high-intent customers.",
+        "Renewably's AI agents completely transformed our sales pipeline. We went from manual prospecting to having qualified leads land in our inbox every single morning.",
       name: "Sean M.",
-      company: "Solar Energy Company, Dublin",
+      company: "SaaS Company, Dublin",
     },
     {
       quote:
-        "The AI-powered approach is genuinely different. Our cost per lead dropped by 40% in the first quarter while lead quality actually improved.",
+        "The AI-powered automation saved us 20+ hours per week on follow-ups and outreach. Our close rate went up 35% because we're only talking to people ready to buy.",
       name: "Fiona K.",
-      company: "Heat Pump Installer, Cork",
+      company: "B2B Services, Cork",
     },
     {
       quote:
-        "Their team understands the renewable energy market inside out. The campaigns feel authentic and the results speak for themselves.",
+        "Their team doesn't just set up tools — they build an AI system that actually understands our business. The revenue forecasting alone has changed how we plan.",
       name: "David R.",
-      company: "EV Charging Provider, Galway",
+      company: "Technology Company, London",
     },
   ];
 
@@ -911,12 +917,12 @@ function TestimonialsSection() {
    ============================================================ */
 function WhyChooseSection() {
   const features = [
-    "Hyper-targeted campaigns for your buying audience",
-    "Autonomous AI agents with continuous A/B testing",
-    "Personalised landing pages maximising conversion rates",
-    "Smart bidding strategies reducing cost per acquisition",
-    "Full CRM integration for seamless lead handoff",
-    "Dedicated renewable energy marketing specialists",
+    "Autonomous AI agents for sales, marketing, and automation",
+    "Custom-trained AI systems tailored to your business workflows",
+    "Intelligent cross-channel lead generation and nurturing",
+    "Real-time revenue analytics and predictive forecasting",
+    "Full CRM integration with AI-powered lead scoring",
+    "Dedicated AI specialists with ongoing optimisation",
   ];
 
   return (
@@ -929,14 +935,10 @@ function WhyChooseSection() {
                 Why Renewably
               </p>
               <h2 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] leading-tight mb-6">
-                Unleashing Your Unfair Advantage!
+                Your Unfair Advantage in Sales &amp; Marketing!
               </h2>
               <p className="text-[#535353] leading-relaxed mb-8">
-                Search marketing and paid media are increasingly math-driven and
-                automated. Without AI-powered tools and expert orchestration, you are
-                being outgunned by competitors who have invested in agentic AI at every
-                step. Renewably levels the playing field with autonomous technology
-                that works 24/7 to deliver qualified leads.
+                Sales and marketing are increasingly driven by AI and automation. Without intelligent systems, you&apos;re being outgunned by competitors who have invested in agentic AI at every step. Renewably levels the playing field with autonomous technology that works 24/7 to deliver qualified leads and close deals.
               </p>
 
               <div className="space-y-4">
@@ -963,7 +965,7 @@ function WhyChooseSection() {
             >
               <Image
                 src="/ai-illustration.png"
-                alt="Agentic AI for renewable energy marketing"
+                alt="AI as a Service platform for sales and marketing"
                 width={1152}
                 height={864}
                 className="w-full max-w-md drop-shadow-xl rounded-2xl mx-auto"
@@ -984,28 +986,28 @@ function FAQSection() {
 
   const faqs = [
     {
-      q: "What is Leads as a Service?",
-      a: "Leads as a Service (LaaS) is a fully managed lead generation solution where Renewably handles every aspect of customer acquisition — from campaign creation and ad copy generation to conversion optimisation and CRM integration. We use AI-powered technology and machine learning to automate and optimise paid media at scale, delivering qualified leads directly to your sales team.",
+      q: "What is AI as a Service?",
+      a: "AI as a Service (AIaaS) is a fully managed solution where we deploy AI agents, automations, and intelligent systems across your sales, marketing, and operations. Our AI handles prospecting, lead qualification, campaign management, follow-ups, and reporting — all on autopilot, all optimised by machine learning.",
     },
     {
-      q: "How does Renewably help renewable energy companies?",
-      a: "Renewably specialises in digital marketing for renewable energy brands in Ireland. We combine hyper-targeted paid media campaigns with AI-driven conversion optimisation, smart bidding strategies, and CRM integration to create a sustainable customer acquisition system. Our data-driven approach ensures you get qualified leads with lower customer acquisition costs and higher conversion rates.",
+      q: "How does AI-powered sales automation work?",
+      a: "Our AI sales agents analyse your ideal customer profile, then autonomously prospect, engage, and qualify leads across multiple channels. When a prospect shows buying intent, the AI routes them to your team with full context — so you only spend time on conversations that convert.",
     },
     {
-      q: "What makes Renewably different?",
-      a: "Renewably differentiates through our exclusive Leads as a Service model and agentic AI approach. Unlike traditional agencies that only manage campaigns, we deploy autonomous AI agents that build a complete, automated customer acquisition system tailored to renewable energy brands. This includes AI-powered ad copy generation, multivariate landing page testing, automated bid management, and direct CRM integration — all continuously optimised through machine learning.",
+      q: "What makes Renewably different from other AI agencies?",
+      a: "We don't just implement AI tools — we build custom AI systems tailored to your specific sales and marketing workflows. Every agent is trained on your business, every automation is designed around your goals, and everything connects into a unified platform that drives measurable revenue growth.",
     },
     {
       q: "What results can I expect?",
-      a: "Clients using our optimised conversion systems report up to 3 times lead volume lift through multivariate testing and machine learning. Our smart bidding strategies help reduce cost per acquisition while increasing conversion rates. Every campaign is continuously monitored and optimised to improve performance over time.",
+      a: "Clients typically see a 3x increase in qualified pipeline volume, 40% reduction in customer acquisition costs, and 20+ hours saved per week on manual tasks. Most teams see measurable results within the first 30 days.",
     },
     {
       q: "How quickly can I see results?",
-      a: "Most clients begin seeing measurable results within the first 30 days of campaign launch. Our AI agents start optimising from day one, using A/B testing and machine learning to rapidly improve performance. By month three, campaigns typically reach peak efficiency with significant improvements in lead quality and volume.",
+      a: "Our AI systems start learning and optimising from day one. Most clients see measurable improvements in lead quality and pipeline activity within the first two weeks. By month three, campaigns reach peak efficiency.",
     },
     {
-      q: "Do I need a large marketing budget?",
-      a: "We work with businesses of all sizes and can scale our services to match your budget. Our AI-powered approach is inherently efficient — smart bidding reduces wasted spend, and our optimised conversion paths mean you get more value from every click. We recommend starting with a strategy call so we can recommend the best approach for your specific goals and budget.",
+      q: "Do I need technical expertise to use your AI platform?",
+      a: "Absolutely not. Our AI platform is fully managed — we handle setup, training, and ongoing optimisation. Your team simply uses the dashboard to monitor results and interact with leads. We provide full onboarding and support.",
     },
   ];
 
@@ -1080,13 +1082,13 @@ function CTASection() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            Ready to Deploy Your AI Agents?
+            Ready to Deploy Your AI Sales Team?
           </motion.h2>
           <p className="text-[#374151] text-lg mb-10 max-w-2xl mx-auto">
-            Join 150+ renewable energy brands that trust Renewably&apos;s autonomous AI to deliver qualified leads on autopilot.
+            Book a free strategy call and discover how autonomous AI agents can transform your sales, marketing, and operations.
           </p>
           <MagneticButton href="/contact">
-            Get Started Today
+            Book Your Free Call
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
@@ -1107,7 +1109,7 @@ export default function HomePageClient() {
       <AIAgentsSection />
       <MarqueeSection />
       <AboutSection />
-      <SustainableSystemSection />
+      <AIPlatformSection />
       <YellowDivider />
       <ServicesGrid />
       <ResultsSection />

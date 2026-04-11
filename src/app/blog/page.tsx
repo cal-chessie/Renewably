@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import BlogPageClient from "@/components/BlogPageClient";
 
 export const metadata: Metadata = {
-  title: "Blog — Digital Marketing Insights for Renewable Energy Brands",
-  description: "Expert insights, strategies, and trends in digital marketing for renewable energy companies. Stay updated with the latest in AI-powered lead generation, paid media, and conversion optimisation.",
+  title: "Blog — AI Insights for Sales, Marketing & Automation",
+  description: "Expert analysis, strategies, and trends in AI-powered sales automation, marketing intelligence, and workflow optimisation for modern growth teams.",
   alternates: { canonical: "https://renewably.ie/blog" },
 };
 

@@ -13,7 +13,7 @@ const poppins = Poppins({
 
 const siteConfig = {
   name: "Renewably",
-  description: "Ireland's leading digital marketing agency for renewable energy brands. We deliver qualified leads through AI-powered campaigns, smart bidding, and conversion-optimised systems.",
+  description: "AI as a Service for sales, marketing, and automation. Renewably deploys autonomous AI agents, intelligent systems, and workflow automations that transform how businesses find, nurture, and close customers.",
   url: "https://renewably.ie",
   phone: "+353 873958424",
   email: "cal@renewably.ie",
@@ -24,21 +24,21 @@ const siteConfig = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — Leads as a Service for Renewable Energy Brands`,
+    default: `${siteConfig.name} — AI as a Service for Sales, Marketing & Automation`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
   keywords: [
-    "digital marketing Ireland",
-    "lead generation renewable energy",
-    "paid media management",
-    "Google Ads Ireland",
-    "renewable energy marketing",
-    "customer acquisition",
-    "Leads as a Service",
-    "AI-powered marketing",
-    "conversion rate optimisation Ireland",
-    "search marketing Ireland",
+    "AI as a Service Ireland",
+    "AI sales agents",
+    "marketing automation",
+    "AI lead generation",
+    "workflow automation",
+    "AI-powered CRM",
+    "sales automation",
+    "revenue intelligence",
+    "AI marketing agency",
+    "business automation Ireland",
   ],
   authors: [{ name: "Renewably", url: siteConfig.url }],
   creator: "Renewably",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     locale: siteConfig.locale,
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: `${siteConfig.name} — Leads as a Service for Renewable Energy Brands`,
+    title: `${siteConfig.name} — AI as a Service for Sales, Marketing & Automation`,
     description: siteConfig.description,
     images: [
       {
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — Leads as a Service for Renewable Energy Brands`,
+    title: `${siteConfig.name} — AI as a Service for Sales, Marketing & Automation`,
     description: siteConfig.description,
     images: [`${siteConfig.url}/og-image.png`],
   },

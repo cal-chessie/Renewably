@@ -16,11 +16,10 @@ export default function ContactPageClient() {
             <ScrollReveal>
               <p className="text-[#374151] font-semibold text-sm tracking-wider uppercase mb-3">Contact Us</p>
               <h1 className="text-4xl sm:text-5xl font-bold text-[#333333] mb-6">
-                Your Unfair AD-Vantage Starts Here
+                Let&apos;s Build Your AI Advantage
               </h1>
               <p className="text-[#535353] text-lg max-w-2xl mx-auto leading-relaxed">
-                Come to us with a vision and we will help you craft it. Book a free strategy call to discover how our 
-                AI-powered system can transform your customer acquisition.
+                Tell us about your business goals and we&apos;ll show you how autonomous AI agents can transform your sales pipeline, marketing performance, and operational efficiency.
               </p>
             </ScrollReveal>
           </div>
@@ -61,11 +60,12 @@ export default function ContactPageClient() {
                       <select id="service" name="service"
                         className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#374151] focus:ring-2 focus:ring-[#374151]/20 transition-colors outline-none bg-white">
                         <option value="">Select a service</option>
-                        <option value="smart-campaigns">Smart Campaigns</option>
-                        <option value="smart-conversions">Smart Conversions</option>
-                        <option value="smart-bidding">Smart Bidding</option>
-                        <option value="crm-integration">CRM Integration</option>
-                        <option value="full-service">Full Leads as a Service</option>
+                        <option value="ai-sales-agents">AI Sales Agents</option>
+                        <option value="marketing-automation">Marketing Automation</option>
+                        <option value="lead-generation">Lead Generation</option>
+                        <option value="workflow-automation">Workflow Automation</option>
+                        <option value="revenue-intelligence">Revenue Intelligence</option>
+                        <option value="full-ai-platform">Full AI Platform</option>
                         <option value="other">Other</option>
                       </select>
                     </div>
@@ -120,9 +120,9 @@ export default function ContactPageClient() {
                   <div className="p-6 rounded-xl bg-[#F3D840]/10 border border-[#F3D840]">
                     <h3 className="font-semibold text-[#374151] mb-2">Free Strategy Call</h3>
                     <p className="text-[#535353] text-sm leading-relaxed">
-                      Book a complimentary 30-minute strategy call with our team. We will analyse your current 
-                      marketing performance and show you exactly how our AI-powered system can deliver qualified 
-                      leads at scale for your renewable energy business.
+                      Book a complimentary 30-minute strategy call with our team. We&apos;ll analyse your current
+                      sales and marketing stack, identify automation opportunities, and show you exactly how
+                      AI agents can deliver measurable revenue growth.
                     </p>
                   </div>
                 </div>

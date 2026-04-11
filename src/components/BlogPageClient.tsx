@@ -7,52 +7,52 @@ import Link from "next/link";
 
 const blogPosts = [
   {
-    slug: "ai-powered-lead-generation-renewable-energy",
-    title: "How AI-Powered Lead Generation Is Transforming Renewable Energy Marketing in 2026",
-    excerpt: "The renewable energy sector in Ireland is experiencing rapid growth, and with it comes increasing competition for customer attention. Discover how AI-powered lead generation is giving forward-thinking companies a decisive advantage in acquiring qualified leads at scale.",
+    slug: "ai-sales-agents-2026-guide",
+    title: "The Complete Guide to AI Sales Agents in 2026: From Prospect to Close",
+    excerpt: "AI sales agents are transforming how businesses find, qualify, and close deals. This comprehensive guide covers everything from implementation strategy to measuring ROI — including real-world case studies from companies that have automated 80% of their top-of-funnel activities.",
     date: "2026-04-01",
-    category: "Lead Generation",
-    readTime: "8 min read",
-  },
-  {
-    slug: "google-ads-strategy-renewable-energy",
-    title: "The Complete Google Ads Strategy for Renewable Energy Companies in Ireland",
-    excerpt: "A comprehensive guide to building high-performing Google Ads campaigns for solar, wind, and heat pump installation companies. From keyword research to conversion tracking, learn the strategies that deliver measurable results.",
-    date: "2026-03-15",
-    category: "Paid Media",
-    readTime: "12 min read",
-  },
-  {
-    slug: "conversion-rate-optimisation-energy-sector",
-    title: "Conversion Rate Optimisation: Why Energy Sector Landing Pages Need a Different Approach",
-    excerpt: "Generic landing page advice does not work for the renewable energy sector. Customers making significant energy decisions need trust signals, social proof, and educational content. Learn the specific CRO strategies that drive results in this unique market.",
-    date: "2026-03-01",
-    category: "CRO",
+    category: "Sales AI",
     readTime: "10 min read",
   },
   {
-    slug: "smart-bidding-strategies-2026",
-    title: "Smart Bidding Strategies That Actually Work in 2026: A Data-Driven Analysis",
-    excerpt: "Google's smart bidding has evolved significantly. We analysed over 200 campaigns in the renewable energy sector to identify which bidding strategies deliver the best ROAS. The results challenge several common assumptions about automated bidding.",
-    date: "2026-02-15",
-    category: "PPC",
-    readTime: "9 min read",
+    slug: "marketing-automation-stack-2026",
+    title: "Building the Ultimate Marketing Automation Stack in 2026: Tools, Strategies & AI Integration",
+    excerpt: "The marketing automation landscape has exploded. Learn how to build a cohesive tech stack that actually works together — from AI-powered content generation and multi-channel campaign orchestration to predictive analytics and automated lead scoring.",
+    date: "2026-03-15",
+    category: "Automation",
+    readTime: "14 min read",
   },
   {
-    slug: "aio-seo-renewable-energy-brands",
-    title: "AIO and AEO: How to Optimise Your Renewable Energy Brand for AI Search Engines",
-    excerpt: "With AI-powered search engines like Perplexity and ChatGPT Search reshaping how customers find information, traditional SEO is no longer enough. Learn how to optimise your content for AI answer engines and capture voice search traffic.",
-    date: "2026-02-01",
-    category: "SEO",
+    slug: "ai-crm-integration-guide",
+    title: "AI + CRM Integration: How to Turn Your Customer Data into a Revenue Machine",
+    excerpt: "Most businesses use less than 30% of their CRM data. Learn how AI-powered CRM integration can automatically enrich records, score leads, predict churn, and surface the insights that drive revenue — without manual data entry.",
+    date: "2026-03-01",
+    category: "CRM",
     readTime: "11 min read",
   },
   {
-    slug: "crm-integration-lead-quality",
-    title: "CRM Integration Secrets: How to Improve Lead Quality by 40% Without Spending More on Ads",
-    excerpt: "The gap between marketing and sales is where most renewable energy companies lose potential customers. Learn how proper CRM integration, automated lead scoring, and instant follow-up workflows can dramatically improve your lead-to-customer conversion rate.",
+    slug: "workflow-automation-roi",
+    title: "The ROI of Workflow Automation: How AI-Driven Processes Save 20+ Hours Per Week",
+    excerpt: "We analysed 100+ businesses that implemented AI workflow automation and found an average time savings of 23 hours per week per team member. Here's the exact framework they used — and how to apply it to your sales, marketing, and operations.",
+    date: "2026-02-15",
+    category: "Productivity",
+    readTime: "9 min read",
+  },
+  {
+    slug: "predictive-revenue-forecasting",
+    title: "Predictive Revenue Forecasting: Why AI Beats Spreadsheets Every Time",
+    excerpt: "Traditional pipeline forecasting relies on gut feelings and outdated data. AI-powered revenue forecasting analyses thousands of signals to predict quarterly revenue with 90%+ accuracy. Learn the methodology and tools that make it possible.",
+    date: "2026-02-01",
+    category: "Analytics",
+    readTime: "8 min read",
+  },
+  {
+    slug: "ai-lead-generation-strategies",
+    title: "7 AI Lead Generation Strategies That Outperform Manual Prospecting by 5x",
+    excerpt: "Manual prospecting is dead. These seven AI-powered lead generation strategies — from intent signal detection to automated multi-touch sequences — are delivering 5x more qualified leads at 60% lower cost per acquisition.",
     date: "2026-01-15",
-    category: "Strategy",
-    readTime: "7 min read",
+    category: "Lead Gen",
+    readTime: "12 min read",
   },
 ];
 
@@ -67,10 +67,10 @@ export default function BlogPageClient() {
             <ScrollReveal>
               <p className="text-[#374151] font-semibold text-sm tracking-wider uppercase mb-3">Blog</p>
               <h1 className="text-4xl sm:text-5xl font-bold text-[#333333] mb-6">
-                Insights for Renewable Energy Marketing
+                AI Insights for Modern Growth Teams
               </h1>
               <p className="text-[#535353] text-lg max-w-2xl mx-auto leading-relaxed">
-                Expert analysis, strategies, and trends to help you stay ahead in digital marketing for the renewable energy sector.
+                Expert analysis, strategies, and trends in AI-powered sales, marketing automation, and business intelligence. Stay ahead of the curve.
               </p>
             </ScrollReveal>
           </div>

@@ -8,46 +8,46 @@ import Image from "next/image";
 
 const services = [
   {
-    id: "campaigns",
-    title: "Smart Campaigns",
-    desc: "AI automatically generates consistent ad titles and copy, with human validation for quality assurance. We A/B test up to 4 versions of ad copy simultaneously to improve click-through rates. Our campaigns are designed to highlight your unique selling points and attract high-intent customers across search and display networks.",
-    features: ["AI-generated ad copy", "Up to 4 simultaneous A/B tests", "Multi-channel campaign management", "Keyword theme optimisation"],
-    image: "/hero-illustration.png",
-  },
-  {
-    id: "conversions",
-    title: "Smart Conversions",
-    desc: "Every landing page is personalised with dynamic titles and calls-to-action fully matched to the user's search query. We use engaging, conversational forms and surveys with lightning-fast response times to minimise drop-off. Data capture is improved through auto-completion, inline postal validation, and dynamic phone numbers for click-to-call tracking.",
-    features: ["Dynamic landing page personalisation", "Conversational form design", "Real-time data validation", "Click-to-call tracking"],
-    image: "/funnel-illustration.png",
-  },
-  {
-    id: "bidding",
-    title: "Smart Bidding",
-    desc: "A variety of smart bidding strategies to choose from — increase conversions, decrease CPA, or target a specific ROAS. Clearly defining your goals is the key, and we help you pick the right strategy to reach them. Our machine learning engine adapts bids in real-time based on market conditions, competition, and user behaviour.",
-    features: ["Target CPA bidding", "Target ROAS bidding", "Maximise conversions", "Real-time bid adjustment"],
-    image: "/system-illustration.png",
-  },
-  {
-    id: "crm",
-    title: "CRM Integration",
-    desc: "We enable seamless CRM integration through custom deliverables that map every data field from your lead capture forms directly into your CRM system. Leads flow automatically into your sales pipeline without manual data entry, reducing response times and ensuring no lead is lost.",
-    features: ["Custom field mapping", "Automatic lead routing", "Real-time sync", "Sales pipeline integration"],
+    id: "ai-sales-agents",
+    title: "AI Sales Agents",
+    desc: "Autonomous AI agents that prospect, qualify, and nurture leads across multiple channels. They identify buying signals, engage prospects with personalised outreach, and route hot leads to your sales team with full context and timing.",
+    features: ["Automated prospecting", "Lead qualification scoring", "Multi-channel outreach", "Smart lead routing"],
     image: "/crm-illustration.png",
   },
   {
-    id: "optimisation",
-    title: "Continuous Optimisation",
-    desc: "We use multivariate testing — a sophisticated form of A/B testing — where the machine optimises the conversion path in response to user interactions. Clients report up to 3 times lead volume lift. Every element from ad copy to landing page layout is continuously refined.",
-    features: ["Multivariate testing", "Machine learning optimisation", "Conversion path analysis", "Up to 3x lead volume lift"],
+    id: "marketing-automation",
+    title: "Marketing Automation",
+    desc: "End-to-end campaign automation across email, social media, paid ads, and SMS. Our AI generates creative, tests variations, and optimises every campaign in real-time based on performance data and audience behaviour.",
+    features: ["AI content generation", "Multi-channel campaigns", "Real-time optimisation", "Audience segmentation"],
+    image: "/hero-visual.png",
+  },
+  {
+    id: "intelligent-lead-generation",
+    title: "Intelligent Lead Generation",
+    desc: "AI-powered prospecting that identifies and engages your ideal customers before your competitors do. We analyse market signals, company data, and behavioural patterns to find high-intent buyers actively looking for solutions like yours.",
+    features: ["Intent signal detection", "Lookalike audience building", "Predictive lead scoring", "Automated enrichment"],
+    image: "/funnel-illustration.png",
+  },
+  {
+    id: "workflow-automation",
+    title: "Workflow Automation",
+    desc: "Automated sequences for follow-ups, task assignments, approvals, notifications, and cross-team handoffs that eliminate manual bottlenecks. When a lead moves stages, every downstream action triggers automatically.",
+    features: ["Trigger-based workflows", "Cross-system automation", "Conditional logic rules", "SLA management"],
+    image: "/system-illustration.png",
+  },
+  {
+    id: "revenue-intelligence",
+    title: "Revenue Intelligence",
+    desc: "Real-time dashboards and predictive analytics tracking every metric from first touch to closed-won. Our AI spots trends, forecasts revenue, and surfaces the insights your team needs to make better decisions faster.",
+    features: ["Predictive forecasting", "Pipeline health scoring", "ROI attribution", "Custom dashboards"],
     image: "/ai-illustration.png",
   },
   {
-    id: "analytics",
-    title: "Analytics & Reporting",
-    desc: "Real-time dashboards tracking every metric that matters — from impression to conversion. Our transparent reporting demonstrates clear ROI and informs strategic decisions. We provide regular performance reviews and actionable insights to continuously improve campaign performance.",
-    features: ["Real-time dashboards", "ROI tracking", "Regular performance reviews", "Actionable insights"],
-    image: "/hero-illustration.png",
+    id: "ai-platform-crm",
+    title: "AI Platform + CRM Integration",
+    desc: "We build a unified AI platform where every system talks to every other system. Leads, contacts, deals, emails, calls, and campaigns are all connected — giving your AI agents full context and your team complete visibility.",
+    features: ["Bi-directional CRM sync", "Unified contact profiles", "AI-powered insights", "Custom API integrations"],
+    image: "/crm-illustration.png",
   },
 ];
 
@@ -61,12 +61,11 @@ export default function ServicesPageClient() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <ScrollReveal>
               <p className="text-[#374151] font-semibold text-sm tracking-wider uppercase mb-3">Our Services</p>
-              <h1 className="text-4xl sm:text-5xl font-bold text-[#333333] mb-6">
-                AI-Powered Marketing, Fully Managed
+              <h1 className="text-4xl sm:text-5xl font-bold text-[#1A1A1A] mb-6">
+                AI Systems That Drive Revenue, On Autopilot
               </h1>
               <p className="text-[#535353] text-lg max-w-2xl mx-auto leading-relaxed">
-                A fully integrated Leads as a Service solution that automates and optimises every step of paid media 
-                customer acquisition — powered by AI and machine learning.
+                A fully managed AI as a Service platform that deploys autonomous agents across your sales, marketing, and operations — powered by machine learning and built for growth.
               </p>
             </ScrollReveal>
           </div>
@@ -77,12 +76,12 @@ export default function ServicesPageClient() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
             {services.map((service, idx) => (
               <ScrollReveal key={service.id}>
-                <div id={service.id} className={`grid lg:grid-cols-2 gap-12 items-center`}>
+                <div id={service.id} className="grid lg:grid-cols-2 gap-12 items-center">
                   <div className={idx % 2 === 1 ? 'lg:order-2' : ''}>
                     <div className="w-12 h-12 rounded-lg bg-[#F3D840] flex items-center justify-center mb-4">
                       <span className="text-[#374151] font-bold text-lg">{String(idx + 1).padStart(2, '0')}</span>
                     </div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-[#333333] mb-4">{service.title}</h2>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4">{service.title}</h2>
                     <p className="text-[#535353] leading-relaxed mb-6">{service.desc}</p>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {service.features.map((f) => (
@@ -93,7 +92,7 @@ export default function ServicesPageClient() {
                       ))}
                     </ul>
                   </div>
-                  <div className={`${idx % 2 === 1 ? 'lg:order-1' : ''}`}>
+                  <div className={idx % 2 === 1 ? 'lg:order-1' : ''}>
                     <Image
                       src={service.image}
                       alt={`${service.title} illustration`}
@@ -112,10 +111,9 @@ export default function ServicesPageClient() {
         <section className="bg-[#F9F9F9] py-20 md:py-24">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <ScrollReveal>
-              <h2 className="text-3xl font-bold text-[#333333] mb-4">Let&apos;s Build Your System</h2>
+              <h2 className="text-3xl font-bold text-[#1A1A1A] mb-4">Let&apos;s Build Your AI Stack</h2>
               <p className="text-[#535353] mb-8 leading-relaxed">
-                Every project is an opportunity to create something unique. Book a call to discuss how we can design 
-                and implement a lead generation system tailored to your business.
+                Every business is unique. Book a call to discuss how we can design and deploy an AI system tailored to your sales process, marketing goals, and growth targets.
               </p>
               <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-[#374151] hover:bg-[#1F2937] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
                 Book a Strategy Call

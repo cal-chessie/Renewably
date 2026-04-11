@@ -10,21 +10,21 @@ function HomePageSchema() {
         __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebPage",
-          name: "Renewably — Leads as a Service for Renewable Energy Brands in Ireland",
-          description: "Renewably combines AI-powered technology with data-driven strategy to deliver qualified leads for renewable energy companies in Ireland. Smart campaigns, smart conversions, smart bidding.",
+          name: "Renewably — AI as a Service for Sales, Marketing & Automation",
+          description: "Renewably deploys AI agents, automations, and intelligent systems that transform how businesses find, nurture, and close customers. Sales automation, marketing AI, and workflow optimisation — fully managed.",
           url: "https://renewably.ie",
           mainEntity: {
             "@type": "Service",
-            name: "Leads as a Service",
+            name: "AI as a Service",
             provider: {
               "@type": "Organization",
               name: "Renewably",
             },
-            description: "Fully integrated lead generation and customer acquisition system powered by AI, combining smart campaigns, conversion optimisation, and automated bidding for renewable energy brands.",
-            serviceType: "Digital Marketing & Lead Generation",
+            description: "Fully managed AI as a Service solution deploying autonomous agents for sales, marketing automation, lead generation, and workflow optimisation.",
+            serviceType: "AI as a Service & Sales Automation",
             areaServed: {
-              "@type": "Country",
-              name: "Ireland",
+              "@type": "Place",
+              name: "Worldwide",
             },
           },
         }),
@@ -44,50 +44,50 @@ function FAQSchema() {
           mainEntity: [
             {
               "@type": "Question",
-              name: "What is Leads as a Service?",
+              name: "What is AI as a Service?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "Leads as a Service (LaaS) is a fully managed lead generation solution where Renewably handles every aspect of customer acquisition — from campaign creation and ad copy generation to conversion optimisation and CRM integration. We use AI-powered technology and machine learning to automate and optimise paid media at scale, delivering qualified leads directly to your sales team.",
+                text: "AI as a Service (AIaaS) is a fully managed solution where we deploy AI agents, automations, and intelligent systems across your sales, marketing, and operations. Our AI handles prospecting, lead qualification, campaign management, follow-ups, and reporting — all on autopilot, all optimised by machine learning.",
               },
             },
             {
               "@type": "Question",
-              name: "How does Renewably help renewable energy companies in Ireland?",
+              name: "How does AI-powered sales automation work?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "Renewably specialises in digital marketing for renewable energy brands in Ireland. We combine hyper-targeted paid media campaigns with AI-driven conversion optimisation, smart bidding strategies, and CRM integration to create a sustainable customer acquisition system. Our data-driven approach ensures you get qualified leads with lower customer acquisition costs and higher conversion rates.",
+                text: "Our AI sales agents analyse your ideal customer profile, then autonomously prospect, engage, and qualify leads across multiple channels. When a prospect shows buying intent, the AI routes them to your team with full context — so you only spend time on conversations that convert.",
               },
             },
             {
               "@type": "Question",
-              name: "What makes Renewably different from other digital marketing agencies?",
+              name: "What makes Renewably different from other AI agencies?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "Renewably differentiates through our exclusive Leads as a Service model. Unlike traditional agencies that only manage campaigns, we build a complete, automated customer acquisition system tailored to renewable energy brands. This includes AI-powered ad copy generation, multivariate landing page testing, automated bid management, and direct CRM integration — all continuously optimised through machine learning.",
+                text: "We don't just implement AI tools — we build custom AI systems tailored to your specific sales and marketing workflows. Every agent is trained on your business, every automation is designed around your goals, and everything connects into a unified platform that drives measurable revenue growth.",
               },
             },
             {
               "@type": "Question",
-              name: "What results can I expect from Renewably's lead generation services?",
+              name: "What results can I expect?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "Clients using our optimised conversion systems report up to 3 times lead volume lift through multivariate testing and machine learning. Our smart bidding strategies help reduce cost per acquisition while increasing conversion rates. Every campaign is continuously monitored and optimised to improve performance over time.",
+                text: "Clients typically see a 3x increase in qualified pipeline volume, 40% reduction in customer acquisition costs, and 20+ hours saved per week on manual tasks. Most teams see measurable results within the first 30 days.",
               },
             },
             {
               "@type": "Question",
-              name: "How quickly can I see results from lead generation campaigns?",
+              name: "How quickly can I see results?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "Most clients begin seeing measurable results within the first 30 days of campaign launch. Our AI systems start optimising from day one, using A/B testing and machine learning to rapidly improve performance. By month three, campaigns typically reach peak efficiency with significant improvements in lead quality and volume.",
+                text: "Our AI systems start learning and optimising from day one. Most clients see measurable improvements in lead quality and pipeline activity within the first two weeks. By month three, campaigns reach peak efficiency.",
               },
             },
             {
               "@type": "Question",
-              name: "Do I need a large marketing budget to work with Renewably?",
+              name: "Do I need technical expertise to use your AI platform?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "We work with businesses of all sizes and can scale our services to match your budget. Our AI-powered approach is inherently efficient — smart bidding reduces wasted spend, and our optimised conversion paths mean you get more value from every click. We recommend starting with a strategy call so we can recommend the best approach for your specific goals and budget.",
+                text: "Absolutely not. Our AI platform is fully managed — we handle setup, training, and ongoing optimisation. Your team simply uses the dashboard to monitor results and interact with leads. We provide full onboarding and support.",
               },
             },
           ],
