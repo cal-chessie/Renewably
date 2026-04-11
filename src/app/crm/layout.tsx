@@ -39,7 +39,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-3">
           <Image
-            src="/logo.png"
+            src="/logo-transparent.png"
             alt="Renewably"
             width={36}
             height={36}

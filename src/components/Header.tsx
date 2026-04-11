@@ -48,10 +48,10 @@ export default function Header() {
         <div className="flex items-center justify-between h-16 md:h-20">
           <Link href="/" className="flex items-center gap-2 group">
             <Image
-              src="/logo.png"
+              src="/logo-transparent.png"
               alt="Renewably"
-              width={42}
-              height={42}
+              width={60}
+              height={60}
               className="transition-transform duration-300 group-hover:scale-110"
             />
           </Link>
@@ -147,10 +147,10 @@ export default function Header() {
                     className="flex items-center gap-2"
                   >
                     <Image
-                      src="/logo.png"
+                      src="/logo-transparent.png"
                       alt="Renewably"
-                      width={34}
-                      height={34}
+                      width={48}
+                      height={48}
                     />
                   </Link>
                   <button

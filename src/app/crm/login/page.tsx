@@ -63,7 +63,7 @@ export default function LoginPage() {
             className="inline-flex mb-4"
           >
             <Image
-              src="/logo.png"
+              src="/logo-transparent.png"
               alt="Renewably"
               width={64}
               height={64}
