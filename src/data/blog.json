@@ -1,0 +1,13 @@
+[
+  {
+    "id": "test-post",
+    "type": "blog",
+    "title": "Updated Test Post",
+    "content": "Hello world from Claude",
+    "slug": "test-post",
+    "meta": {},
+    "published": true,
+    "createdAt": "2026-04-11T14:51:57.076Z",
+    "updatedAt": "2026-04-11T14:52:02.394Z"
+  }
+]
