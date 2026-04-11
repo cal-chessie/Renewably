@@ -16,7 +16,7 @@ function HeroSection() {
   const statsInView = useInView(statsRef, { once: true, margin: "-50px" });
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-[#0A0A0A]">
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-[#FFFDF5] via-white to-[#FFF9E0]">
       {/* Animated gradient mesh background */}
       <div className="absolute inset-0 z-0">
         {/* Primary yellow glow - top right */}
@@ -29,8 +29,8 @@ function HeroSection() {
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -top-32 -right-32 w-[700px] h-[700px] rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(243,216,64,0.35) 0%, rgba(243,216,64,0) 70%)",
-            filter: "blur(60px)",
+            background: "radial-gradient(circle, rgba(243,216,64,0.25) 0%, rgba(243,216,64,0) 70%)",
+            filter: "blur(80px)",
           }}
         />
         {/* Secondary warm glow - bottom left */}
@@ -43,22 +43,22 @@ function HeroSection() {
           transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -bottom-48 -left-48 w-[600px] h-[600px] rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(137,90,24,0.25) 0%, rgba(137,90,24,0) 70%)",
-            filter: "blur(80px)",
+            background: "radial-gradient(circle, rgba(137,90,24,0.12) 0%, rgba(137,90,24,0) 70%)",
+            filter: "blur(100px)",
           }}
         />
-        {/* Subtle grid pattern overlay */}
+        {/* Subtle dot pattern overlay */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.04]"
           style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: "60px 60px",
+            backgroundImage: `radial-gradient(circle, rgba(137,90,24,0.15) 1px, transparent 1px)`,
+            backgroundSize: "40px 40px",
           }}
         />
         {/* Floating accent image - top right */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8, x: 100 }}
-          animate={{ opacity: 0.15, scale: 1, x: 0 }}
+          animate={{ opacity: 0.08, scale: 1, x: 0 }}
           transition={{ delay: 1, duration: 1.5 }}
           className="absolute top-10 right-0 w-[500px] h-[500px] hidden xl:block"
         >
@@ -82,10 +82,10 @@ function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.08] backdrop-blur-sm mb-8"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 backdrop-blur-sm mb-8"
             >
-              <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
-              <span className="text-white/60 text-xs sm:text-sm font-medium tracking-wide">
+              <span className="w-2 h-2 rounded-full bg-[#895A18] animate-pulse" />
+              <span className="text-[#895A18] text-xs sm:text-sm font-medium tracking-wide">
                 Leads as a Service for Renewable Energy
               </span>
             </motion.div>
@@ -97,9 +97,9 @@ function HeroSection() {
               transition={{ delay: 0.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className="text-4xl sm:text-5xl lg:text-6xl xl:text-[4.2rem] font-extrabold leading-[1.08] tracking-tight mb-6"
             >
-              <span className="text-white">Your Unfair</span>
+              <span className="text-[#333333]">Your Unfair</span>
               <br />
-              <span className="bg-gradient-to-r from-[#F3D840] via-[#F3D840] to-[#E5C832] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#895A18] via-[#A67030] to-[#895A18] bg-clip-text text-transparent">
                 AD-Vantage.
               </span>
             </motion.h1>
@@ -109,7 +109,7 @@ function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.6 }}
-              className="text-white/50 text-base sm:text-lg lg:text-xl leading-relaxed mb-10 max-w-lg"
+              className="text-[#535353] text-base sm:text-lg lg:text-xl leading-relaxed mb-10 max-w-lg"
             >
               Come to us with a vision. We craft AI-powered campaigns that turn clicks into customers for renewable energy brands.
             </motion.p>
@@ -129,7 +129,7 @@ function HeroSection() {
               </MagneticButton>
               <Link
                 href="/services"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold text-white/70 hover:text-white border border-white/10 hover:border-white/25 hover:bg-white/[0.04] transition-all duration-300"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold text-[#895A18] hover:text-[#6B4510] border border-[#895A18]/20 hover:border-[#895A18]/40 hover:bg-[#895A18]/5 transition-all duration-300"
               >
                 Explore Services
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,14 +151,14 @@ function HeroSection() {
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                className="w-[520px] h-[520px] rounded-full border border-white/[0.04]"
+                className="w-[520px] h-[520px] rounded-full border border-[#895A18]/[0.06]"
               />
             </div>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <motion.div
                 animate={{ rotate: -360 }}
                 transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-                className="w-[440px] h-[440px] rounded-full border border-dashed border-[#F3D840]/[0.08]"
+                className="w-[440px] h-[440px] rounded-full border border-dashed border-[#895A18]/[0.1]"
               />
             </div>
 
@@ -173,11 +173,11 @@ function HeroSection() {
                 alt="AI-powered marketing analytics dashboard"
                 width={1344}
                 height={768}
-                className="w-full rounded-2xl shadow-2xl shadow-black/40"
+                className="w-full rounded-2xl shadow-2xl shadow-[#895A18]/10"
                 priority
               />
               {/* Glass overlay bottom edge */}
-              <div className="absolute bottom-0 left-4 right-4 h-24 bg-gradient-to-t from-[#0A0A0A]/60 to-transparent rounded-b-2xl" />
+              <div className="absolute bottom-0 left-4 right-4 h-24 bg-gradient-to-t from-white/60 to-transparent rounded-b-2xl" />
             </motion.div>
 
             {/* Floating glass metric cards */}
@@ -187,16 +187,16 @@ function HeroSection() {
                   transition={{ delay: 1.2, duration: 0.6 }}
               className="absolute -left-8 top-1/4"
             >
-              <div className="bg-white/[0.07] backdrop-blur-xl border border-white/[0.1] rounded-2xl px-5 py-4 shadow-xl">
+              <div className="bg-white/80 backdrop-blur-xl border border-[#895A18]/10 rounded-2xl px-5 py-4 shadow-xl shadow-[#895A18]/5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[#F3D840]/20 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[#F3D840]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#895A18]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                   </div>
                   <div>
-                    <p className="text-white/40 text-xs font-medium">Lead Growth</p>
-                    <p className="text-white font-bold text-lg">+247%</p>
+                    <p className="text-[#535353] text-xs font-medium">Lead Growth</p>
+                    <p className="text-[#333333] font-bold text-lg">+247%</p>
                   </div>
                 </div>
               </div>
@@ -208,16 +208,16 @@ function HeroSection() {
                   transition={{ delay: 1.4, duration: 0.6 }}
               className="absolute -right-6 bottom-1/4"
             >
-              <div className="bg-white/[0.07] backdrop-blur-xl border border-white/[0.1] rounded-2xl px-5 py-4 shadow-xl">
+              <div className="bg-white/80 backdrop-blur-xl border border-[#895A18]/10 rounded-2xl px-5 py-4 shadow-xl shadow-[#895A18]/5">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-xl bg-green-500/15 flex items-center justify-center">
+                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                   <div>
-                    <p className="text-white/40 text-xs font-medium">ROI</p>
-                    <p className="text-white font-bold text-lg">8.4x</p>
+                    <p className="text-[#535353] text-xs font-medium">ROI</p>
+                    <p className="text-[#333333] font-bold text-lg">8.4x</p>
                   </div>
                 </div>
               </div>
@@ -249,17 +249,17 @@ function HeroSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={statsInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.5 + i * 0.15, duration: 0.5 }}
-                className="bg-white/[0.04] backdrop-blur-md border border-white/[0.06] rounded-2xl px-5 py-4 hover:bg-white/[0.07] transition-colors duration-300"
+                className="bg-white/70 backdrop-blur-md border border-[#895A18]/8 rounded-2xl px-5 py-4 hover:bg-white/90 transition-colors duration-300"
               >
-                <div className="text-2xl sm:text-3xl font-bold text-[#F3D840] mb-1">
+                <div className="text-2xl sm:text-3xl font-bold text-[#895A18] mb-1">
                   <AnimatedCounter
                     end={stat.value}
                     suffix={stat.suffix}
                     duration={2}
                   />
                 </div>
-                <p className="text-white text-sm font-semibold">{stat.label}</p>
-                <p className="text-white/30 text-xs mt-0.5">{stat.desc}</p>
+                <p className="text-[#333333] text-sm font-semibold">{stat.label}</p>
+                <p className="text-[#535353] text-xs mt-0.5">{stat.desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -277,12 +277,12 @@ function MarqueeSection() {
     "LEAD GENERATION • PAID MEDIA • AI OPTIMISATION • CONVERSION • SMART BIDDING • CRM INTEGRATION • RENEWABLE ENERGY • IRELAND • ";
 
   return (
-    <section className="bg-[#1A1A1A] py-4 overflow-hidden">
+    <section className="bg-[#895A18] py-4 overflow-hidden">
       <div className="animate-marquee whitespace-nowrap flex">
-        <span className="text-[#F3D840] font-bold text-sm sm:text-base tracking-widest uppercase mx-4">
+        <span className="text-[#FFFDF5] font-bold text-sm sm:text-base tracking-widest uppercase mx-4">
           {text}
         </span>
-        <span className="text-[#F3D840] font-bold text-sm sm:text-base tracking-widest uppercase mx-4">
+        <span className="text-[#FFFDF5] font-bold text-sm sm:text-base tracking-widest uppercase mx-4">
           {text}
         </span>
       </div>
@@ -619,14 +619,14 @@ function ResultsSection() {
   ];
 
   return (
-    <section className="bg-[#1A1A1A] py-20 md:py-28">
+    <section className="bg-[#F3D840] py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <div className="text-center mb-16">
-            <p className="text-[#F3D840] font-semibold text-sm tracking-wider uppercase mb-3">
+            <p className="text-[#895A18] font-semibold text-sm tracking-wider uppercase mb-3">
               Our Impact
             </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#333333] mb-4">
               Results That Speak
             </h2>
           </div>
@@ -636,14 +636,14 @@ function ResultsSection() {
           {stats.map((stat, i) => (
             <ScrollReveal key={stat.label} delay={i * 0.15}>
               <div className="text-center">
-                <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#F3D840] mb-2">
+                <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#895A18] mb-2">
                   <AnimatedCounter
                     end={stat.value}
                     suffix={stat.suffix}
                     duration={2}
                   />
                 </div>
-                <p className="text-gray-400 text-sm sm:text-base font-medium">
+                <p className="text-[#6B4510] text-sm sm:text-base font-medium">
                   {stat.label}
                 </p>
               </div>
