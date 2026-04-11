@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,20 +7,220 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ===== CRM USER =====
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String
+  password      String
+  role          String   @default("agent") // admin, agent, viewer
+  avatar        String?
+  phone         String?
+  isActive      Boolean  @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  activities    Activity[]
+  tasks         Task[]
+  assignedDeals Deal[]    @relation("DealAssignee")
+  createdDeals  Deal[]    @relation("DealCreator")
+  notes         Note[]
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// ===== COMPANY =====
+model Company {
+  id           String    @id @default(cuid())
+  name         String
+  website      String?
+  industry     String?
+  employees    Int?
+  annualRevenue String?
+  address      String?
+  city         String?
+  country      String?
+  phone        String?
+  description  String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  contacts     Contact[]
+  deals        Deal[]
+  notes        Note[]
+  activities   Activity[]
+}
+
+// ===== CONTACT =====
+model Contact {
+  id           String    @id @default(cuid())
+  firstName    String
+  lastName     String
+  email        String?
+  phone        String?
+  jobTitle     String?
+  linkedin     String?
+  source       String    @default("website") // website, referral, linkedin, cold, event, other
+  status       String    @default("lead") // lead, prospect, customer, churned, inactive
+  address      String?
+  city         String?
+  country      String?
+  avatar       String?
+  description  String?
+  lastContactAt DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  companyId    String?
+  company      Company?  @relation(fields: [companyId], references: [id], onDelete: SetNull)
+
+  deals        Deal[]
+  activities   Activity[]
+  tasks        Task[]
+  notes        Note[]
+  tags         ContactTag[]
+}
+
+// ===== PIPELINE STAGE =====
+model PipelineStage {
+  id          String @id @default(cuid())
+  name        String
+  order       Int
+  color       String @default("#F3D840")
+  isDefault   Boolean @default(false)
+
+  deals       Deal[]
+
+  @@unique([name])
+}
+
+// ===== DEAL =====
+model Deal {
+  id              String         @id @default(cuid())
+  title           String
+  value           Float          @default(0)
+  currency        String         @default("EUR")
+  probability     Int            @default(50)
+  closeDate       DateTime?
+  lostReason      String?
+  description     String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  stageId         String
+  stage           PipelineStage  @relation(fields: [stageId], references: [id])
+
+  contactId       String?
+  contact         Contact?       @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  companyId       String?
+  company         Company?       @relation(fields: [companyId], references: [id], onDelete: SetNull)
+
+  assigneeId      String?
+  assignee        User?          @relation("DealAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+
+  creatorId       String?
+  creator         User?          @relation("DealCreator", fields: [creatorId], references: [id], onDelete: SetNull)
+
+  activities      Activity[]
+  tasks           Task[]
+  notes           Note[]
+  tags            DealTag[]
+}
+
+// ===== ACTIVITY =====
+model Activity {
+  id          String   @id @default(cuid())
+  type        String   // call, email, meeting, note, task, deal_update, system
+  subject     String
+  description String?
+  duration    Int?     // minutes
+  status      String?  // completed, scheduled, cancelled, in_progress
+  scheduledAt DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  contactId   String?
+  contact     Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  dealId      String?
+  deal        Deal?    @relation(fields: [dealId], references: [id], onDelete: SetNull)
+
+  companyId   String?
+  company     Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+// ===== TASK =====
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  priority    String   @default("medium") // low, medium, high, urgent
+  status      String   @default("todo") // todo, in_progress, completed, cancelled
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  contactId   String?
+  contact     Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  dealId      String?
+  deal        Deal?    @relation(fields: [dealId], references: [id], onDelete: SetNull)
+
+  assigneeId  String?
+  assignee    User?    @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
+}
+
+// ===== NOTE =====
+model Note {
+  id          String   @id @default(cuid())
+  content     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  contactId   String?
+  contact     Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  dealId      String?
+  deal        Deal?    @relation(fields: [dealId], references: [id], onDelete: SetNull)
+
+  companyId   String?
+  company     Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+// ===== TAG =====
+model Tag {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  color       String   @default("#F3D840")
+  createdAt   DateTime @default(now())
+
+  contacts    ContactTag[]
+  deals       DealTag[]
+}
+
+// ===== CONTACT TAG (Junction) =====
+model ContactTag {
+  contactId   String
+  contact     Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  tagId       String
+  tag         Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([contactId, tagId])
+}
+
+// ===== DEAL TAG (Junction) =====
+model DealTag {
+  dealId      String
+  deal        Deal    @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  tagId       String
+  tag         Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([dealId, tagId])
 }

@@ -1,0 +1,146 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/lib/db'
+import { getSessionFromRequest } from '@/lib/auth'
+
+// Helper to check auth
+async function getAuthUser(request: NextRequest) {
+  const session = getSessionFromRequest(request)
+  if (!session) return null
+  const user = await db.user.findUnique({ where: { id: session.userId } })
+  return user
+}
+
+// GET: List contacts
+export async function GET(request: NextRequest) {
+  try {
+    const user = await getAuthUser(request)
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { searchParams } = new URL(request.url)
+    const search = searchParams.get('search') || ''
+    const status = searchParams.get('status') || ''
+    const source = searchParams.get('source') || ''
+    const tagId = searchParams.get('tagId') || ''
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '20')
+
+    const where: Record<string, unknown> = {}
+
+    if (search) {
+      where.OR = [
+        { firstName: { contains: search } },
+        { lastName: { contains: search } },
+        { email: { contains: search } },
+        { jobTitle: { contains: search } },
+      ]
+    }
+
+    if (status) {
+      where.status = status
+    }
+
+    if (source) {
+      where.source = source
+    }
+
+    if (tagId) {
+      where.tags = { some: { tagId } }
+    }
+
+    const [contacts, total] = await Promise.all([
+      db.contact.findMany({
+        where,
+        include: {
+          company: { select: { id: true, name: true } },
+          tags: { include: { tag: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      db.contact.count({ where }),
+    ])
+
+    return NextResponse.json({
+      contacts,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    })
+  } catch (error) {
+    console.error('Contacts list error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
+// POST: Create contact
+export async function POST(request: NextRequest) {
+  try {
+    const user = await getAuthUser(request)
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const body = await request.json()
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      jobTitle,
+      linkedin,
+      source,
+      status,
+      address,
+      city,
+      country,
+      description,
+      companyId,
+      tagIds,
+    } = body
+
+    if (!firstName || !lastName) {
+      return NextResponse.json(
+        { error: 'First name and last name are required' },
+        { status: 400 }
+      )
+    }
+
+    const contact = await db.contact.create({
+      data: {
+        firstName,
+        lastName,
+        email: email || null,
+        phone: phone || null,
+        jobTitle: jobTitle || null,
+        linkedin: linkedin || null,
+        source: source || 'website',
+        status: status || 'lead',
+        address: address || null,
+        city: city || null,
+        country: country || null,
+        description: description || null,
+        companyId: companyId || null,
+        tags: tagIds?.length
+          ? {
+              create: tagIds.map((tagId: string) => ({ tagId })),
+            }
+          : undefined,
+      },
+      include: {
+        company: true,
+        tags: { include: { tag: true } },
+      },
+    })
+
+    return NextResponse.json({ contact }, { status: 201 })
+  } catch (error) {
+    console.error('Create contact error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
