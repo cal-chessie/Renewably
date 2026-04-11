@@ -237,26 +237,22 @@ function HeroSection() {
               </div>
             </motion.div>
 
-            {/* Video player wrapper */}
+            {/* Hero image */}
             <motion.div
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               className="relative"
             >
-              <div className="relative rounded-2xl shadow-2xl shadow-[#374151]/15 overflow-hidden border-2 border-white/30">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  poster="/robot-hero.jpg"
-                  className="w-full aspect-video object-cover rounded-2xl"
-                >
-                  <source src="https://paperclip.ing/videos/full-tour.webm" type="video/webm" />
-                </video>
-                {/* Subtle top/bottom vignette for polish */}
-                <div className="absolute inset-0 rounded-2xl pointer-events-none ring-1 ring-inset ring-black/5" />
-              </div>
+              <Image
+                src="/robot-hero.jpg"
+                alt="AI agents powering sales and marketing automation"
+                width={1360}
+                height={768}
+                className="w-full rounded-2xl shadow-2xl shadow-[#374151]/15"
+                priority
+              />
+              {/* Glass overlay bottom edge - blend with yellow */}
+              <div className="absolute bottom-0 left-4 right-4 h-24 bg-gradient-to-t from-[#F3D840]/80 to-transparent rounded-b-2xl" />
             </motion.div>
 
             {/* Floating glass metric card - AI Agents */}
@@ -498,8 +494,73 @@ function MarqueeSection() {
 }
 
 /* ============================================================
-   ABOUT SNIPPET SECTION
+   VIDEO TOUR SECTION
    ============================================================ */
+function VideoTourSection() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  const togglePlay = () => {
+    if (!videoRef.current) return;
+    if (videoRef.current.paused) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  return (
+    <section className="bg-[#0A0A0A] py-20 md:py-28 overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ScrollReveal>
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-6">
+              <span className="text-[#F3D840] text-xs sm:text-sm font-semibold tracking-wide">Platform Tour</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4">See It In Action</h2>
+            <p className="text-white/60 text-lg leading-relaxed">Watch how our AI agents work across your entire sales and marketing pipeline, from first click to closed deal.</p>
+          </div>
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.2}>
+          <div
+            className="relative rounded-2xl overflow-hidden border border-white/10 cursor-pointer group"
+            style={{ boxShadow: "0 0 40px rgba(243,216,64,0.08)" }}
+            onClick={togglePlay}
+          >
+            <video
+              ref={videoRef}
+              autoPlay
+              loop
+              muted
+              playsInline
+              poster="/robot-hero.jpg"
+              className="w-full aspect-video object-cover"
+            >
+              <source src="https://paperclip.ing/videos/full-tour.webm" type="video/webm" />
+            </video>
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <motion.div
+                animate={{ opacity: isPlaying ? 0 : 1, scale: isPlaying ? 0.8 : 1 }}
+                transition={{ duration: 0.3 }}
+                className="w-20 h-20 rounded-full bg-[#F3D840] flex items-center justify-center shadow-2xl"
+              >
+                <svg className="w-8 h-8 text-[#1A1A1A] ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+              </motion.div>
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0A0A0A] to-transparent pointer-events-none"></div>
+            <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md rounded-full px-3 py-1.5 border border-white/10">
+              <span className="text-white/80 text-xs font-medium">Full Platform Tour</span>
+            </div>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
+
 function AboutSection() {
   return (
     <section className="bg-white py-20 md:py-28 overflow-hidden">
@@ -1115,6 +1176,7 @@ export default function HomePageClient() {
       <HeroSection />
       <AIAgentsSection />
       <MarqueeSection />
+      <VideoTourSection />
       <AboutSection />
       <AIPlatformSection />
       <YellowDivider />
