@@ -9,136 +9,260 @@ import AnimatedCounter from "@/components/AnimatedCounter";
 import ScrollReveal from "@/components/ScrollReveal";
 
 /* ============================================================
-   HERO SECTION
+   HERO SECTION — World-Class 2026 Design
    ============================================================ */
 function HeroSection() {
-  const words1 = "Your Unfair AD-Vantage.".split(" ");
-  const words2 = "Come To Us With A Vision & We'll Help You Craft It.".split(" ");
   const statsRef = useRef<HTMLDivElement>(null);
   const statsInView = useInView(statsRef, { once: true, margin: "-50px" });
 
   return (
-    <section className="relative min-h-screen bg-[#F3D840] flex items-center overflow-hidden grain-overlay">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 md:pt-32 md:pb-16 w-full">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="relative z-10">
-            {/* Animated H1 - Line 1 */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-[#333333] leading-tight mb-4">
-              {words1.map((word, i) => (
-                <motion.span
-                  key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + i * 0.1, duration: 0.5, ease: "easeOut" }}
-                  className="inline-block mr-2"
-                >
-                  {word}
-                </motion.span>
-              ))}
-            </h1>
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-[#0A0A0A]">
+      {/* Animated gradient mesh background */}
+      <div className="absolute inset-0 z-0">
+        {/* Primary yellow glow - top right */}
+        <motion.div
+          animate={{
+            x: [0, 30, -20, 0],
+            y: [0, -20, 10, 0],
+            scale: [1, 1.1, 0.95, 1],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-32 -right-32 w-[700px] h-[700px] rounded-full"
+          style={{
+            background: "radial-gradient(circle, rgba(243,216,64,0.35) 0%, rgba(243,216,64,0) 70%)",
+            filter: "blur(60px)",
+          }}
+        />
+        {/* Secondary warm glow - bottom left */}
+        <motion.div
+          animate={{
+            x: [0, -25, 15, 0],
+            y: [0, 15, -25, 0],
+            scale: [1, 0.9, 1.1, 1],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -bottom-48 -left-48 w-[600px] h-[600px] rounded-full"
+          style={{
+            background: "radial-gradient(circle, rgba(137,90,24,0.25) 0%, rgba(137,90,24,0) 70%)",
+            filter: "blur(80px)",
+          }}
+        />
+        {/* Subtle grid pattern overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+            backgroundSize: "60px 60px",
+          }}
+        />
+        {/* Floating accent image - top right */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, x: 100 }}
+          animate={{ opacity: 0.15, scale: 1, x: 0 }}
+          transition={{ delay: 1, duration: 1.5 }}
+          className="absolute top-10 right-0 w-[500px] h-[500px] hidden xl:block"
+        >
+          <Image
+            src="/hero-bg-accent.png"
+            alt=""
+            width={1024}
+            height={1024}
+            className="w-full h-full object-cover"
+            aria-hidden="true"
+          />
+        </motion.div>
+      </div>
 
-            {/* Animated H1 - Line 2 */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#333333] leading-tight mb-8">
-              {words2.map((word, i) => (
-                <motion.span
-                  key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 + i * 0.08, duration: 0.5, ease: "easeOut" }}
-                  className="inline-block mr-2"
-                >
-                  {word}
-                </motion.span>
-              ))}
-            </h1>
-
-            {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2, duration: 0.6 }}
-              className="text-[#535353] text-base sm:text-lg leading-relaxed mb-10 max-w-xl"
-            >
-              Helping Renewable Energy Brands Build Sustainable Systems, Create &amp;
-              Sustain Healthy Transactions By Building Transparency and Trust with
-              their customers.
-            </motion.p>
-
-            {/* CTA Button */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24 md:pt-40 md:pb-32 w-full">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left: Copy */}
+          <div>
+            {/* Eyebrow */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.4, duration: 0.5 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.08] backdrop-blur-sm mb-8"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
+              <span className="text-white/60 text-xs sm:text-sm font-medium tracking-wide">
+                Leads as a Service for Renewable Energy
+              </span>
+            </motion.div>
+
+            {/* H1 */}
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="text-4xl sm:text-5xl lg:text-6xl xl:text-[4.2rem] font-extrabold leading-[1.08] tracking-tight mb-6"
+            >
+              <span className="text-white">Your Unfair</span>
+              <br />
+              <span className="bg-gradient-to-r from-[#F3D840] via-[#F3D840] to-[#E5C832] bg-clip-text text-transparent">
+                AD-Vantage.
+              </span>
+            </motion.h1>
+
+            {/* Sub-headline */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.6 }}
+              className="text-white/50 text-base sm:text-lg lg:text-xl leading-relaxed mb-10 max-w-lg"
+            >
+              Come to us with a vision. We craft AI-powered campaigns that turn clicks into customers for renewable energy brands.
+            </motion.p>
+
+            {/* CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+              className="flex flex-col sm:flex-row gap-4"
             >
               <MagneticButton href="/contact" className="animate-subtle-pulse">
-                Book Your Free Call Today!
+                Book Your Free Call
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </MagneticButton>
+              <Link
+                href="/services"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold text-white/70 hover:text-white border border-white/10 hover:border-white/25 hover:bg-white/[0.04] transition-all duration-300"
+              >
+                Explore Services
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </Link>
             </motion.div>
           </div>
 
-          {/* Hero Illustration - Floating Bob */}
+          {/* Right: Hero Visual with Glass Card */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.8, duration: 0.8 }}
-            className="hidden lg:flex items-center justify-center relative z-10"
+            initial={{ opacity: 0, y: 60, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.6, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="relative hidden lg:block"
           >
+            {/* Orbit ring */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                className="w-[520px] h-[520px] rounded-full border border-white/[0.04]"
+              />
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+                className="w-[440px] h-[440px] rounded-full border border-dashed border-[#F3D840]/[0.08]"
+              />
+            </div>
+
+            {/* Glass card wrapper */}
             <motion.div
-              animate={{ y: [0, -12, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              className="relative"
             >
               <Image
-                src="/hero-illustration.png"
-                alt="Analytics dashboard showing growth metrics"
-                width={672}
-                height={384}
-                className="w-full max-w-lg drop-shadow-2xl rounded-2xl"
+                src="/hero-visual.png"
+                alt="AI-powered marketing analytics dashboard"
+                width={1344}
+                height={768}
+                className="w-full rounded-2xl shadow-2xl shadow-black/40"
                 priority
               />
+              {/* Glass overlay bottom edge */}
+              <div className="absolute bottom-0 left-4 right-4 h-24 bg-gradient-to-t from-[#0A0A0A]/60 to-transparent rounded-b-2xl" />
+            </motion.div>
+
+            {/* Floating glass metric cards */}
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1.2, duration: 0.6 }}
+              className="absolute -left-8 top-1/4"
+            >
+              <div className="bg-white/[0.07] backdrop-blur-xl border border-white/[0.1] rounded-2xl px-5 py-4 shadow-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#F3D840]/20 flex items-center justify-center">
+                    <svg className="w-5 h-5 text-[#F3D840]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-white/40 text-xs font-medium">Lead Growth</p>
+                    <p className="text-white font-bold text-lg">+247%</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1.4, duration: 0.6 }}
+              className="absolute -right-6 bottom-1/4"
+            >
+              <div className="bg-white/[0.07] backdrop-blur-xl border border-white/[0.1] rounded-2xl px-5 py-4 shadow-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-white/40 text-xs font-medium">ROI</p>
+                    <p className="text-white font-bold text-lg">8.4x</p>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         </div>
       </div>
 
-      {/* Stats Bar */}
+      {/* Bottom stats bar - glass style */}
       <div
         ref={statsRef}
-        className="absolute bottom-0 left-0 right-0 bg-[#1A1A1A] py-5 z-20"
+        className="absolute bottom-0 left-0 right-0 z-20"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-3 gap-4 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={statsInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.3, duration: 0.7 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+          >
             {[
-              { value: 3, suffix: "x", label: "Lead Volume" },
-              { value: 100, suffix: "%", label: "AI Powered", prefix: "" },
-              { value: 24, suffix: "/7", label: "Monitoring" },
+              { value: 3, suffix: "x", label: "Lead Volume", desc: "Average increase" },
+              { value: 40, suffix: "%", label: "Lower CPA", desc: "Cost per acquisition" },
+              { value: 24, suffix: "/7", label: "AI Monitoring", desc: "Always optimising" },
+              { value: 150, suffix: "+", label: "Clients Served", desc: "Across Ireland" },
             ].map((stat, i) => (
-              <div key={stat.label} className="relative">
-                {i > 0 && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-px h-8 bg-white/20 hidden sm:block" />
-                )}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={statsInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: i * 0.2, duration: 0.5 }}
-                >
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#F3D840]">
-                    <AnimatedCounter
-                      end={stat.value}
-                      suffix={stat.suffix}
-                      prefix={stat.prefix || ""}
-                      duration={1.5}
-                    />
-                  </div>
-                  <p className="text-xs sm:text-sm text-gray-400 mt-1 font-medium">
-                    {stat.label}
-                  </p>
-                </motion.div>
-              </div>
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={statsInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.5 + i * 0.15, duration: 0.5 }}
+                className="bg-white/[0.04] backdrop-blur-md border border-white/[0.06] rounded-2xl px-5 py-4 hover:bg-white/[0.07] transition-colors duration-300"
+              >
+                <div className="text-2xl sm:text-3xl font-bold text-[#F3D840] mb-1">
+                  <AnimatedCounter
+                    end={stat.value}
+                    suffix={stat.suffix}
+                    duration={2}
+                  />
+                </div>
+                <p className="text-white text-sm font-semibold">{stat.label}</p>
+                <p className="text-white/30 text-xs mt-0.5">{stat.desc}</p>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
