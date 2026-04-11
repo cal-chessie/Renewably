@@ -129,7 +129,7 @@ function CRMShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-64 flex-col bg-[#1A1A1A] shrink-0">
+      <aside className="hidden lg:flex w-64 flex-col bg-[#1A1A1A] shrink-0 border-r border-[#F3D840]/10">
         <SidebarNav />
       </aside>
 
@@ -140,7 +140,7 @@ function CRMShell({ children }: { children: React.ReactNode }) {
             <Button
               variant="ghost"
               size="icon"
-              className="bg-[#1A1A1A] text-white hover:bg-[#1A1A1A]/90 h-10 w-10 rounded-lg shadow-lg"
+              className="bg-[#F3D840] text-[#1A1A1A] hover:bg-[#E5C832] h-10 w-10 rounded-lg shadow-lg"
             >
               <Menu className="h-5 w-5" />
             </Button>

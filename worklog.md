@@ -255,3 +255,42 @@ Stage Summary:
 - Files modified: 5 (Header.tsx, Footer.tsx, crm/layout.tsx, crm/login/page.tsx, LoadingScreen.tsx)
 - Logo now used in: Header (desktop + mobile), Footer, CRM sidebar, CRM login, Loading screen, Organization schema
 - Admin Portal link added to footer under Company section
+---
+Task ID: 1
+Agent: Main Agent
+Task: Hero redesign + color scheme swap + CRM access fix
+
+Work Log:
+- Analyzed current hero section, CRM routes, and user feedback
+- User requested: (1) hero should speak "agentic AI and renewables", (2) brown→yellow as dominant color, (3) CRM access fix
+- Generated 5 new AI images: hero-visual.png, hero-bg-accent.png, funnel-illustration.png, system-illustration.png, ai-illustration.png
+- Completely rewrote HomePageClient.tsx with new hero section:
+  - New headline: "AI Agents That Power Your Growth."
+  - New eyebrow: "Agentic AI for Renewable Energy"
+  - New sub-headline about autonomous AI agents
+  - Added "AI Agents Section" showcasing 4 agent types (Campaign, Analytics, Bidding, Nurture)
+  - Added trust indicators (150+ clients, 5.0 Google rating)
+  - Added floating agent nodes on orbit rings
+  - Added neural network grid pattern background
+- Swapped color scheme throughout entire site:
+  - Header CTA: brown→yellow (bg-[#F3D840])
+  - Marquee: brown bg→yellow bg
+  - Yellow Divider: yellow bg→brown bg (swap)
+  - Results section: yellow bg→brown bg (swap)
+  - Testimonials section: gray→warm yellow bg
+  - FAQ section: gray→warm yellow bg
+  - Service eyebrow labels: brown→yellow
+  - All CTAs: brown→yellow primary buttons
+  - CRM login button: brown→yellow
+  - CRM mobile hamburger: brown→yellow
+- Reseeded CRM database (prisma db push --force-reset + seed)
+- Verified all routes: / (200), /crm/login (200), /api/crm/auth login (OK)
+- Fixed trust indicator JS bug (nested array access → proper object map)
+
+Stage Summary:
+- Hero completely redesigned with agentic AI + renewables theme
+- Yellow (#F3D840) is now the dominant brand color across entire site
+- Brown (#895A18) serves as secondary/accent color
+- New "AI Agents" showcase section added
+- CRM fully operational at /crm/login
+- Login credentials: admin@renewably.ie / admin123

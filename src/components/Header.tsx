@@ -75,7 +75,7 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <Link
               href="/contact"
-              className="hidden md:inline-flex items-center gap-2 px-6 py-2.5 bg-[#895A18] hover:bg-[#6B4510] text-white text-sm font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
+              className="hidden md:inline-flex items-center gap-2 px-6 py-2.5 bg-[#F3D840] hover:bg-[#E5C832] text-[#1A1A1A] text-sm font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-[#F3D840]/20 hover:scale-105"
             >
               Book a Call
               <svg
@@ -197,7 +197,7 @@ export default function Header() {
                   <Link
                     href="/contact"
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-[#895A18] hover:bg-[#6B4510] text-white font-semibold rounded-full transition-colors"
+                    className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-[#F3D840] hover:bg-[#E5C832] text-[#1A1A1A] font-bold rounded-full transition-colors"
                   >
                     Book a Call
                     <svg
