@@ -10,9 +10,13 @@ import {
   Kanban,
   Activity,
   CheckSquare,
+  FileText,
+  Zap,
   LogOut,
   Menu,
   X,
+  Calendar as CalendarIcon,
+  BarChart3,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -28,6 +32,10 @@ const navItems = [
   { href: '/crm/pipeline', label: 'Pipeline', icon: Kanban },
   { href: '/crm/activities', label: 'Activities', icon: Activity },
   { href: '/crm/tasks', label: 'Tasks', icon: CheckSquare },
+  { href: '/crm/proposals', label: 'Proposals', icon: FileText },
+  { href: '/crm/meetings', label: 'Calendar', icon: CalendarIcon },
+  { href: '/crm/workflows', label: 'Automations', icon: Zap },
+  { href: '/crm/reports', label: 'Reports', icon: BarChart3 },
 ]
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {

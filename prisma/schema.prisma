@@ -26,6 +26,7 @@ model User {
   assignedDeals Deal[]    @relation("DealAssignee")
   createdDeals  Deal[]    @relation("DealCreator")
   notes         Note[]
+  meetings      Meeting[]
 }
 
 // ===== COMPANY =====
@@ -48,6 +49,8 @@ model Company {
   deals        Deal[]
   notes        Note[]
   activities   Activity[]
+  proposals    Proposal[]
+  meetings     Meeting[]
 }
 
 // ===== CONTACT =====
@@ -78,6 +81,8 @@ model Contact {
   tasks        Task[]
   notes        Note[]
   tags         ContactTag[]
+  proposals    Proposal[]
+  meetings     Meeting[]
 }
 
 // ===== PIPELINE STAGE =====
@@ -125,6 +130,8 @@ model Deal {
   tasks           Task[]
   notes           Note[]
   tags            DealTag[]
+  proposals       Proposal[]
+  meetings        Meeting[]
 }
 
 // ===== ACTIVITY =====
@@ -150,6 +157,12 @@ model Activity {
 
   userId      String?
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  proposalId  String?
+  proposal    Proposal? @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+
+  meetingId   String?
+  meeting     Meeting?  @relation(fields: [meetingId], references: [id], onDelete: SetNull)
 }
 
 // ===== TASK =====
@@ -173,7 +186,8 @@ model Task {
   assigneeId  String?
   assignee    User?    @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
 
-  notes       Note[]
+  notes           Note[]
+  meetingFollowUps Meeting[] @relation("MeetingFollowUp")
 }
 
 // ===== NOTE =====
@@ -210,6 +224,60 @@ model Tag {
   deals       DealTag[]
 }
 
+// ===== PROPOSAL =====
+model Proposal {
+  id          String   @id @default(cuid())
+  title       String
+  dealId      String?
+  contactId   String?
+  companyId   String?
+  status      String   @default("draft")  // draft, sent, viewed, accepted, rejected, expired
+  totalAmount Float
+  validUntil  DateTime?
+  sentAt      DateTime?
+  viewedAt    DateTime?
+  acceptedAt  DateTime?
+  rejectedAt  DateTime?
+  notes       String?
+  templateId  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  deal      Deal?            @relation(fields: [dealId], references: [id])
+  contact   Contact?         @relation(fields: [contactId], references: [id])
+  company   Company?         @relation(fields: [companyId], references: [id])
+  template  ProposalTemplate? @relation(fields: [templateId], references: [id])
+  lineItems ProposalLineItem[]
+  activities Activity[]
+}
+
+// ===== PROPOSAL LINE ITEM =====
+model ProposalLineItem {
+  id          String   @id @default(cuid())
+  proposalId  String
+  name        String
+  description String?
+  quantity    Int
+  unitPrice   Float
+  total       Float
+  sortOrder   Int      @default(0)
+
+  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+}
+
+// ===== PROPOSAL TEMPLATE =====
+model ProposalTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  lineItems   String   @default("[]")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  proposals Proposal[]
+}
+
 // ===== CONTACT TAG (Junction) =====
 model ContactTag {
   contactId   String
@@ -228,4 +296,91 @@ model DealTag {
   tag         Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([dealId, tagId])
+}
+
+// ===== MEETING =====
+model Meeting {
+  id              String    @id @default(cuid())
+  title           String
+  description     String?
+  date            DateTime
+  endDate         DateTime
+  location        String?
+  meetingType     String    @default("call")  // call, video, in_person
+  status          String    @default("scheduled")  // scheduled, completed, cancelled, no_show
+  contactId       String?
+  dealId          String?
+  companyId       String?
+  assignedTo      String?
+  notes           String?
+  followUpTaskId  String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  contact         Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  deal            Deal?     @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  company         Company?  @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  assignee        User?     @relation(fields: [assignedTo], references: [id], onDelete: SetNull)
+  followUpTask    Task?     @relation("MeetingFollowUp", fields: [followUpTaskId], references: [id], onDelete: SetNull)
+  activities      Activity[]
+}
+
+// ===== WORKFLOW RULE =====
+model WorkflowRule {
+  id              String              @id @default(cuid())
+  name            String
+  description     String?
+  isActive        Boolean             @default(true)
+  triggerType     String              // deal_stage_change, new_contact, task_overdue, proposal_status_change, contact_inactive
+  triggerConfig   String              // JSON string: { "stage": "qualified", "days": 7 } etc
+  actions         String              // JSON string: [{ "type": "assign_task", "config": {...} }, ...]
+  executionCount  Int                 @default(0)
+  lastExecutedAt  DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  executions      WorkflowExecution[]
+}
+
+// ===== WORKFLOW EXECUTION =====
+model WorkflowExecution {
+  id            String       @id @default(cuid())
+  ruleId        String
+  rule          WorkflowRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  triggerType   String
+  entityType    String       // deal, contact, task, proposal
+  entityId      String
+  actionType    String       // assign_task, send_email, update_field, notify, move_stage
+  actionConfig  String       // JSON string
+  status        String       @default("success")  // success, failed, skipped
+  result        String?
+  executedAt    DateTime     @default(now())
+
+  @@index([ruleId])
+  @@index([entityType, entityId])
+}
+
+// ===== REPORT =====
+model Report {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  type        String   // pipeline, revenue, activity, forecast, custom
+  config      String   @default("{}") // JSON string: report configuration (filters, metrics, date range)
+  isScheduled Boolean  @default(false)
+  schedule    String?  // daily, weekly, monthly
+  lastRunAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  snapshots ReportSnapshot[]
+}
+
+// ===== REPORT SNAPSHOT =====
+model ReportSnapshot {
+  id          String   @id @default(cuid())
+  reportId    String
+  report      Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  data        String   @default("{}") // JSON string: snapshot of report data
+  generatedAt DateTime @default(now())
 }
