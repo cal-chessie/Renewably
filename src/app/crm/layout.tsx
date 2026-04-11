@@ -1,6 +1,7 @@
 'use client'
 
 import { CRMProvider, useCRM } from '@/components/crm/CRMProvider'
+import { AIAssistant } from '@/components/crm/AIAssistant'
 import { useRouter, usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
@@ -155,6 +156,9 @@ function CRMShell({ children }: { children: React.ReactNode }) {
       <main className="flex-1 overflow-auto">
         <div className="min-h-full">{children}</div>
       </main>
+
+      {/* AI Assistant — floating chat widget */}
+      <AIAssistant />
     </div>
   )
 }

@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { content, contactId, dealId, companyId } = body
+    const { content, contactId, dealId, companyId, taskId } = body
 
     if (!content) {
       return NextResponse.json({ error: 'Content is required' }, { status: 400 })
@@ -72,10 +72,12 @@ export async function POST(request: NextRequest) {
         contactId: contactId || null,
         dealId: dealId || null,
         companyId: companyId || null,
+        taskId: taskId || null,
         userId: user.id,
       },
       include: {
         user: { select: { id: true, name: true, avatar: true } },
+        task: { select: { id: true, title: true } },
       },
     })
 

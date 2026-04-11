@@ -294,3 +294,171 @@ Stage Summary:
 - New "AI Agents" showcase section added
 - CRM fully operational at /crm/login
 - Login credentials: admin@renewably.ie / admin123
+
+---
+Task ID: 5
+Agent: Main Agent
+Task: Build AI Assistant + Email/Call integration for the CRM
+
+Work Log:
+- Read existing project files: Prisma schema (Activity model fields confirmed), auth.ts (getSessionFromRequest pattern), db.ts, CRM layout, CRMProvider, and existing API routes (activities/route.ts for auth pattern)
+- Created /src/app/api/crm/ai/route.ts — POST endpoint that:
+  - Validates auth via getSessionFromRequest
+  - Accepts { message, context: { contactId?, dealId?, taskId? } }
+  - Fetches contact/deal/task data from DB when context provided (with related activities, deals, company info)
+  - Builds comprehensive system prompt for Renewably CRM AI assistant (email drafting, follow-up suggestions, call scripts, contact summaries, pipeline recommendations)
+  - Injects context data into prompt when available
+  - Uses z-ai-web-dev-sdk (ZAI.create() → chat.completions.create()) for AI responses
+  - Returns { reply: string }
+- Created /src/app/api/crm/email/route.ts — POST endpoint that:
+  - Validates auth
+  - Accepts { to, subject, body, contactId? }
+  - Validates email format with regex
+  - Creates Activity of type 'email' with subject `${subject} → ${to}`
+  - Sets completedAt and status 'completed'
+  - Updates contact's lastContactAt if contactId provided
+  - Returns { success: true, activityId: string }
+- Created /src/app/api/crm/call/route.ts — POST endpoint that:
+  - Validates auth
+  - Accepts { contactId?, duration?, notes?, outcome?, subject? }
+  - Auto-generates subject from outcome if subject not provided
+  - Creates Activity of type 'call' with duration support
+  - Updates contact's lastContactAt if contactId provided
+  - Returns { success: true, activityId: string }
+- Created /src/components/crm/AIAssistant.tsx — 'use client' component with:
+  - Floating button: fixed bottom-6 right-6, z-50, bg-[#F3D840], rounded-full h-14 w-14, Sparkles icon, spring animation
+  - Chat panel: fixed bottom-24 right-6, z-50, 380×500px, rounded-2xl, shadow-2xl, white bg
+  - Dark header with yellow Sparkles icon, "Renewably AI" title, close button
+  - Empty state: Bot icon, welcome message, 4 suggestion chips
+  - Message history in state (array of {role, content})
+  - User messages: yellow bubbles aligned right
+  - Assistant messages: gray bubbles aligned left with Sparkles avatar
+  - Animated typing indicator (3 bouncing dots) while loading
+  - Enter key + Send button for message submission
+  - Error handling with user-friendly error messages in chat
+  - Auto-scroll to bottom on new messages
+  - Auto-focus input on panel open
+- Modified /src/app/crm/layout.tsx:
+  - Added import for AIAssistant component
+  - Added <AIAssistant /> after <main> inside CRMShell (not rendered on login page)
+- Ran ESLint: CLEAN (0 errors, 0 warnings)
+- Verified dev server running on port 3000
+
+Stage Summary:
+- Files created: 3 API routes (ai, email, call) + 1 component (AIAssistant)
+- Files modified: 1 (crm/layout.tsx)
+- ESLint: CLEAN
+- AI Assistant is a floating chat widget accessible from all CRM pages except login
+- Email and Call logging endpoints create Activity records and update contact lastContactAt
+- AI API supports optional context (contactId/dealId/taskId) for personalized responses
+
+---
+Task ID: 6
+Agent: Main Agent
+Task: Rewrite CRM Tasks page with drag-and-drop and one-click detail drawer
+
+Work Log:
+- Read existing tasks page (src/app/crm/tasks/page.tsx) — 354-line kanban board without DnD or detail drawer
+- Read available shadcn/ui components: sheet.tsx (Radix dialog-based slide-over), scroll-area.tsx, separator.tsx, all form primitives
+- Read PriorityBadge component, API routes for tasks, notes, contacts, activities
+- Updated Prisma schema: Added `taskId` + `task` relation to Note model (Task already had `notes Note[]`)
+- Updated notes API (POST /api/crm/notes) to accept and store `taskId` field
+- Pushed schema changes to database (bun run db:push)
+- Complete rewrite of src/app/crm/tasks/page.tsx (~1270 lines) with:
+  **Drag-and-Drop (dnd-kit):**
+  - DndContext with PointerSensor (distance: 5) + KeyboardSensor + closestCorners collision detection
+  - SortableContext with verticalListSortingStrategy per column
+  - DragOverlay showing rotated card preview while dragging
+  - GripVertical icon on hover for visual affordance
+  - Drag from one column to another triggers PUT /api/crm/tasks with new status
+  - Priority-sorted within each column (urgent→high→medium→low)
+  **Task Detail Drawer (Sheet):**
+  - Sheet component from @/components/ui/sheet sliding from right
+  - Editable fields: title (Input), description (Textarea), status (Select), priority (Select), due date (date Input), assignee (Select dropdown)
+  - Related Contact: name with link to /crm/contacts/[id]
+  - Related Deal: title with link
+  - Created date: read-only, formatted
+  - Save button: PUT /api/crm/tasks with all updated fields
+  - Quick actions section: "Log Activity" (opens dialog for call/email), "Send Email" (placeholder toast), "Call Contact" (tel: link if contact has phone)
+  - Add Note section: Textarea + POST /api/crm/notes with taskId
+  - Component keyed by selectedTask.id to properly reset form state on task change
+  **Task Cards:**
+  - Title (truncated to 2 lines via line-clamp-2)
+  - PriorityBadge component
+  - Due date with red color if overdue
+  - Assignee avatar (circle with initials, bg-[#F3D840])
+  - Hover: GripVertical handle, checkmark (complete), delete button
+  - Click opens detail drawer (event.stopPropagation on action buttons)
+  **Filter Bar:**
+  - Priority filter dropdown (All/Urgent/High/Medium/Low)
+  - Status filter dropdown (All/To Do/In Progress/Completed/Cancelled)
+  **Task Creation Dialog:**
+  - All existing fields plus assigneeId and contactId Select dropdowns
+  - Contacts fetched from /api/crm/contacts?limit=100
+  **Column Headers:**
+  - Colored status dot + label + count badge (rounded-full circle)
+  **UI Polish:**
+  - Column backgrounds: bg-gray-100/80 rounded-xl
+  - Cards: bg-white, border-gray-100, rounded-lg, hover:shadow-sm
+  - New Task button: bg-[#374151] hover:bg-[#1F2937]
+  - framer-motion entry animations on columns and cards
+  - Loading skeleton state
+  - Toast notifications via sonner for all operations
+  - Responsive grid: 1→2→4 columns
+- ESLint: CLEAN (0 errors, 0 warnings) after fixing useMemo→useEffect→useState initializer pattern
+- Dev server verified running
+
+Stage Summary:
+- Files modified: 3 (prisma/schema.prisma, src/app/api/crm/notes/route.ts, src/app/crm/tasks/page.tsx)
+- Schema: Added taskId relation to Note model
+- API: Notes POST now accepts taskId parameter
+- Tasks page: Complete rewrite with DnD, detail drawer, filters, quick actions
+- ESLint: CLEAN
+- Dev server: Running on port 3000
+
+---
+Task ID: 6
+Agent: Main Agent
+Task: Completely rewrite CRM dashboard to be world-class with enhanced API and stunning UI
+
+Work Log:
+- Read existing CRM dashboard page, API route, StatCard, ActivityIcon, PriorityBadge, Prisma schema, and lib files
+- Enhanced /src/app/api/crm/dashboard/route.ts with 7 new data fields:
+  1. aiInsights - 5 dynamically generated insights based on actual data (pipeline value, overdue tasks, conversion rate vs industry avg, contact growth trend, top performer)
+  2. dealFunnel - Pipeline stages ordered by pipeline order, excluding Won/Lost, with count and value
+  3. activityByType - Activity counts by type (call, email, meeting, note) from last 7 days
+  4. recentPerformance - Last 7 days daily activity count array
+  5. topContacts - Top 5 contacts by total deal value with contact info and deal count
+  6. overdueTasks - Count of tasks past due date and not completed
+  7. avgDealCycleDays - Average days from first activity to won stage
+  - Added newContactsLastMonth query for contact growth comparison
+  - Added 7-day activity query for type breakdown and performance metrics
+  - Added top contacts raw SQL query with LEFT JOIN on deals
+  - Added overdue tasks count query
+  - Added won deals with activities query for avg deal cycle calculation
+  - All existing response fields preserved intact
+- Completely rewrote /src/app/crm/page.tsx with world-class dashboard:
+  - Row 1: 4 KPI StatCards (Pipeline Value, Active Deals, New Contacts, Win Rate) with trend indicators
+  - Row 2: Two-column chart layout
+    - LEFT: Custom horizontal pipeline funnel with animated bars, progressively darker yellow (#F3D840 → #BC8822), showing stage name, deal count, and value
+    - RIGHT: Recharts AreaChart with gradient fill (yellow to transparent), dark stroke, and latest month indicator
+  - Row 3: Three-column layout
+    - LEFT: AI Insights Panel with yellow accent border, sparkle icon, 5 insights with per-insight icons
+    - MIDDLE: Activity Breakdown donut chart (Recharts PieChart) with 4-color scheme, legend, and weekly total
+    - RIGHT: Quick Actions 2x2 grid (New Deal, Log Call, Add Contact, Create Task) with hover effects + avg deal cycle and overdue tasks summary
+  - Row 4: Two-column layout
+    - LEFT: Top Contacts list with yellow avatar initials, email, deal count, value, clickable links
+    - RIGHT: Recent Activity timeline with ActivityIcon, subject, contact name, time ago
+  - Staggered framer-motion entry animations (0.05s delay between cards)
+  - All cards use border-0 shadow-sm styling
+  - Primary color #F3D840 throughout
+  - Full TypeScript interfaces for all data types
+  - Skeleton loading states for all sections
+- ESLint: CLEAN (0 errors, 0 warnings)
+- Dev server: Running, no compilation errors
+
+Stage Summary:
+- Files modified: 2 (src/app/api/crm/dashboard/route.ts, src/app/crm/page.tsx)
+- API: 7 new data fields added to dashboard response while preserving all existing fields
+- Dashboard: Complete rewrite with 4-row responsive layout, animated funnel, area chart, donut chart, AI insights, quick actions, top contacts, activity timeline
+- Lint: CLEAN (0 errors, 0 warnings)

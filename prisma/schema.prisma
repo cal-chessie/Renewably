@@ -172,6 +172,8 @@ model Task {
 
   assigneeId  String?
   assignee    User?    @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
+
+  notes       Note[]
 }
 
 // ===== NOTE =====
@@ -192,6 +194,9 @@ model Note {
 
   userId      String?
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  taskId      String?
+  task        Task?    @relation(fields: [taskId], references: [id], onDelete: SetNull)
 }
 
 // ===== TAG =====

@@ -56,7 +56,7 @@ function HeroSection() {
           transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(137,90,24,0.06) 0%, rgba(137,90,24,0) 70%)",
+            background: "radial-gradient(circle, rgba(243,216,64,0.08) 0%, rgba(243,216,64,0) 70%)",
             filter: "blur(120px)",
           }}
         />
