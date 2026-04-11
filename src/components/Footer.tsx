@@ -13,6 +13,7 @@ const footerLinks = {
     { label: "About Us", href: "/about" },
     { label: "Blog", href: "/blog" },
     { label: "Contact Us", href: "/contact" },
+    { label: "Admin Portal", href: "/crm/login" },
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },
   ],
@@ -27,12 +28,11 @@ export default function Footer() {
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4">
               <Image
-                src="/logo-icon.png"
+                src="/logo.png"
                 alt="Renewably"
-                width={36}
-                height={36}
+                width={40}
+                height={40}
               />
-              <span className="text-xl font-bold text-white">Renewably</span>
             </Link>
             <p className="text-gray-500 max-w-xs leading-relaxed mb-6 text-sm">
               Ireland&apos;s leading digital marketing agency for renewable energy

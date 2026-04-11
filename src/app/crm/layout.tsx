@@ -12,13 +12,13 @@ import {
   LogOut,
   Menu,
   X,
-  Zap,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 
 const navItems = [
   { href: '/crm', label: 'Dashboard', icon: LayoutDashboard },
@@ -38,9 +38,13 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
       {/* Logo */}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-lg bg-[#F3D840] flex items-center justify-center">
-            <Zap className="h-5 w-5 text-[#895A18]" />
-          </div>
+          <Image
+            src="/logo.png"
+            alt="Renewably"
+            width={36}
+            height={36}
+            className="rounded-lg"
+          />
           <div>
             <h1 className="text-white font-bold text-lg leading-tight">Renewably</h1>
             <p className="text-white/40 text-xs">CRM Dashboard</p>

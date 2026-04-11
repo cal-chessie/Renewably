@@ -234,3 +234,24 @@ Stage Summary:
 - Dashboard: KPIs, pipeline bar chart, revenue line chart, task donut chart
 - Pipeline: Full Kanban board with drag-and-drop deal management
 - Login credentials: admin@renewably.ie / admin123
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: Integrate user's actual logo throughout website and CRM, add admin portal link
+
+Work Log:
+- Copied uploaded logo (Renewably LOGO.png, 500x500) to /public/logo.png and /public/logo-icon.png
+- Updated Header.tsx: Replaced icon + text with actual logo image (42px desktop, 34px mobile), removed duplicate "Renewably" text
+- Updated Footer.tsx: Replaced icon + text with actual logo image (40px), added "Admin Portal" link to Company column pointing to /crm/login
+- Updated CRM layout (layout.tsx): Replaced Zap icon placeholder with actual logo image (36px) in dark sidebar
+- Updated CRM login page (login/page.tsx): Replaced Zap icon placeholder with actual logo image (64px) with scale-in animation
+- Updated LoadingScreen.tsx: Updated logo reference to /logo.png
+- Verified all 12 routes return HTTP 200
+- Verified logo serves correctly (20611 bytes, image/png)
+- ESLint: CLEAN
+
+Stage Summary:
+- Files modified: 5 (Header.tsx, Footer.tsx, crm/layout.tsx, crm/login/page.tsx, LoadingScreen.tsx)
+- Logo now used in: Header (desktop + mobile), Footer, CRM sidebar, CRM login, Loading screen, Organization schema
+- Admin Portal link added to footer under Company section

@@ -48,19 +48,12 @@ export default function Header() {
         <div className="flex items-center justify-between h-16 md:h-20">
           <Link href="/" className="flex items-center gap-2 group">
             <Image
-              src="/logo-icon.png"
+              src="/logo.png"
               alt="Renewably"
-              width={40}
-              height={40}
+              width={42}
+              height={42}
               className="transition-transform duration-300 group-hover:scale-110"
             />
-            <span
-              className={`text-xl font-bold transition-colors duration-300 ${
-                scrolled ? "text-[#333333]" : "text-[#333333]"
-              }`}
-            >
-              Renewably
-            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -154,14 +147,11 @@ export default function Header() {
                     className="flex items-center gap-2"
                   >
                     <Image
-                      src="/logo-icon.png"
+                      src="/logo.png"
                       alt="Renewably"
-                      width={32}
-                      height={32}
+                      width={34}
+                      height={34}
                     />
-                    <span className="text-lg font-bold text-[#333333]">
-                      Renewably
-                    </span>
                   </Link>
                   <button
                     onClick={() => setMobileOpen(false)}

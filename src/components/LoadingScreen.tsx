@@ -35,7 +35,7 @@ export default function LoadingScreen() {
               transition={{ duration: 1.5, repeat: 1, ease: "easeInOut" }}
             >
               <Image
-                src="/logo-icon.png"
+                src="/logo.png"
                 alt="Renewably"
                 width={80}
                 height={80}

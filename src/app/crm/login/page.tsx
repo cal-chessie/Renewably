@@ -3,11 +3,12 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Zap, Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
+import Image from 'next/image'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -55,9 +56,20 @@ export default function LoginPage() {
       >
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-[#F3D840] mb-4">
-            <Zap className="h-8 w-8 text-[#895A18]" />
-          </div>
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex mb-4"
+          >
+            <Image
+              src="/logo.png"
+              alt="Renewably"
+              width={64}
+              height={64}
+              className="rounded-2xl"
+            />
+          </motion.div>
           <h1 className="text-2xl font-bold text-gray-900">Welcome to CRM</h1>
           <p className="text-gray-500 mt-1">Sign in to your Renewably account</p>
         </div>
