@@ -28,6 +28,7 @@ model User {
   notes         Note[]
   meetings      Meeting[]
   googleCalendar GoogleCalendarConnection?
+  installerProfile   InstallerProfile?
 }
 
 // ===== COMPANY =====
@@ -53,6 +54,7 @@ model Company {
   proposals    Proposal[]
   meetings     Meeting[]
   invoices     Invoice[]
+  installerProfile InstallerProfile?
 }
 
 // ===== CONTACT =====
@@ -86,6 +88,7 @@ model Contact {
   proposals    Proposal[]
   meetings     Meeting[]
   invoices     Invoice[]
+  installerProfile InstallerProfile?
 }
 
 // ===== PIPELINE STAGE =====
@@ -467,4 +470,121 @@ model ReportSnapshot {
   report      Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
   data        String   @default("{}") // JSON string: snapshot of report data
   generatedAt DateTime @default(now())
+}
+
+// ===== INSTALLER PROFILE (from SolarPilot onboarding) =====
+model InstallerProfile {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contactId             String   @unique
+  contact               Contact  @relation(fields: [contactId], references: [id])
+  companyId             String   @unique
+  company               Company  @relation(fields: [companyId], references: [id])
+
+  companyName           String
+  contactName           String
+  phone                 String?
+  vatNumber             String?
+  businessAddress       String?
+
+  serviceCounties       String   @default("[]")
+
+  planId                String   @default("pro")
+  billingCycle          String   @default("monthly")
+  billingEmail          String?
+  billingAddress        String?
+  billingCity           String?
+  billingCounty         String?
+  billingEircode        String?
+  stripeCustomerId      String?
+
+  integrations          String   @default("[]")
+  securityFeatures      String   @default("[]")
+
+  yearsInBusiness       Int?
+  publicLiability       Float?
+  seaiRegistered        Boolean  @default(false)
+  seaiNumber            String?
+  reciRegistered        Boolean  @default(false)
+  reciNumber            String?
+  maxProjectsMonth      Int?
+  avgProjectValue       Float?
+  avgInstallDays        Int?
+  teamSize              Int?
+  qualifiedElectricians Int?
+  vanFleetSize          Int?
+  hasDrone              Boolean  @default(false)
+  hasScaffolding        Boolean  @default(false)
+  maxLeadsMonth         Int?
+  minLeadValue          Float?
+  responseTimeHours     Int?
+  quotationTurnaround   Int?
+  maxTravelKm           Int?
+  ruralSpecialist       Boolean  @default(false)
+  commercialSpecialist  Boolean  @default(false)
+  heritageExperience    Boolean  @default(false)
+  offersEvCharger       Boolean  @default(false)
+  offersHeatPump        Boolean  @default(false)
+  acceptsFinancing      Boolean  @default(true)
+
+  leadTargetMonth       Int?
+  installsMonth         Int?
+  revenueTarget         Float?
+
+  onboardingComplete    Boolean  @default(false)
+  onboardingStep        Int      @default(0)
+  trialStartAt          DateTime?
+  trialEndsAt           DateTime?
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  equipment             InstallerEquipment[]
+  signedDocuments       InstallerDocument[]
+  subscription          Subscription?
+}
+
+// ===== INSTALLER EQUIPMENT =====
+model InstallerEquipment {
+  id          String   @id @default(cuid())
+  installerId String
+  installer   InstallerProfile @relation(fields: [installerId], references: [id], onDelete: Cascade)
+  category    String
+  brandId     String
+  brandName   String
+  meta        String   @default("{}")
+  isPreferred Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([installerId, category])
+}
+
+// ===== INSTALLER DOCUMENT =====
+model InstallerDocument {
+  id          String   @id @default(cuid())
+  installerId String
+  installer   InstallerProfile @relation(fields: [installerId], references: [id], onDelete: Cascade)
+  docType     String
+  docName     String
+  fileName    String?
+  signedAt    DateTime?
+  createdAt   DateTime @default(now())
+
+  @@unique([installerId, docType])
+}
+
+// ===== SUBSCRIPTION =====
+model Subscription {
+  id                  String   @id @default(cuid())
+  installerId         String   @unique
+  installer           InstallerProfile @relation(fields: [installerId], references: [id], onDelete: Cascade)
+  planId              String   @default("pro")
+  status              String   @default("trialing")
+  billingCycle        String   @default("monthly")
+  currentPeriodStart  DateTime @default(now())
+  currentPeriodEnd    DateTime?
+  cancelledAt         DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }
