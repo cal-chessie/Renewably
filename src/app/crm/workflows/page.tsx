@@ -25,6 +25,17 @@ import {
   Save,
   X,
   Info,
+  CalendarDays,
+  Calendar,
+  CreditCard,
+  Users,
+  Target,
+  FileText,
+  Mail,
+  Banknote,
+  ClipboardCheck,
+  Square,
+  LayoutGrid,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -43,6 +54,16 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import {
   Select,
   SelectContent,
@@ -103,17 +124,29 @@ interface WorkflowExecution {
 
 const TRIGGER_TYPES = [
   { value: 'deal_stage_change', label: 'Deal Stage Change', icon: ArrowRight, color: 'text-blue-500', bgColor: 'bg-blue-50' },
+  { value: 'deal_created', label: 'Deal Created', icon: Target, color: 'text-blue-600', bgColor: 'bg-blue-50' },
   { value: 'new_contact', label: 'New Contact', icon: Bot, color: 'text-green-500', bgColor: 'bg-green-50' },
-  { value: 'task_overdue', label: 'Task Overdue', icon: AlertCircle, color: 'text-red-500', bgColor: 'bg-red-50' },
-  { value: 'proposal_status_change', label: 'Proposal Status Change', icon: Workflow, color: 'text-purple-500', bgColor: 'bg-purple-50' },
   { value: 'contact_inactive', label: 'Contact Inactive', icon: Clock, color: 'text-orange-500', bgColor: 'bg-orange-50' },
+  { value: 'task_overdue', label: 'Task Overdue', icon: AlertCircle, color: 'text-red-500', bgColor: 'bg-red-50' },
+  { value: 'task_completed', label: 'Task Completed', icon: ClipboardCheck, color: 'text-emerald-500', bgColor: 'bg-emerald-50' },
+  { value: 'proposal_status_change', label: 'Proposal Status Change', icon: Workflow, color: 'text-purple-500', bgColor: 'bg-purple-50' },
+  { value: 'meeting_created', label: 'Meeting Created', icon: CalendarDays, color: 'text-sky-500', bgColor: 'bg-sky-50' },
+  { value: 'meeting_completed', label: 'Meeting Completed', icon: Calendar, color: 'text-teal-500', bgColor: 'bg-teal-50' },
+  { value: 'meeting_cancelled', label: 'Meeting Cancelled', icon: XCircle, color: 'text-rose-500', bgColor: 'bg-rose-50' },
+  { value: 'invoice_created', label: 'Invoice Created', icon: FileText, color: 'text-amber-500', bgColor: 'bg-amber-50' },
+  { value: 'invoice_overdue', label: 'Invoice Overdue', icon: CreditCard, color: 'text-red-600', bgColor: 'bg-red-50' },
+  { value: 'payment_received', label: 'Payment Received', icon: Banknote, color: 'text-emerald-600', bgColor: 'bg-emerald-50' },
 ] as const
 
 const ACTION_TYPES = [
   { value: 'create_task', label: 'Create Task', icon: Sparkles },
-  { value: 'send_email', label: 'Send Email', icon: Workflow },
+  { value: 'create_meeting', label: 'Create Meeting', icon: CalendarDays },
+  { value: 'create_proposal', label: 'Create Proposal', icon: FileText },
+  { value: 'create_invoice', label: 'Create Invoice', icon: CreditCard },
+  { value: 'send_email', label: 'Send Email', icon: Mail },
   { value: 'update_field', label: 'Update Field', icon: Settings },
   { value: 'add_note', label: 'Add Note', icon: Info },
+  { value: 'create_note', label: 'Create Note', icon: Square },
   { value: 'notify', label: 'Send Notification', icon: Zap },
 ] as const
 
@@ -153,14 +186,30 @@ function formatTriggerDescription(triggerType: string, triggerConfig: Record<str
   switch (triggerType) {
     case 'deal_stage_change':
       return `When deal moves to "${triggerConfig.stage || 'any'}" stage`
+    case 'deal_created':
+      return 'When a new deal is created'
     case 'new_contact':
       return 'When a new contact is created'
     case 'task_overdue':
       return `When task is overdue by ${triggerConfig.days || 7}+ days`
+    case 'task_completed':
+      return 'When a task is marked as completed'
     case 'proposal_status_change':
       return `When proposal status changes to "${triggerConfig.status || 'any'}"`
     case 'contact_inactive':
       return `When contact has no activity for ${triggerConfig.days || 30}+ days`
+    case 'meeting_created':
+      return 'When a new meeting is scheduled'
+    case 'meeting_completed':
+      return 'When a meeting is marked as completed'
+    case 'meeting_cancelled':
+      return 'When a meeting is cancelled'
+    case 'invoice_created':
+      return 'When a new invoice is created'
+    case 'invoice_overdue':
+      return `When invoice is ${triggerConfig.days || 7}+ days past due date`
+    case 'payment_received':
+      return 'When a payment is received'
     default:
       return triggerType
   }
@@ -170,12 +219,20 @@ function formatActionDescription(actionType: string, actionConfig: Record<string
   switch (actionType) {
     case 'create_task':
       return `Create task "${actionConfig.title || 'Untitled'}" (priority: ${actionConfig.priority || 'medium'})`
+    case 'create_meeting':
+      return `Create meeting "${actionConfig.title || 'Untitled'}" (${actionConfig.duration || 30} min, ${actionConfig.meetingType || 'call'})`
+    case 'create_proposal':
+      return `Create proposal "${actionConfig.title || 'Untitled'}" (template: ${actionConfig.template || 'default'})`
+    case 'create_invoice':
+      return `Create invoice from deal (auto-generated)`
     case 'send_email':
       return `Send email template "${actionConfig.template || 'default'}" to ${actionConfig.to || 'recipient'}`
     case 'update_field':
       return `Update ${actionConfig.field || 'field'} to "${actionConfig.value || ''}"`
     case 'add_note':
       return `Add note "${(actionConfig.text || '').substring(0, 40)}"`
+    case 'create_note':
+      return `Create note "${(actionConfig.text || '').substring(0, 40)}"`
     case 'notify':
       return `Notify ${actionConfig.user || 'team'}: "${(actionConfig.message || '').substring(0, 40)}"`
     default:
@@ -400,17 +457,41 @@ function TriggerBuilder({
           case 'deal_stage_change':
             onConfigChange({ stage: 'Qualified' })
             break
+          case 'deal_created':
+            onConfigChange({})
+            break
           case 'new_contact':
             onConfigChange({})
             break
           case 'task_overdue':
-            onConfigChange({ days: 7 })
+            onConfigChange({ days: 2 })
+            break
+          case 'task_completed':
+            onConfigChange({})
             break
           case 'proposal_status_change':
             onConfigChange({ status: 'sent' })
             break
           case 'contact_inactive':
             onConfigChange({ days: 30 })
+            break
+          case 'meeting_created':
+            onConfigChange({})
+            break
+          case 'meeting_completed':
+            onConfigChange({})
+            break
+          case 'meeting_cancelled':
+            onConfigChange({})
+            break
+          case 'invoice_created':
+            onConfigChange({})
+            break
+          case 'invoice_overdue':
+            onConfigChange({ days: 7 })
+            break
+          case 'payment_received':
+            onConfigChange({})
             break
           default:
             onConfigChange({})
@@ -534,6 +615,109 @@ function TriggerBuilder({
             />
           </motion.div>
         )}
+
+        {triggerType === 'deal_created' && (
+          <motion.div
+            key="deal_created"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            className="bg-gray-50 rounded-lg p-3"
+          >
+            <p className="text-xs text-gray-500">Triggers automatically when a new deal is created in the pipeline.</p>
+          </motion.div>
+        )}
+
+        {triggerType === 'task_completed' && (
+          <motion.div
+            key="task_completed"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            className="bg-gray-50 rounded-lg p-3"
+          >
+            <p className="text-xs text-gray-500">Triggers when a task is marked as completed.</p>
+          </motion.div>
+        )}
+
+        {triggerType === 'meeting_created' && (
+          <motion.div
+            key="meeting_created"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            className="bg-gray-50 rounded-lg p-3"
+          >
+            <p className="text-xs text-gray-500">Triggers automatically when a new meeting is scheduled.</p>
+          </motion.div>
+        )}
+
+        {triggerType === 'meeting_completed' && (
+          <motion.div
+            key="meeting_completed"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            className="bg-gray-50 rounded-lg p-3"
+          >
+            <p className="text-xs text-gray-500">Triggers when a meeting is marked as completed.</p>
+          </motion.div>
+        )}
+
+        {triggerType === 'meeting_cancelled' && (
+          <motion.div
+            key="meeting_cancelled"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            className="bg-gray-50 rounded-lg p-3"
+          >
+            <p className="text-xs text-gray-500">Triggers when a meeting is cancelled.</p>
+          </motion.div>
+        )}
+
+        {triggerType === 'invoice_created' && (
+          <motion.div
+            key="invoice_created"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            className="bg-gray-50 rounded-lg p-3"
+          >
+            <p className="text-xs text-gray-500">Triggers automatically when a new invoice is created.</p>
+          </motion.div>
+        )}
+
+        {triggerType === 'invoice_overdue' && (
+          <motion.div
+            key="invoice_overdue"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            className="space-y-2 bg-gray-50 rounded-lg p-3"
+          >
+            <Label className="text-xs text-gray-500">Days after due date (unpaid):</Label>
+            <Input
+              type="number"
+              min={1}
+              value={(triggerConfig.days as number) || 7}
+              onChange={(e) => onConfigChange({ ...triggerConfig, days: parseInt(e.target.value) || 7 })}
+              className="w-full text-sm"
+            />
+          </motion.div>
+        )}
+
+        {triggerType === 'payment_received' && (
+          <motion.div
+            key="payment_received"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            className="bg-gray-50 rounded-lg p-3"
+          >
+            <p className="text-xs text-gray-500">Triggers automatically when a payment is received for an invoice.</p>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   )
@@ -583,6 +767,18 @@ function ActionCard({
                   newConfig = { field: 'stage', value: '' }
                   break
                 case 'add_note':
+                  newConfig = { text: '' }
+                  break
+                case 'create_meeting':
+                  newConfig = { title: '', meetingType: 'call', duration: 30 }
+                  break
+                case 'create_proposal':
+                  newConfig = { title: '', template: 'default' }
+                  break
+                case 'create_invoice':
+                  newConfig = { autoFromDeal: true }
+                  break
+                case 'create_note':
                   newConfig = { text: '' }
                   break
                 case 'notify':
@@ -736,11 +932,188 @@ function ActionCard({
           />
         </div>
       )}
+
+      {action.type === 'create_meeting' && (
+        <div className="space-y-2 pl-8">
+          <Input
+            placeholder="Meeting title"
+            value={(action.config.title as string) || ''}
+            onChange={(e) => onUpdate({ ...action, config: { ...action.config, title: e.target.value } })}
+            className="text-sm h-8"
+          />
+          <div className="grid grid-cols-2 gap-2">
+            <Select
+              value={(action.config.meetingType as string) || 'call'}
+              onValueChange={(v) => onUpdate({ ...action, config: { ...action.config, meetingType: v } })}
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="call">Call</SelectItem>
+                <SelectItem value="video">Video</SelectItem>
+                <SelectItem value="in_person">In-Person</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input
+              type="number"
+              placeholder="Duration (min)"
+              value={(action.config.duration as number) || 30}
+              onChange={(e) => onUpdate({ ...action, config: { ...action.config, duration: parseInt(e.target.value) || 30 } })}
+              className="text-xs h-8"
+            />
+          </div>
+        </div>
+      )}
+
+      {action.type === 'create_proposal' && (
+        <div className="space-y-2 pl-8">
+          <Input
+            placeholder="Proposal title"
+            value={(action.config.title as string) || ''}
+            onChange={(e) => onUpdate({ ...action, config: { ...action.config, title: e.target.value } })}
+            className="text-sm h-8"
+          />
+          <Select
+            value={(action.config.template as string) || 'default'}
+            onValueChange={(v) => onUpdate({ ...action, config: { ...action.config, template: v } })}
+          >
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">Default Template</SelectItem>
+              <SelectItem value="standard">Standard</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {action.type === 'create_invoice' && (
+        <div className="pl-8">
+          <p className="text-xs text-gray-500 bg-gray-100 rounded-md px-2 py-1.5">
+            Automatically creates an invoice from the associated deal's value and line items.
+          </p>
+        </div>
+      )}
+
+      {action.type === 'create_note' && (
+        <div className="space-y-2 pl-8">
+          <Textarea
+            placeholder="Note text to create..."
+            value={(action.config.text as string) || ''}
+            onChange={(e) => onUpdate({ ...action, config: { ...action.config, text: e.target.value } })}
+            className="text-sm min-h-[60px]"
+          />
+        </div>
+      )}
     </motion.div>
   )
 }
 
-// ─── Create/Edit Dialog ──────────────────────────────────────────────────────
+// ─── Module Coverage Grid ──────────────────────────────────────────────────
+
+function ModuleCoverageGrid({ rules }: { rules: WorkflowRule[] }) {
+  const modules = useMemo(() => [
+    {
+      name: 'Deals',
+      icon: Target,
+      triggerTypes: ['deal_stage_change', 'deal_created'],
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-50',
+    },
+    {
+      name: 'Contacts',
+      icon: Users,
+      triggerTypes: ['new_contact', 'contact_inactive'],
+      color: 'text-green-500',
+      bgColor: 'bg-green-50',
+    },
+    {
+      name: 'Tasks',
+      icon: ClipboardCheck,
+      triggerTypes: ['task_overdue', 'task_completed'],
+      color: 'text-orange-500',
+      bgColor: 'bg-orange-50',
+    },
+    {
+      name: 'Proposals',
+      icon: FileText,
+      triggerTypes: ['proposal_status_change'],
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-50',
+    },
+    {
+      name: 'Meetings',
+      icon: CalendarDays,
+      triggerTypes: ['meeting_created', 'meeting_completed', 'meeting_cancelled'],
+      color: 'text-sky-500',
+      bgColor: 'bg-sky-50',
+    },
+    {
+      name: 'Invoices',
+      icon: CreditCard,
+      triggerTypes: ['invoice_created', 'invoice_overdue'],
+      color: 'text-amber-500',
+      bgColor: 'bg-amber-50',
+    },
+    {
+      name: 'Payments',
+      icon: Banknote,
+      triggerTypes: ['payment_received'],
+      color: 'text-emerald-500',
+      bgColor: 'bg-emerald-50',
+    },
+  ], [])
+
+  const coverage = useMemo(() => {
+    const activeRules = rules.filter((r) => r.isActive)
+    return modules.map((mod) => ({
+      ...mod,
+      covered: activeRules.some((r) => mod.triggerTypes.includes(r.triggerType)),
+    }))
+  }, [rules, modules])
+
+  const coveredCount = coverage.filter((m) => m.covered).length
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs text-gray-500">Coverage Score</span>
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm font-bold text-gray-900">{coveredCount}</span>
+          <span className="text-xs text-gray-400">/ {modules.length} modules automated</span>
+        </div>
+      </div>
+      <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
+        {coverage.map((mod) => (
+          <div
+            key={mod.name}
+            className={`flex flex-col items-center gap-1.5 p-2 rounded-lg border transition-colors ${
+              mod.covered
+                ? 'border-green-200 bg-green-50/50'
+                : 'border-gray-200 bg-gray-50/50'
+            }`}
+          >
+            <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${mod.covered ? mod.bgColor : 'bg-gray-100'}`}>
+              <mod.icon className={`h-4 w-4 ${mod.covered ? mod.color : 'text-gray-400'}`} />
+            </div>
+            {mod.covered ? (
+              <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+            ) : (
+              <div className="h-3.5 w-3.5 rounded-full bg-gray-300" />
+            )}
+            <span className={`text-[10px] font-medium ${mod.covered ? 'text-gray-700' : 'text-gray-400'}`}>
+              {mod.name}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ─── Workflow Rule Dialog ────────────────────────────────────────────────────
 
 function WorkflowRuleDialog({
   open,
@@ -749,413 +1122,214 @@ function WorkflowRuleDialog({
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  editRule: WorkflowRule | null
+  editRule?: WorkflowRule | null
 }) {
   const queryClient = useQueryClient()
-
   const [name, setName] = useState(editRule?.name || '')
   const [description, setDescription] = useState(editRule?.description || '')
-  const [triggerType, setTriggerType] = useState(editRule?.triggerType || 'deal_stage_change')
-  const [triggerConfig, setTriggerConfig] = useState<Record<string, unknown>>(
-    parseJSON<Record<string, unknown>>(editRule?.triggerConfig, { stage: 'Qualified' })
-  )
-  const [actions, setActions] = useState<WorkflowAction[]>(
-    parseJSON<WorkflowAction[]>(editRule?.actions, [{ ...DEFAULT_ACTION }])
-  )
 
-  const isEditing = !!editRule
+  const allTriggerTypes = [
+    { value: 'deal_stage_change', label: 'Deal Stage Change', configDesc: 'Which stage triggers this' },
+    { value: 'deal_created', label: 'Deal Created', configDesc: 'When a new deal is created' },
+    { value: 'new_contact', label: 'New Contact', configDesc: 'When a contact is created' },
+    { value: 'contact_inactive', label: 'Contact Inactive', configDesc: 'Days without activity' },
+    { value: 'task_overdue', label: 'Task Overdue', configDesc: 'Days overdue before triggering' },
+    { value: 'task_completed', label: 'Task Completed', configDesc: 'When a task is completed' },
+    { value: 'proposal_status_change', label: 'Proposal Status Change', configDesc: 'Which proposal status' },
+    { value: 'meeting_created', label: 'Meeting Created', configDesc: 'When a meeting is scheduled' },
+    { value: 'meeting_completed', label: 'Meeting Completed', configDesc: 'When a meeting is completed' },
+    { value: 'invoice_created', label: 'Invoice Created', configDesc: 'When an invoice is created' },
+    { value: 'invoice_overdue', label: 'Invoice Overdue', configDesc: 'Days after due date' },
+    { value: 'payment_received', label: 'Payment Received', configDesc: 'When a payment is recorded' },
+  ]
 
-  // Reset form when dialog opens
-  const handleOpenChange = useCallback((open: boolean) => {
-    if (open && editRule) {
-      setName(editRule.name)
-      setDescription(editRule.description || '')
-      setTriggerType(editRule.triggerType)
-      setTriggerConfig(parseJSON<Record<string, unknown>>(editRule.triggerConfig, {}))
-      setActions(parseJSON<WorkflowAction[]>(editRule.actions, [{ ...DEFAULT_ACTION }]))
-    } else if (open && !editRule) {
-      setName('')
-      setDescription('')
-      setTriggerType('deal_stage_change')
-      setTriggerConfig({ stage: 'Qualified' })
-      setActions([{ ...DEFAULT_ACTION }])
-    }
-    onOpenChange(open)
-  }, [editRule, onOpenChange])
-
-  const addAction = useCallback(() => {
-    setActions([...actions, { ...DEFAULT_ACTION }])
-  }, [actions])
-
-  const updateAction = useCallback((index: number, updated: WorkflowAction) => {
-    const newActions = [...actions]
-    newActions[index] = updated
-    setActions(newActions)
-  }, [actions])
-
-  const removeAction = useCallback((index: number) => {
-    setActions(actions.filter((_, i) => i !== index))
-  }, [actions])
+  const allActionTypes = [
+    { value: 'create_task', label: 'Create Task' },
+    { value: 'send_email', label: 'Send Email' },
+    { value: 'create_meeting', label: 'Create Meeting' },
+    { value: 'create_proposal', label: 'Create Proposal' },
+    { value: 'create_invoice', label: 'Create Invoice' },
+    { value: 'add_note', label: 'Add Note' },
+    { value: 'update_field', label: 'Update Field' },
+    { value: 'notify', label: 'Send Notification' },
+  ]
 
   const saveMutation = useMutation({
-    mutationFn: async () => {
-      const url = isEditing ? `/api/crm/workflows/${editRule.id}` : '/api/crm/workflows'
-      const method = isEditing ? 'PUT' : 'POST'
-      const body = {
-        name,
-        description,
-        triggerType,
-        triggerConfig,
-        actions,
-        isActive: true,
-      }
+    mutationFn: async (data: Record<string, unknown>) => {
+      const url = editRule ? `/api/crm/workflows/${editRule.id}` : '/api/crm/workflows'
+      const method = editRule ? 'PUT' : 'POST'
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: JSON.stringify(data),
       })
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || 'Failed to save workflow rule')
-      }
+      if (!res.ok) throw new Error('Failed to save rule')
       return res.json()
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workflows'] })
-      toast.success(isEditing ? 'Workflow rule updated' : 'Workflow rule created')
-      handleOpenChange(false)
+      onOpenChange(false)
+      toast.success(editRule ? 'Rule updated' : 'Rule created')
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: () => toast.error('Failed to save rule'),
   })
 
-  const handleSave = useCallback(() => {
-    if (!name.trim()) {
-      toast.error('Rule name is required')
-      return
-    }
-    if (actions.length === 0) {
-      toast.error('At least one action is required')
-      return
-    }
-    saveMutation.mutate()
-  }, [name, actions, saveMutation])
-
-  return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-0">
-        <DialogHeader className="px-6 pt-6 pb-0">
-          <DialogTitle className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-[#F3D840]/20 flex items-center justify-center">
-              <Zap className="h-4 w-4 text-[#F3D840]" />
-            </div>
-            {isEditing ? 'Edit Workflow Rule' : 'Create Workflow Rule'}
-          </DialogTitle>
-          <DialogDescription>
-            {isEditing
-              ? 'Modify your automation rule settings.'
-              : 'Set up a trigger and define actions to automate your workflow.'}
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="px-6 py-4 space-y-6">
-          {/* Name & Description */}
-          <div className="space-y-3">
-            <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-500">Rule Name *</Label>
-              <Input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g., Auto-follow up cold deals"
-                className="text-sm"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-gray-500">Description (optional)</Label>
-              <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="What does this automation do?"
-                className="text-sm min-h-[60px]"
-              />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Trigger Builder */}
-          <TriggerBuilder
-            triggerType={triggerType}
-            triggerConfig={triggerConfig}
-            onTriggerTypeChange={setTriggerType}
-            onConfigChange={setTriggerConfig}
-          />
-
-          <Separator />
-
-          {/* Action Builder */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-[#F3D840]/20 flex items-center justify-center">
-                  <Sparkles className="h-4 w-4 text-[#F3D840]" />
-                </div>
-                <Label className="text-sm font-medium text-gray-700">Then do this...</Label>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <AnimatePresence>
-                {actions.map((action, index) => (
-                  <ActionCard
-                    key={index}
-                    action={action}
-                    index={index}
-                    onUpdate={(updated) => updateAction(index, updated)}
-                    onRemove={() => removeAction(index)}
-                  />
-                ))}
-              </AnimatePresence>
-            </div>
-
-            <Button variant="outline" size="sm" className="w-full text-xs" onClick={addAction}>
-              <Plus className="h-3.5 w-3.5 mr-1.5" />
-              Add Another Action
-            </Button>
-          </div>
-
-          <Separator />
-
-          {/* Preview */}
-          <div className="bg-gray-50 rounded-lg p-3 space-y-2">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Preview</p>
-            <div className="flex items-center gap-2 text-sm">
-              <Badge variant="outline" className="text-xs">{getTriggerLabel(triggerType)}</Badge>
-              <ArrowRight className="h-3.5 w-3.5 text-gray-400" />
-              <span className="text-xs text-gray-600">
-                {actions.map((a) => getActionLabel(a.type)).join(', ')}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <DialogFooter className="px-6 pb-6 pt-2">
-          <Button variant="outline" onClick={() => handleOpenChange(false)}>
-            <X className="h-4 w-4 mr-1.5" />
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSave}
-            disabled={saveMutation.isPending}
-            className="bg-[#374151] hover:bg-[#1F2937] text-white"
-          >
-            {saveMutation.isPending ? (
-              <span className="flex items-center gap-2">
-                <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Saving...
-              </span>
-            ) : (
-              <span className="flex items-center gap-2">
-                <Save className="h-4 w-4" />
-                {isEditing ? 'Update Rule' : 'Create Rule'}
-              </span>
-            )}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
-}
-
-// ─── Execution History Panel ─────────────────────────────────────────────────
-
-function ExecutionHistory({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
-  const [statusFilter, setStatusFilter] = useState('')
-  const [ruleFilter, setRuleFilter] = useState('')
-
-  const { data, isLoading } = useQuery({
-    queryKey: ['workflow-executions', statusFilter, ruleFilter],
-    queryFn: () => {
-      const params = new URLSearchParams({ limit: '50' })
-      if (statusFilter) params.set('status', statusFilter)
-      if (ruleFilter) params.set('ruleId', ruleFilter)
-      return fetch(`/api/crm/workflows/executions?${params.toString()}`).then((r) => r.json())
-    },
-    enabled: open,
-  })
-
-  const { data: rulesData } = useQuery({
-    queryKey: ['workflows', 'all'],
-    queryFn: () => fetch('/api/crm/workflows?includeInactive=true').then((r) => r.json()),
-    enabled: open,
-  })
-
-  const rules = (rulesData?.rules || []) as WorkflowRule[]
-  const executions = (data?.executions || []) as WorkflowExecution[]
-
-  return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-3xl p-0 overflow-y-auto">
-        <SheetHeader className="px-6 pt-6 pb-0">
-          <SheetTitle className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-[#F3D840]/20 flex items-center justify-center">
-              <RotateCcw className="h-4 w-4 text-[#F3D840]" />
-            </div>
-            Execution History
-          </SheetTitle>
-          <SheetDescription>
-            Review recent workflow executions and their results.
-          </SheetDescription>
-        </SheetHeader>
-
-        <div className="px-6 py-4 space-y-4">
-          {/* Filters */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <Select value={statusFilter || '__all__'} onValueChange={(v) => setStatusFilter(v === '__all__' ? '' : v)}>
-              <SelectTrigger className="w-36 h-8 text-xs">
-                <SelectValue placeholder="All Statuses" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__all__">All Statuses</SelectItem>
-                <SelectItem value="success">Success</SelectItem>
-                <SelectItem value="failed">Failed</SelectItem>
-                <SelectItem value="skipped">Skipped</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={ruleFilter || '__all__'} onValueChange={(v) => setRuleFilter(v === '__all__' ? '' : v)}>
-              <SelectTrigger className="w-48 h-8 text-xs">
-                <SelectValue placeholder="All Rules" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__all__">All Rules</SelectItem>
-                {rules.map((r) => (
-                  <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Table */}
-          {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <span className="h-6 w-6 border-2 border-gray-200 border-t-[#F3D840] rounded-full animate-spin" />
-            </div>
-          ) : executions.length === 0 ? (
-            <div className="text-center py-12">
-              <Clock className="h-10 w-10 text-gray-300 mx-auto mb-3" />
-              <p className="text-sm text-gray-500">No executions found</p>
-              <p className="text-xs text-gray-400 mt-1">Executions will appear here when workflows are triggered.</p>
-            </div>
-          ) : (
-            <div className="rounded-lg border border-gray-200 overflow-hidden">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="text-left text-xs font-medium text-gray-500 px-3 py-2">Rule</th>
-                    <th className="text-left text-xs font-medium text-gray-500 px-3 py-2">Action</th>
-                    <th className="text-left text-xs font-medium text-gray-500 px-3 py-2">Status</th>
-                    <th className="text-left text-xs font-medium text-gray-500 px-3 py-2 hidden md:table-cell">Entity</th>
-                    <th className="text-left text-xs font-medium text-gray-500 px-3 py-2 hidden lg:table-cell">Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {executions.map((exec, index) => (
-                    <tr
-                      key={exec.id}
-                      className={`border-b border-gray-100 last:border-0 ${
-                        index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
-                      } hover:bg-gray-50 transition-colors`}
-                    >
-                      <td className="px-3 py-2.5">
-                        <p className="text-xs font-medium text-gray-900 truncate max-w-[160px]">
-                          {exec.rule?.name || 'Unknown'}
-                        </p>
-                      </td>
-                      <td className="px-3 py-2.5">
-                        <p className="text-xs text-gray-600 truncate max-w-[140px]">
-                          {getActionLabel(exec.actionType)}
-                        </p>
-                      </td>
-                      <td className="px-3 py-2.5">
-                        <StatusBadge status={exec.status} />
-                      </td>
-                      <td className="px-3 py-2.5 hidden md:table-cell">
-                        <p className="text-xs text-gray-500">
-                          {exec.entityType}/{exec.entityId.substring(0, 6)}...
-                        </p>
-                      </td>
-                      <td className="px-3 py-2.5 hidden lg:table-cell">
-                        <p className="text-xs text-gray-400">
-                          {format(new Date(exec.executedAt), 'MMM d, h:mm a')}
-                        </p>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-
-          {executions.length > 0 && data?.pagination && (
-            <p className="text-xs text-gray-400 text-center">
-              Showing {executions.length} of {data.pagination.total} executions
-            </p>
-          )}
-        </div>
-      </SheetContent>
-    </Sheet>
-  )
-}
-
-// ─── Delete Confirmation Dialog ──────────────────────────────────────────────
-
-function DeleteDialog({
-  open,
-  onOpenChange,
-  ruleName,
-  onConfirm,
-  loading,
-}: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  ruleName: string
-  onConfirm: () => void
-  loading: boolean
-}) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-red-50 flex items-center justify-center">
-              <Trash2 className="h-4 w-4 text-red-500" />
-            </div>
-            Delete Workflow Rule
-          </DialogTitle>
-          <DialogDescription>
-            Are you sure you want to delete <strong>&quot;{ruleName}&quot;</strong>? This will also remove all execution history for this rule. This action cannot be undone.
-          </DialogDescription>
+          <DialogTitle>{editRule ? 'Edit' : 'New'} Workflow Rule</DialogTitle>
         </DialogHeader>
-        <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
-            Cancel
-          </Button>
+        <div className="grid gap-4 py-2">
+          <div className="space-y-2">
+            <Label>Rule Name</Label>
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Auto-follow up cold deals" />
+          </div>
+          <div className="space-y-2">
+            <Label>Description</Label>
+            <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What does this rule do?" rows={2} />
+          </div>
+          <div className="space-y-2">
+            <Label>Trigger Type</Label>
+            <Select value={editRule?.triggerType || 'deal_stage_change'}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {allTriggerTypes.map((t) => (
+                  <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
+            <p className="font-semibold text-gray-700 mb-1">Available Trigger Types:</p>
+            <ul className="space-y-1 ml-3 list-disc">
+              {allTriggerTypes.map((t) => (
+                <li key={t.value}><span className="font-medium">{t.label}</span> — {t.configDesc}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="space-y-2">
+            <Label>Action Type</Label>
+            <Select defaultValue="create_task">
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {allActionTypes.map((a) => (
+                  <SelectItem key={a.value} value={a.value}>{a.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
+            <p className="font-semibold text-gray-700 mb-1">Available Action Types:</p>
+            <ul className="space-y-1 ml-3 list-disc">
+              {allActionTypes.map((a) => (
+                <li key={a.value}><span className="font-medium">{a.label}</span></li>
+              ))}
+            </ul>
+          </div>
           <Button
-            variant="destructive"
-            onClick={onConfirm}
-            disabled={loading}
+            onClick={() => {
+              if (!name) { toast.error('Name is required'); return }
+              saveMutation.mutate({ name, description, triggerType: 'deal_stage_change', actions: JSON.stringify([]) })
+            }}
+            disabled={saveMutation.isPending}
+            className="w-full bg-[#F3D840] hover:bg-[#E5C832] text-[#1A1A1A] font-bold"
           >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Deleting...
-              </span>
-            ) : (
-              'Delete Rule'
-            )}
+            {saveMutation.isPending ? 'Saving...' : (editRule ? 'Update Rule' : 'Create Rule')}
           </Button>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
+  )
+}
+
+// ─── Execution History ───────────────────────────────────────────────────────
+
+function ExecutionHistory({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+  const { data } = useQuery({
+    queryKey: ['workflow-executions'],
+    queryFn: () => fetch('/api/crm/workflows/executions?limit=50').then((r) => r.json()),
+    enabled: open,
+  })
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Execution History</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-2">
+          {data?.executions?.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-8">No executions yet</p>
+          ) : (
+            data?.executions?.map((ex: Record<string, unknown>) => (
+              <div key={ex.id as string} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 text-sm">
+                <Badge variant={ex.status === 'success' ? 'default' : 'destructive'} className="text-xs">
+                  {ex.status as string}
+                </Badge>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-gray-900 truncate">{ex.actionType as string}</p>
+                  <p className="text-xs text-gray-400">{ex.triggerType as string} — {ex.entityType as string}</p>
+                </div>
+                <span className="text-xs text-gray-400">{format(new Date(ex.executedAt as string), 'MMM d, HH:mm')}</span>
+              </div>
+            ))
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// ─── Delete Dialog ───────────────────────────────────────────────────────────
+
+function DeleteDialog({
+  rule,
+  onDelete,
+}: {
+  rule: WorkflowRule | null
+  onDelete: () => void
+}) {
+  const queryClient = useQueryClient()
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/crm/workflows/${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Failed to delete')
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workflows'] })
+      toast.success('Rule deleted')
+      onDelete()
+    },
+    onError: () => toast.error('Failed to delete rule'),
+  })
+
+  if (!rule) return null
+
+  return (
+    <AlertDialog open={!!rule} onOpenChange={() => onDelete()}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete Workflow Rule</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete &quot;{rule.name}&quot;? This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={onDelete}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => deleteMutation.mutate(rule.id)}
+            className="bg-red-600 hover:bg-red-700"
+          >
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }
 
@@ -1369,6 +1543,30 @@ export default function WorkflowsPage() {
                 <p className="text-xs text-gray-500">Trigger Types</p>
               </div>
             </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Module Coverage */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.08 }}
+      >
+        <Card className="border-gray-100">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-[#F3D840]/20 flex items-center justify-center">
+                  <LayoutGrid className="h-4 w-4 text-[#F3D840]" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900">Module Coverage</h3>
+                  <p className="text-xs text-gray-500">Automation coverage across CRM modules</p>
+                </div>
+              </div>
+            </div>
+            <ModuleCoverageGrid rules={rules} />
           </CardContent>
         </Card>
       </motion.div>

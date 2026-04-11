@@ -6,7 +6,6 @@ import { useRouter, usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
   Users,
-  Building2,
   Kanban,
   Activity,
   CheckSquare,
@@ -17,6 +16,7 @@ import {
   X,
   Calendar as CalendarIcon,
   BarChart3,
+  Receipt,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -27,8 +27,7 @@ import Image from 'next/image'
 
 const navItems = [
   { href: '/crm', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/crm/contacts', label: 'Contacts', icon: Users },
-  { href: '/crm/companies', label: 'Companies', icon: Building2 },
+  { href: '/crm/contacts', label: 'People', icon: Users },
   { href: '/crm/pipeline', label: 'Pipeline', icon: Kanban },
   { href: '/crm/activities', label: 'Activities', icon: Activity },
   { href: '/crm/tasks', label: 'Tasks', icon: CheckSquare },
@@ -36,6 +35,7 @@ const navItems = [
   { href: '/crm/meetings', label: 'Calendar', icon: CalendarIcon },
   { href: '/crm/workflows', label: 'Automations', icon: Zap },
   { href: '/crm/reports', label: 'Reports', icon: BarChart3 },
+  { href: '/crm/invoices', label: 'Invoices', icon: Receipt },
 ]
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {

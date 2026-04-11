@@ -27,6 +27,11 @@ import {
   User as UserIcon,
   Building2,
   FileText,
+  RefreshCw,
+  Link2,
+  Unlink,
+  CheckCircle2,
+  ExternalLink,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -126,6 +131,17 @@ interface Contact {
 interface Deal {
   id: string
   title: string
+}
+
+interface GoogleCalendarEvent {
+  id: string
+  title: string
+  description?: string | null
+  startDate: string
+  endDate: string
+  location?: string | null
+  isAllDay: boolean
+  isGoogleEvent: true
 }
 
 // ===== Helpers =====
@@ -704,6 +720,7 @@ function MeetingFormDialog({
   prefillDate,
   onSubmit,
   isSubmitting,
+  googleConnected,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -713,6 +730,7 @@ function MeetingFormDialog({
   prefillDate?: Date | null
   onSubmit: (data: Record<string, unknown>) => void
   isSubmitting: boolean
+  googleConnected?: boolean
 }) {
   const isEdit = !!meeting
 
@@ -734,6 +752,7 @@ function MeetingFormDialog({
   const [dealId, setDealId] = useState(meeting?.dealId || '')
   const [notes, setNotes] = useState(meeting?.notes || '')
   const [createFollowUp, setCreateFollowUp] = useState(false)
+  const [syncToGoogle, setSyncToGoogle] = useState(false)
 
   useEffect(() => {
     if (open) {
@@ -755,6 +774,7 @@ function MeetingFormDialog({
       setDealId(meeting?.dealId || '')
       setNotes(meeting?.notes || '')
       setCreateFollowUp(false)
+      setSyncToGoogle(false)
     }
   }, [open, meeting, prefillDate])
 
@@ -772,6 +792,7 @@ function MeetingFormDialog({
       dealId: dealId || null,
       notes,
       createFollowUpTask: createFollowUp,
+      syncToGoogle: syncToGoogle && googleConnected ? true : false,
     })
   }
 
@@ -920,6 +941,20 @@ function MeetingFormDialog({
                 <p className="text-xs text-gray-500">Auto-create a task after meeting ends</p>
               </div>
               <Switch checked={createFollowUp} onCheckedChange={setCreateFollowUp} />
+            </div>
+          )}
+
+          {/* Sync to Google Calendar */}
+          {googleConnected && (
+            <div className="flex items-center justify-between py-2 rounded-lg border border-dashed border-blue-200 bg-blue-50/50 px-3">
+              <div>
+                <Label className="text-sm font-medium flex items-center gap-1.5">
+                  <CalendarDays className="h-3.5 w-3.5 text-blue-500" />
+                  Sync to Google Calendar
+                </Label>
+                <p className="text-xs text-gray-500">Also create this event in your Google Calendar</p>
+              </div>
+              <Switch checked={syncToGoogle} onCheckedChange={setSyncToGoogle} className="data-[state=checked]:bg-blue-500" />
             </div>
           )}
 
@@ -1143,14 +1178,43 @@ export default function MeetingsPage() {
   const contacts: Contact[] = contactsData?.contacts || []
   const deals: Deal[] = dealsData?.deals || []
 
+  // Google Calendar connection
+  const { data: googleStatus, refetch: refetchGoogleStatus } = useQuery({
+    queryKey: ['google-calendar-status'],
+    queryFn: () => fetch('/api/crm/calendar/google/status').then((r) => r.json()),
+  })
+
+  const googleConnected = googleStatus?.connected || false
+  const googleEmail = googleStatus?.email || null
+  const googleLastSynced = googleStatus?.lastSyncedAt || null
+
+  // Google Calendar events
+  const { data: googleEventsData, refetch: refetchGoogleEvents } = useQuery({
+    queryKey: ['google-calendar-events'],
+    queryFn: () => fetch('/api/crm/calendar/google/events').then((r) => r.json()),
+    enabled: googleConnected,
+  })
+
+  const googleEvents: GoogleCalendarEvent[] = googleEventsData?.events || []
+
   // Mutations
   const createMutation = useMutation({
-    mutationFn: (data: Record<string, unknown>) =>
-      fetch('/api/crm/meetings', {
+    mutationFn: async (data: Record<string, unknown>) => {
+      const res = await fetch('/api/crm/meetings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-      }).then((r) => r.json()),
+      }).then((r) => r.json())
+      // Push to Google Calendar if requested
+      if (res.meeting?.id && data.syncToGoogle) {
+        await fetch('/api/crm/calendar/google/push-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ meetingId: res.meeting.id }),
+        })
+      }
+      return res
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['meetings'] })
       queryClient.invalidateQueries({ queryKey: ['meetings-all'] })
@@ -1211,6 +1275,35 @@ export default function MeetingsPage() {
       setSelectedMeeting(null)
     },
     onError: () => toast.error('Failed to delete meeting'),
+  })
+
+  // Google Calendar connect mutation
+  const connectGoogleMutation = useMutation({
+    mutationFn: () => fetch('/api/crm/calendar/google/auth-url').then((r) => r.json()),
+    onSuccess: (data) => {
+      window.location.href = data.url
+    },
+    onError: () => toast.error('Failed to initiate Google Calendar connection'),
+  })
+
+  const disconnectGoogleMutation = useMutation({
+    mutationFn: () => fetch('/api/crm/calendar/google/disconnect', { method: 'POST' }).then((r) => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['google-calendar-status'] })
+      queryClient.invalidateQueries({ queryKey: ['google-calendar-events'] })
+      toast.success('Google Calendar disconnected')
+    },
+    onError: () => toast.error('Failed to disconnect Google Calendar'),
+  })
+
+  const syncGoogleMutation = useMutation({
+    mutationFn: () => fetch('/api/crm/calendar/google/sync', { method: 'POST' }).then((r) => r.json()),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['google-calendar-status'] })
+      queryClient.invalidateQueries({ queryKey: ['google-calendar-events'] })
+      toast.success(`Synced ${data.total} events from Google Calendar`)
+    },
+    onError: () => toast.error('Failed to sync Google Calendar'),
   })
 
   // Handlers
@@ -1376,6 +1469,69 @@ export default function MeetingsPage() {
               )}
             </AnimatePresence>
 
+            {/* Google Calendar Events in sidebar */}
+            <Card className="border-0 shadow-sm">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4 text-blue-500" />
+                  Google Calendar
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-3 space-y-2">
+                {googleConnected ? (
+                  <>
+                    <div className="flex items-center gap-2 text-xs text-emerald-600 mb-1">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      <span className="font-medium">Connected</span>
+                      {googleEmail && <span className="text-gray-400">({googleEmail})</span>}
+                    </div>
+                    {googleLastSynced && (
+                      <p className="text-[10px] text-gray-400">Last synced: {new Date(googleLastSynced).toLocaleString()}</p>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full text-xs h-7"
+                      onClick={() => syncGoogleMutation.mutate()}
+                      disabled={syncGoogleMutation.isPending}
+                    >
+                      <RefreshCw className={`h-3 w-3 mr-1.5 ${syncGoogleMutation.isPending ? 'animate-spin' : ''}`} />
+                      Sync Now
+                    </Button>
+                    <div className="max-h-[200px] overflow-y-auto space-y-1">
+                      {googleEvents.length === 0 ? (
+                        <p className="text-xs text-gray-400 text-center py-2">No upcoming Google events</p>
+                      ) : (
+                        googleEvents.slice(0, 5).map((ev) => (
+                          <div key={ev.id} className="flex items-start gap-2 p-1.5 rounded border border-dashed border-blue-200 bg-blue-50/30">
+                            <CalendarDays className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-medium text-gray-700 truncate">{ev.title}</p>
+                              <p className="text-[10px] text-gray-400">
+                                {new Date(ev.startDate).toLocaleDateString('en-IE', { month: 'short', day: 'numeric' })} · {new Date(ev.startDate).toLocaleTimeString('en-IE', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-3">
+                    <p className="text-xs text-gray-500 mb-2">Connect your Google Calendar to sync events</p>
+                    <Button
+                      size="sm"
+                      className="bg-[#F3D840] hover:bg-[#E5C832] text-[#374151] text-xs h-7 w-full"
+                      onClick={() => connectGoogleMutation.mutate()}
+                    >
+                      <Link2 className="h-3 w-3 mr-1.5" />
+                      Connect Google Calendar
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Meeting Types Legend */}
             <Card className="border-0 shadow-sm">
               <CardHeader className="pb-2">
@@ -1468,6 +1624,7 @@ export default function MeetingsPage() {
         prefillDate={prefillDate}
         onSubmit={handleFormSubmit}
         isSubmitting={createMutation.isPending || updateMutation.isPending}
+        googleConnected={googleConnected}
       />
     </div>
   )

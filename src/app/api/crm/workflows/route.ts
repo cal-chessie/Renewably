@@ -62,17 +62,25 @@ export async function POST(request: NextRequest) {
 
     const validTriggerTypes = [
       'deal_stage_change',
+      'deal_created',
       'new_contact',
-      'task_overdue',
-      'proposal_status_change',
       'contact_inactive',
+      'task_overdue',
+      'task_completed',
+      'proposal_status_change',
+      'meeting_created',
+      'meeting_completed',
+      'meeting_cancelled',
+      'invoice_created',
+      'invoice_overdue',
+      'payment_received',
     ]
 
     if (!validTriggerTypes.includes(triggerType)) {
       return NextResponse.json({ error: 'Invalid trigger type' }, { status: 400 })
     }
 
-    const validActionTypes = ['create_task', 'send_email', 'update_field', 'add_note', 'notify']
+    const validActionTypes = ['create_task', 'send_email', 'update_field', 'add_note', 'notify', 'create_meeting', 'create_proposal', 'create_invoice', 'create_note']
     for (const action of actions) {
       if (!validActionTypes.includes(action.type)) {
         return NextResponse.json({ error: `Invalid action type: ${action.type}` }, { status: 400 })

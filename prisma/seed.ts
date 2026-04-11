@@ -25,6 +25,7 @@ async function main() {
   await db.pipelineStage.deleteMany();
   await db.contact.deleteMany();
   await db.company.deleteMany();
+  await db.googleCalendarConnection.deleteMany();
   await db.user.deleteMany();
   await db.workflowExecution.deleteMany();
   await db.workflowRule.deleteMany();
@@ -638,6 +639,52 @@ async function main() {
     },
   });
 
+  const workflowRule6 = await db.workflowRule.create({
+    data: {
+      name: 'Auto-meeting for new deals',
+      description: 'Automatically schedule a discovery call when a new deal is created in the pipeline.',
+      isActive: true,
+      triggerType: 'deal_created',
+      triggerConfig: JSON.stringify({}),
+      actions: JSON.stringify([
+        { type: 'create_meeting', config: { title: 'Discovery Call - New Deal', meetingType: 'call', duration: 30 } },
+      ]),
+      executionCount: 12,
+      lastExecutedAt: wfTwoDaysAgo,
+    },
+  });
+
+  const workflowRule7 = await db.workflowRule.create({
+    data: {
+      name: 'Invoice overdue follow-up',
+      description: 'When an invoice becomes 7+ days overdue, automatically create a follow-up task for the assigned agent.',
+      isActive: true,
+      triggerType: 'invoice_overdue',
+      triggerConfig: JSON.stringify({ days: 7 }),
+      actions: JSON.stringify([
+        { type: 'create_task', config: { title: 'Follow up on overdue invoice', priority: 'high', description: 'Invoice has been overdue for 7+ days. Contact the client to discuss payment options and potential payment plan.' } },
+      ]),
+      executionCount: 5,
+      lastExecutedAt: wfOneDayAgo,
+    },
+  });
+
+  const workflowRule8 = await db.workflowRule.create({
+    data: {
+      name: 'Payment received log',
+      description: 'When a payment is received, automatically log a note on the associated deal and notify the admin.',
+      isActive: true,
+      triggerType: 'payment_received',
+      triggerConfig: JSON.stringify({}),
+      actions: JSON.stringify([
+        { type: 'create_note', config: { text: 'Payment received! Record the payment details and update financial records.' } },
+        { type: 'notify', config: { user: 'admin', message: 'Payment received for an invoice. Check the invoice for the amount and client details.' } },
+      ]),
+      executionCount: 8,
+      lastExecutedAt: wfFiveDaysAgo,
+    },
+  });
+
   console.log('✅ Workflow rules created');
 
   // ===== WORKFLOW EXECUTIONS (demo history) =====
@@ -651,6 +698,10 @@ async function main() {
       { ruleId: workflowRule5.id, triggerType: 'deal_stage_change', entityType: 'deal', entityId: 'demo-deal-2', actionType: 'create_task', actionConfig: JSON.stringify({ title: 'Schedule account review meeting' }), status: 'success', result: 'Task created', executedAt: wfThreeDaysAgo },
       { ruleId: workflowRule5.id, triggerType: 'deal_stage_change', entityType: 'deal', entityId: 'demo-deal-2', actionType: 'add_note', actionConfig: JSON.stringify({ text: 'Deal won!' }), status: 'success', result: 'Note added', executedAt: wfThreeDaysAgo },
       { ruleId: workflowRule5.id, triggerType: 'deal_stage_change', entityType: 'deal', entityId: 'demo-deal-2', actionType: 'notify', actionConfig: JSON.stringify({ user: 'all', message: 'Deal won!' }), status: 'failed', result: 'Failed to notify all team members: notification service unavailable', executedAt: wfThreeDaysAgo },
+      { ruleId: workflowRule6.id, triggerType: 'deal_created', entityType: 'deal', entityId: 'demo-deal-3', actionType: 'create_meeting', actionConfig: JSON.stringify({ title: 'Discovery Call - New Deal' }), status: 'success', result: 'Meeting created successfully', executedAt: wfTwoDaysAgo },
+      { ruleId: workflowRule7.id, triggerType: 'invoice_overdue', entityType: 'invoice', entityId: 'demo-invoice-1', actionType: 'create_task', actionConfig: JSON.stringify({ title: 'Follow up on overdue invoice', priority: 'high' }), status: 'success', result: 'Task created for overdue follow-up', executedAt: wfOneDayAgo },
+      { ruleId: workflowRule8.id, triggerType: 'payment_received', entityType: 'invoice', entityId: 'demo-invoice-2', actionType: 'create_note', actionConfig: JSON.stringify({ text: 'Payment received!' }), status: 'success', result: 'Note logged on deal', executedAt: wfFiveDaysAgo },
+      { ruleId: workflowRule8.id, triggerType: 'payment_received', entityType: 'invoice', entityId: 'demo-invoice-2', actionType: 'notify', actionConfig: JSON.stringify({ user: 'admin', message: 'Payment received!' }), status: 'success', result: 'Admin notified', executedAt: wfFiveDaysAgo },
     ],
   });
 
