@@ -78,13 +78,13 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-/* Renewably Brand Colors — Original Yellow Theme */
+/* Renewably Brand Colors — Yellow + Slate Theme */
 :root {
   --color-brand-yellow: #F3D840;
   --color-brand-yellow-dark: #E5C832;
-  --color-brand-brown: #895A18;
-  --color-brand-brown-dark: #6B4510;
-  --color-brand-brown-light: #A67030;
+  --color-brand-accent: #374151;
+  --color-brand-accent-dark: #1F2937;
+  --color-brand-accent-light: #4B5563;
   --color-brand-dark: #333333;
   --color-brand-text: #535353;
   --color-brand-bg: #FFFFFF;
@@ -176,10 +176,10 @@ body {
 /* Pulse animation for CTA buttons */
 @keyframes subtle-pulse {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(137, 90, 24, 0.4);
+    box-shadow: 0 0 0 0 rgba(243, 216, 64, 0.5);
   }
   50% {
-    box-shadow: 0 0 0 12px rgba(137, 90, 24, 0);
+    box-shadow: 0 0 0 12px rgba(243, 216, 64, 0);
   }
 }
 

@@ -103,7 +103,7 @@ export default function CompaniesPage() {
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-[#895A18] hover:bg-[#6B4510] text-white font-medium">
+            <Button className="bg-[#374151] hover:bg-[#1F2937] text-white font-medium">
               <Plus className="h-4 w-4 mr-2" />
               New Company
             </Button>
@@ -173,7 +173,7 @@ export default function CompaniesPage() {
                   createMutation.mutate(newCompany)
                 }}
                 disabled={createMutation.isPending}
-                className="w-full bg-[#895A18] hover:bg-[#6B4510] text-white"
+                className="w-full bg-[#374151] hover:bg-[#1F2937] text-white"
               >
                 {createMutation.isPending ? 'Creating...' : 'Create Company'}
               </Button>
@@ -272,8 +272,8 @@ export default function CompaniesPage() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-xl bg-[#895A18]/10 flex items-center justify-center shrink-0">
-                            <Building2 className="h-5 w-5 text-[#895A18]" />
+                          <div className="h-10 w-10 rounded-xl bg-[#374151]/10 flex items-center justify-center shrink-0">
+                            <Building2 className="h-5 w-5 text-[#374151]" />
                           </div>
                           <div>
                             <p className="text-sm font-medium text-gray-900">
@@ -301,7 +301,7 @@ export default function CompaniesPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center justify-center h-6 min-w-6 px-2 rounded-full bg-[#F3D840]/20 text-[#895A18] text-xs font-bold">
+                        <span className="inline-flex items-center justify-center h-6 min-w-6 px-2 rounded-full bg-[#F3D840]/20 text-[#374151] text-xs font-bold">
                           {(company._count as Record<string, number>)?.contacts || 0}
                         </span>
                       </td>

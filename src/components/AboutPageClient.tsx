@@ -22,7 +22,7 @@ export default function AboutPageClient() {
         <section className="bg-[#F3D840] py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <ScrollReveal>
-              <p className="text-[#895A18] font-semibold text-sm tracking-wider uppercase mb-3">About Us</p>
+              <p className="text-[#374151] font-semibold text-sm tracking-wider uppercase mb-3">About Us</p>
               <h1 className="text-4xl sm:text-5xl font-bold text-[#333333] mb-6">
                 Building Sustainable Growth for Renewable Energy Brands
               </h1>
@@ -49,7 +49,7 @@ export default function AboutPageClient() {
               </ScrollReveal>
               <ScrollReveal direction="right">
                 <div>
-                  <p className="text-[#895A18] font-semibold text-sm tracking-wider uppercase mb-3">Our Founder</p>
+                  <p className="text-[#374151] font-semibold text-sm tracking-wider uppercase mb-3">Our Founder</p>
                   <h2 className="text-3xl sm:text-4xl font-bold text-[#333333] mb-6">
                     A Vision for Sustainable Growth
                   </h2>
@@ -97,7 +97,7 @@ export default function AboutPageClient() {
                     {values.map((v, i) => (
                       <ScrollReveal key={v.title} delay={i * 0.1}>
                         <div className="p-6 rounded-xl border-2 border-[#F3D840] bg-[#FAFAFA] hover:shadow-md transition-shadow">
-                          <h3 className="font-semibold text-[#895A18] mb-2">{v.title}</h3>
+                          <h3 className="font-semibold text-[#374151] mb-2">{v.title}</h3>
                           <p className="text-[#535353] text-sm leading-relaxed">{v.desc}</p>
                         </div>
                       </ScrollReveal>
@@ -117,7 +117,7 @@ export default function AboutPageClient() {
               <p className="text-[#535353] mb-8 leading-relaxed">
                 Let us show you how our AI-powered system can transform your customer acquisition. Book a free strategy call today.
               </p>
-              <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-[#895A18] hover:bg-[#6B4510] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
+              <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-[#374151] hover:bg-[#1F2937] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
                 Book a Strategy Call
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </Link>

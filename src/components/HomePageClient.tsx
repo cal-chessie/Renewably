@@ -47,7 +47,7 @@ function HeroSection() {
             filter: "blur(100px)",
           }}
         />
-        {/* Subtle warm brown accent glow - center */}
+        {/* Subtle warm accent glow - center */}
         <motion.div
           animate={{
             x: [0, 15, -10, 0],
@@ -64,7 +64,7 @@ function HeroSection() {
         <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
-            backgroundImage: `radial-gradient(circle, #895A18 1px, transparent 1px)`,
+            backgroundImage: `radial-gradient(circle, #374151 1px, transparent 1px)`,
             backgroundSize: "40px 40px",
           }}
         />
@@ -73,7 +73,7 @@ function HeroSection() {
           <svg width="100%" height="100%" className="absolute inset-0">
             <defs>
               <pattern id="neuralGrid" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-                <circle cx="40" cy="40" r="2" fill="#895A18" />
+                <circle cx="40" cy="40" r="2" fill="#374151" />
                 <line x1="40" y1="0" x2="40" y2="40" stroke="#F3D840" strokeWidth="0.5" />
                 <line x1="40" y1="40" x2="80" y2="40" stroke="#F3D840" strokeWidth="0.5" />
                 <line x1="0" y1="40" x2="40" y2="40" stroke="#F3D840" strokeWidth="0.5" />
@@ -116,7 +116,7 @@ function HeroSection() {
                 className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
                 style={{ boxShadow: "0 0 8px rgba(243,216,64,0.6)" }}
               />
-              <span className="text-[#895A18] text-xs sm:text-sm font-semibold tracking-wide">
+              <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
                 Agentic AI for Renewable Energy
               </span>
             </motion.div>
@@ -160,7 +160,7 @@ function HeroSection() {
               </MagneticButton>
               <Link
                 href="/services"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold text-[#895A18] hover:text-[#6B4510] border border-[#895A18]/20 hover:border-[#895A18]/40 hover:bg-[#895A18]/5 transition-all duration-300"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold text-[#374151] hover:text-[#1F2937] border border-[#374151]/20 hover:border-[#374151]/40 hover:bg-[#374151]/5 transition-all duration-300"
               >
                 Explore Services
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,7 +178,7 @@ function HeroSection() {
             >
               <div className="flex items-center gap-2">
                 <div className="flex -space-x-2">
-                  {[{ bg: 'bg-[#F3D840]', label: 'SE' }, { bg: 'bg-[#E5C832]', label: 'FD' }, { bg: 'bg-[#D4BA28]', label: 'AK' }, { bg: 'bg-[#895A18]', label: 'RM' }].map((item, i) => (
+                  {[{ bg: 'bg-[#F3D840]', label: 'SE' }, { bg: 'bg-[#E5C832]', label: 'FD' }, { bg: 'bg-[#D4BA28]', label: 'AK' }, { bg: 'bg-[#374151]', label: 'RM' }].map((item, i) => (
                     <div key={i} className={`w-8 h-8 rounded-full ${item.bg} border-2 border-white flex items-center justify-center`}>
                       <span className="text-[10px] font-bold text-[#1A1A1A]">{item.label}</span>
                     </div>
@@ -217,7 +217,7 @@ function HeroSection() {
               <motion.div
                 animate={{ rotate: -360 }}
                 transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-                className="w-[440px] h-[440px] rounded-full border border-dashed border-[#895A18]/[0.08]"
+                className="w-[440px] h-[440px] rounded-full border border-dashed border-[#374151]/[0.08]"
               />
             </div>
 
@@ -265,7 +265,7 @@ function HeroSection() {
               <div className="bg-white/90 backdrop-blur-xl border border-[#F3D840]/20 rounded-2xl px-5 py-4 shadow-xl shadow-[#F3D840]/10">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[#F3D840] flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[#895A18]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#374151]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
@@ -286,8 +286,8 @@ function HeroSection() {
             >
               <div className="bg-white/90 backdrop-blur-xl border border-[#F3D840]/20 rounded-2xl px-5 py-4 shadow-xl shadow-[#F3D840]/10">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#895A18]/10 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[#895A18]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 rounded-xl bg-[#374151]/10 flex items-center justify-center">
+                    <svg className="w-5 h-5 text-[#374151]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                   </div>
@@ -345,7 +345,7 @@ function HeroSection() {
                 transition={{ delay: 0.5 + i * 0.15, duration: 0.5 }}
                 className="bg-white/80 backdrop-blur-md border border-[#F3D840]/15 rounded-2xl px-5 py-4 hover:bg-white/95 hover:border-[#F3D840]/30 transition-all duration-300"
               >
-                <div className="text-2xl sm:text-3xl font-bold text-[#895A18] mb-1">
+                <div className="text-2xl sm:text-3xl font-bold text-[#374151] mb-1">
                   <AnimatedCounter end={stat.value} suffix={stat.suffix} duration={2} />
                 </div>
                 <p className="text-[#1A1A1A] text-sm font-semibold">{stat.label}</p>
@@ -422,7 +422,7 @@ function AIAgentsSection() {
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
-              <span className="text-[#895A18] text-xs sm:text-sm font-semibold tracking-wide">
+              <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
                 Meet Your AI Workforce
               </span>
             </motion.div>
@@ -446,7 +446,7 @@ function AIAgentsSection() {
                 className="p-6 lg:p-8 rounded-2xl bg-gradient-to-br from-white to-[#FFFDF5] border border-[#F3D840]/15 hover:border-[#F3D840]/40 transition-all duration-300 cursor-pointer group h-full"
               >
                 <div className="flex items-start justify-between mb-5">
-                  <div className="w-12 h-12 rounded-2xl bg-[#F3D840] flex items-center justify-center text-[#895A18] group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-12 h-12 rounded-2xl bg-[#F3D840] flex items-center justify-center text-[#374151] group-hover:scale-110 transition-transform duration-300">
                     {agent.icon}
                   </div>
                   <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 border border-green-200">
@@ -454,7 +454,7 @@ function AIAgentsSection() {
                     <span className="text-green-700 text-xs font-medium">{agent.status}</span>
                   </div>
                 </div>
-                <h3 className="text-lg font-bold text-[#1A1A1A] mb-2 group-hover:text-[#895A18] transition-colors">
+                <h3 className="text-lg font-bold text-[#1A1A1A] mb-2 group-hover:text-[#374151] transition-colors">
                   {agent.title}
                 </h3>
                 <p className="text-[#535353] text-sm leading-relaxed">
@@ -479,10 +479,10 @@ function MarqueeSection() {
   return (
     <section className="bg-[#F3D840] py-4 overflow-hidden">
       <div className="animate-marquee whitespace-nowrap flex">
-        <span className="text-[#895A18] font-bold text-sm sm:text-base tracking-widest uppercase mx-4">
+        <span className="text-[#374151] font-bold text-sm sm:text-base tracking-widest uppercase mx-4">
           {text}
         </span>
-        <span className="text-[#895A18] font-bold text-sm sm:text-base tracking-widest uppercase mx-4">
+        <span className="text-[#374151] font-bold text-sm sm:text-base tracking-widest uppercase mx-4">
           {text}
         </span>
       </div>
@@ -601,7 +601,7 @@ function SustainableSystemSection() {
             <div>
               <h2 className="text-3xl sm:text-4xl font-bold text-[#1A1A1A] leading-tight mb-6">
                 We Build You A{" "}
-                <span className="text-[#895A18]">Sustainable System</span>, Where You
+                <span className="text-[#374151]">Sustainable System</span>, Where You
                 Take All The Points!
               </h2>
               <p className="text-[#535353] leading-relaxed mb-8">
@@ -628,7 +628,7 @@ function SustainableSystemSection() {
                       transition={{ delay: 0.2 + i * 0.15, duration: 0.3, type: "spring", stiffness: 300 }}
                       className="w-6 h-6 rounded-full bg-[#F3D840] flex items-center justify-center shrink-0"
                     >
-                      <svg className="w-3.5 h-3.5 text-[#895A18]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3.5 h-3.5 text-[#374151]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     </motion.div>
@@ -664,7 +664,7 @@ function SustainableSystemSection() {
    ============================================================ */
 function YellowDivider() {
   return (
-    <section className="bg-[#895A18] py-16 md:py-20">
+    <section className="bg-[#374151] py-16 md:py-20">
       <ScrollReveal>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h2
@@ -751,10 +751,10 @@ function ServicesGrid() {
                 onMouseLeave={(e) => { e.currentTarget.style.borderLeftColor = "transparent"; }}
               >
                 <div className="w-12 h-12 rounded-full bg-[#F3D840] flex items-center justify-center mb-4 text-xl">
-                  <span className="text-[#895A18] font-bold text-sm">{service.num}</span>
+                  <span className="text-[#374151] font-bold text-sm">{service.num}</span>
                 </div>
                 <div className="text-2xl mb-3">{service.icon}</div>
-                <h3 className="text-lg font-semibold text-[#1A1A1A] mb-2 group-hover:text-[#895A18] transition-colors">
+                <h3 className="text-lg font-semibold text-[#1A1A1A] mb-2 group-hover:text-[#374151] transition-colors">
                   {service.title}
                 </h3>
                 <p className="text-[#535353] text-sm leading-relaxed">{service.desc}</p>
@@ -779,7 +779,7 @@ function ResultsSection() {
   ];
 
   return (
-    <section className="bg-[#895A18] py-20 md:py-28">
+    <section className="bg-[#374151] py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <div className="text-center mb-16">
@@ -882,7 +882,7 @@ function TestimonialsSection() {
 
               <div>
                 <p className="font-bold text-[#1A1A1A]">{testimonials[current].name}</p>
-                <p className="text-[#895A18] text-sm font-medium">{testimonials[current].company}</p>
+                <p className="text-[#374151] text-sm font-medium">{testimonials[current].company}</p>
               </div>
             </motion.div>
           </AnimatePresence>
@@ -944,7 +944,7 @@ function WhyChooseSection() {
                   <ScrollReveal key={feature} delay={i * 0.08}>
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-[#F3D840] flex items-center justify-center shrink-0">
-                        <svg className="w-4 h-4 text-[#895A18]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-[#374151]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
@@ -1029,7 +1029,7 @@ function FAQSection() {
               <div className="bg-white rounded-xl border border-[#F3D840]/10 overflow-hidden">
                 <button
                   onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                  className="w-full flex items-center justify-between p-6 text-left font-semibold text-[#1A1A1A] hover:text-[#895A18] transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-between p-6 text-left font-semibold text-[#1A1A1A] hover:text-[#374151] transition-colors cursor-pointer"
                 >
                   <span className="pr-4">{faq.q}</span>
                   <motion.svg
@@ -1082,7 +1082,7 @@ function CTASection() {
           >
             Ready to Deploy Your AI Agents?
           </motion.h2>
-          <p className="text-[#895A18] text-lg mb-10 max-w-2xl mx-auto">
+          <p className="text-[#374151] text-lg mb-10 max-w-2xl mx-auto">
             Join 150+ renewable energy brands that trust Renewably&apos;s autonomous AI to deliver qualified leads on autopilot.
           </p>
           <MagneticButton href="/contact">

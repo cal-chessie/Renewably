@@ -171,7 +171,7 @@ export default function TasksPage() {
 
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-[#895A18] hover:bg-[#6B4510] text-white font-medium">
+              <Button className="bg-[#374151] hover:bg-[#1F2937] text-white font-medium">
                 <Plus className="h-4 w-4 mr-2" />
                 New Task
               </Button>
@@ -234,7 +234,7 @@ export default function TasksPage() {
                     })
                   }}
                   disabled={createMutation.isPending}
-                  className="w-full bg-[#895A18] hover:bg-[#6B4510] text-white"
+                  className="w-full bg-[#374151] hover:bg-[#1F2937] text-white"
                 >
                   {createMutation.isPending ? 'Creating...' : 'Create Task'}
                 </Button>

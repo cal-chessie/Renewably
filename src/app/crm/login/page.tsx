@@ -98,7 +98,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="h-11 border-gray-200 focus:border-[#895A18] focus:ring-[#895A18]/20"
+                className="h-11 border-gray-200 focus:border-[#374151] focus:ring-[#374151]/20"
               />
             </div>
 
@@ -114,7 +114,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-11 border-gray-200 focus:border-[#895A18] focus:ring-[#895A18]/20 pr-10"
+                  className="h-11 border-gray-200 focus:border-[#374151] focus:ring-[#374151]/20 pr-10"
                 />
                 <button
                   type="button"

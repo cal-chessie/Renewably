@@ -91,7 +91,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         {user && (
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9">
-              <AvatarFallback className="bg-[#F3D840] text-[#895A18] text-sm font-bold">
+              <AvatarFallback className="bg-[#F3D840] text-[#374151] text-sm font-bold">
                 {user.name
                   .split(' ')
                   .map((n: string) => n[0])

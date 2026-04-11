@@ -63,8 +63,8 @@ export default function Header() {
                 href={link.href}
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-300 ${
                   scrolled
-                    ? "text-[#333333] hover:text-[#895A18] hover:bg-[#F3D840]/10"
-                    : "text-[#333333] hover:text-[#895A18] hover:bg-white/20"
+                    ? "text-[#333333] hover:text-[#374151] hover:bg-[#F3D840]/10"
+                    : "text-[#333333] hover:text-[#374151] hover:bg-white/20"
                 }`}
               >
                 {link.label}
@@ -185,7 +185,7 @@ export default function Header() {
                       <Link
                         href={link.href}
                         onClick={() => setMobileOpen(false)}
-                        className="block px-6 py-4 text-base font-medium text-[#333333] hover:text-[#895A18] hover:bg-[#F3D840]/10 transition-colors"
+                        className="block px-6 py-4 text-base font-medium text-[#333333] hover:text-[#374151] hover:bg-[#F3D840]/10 transition-colors"
                       >
                         {link.label}
                       </Link>

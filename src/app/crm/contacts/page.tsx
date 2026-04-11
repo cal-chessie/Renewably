@@ -142,7 +142,7 @@ export default function ContactsPage() {
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-[#895A18] hover:bg-[#6B4510] text-white font-medium">
+            <Button className="bg-[#374151] hover:bg-[#1F2937] text-white font-medium">
               <Plus className="h-4 w-4 mr-2" />
               New Contact
             </Button>
@@ -241,7 +241,7 @@ export default function ContactsPage() {
               <Button
                 onClick={handleCreate}
                 disabled={createMutation.isPending}
-                className="w-full bg-[#895A18] hover:bg-[#6B4510] text-white"
+                className="w-full bg-[#374151] hover:bg-[#1F2937] text-white"
               >
                 {createMutation.isPending ? 'Creating...' : 'Create Contact'}
               </Button>
@@ -360,7 +360,7 @@ export default function ContactsPage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="h-9 w-9 rounded-full bg-[#F3D840]/20 flex items-center justify-center shrink-0">
-                            <span className="text-[#895A18] text-xs font-bold">
+                            <span className="text-[#374151] text-xs font-bold">
                               {(contact.firstName as string)[0]}
                               {(contact.lastName as string)[0]}
                             </span>

@@ -156,7 +156,7 @@ export default function ContactDetailPage() {
       >
         <div className="flex items-start gap-4">
           <div className="h-16 w-16 rounded-2xl bg-[#F3D840]/20 flex items-center justify-center shrink-0">
-            <span className="text-[#895A18] text-xl font-bold">
+            <span className="text-[#374151] text-xl font-bold">
               {contact.firstName[0]}
               {contact.lastName[0]}
             </span>
@@ -258,7 +258,7 @@ export default function ContactDetailPage() {
                       <Linkedin className="h-4 w-4 text-gray-400" />
                       <div>
                         <p className="text-xs text-gray-400">LinkedIn</p>
-                        <p className="text-sm text-[#895A18]">Profile</p>
+                        <p className="text-sm text-[#374151]">Profile</p>
                       </div>
                     </div>
                   )}
@@ -339,7 +339,7 @@ export default function ContactDetailPage() {
               <div className="flex justify-end">
                 <Dialog open={activityDialogOpen} onOpenChange={setActivityDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button className="bg-[#895A18] hover:bg-[#6B4510] text-white">
+                    <Button className="bg-[#374151] hover:bg-[#1F2937] text-white">
                       <Plus className="h-4 w-4 mr-2" />
                       Log Activity
                     </Button>
@@ -393,7 +393,7 @@ export default function ContactDetailPage() {
                           addActivityMutation.mutate(newActivity)
                         }}
                         disabled={addActivityMutation.isPending}
-                        className="w-full bg-[#895A18] hover:bg-[#6B4510] text-white"
+                        className="w-full bg-[#374151] hover:bg-[#1F2937] text-white"
                       >
                         Log Activity
                       </Button>
@@ -483,7 +483,7 @@ export default function ContactDetailPage() {
                       addNoteMutation.mutate(noteContent)
                     }}
                     disabled={addNoteMutation.isPending || !noteContent.trim()}
-                    className="bg-[#895A18] hover:bg-[#6B4510] text-white self-end shrink-0"
+                    className="bg-[#374151] hover:bg-[#1F2937] text-white self-end shrink-0"
                   >
                     Add
                   </Button>

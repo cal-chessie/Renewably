@@ -65,7 +65,7 @@ export default function BlogPageClient() {
         <section className="bg-[#F3D840] py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <ScrollReveal>
-              <p className="text-[#895A18] font-semibold text-sm tracking-wider uppercase mb-3">Blog</p>
+              <p className="text-[#374151] font-semibold text-sm tracking-wider uppercase mb-3">Blog</p>
               <h1 className="text-4xl sm:text-5xl font-bold text-[#333333] mb-6">
                 Insights for Renewable Energy Marketing
               </h1>
@@ -84,10 +84,10 @@ export default function BlogPageClient() {
                 <ScrollReveal key={post.slug} delay={i * 0.08}>
                   <article className="group p-6 sm:p-8 rounded-xl border border-gray-100 hover:border-[#F3D840] hover:shadow-lg transition-all duration-300 bg-white cursor-pointer">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="px-3 py-1 text-xs font-medium bg-[#F3D840] text-[#895A18] rounded-full">{post.category}</span>
+                      <span className="px-3 py-1 text-xs font-medium bg-[#F3D840] text-[#374151] rounded-full">{post.category}</span>
                       <span className="text-sm text-gray-400">{post.readTime}</span>
                     </div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-[#333333] mb-3 group-hover:text-[#895A18] transition-colors">
+                    <h2 className="text-xl sm:text-2xl font-bold text-[#333333] mb-3 group-hover:text-[#374151] transition-colors">
                       <Link href={`/blog/${post.slug}`}>{post.title}</Link>
                     </h2>
                     <p className="text-[#535353] leading-relaxed mb-4">{post.excerpt}</p>

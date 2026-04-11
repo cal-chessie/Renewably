@@ -145,7 +145,7 @@ export default function BlogPostClient() {
         <main className="pt-20">
           <section className="py-32 text-center">
             <h1 className="text-4xl font-bold text-[#333333] mb-4">Post Not Found</h1>
-            <Link href="/blog" className="text-[#895A18] hover:text-[#6B4510]">
+            <Link href="/blog" className="text-[#374151] hover:text-[#1F2937]">
               &larr; Back to Blog
             </Link>
           </section>
@@ -165,10 +165,10 @@ export default function BlogPostClient() {
         <article className="bg-[#F3D840] py-20 md:py-28">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal>
-              <Link href="/blog" className="text-[#895A18] hover:text-[#6B4510] text-sm font-medium mb-6 inline-block">
+              <Link href="/blog" className="text-[#374151] hover:text-[#1F2937] text-sm font-medium mb-6 inline-block">
                 &larr; Back to Blog
               </Link>
-              <span className="inline-block px-3 py-1 text-xs font-medium bg-[#895A18]/20 text-[#895A18] rounded-full mb-4">
+              <span className="inline-block px-3 py-1 text-xs font-medium bg-[#374151]/20 text-[#374151] rounded-full mb-4">
                 {post.category}
               </span>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#333333] leading-tight mb-4">
@@ -205,7 +205,7 @@ export default function BlogPostClient() {
         <section className="py-16 bg-[#FAFAFA]">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <ScrollReveal>
-              <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-[#895A18] hover:bg-[#6B4510] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
+              <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-[#374151] hover:bg-[#1F2937] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
                 Ready to Transform Your Lead Generation?
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </Link>

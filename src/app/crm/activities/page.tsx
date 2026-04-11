@@ -114,7 +114,7 @@ export default function ActivitiesPage() {
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-[#895A18] hover:bg-[#6B4510] text-white font-medium">
+            <Button className="bg-[#374151] hover:bg-[#1F2937] text-white font-medium">
               <Plus className="h-4 w-4 mr-2" />
               Log Activity
             </Button>
@@ -185,7 +185,7 @@ export default function ActivitiesPage() {
                   createMutation.mutate(newActivity)
                 }}
                 disabled={createMutation.isPending}
-                className="w-full bg-[#895A18] hover:bg-[#6B4510] text-white"
+                className="w-full bg-[#374151] hover:bg-[#1F2937] text-white"
               >
                 {createMutation.isPending ? 'Saving...' : 'Log Activity'}
               </Button>
@@ -294,7 +294,7 @@ export default function ActivitiesPage() {
                           </span>
                         )}
                         {activity.deal && (
-                          <span className="text-xs text-[#895A18]">
+                          <span className="text-xs text-[#374151]">
                             📋 {(activity.deal as Record<string, string>).title}
                           </span>
                         )}

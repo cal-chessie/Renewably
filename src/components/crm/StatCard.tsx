@@ -41,7 +41,7 @@ export function StatCard({ title, value, subtitle, icon: Icon, trend, delay = 0 
               )}
             </div>
             <div className="h-12 w-12 rounded-xl bg-amber-50 flex items-center justify-center">
-              <Icon className="h-6 w-6 text-[#895A18]" />
+              <Icon className="h-6 w-6 text-[#374151]" />
             </div>
           </div>
         </CardContent>

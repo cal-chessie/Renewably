@@ -54,7 +54,7 @@ function timeAgo(date: string | Date) {
   return format(d, 'MMM d')
 }
 
-const PIE_COLORS = ['#F3D840', '#895A18', '#6B4510', '#A67030']
+const PIE_COLORS = ['#F3D840', '#374151', '#1F2937', '#4B5563']
 
 export default function DashboardPage() {
   const { data, isLoading } = useQuery({
@@ -63,7 +63,8 @@ export default function DashboardPage() {
     refetchInterval: 30000,
   })
 
-  if (isLoading || !data) {
+  // Show loading when fetching or when data contains an error
+  if (isLoading || !data || data.error) {
     return (
       <div className="p-6 lg:p-8">
         <div className="space-y-6">
@@ -75,13 +76,14 @@ export default function DashboardPage() {
     )
   }
 
-  const { kpis, tasksByStatus, dealsByStage, monthlyTrend, recentActivities, upcomingTasks } = data
+  const { kpis = {}, tasksByStatus = {}, dealsByStage = [], monthlyTrend = [], recentActivities = [], upcomingTasks = [] } = data || {}
 
+  const safeTasks = tasksByStatus || {}
   const pieData = [
-    { name: 'To Do', value: tasksByStatus.todo },
-    { name: 'In Progress', value: tasksByStatus.in_progress },
-    { name: 'Completed', value: tasksByStatus.completed },
-    { name: 'Cancelled', value: tasksByStatus.cancelled },
+    { name: 'To Do', value: safeTasks.todo || 0 },
+    { name: 'In Progress', value: safeTasks.in_progress || 0 },
+    { name: 'Completed', value: safeTasks.completed || 0 },
+    { name: 'Cancelled', value: safeTasks.cancelled || 0 },
   ].filter((d) => d.value > 0)
 
   return (
@@ -222,10 +224,10 @@ export default function DashboardPage() {
                     <Line
                       type="monotone"
                       dataKey="value"
-                      stroke="#895A18"
+                      stroke="#374151"
                       strokeWidth={3}
-                      dot={{ fill: '#895A18', strokeWidth: 2, r: 4 }}
-                      activeDot={{ r: 6, fill: '#F3D840', stroke: '#895A18', strokeWidth: 2 }}
+                      dot={{ fill: '#374151', strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, fill: '#F3D840', stroke: '#374151', strokeWidth: 2 }}
                     />
                   </LineChart>
                 </ResponsiveContainer>

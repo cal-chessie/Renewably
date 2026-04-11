@@ -60,7 +60,7 @@ export default function ServicesPageClient() {
         <section className="bg-[#F3D840] py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <ScrollReveal>
-              <p className="text-[#895A18] font-semibold text-sm tracking-wider uppercase mb-3">Our Services</p>
+              <p className="text-[#374151] font-semibold text-sm tracking-wider uppercase mb-3">Our Services</p>
               <h1 className="text-4xl sm:text-5xl font-bold text-[#333333] mb-6">
                 AI-Powered Marketing, Fully Managed
               </h1>
@@ -80,14 +80,14 @@ export default function ServicesPageClient() {
                 <div id={service.id} className={`grid lg:grid-cols-2 gap-12 items-center`}>
                   <div className={idx % 2 === 1 ? 'lg:order-2' : ''}>
                     <div className="w-12 h-12 rounded-lg bg-[#F3D840] flex items-center justify-center mb-4">
-                      <span className="text-[#895A18] font-bold text-lg">{String(idx + 1).padStart(2, '0')}</span>
+                      <span className="text-[#374151] font-bold text-lg">{String(idx + 1).padStart(2, '0')}</span>
                     </div>
                     <h2 className="text-2xl sm:text-3xl font-bold text-[#333333] mb-4">{service.title}</h2>
                     <p className="text-[#535353] leading-relaxed mb-6">{service.desc}</p>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {service.features.map((f) => (
                         <li key={f} className="flex items-center gap-2 text-sm text-[#535353]">
-                          <svg className="w-4 h-4 text-[#895A18] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                          <svg className="w-4 h-4 text-[#374151] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                           {f}
                         </li>
                       ))}
@@ -117,7 +117,7 @@ export default function ServicesPageClient() {
                 Every project is an opportunity to create something unique. Book a call to discuss how we can design 
                 and implement a lead generation system tailored to your business.
               </p>
-              <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-[#895A18] hover:bg-[#6B4510] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
+              <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-[#374151] hover:bg-[#1F2937] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
                 Book a Strategy Call
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </Link>

@@ -94,7 +94,7 @@ function DealCard({ deal, isDragging }: { deal: Deal; isDragging?: boolean }) {
       {deal.assignee && (
         <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-gray-50">
           <Avatar className="h-5 w-5">
-            <AvatarFallback className="bg-[#F3D840] text-[#895A18] text-[10px]">
+            <AvatarFallback className="bg-[#F3D840] text-[#374151] text-[10px]">
               {deal.assignee.name
                 .split(' ')
                 .map((n) => n[0])
@@ -248,7 +248,7 @@ export default function PipelinePage() {
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-[#895A18] hover:bg-[#6B4510] text-white font-medium">
+            <Button className="bg-[#374151] hover:bg-[#1F2937] text-white font-medium">
               <Plus className="h-4 w-4 mr-2" />
               New Deal
             </Button>
@@ -335,7 +335,7 @@ export default function PipelinePage() {
                   createDealMutation.mutate(newDeal)
                 }}
                 disabled={createDealMutation.isPending}
-                className="w-full bg-[#895A18] hover:bg-[#6B4510] text-white"
+                className="w-full bg-[#374151] hover:bg-[#1F2937] text-white"
               >
                 {createDealMutation.isPending ? 'Creating...' : 'Create Deal'}
               </Button>
