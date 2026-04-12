@@ -77,7 +77,7 @@ export default function Header() {
               <Link
                 href="/contact"
                 className="hidden md:inline-flex items-center gap-2.5 rounded-full font-bold transition-all duration-200 active:scale-[0.97] shrink-0"
-                style={{ padding: "12px 32px", fontSize: 15, letterSpacing: "0.02em", backgroundColor: "#F3D840", color: "#1A1A1A" }}
+                style={{ padding: "10px 24px", fontSize: 14, letterSpacing: "0.02em", backgroundColor: "#F3D840", color: "#1A1A1A" }}
               >
                 Book a Call
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -167,7 +167,7 @@ export default function Header() {
                     href="/contact"
                     onClick={closeMobile}
                     className="flex items-center justify-center gap-2.5 w-full rounded-full font-bold transition-all duration-200 active:scale-[0.98]"
-                    style={{ padding: "16px 24px", fontSize: 16, letterSpacing: "0.02em", backgroundColor: "#F3D840", color: "#1A1A1A" }}
+                    style={{ padding: "14px 24px", fontSize: 15, letterSpacing: "0.02em", backgroundColor: "#F3D840", color: "#1A1A1A" }}
                   >
                     Book a Call
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
