@@ -631,8 +631,8 @@ function ProblemsSection() {
               gap: 8,
               padding: "6px 16px",
               borderRadius: 9999,
-              backgroundColor: "rgba(234,88,12,0.08)",
-              border: "1px solid rgba(234,88,12,0.15)",
+              backgroundColor: "rgba(59,130,246,0.08)",
+              border: "1px solid rgba(59,130,246,0.15)",
               marginBottom: 32,
             }}
           >
@@ -641,7 +641,7 @@ function ProblemsSection() {
                 width: 8,
                 height: 8,
                 borderRadius: "50%",
-                backgroundColor: "#EA580C",
+                backgroundColor: "#3B82F6",
                 display: "inline-block",
               }}
             />
@@ -672,7 +672,7 @@ function ProblemsSection() {
           >
             Every solar installer in Ireland
             <br />
-            <span style={{ color: "#EA580C" }}>has the same problems.</span>
+            <span style={{ color: "#3B82F6" }}>has the same problems.</span>
           </h2>
         </ScrollReveal>
 
@@ -757,15 +757,15 @@ function ProblemsSection() {
                           gap: 8,
                           padding: "6px 14px",
                           borderRadius: 9999,
-                          backgroundColor: "rgba(234,88,12,0.08)",
-                          border: "1px solid rgba(234,88,12,0.15)",
+                          backgroundColor: "rgba(59,130,246,0.08)",
+                          border: "1px solid rgba(59,130,246,0.15)",
                         }}
                       >
                         <span
                           style={{
                             fontSize: 18,
                             fontWeight: 800,
-                            color: "#EA580C",
+                            color: "#3B82F6",
                           }}
                         >
                           {problem.stat}
