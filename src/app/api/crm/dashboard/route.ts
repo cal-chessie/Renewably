@@ -210,8 +210,8 @@ export async function GET(request: NextRequest) {
         const seaiCount = await db.installerProfile.count({ where: { seaiRegistered: true } })
         const reciCount = await db.installerProfile.count({ where: { reciRegistered: true } })
         const activeSubs = subscriptions.filter(s => s.status === 'active' || s.status === 'trialing')
-        const planPricing: Record<string, number> = { starter: 199, pro: 349, enterprise: 699 }
-        const mrr = activeSubs.reduce((sum, s) => sum + (planPricing[s.planId] || 349), 0)
+        const planPricing: Record<string, number> = { starter: 1000, pro: 1250, enterprise: 1500 }
+        const mrr = activeSubs.reduce((sum, s) => sum + (planPricing[s.planId] || 1250), 0)
         const newThisMonth = await db.installerProfile.count({ where: { createdAt: { gte: startOfMonth } } })
         const recentInstallers = await db.installerProfile.findMany({
           orderBy: { createdAt: 'desc' },

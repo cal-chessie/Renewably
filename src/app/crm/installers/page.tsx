@@ -41,9 +41,9 @@ const IRELAND_COUNTIES = [
 ]
 
 const PLAN_PRICING: Record<string, number> = {
-  starter: 199,
-  pro: 349,
-  enterprise: 699,
+  starter: 1000,
+  pro: 1250,
+  enterprise: 1500,
 }
 
 const EQUIPMENT_ICONS: Record<string, { icon: React.ElementType; label: string }> = {
@@ -1001,9 +1001,9 @@ export default function InstallersPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">All Plans</SelectItem>
-                  <SelectItem value="starter">Starter (€199/mo)</SelectItem>
-                  <SelectItem value="pro">Pro (€349/mo)</SelectItem>
-                  <SelectItem value="enterprise">Enterprise (€699/mo)</SelectItem>
+                  <SelectItem value="starter">Starter (€1,000/mo)</SelectItem>
+                  <SelectItem value="pro">Pro (€1,250/mo)</SelectItem>
+                  <SelectItem value="enterprise">Enterprise (€1,500/mo)</SelectItem>
                 </SelectContent>
               </Select>
 

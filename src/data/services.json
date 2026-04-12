@@ -1,1 +1,154 @@
-[]
+[
+  {
+    "id": "ai-ceo-agent",
+    "type": "service",
+    "title": "AI CEO Agent",
+    "slug": "ai-ceo-agent",
+    "description": "Your strategic command centre. The AI CEO Agent provides high-level oversight of your entire solar installation business, monitoring KPIs, identifying growth opportunities, and flagging risks before they become problems. It synthesises data from every other agent into actionable strategic insights — like having a seasoned operations director who never sleeps.",
+    "features": [
+      "Real-time business health monitoring with automated alerts",
+      "Growth opportunity identification based on market and pipeline data",
+      "Risk detection and proactive mitigation recommendations",
+      "Strategic goal tracking with weekly progress summaries",
+      "Cross-agent coordination and priority management",
+      "Competitive landscape analysis for the Irish solar market"
+    ],
+    "icon": "Brain",
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "operations-agent",
+    "type": "service",
+    "title": "Operations Agent",
+    "slug": "operations-agent",
+    "description": "The backbone of your installation workflow. The Operations Agent tracks every job from initial enquiry through to completion, coordinating site visits, scheduling installation teams, and managing dependencies. It ensures nothing falls through the cracks and every job progresses smoothly through your pipeline.",
+    "features": [
+      "End-to-end job tracking from enquiry to handover",
+      "Automated scheduling for site visits and installation dates",
+      "Installation team assignment and workload balancing",
+      "Dependency management between grants, permitting, and logistics",
+      "Real-time pipeline visibility with status updates",
+      "Automated customer notifications at every stage"
+    ],
+    "icon": "Settings",
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "customer-support-agent",
+    "type": "service",
+    "title": "Customer Support Agent",
+    "slug": "customer-support-agent",
+    "description": "Your 24/7 front desk. The Customer Support Agent handles every incoming enquiry instantly — whether it arrives via your website, social media, email, or phone. It answers questions about pricing, SEAI grants, and installation timelines, qualifies leads, and books them directly into your calendar. Your customers never wait again.",
+    "features": [
+      "Sub-60-second response to all customer enquiries",
+      "Multi-channel support: web, email, social media, and phone",
+      "Intelligent lead qualification with tailored questions",
+      "Automatic booking into your scheduling system",
+      "Consistent, accurate information about grants and pricing",
+      "Escalation handling for complex queries to your human team"
+    ],
+    "icon": "HeadphonesIcon",
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "grants-agent",
+    "type": "service",
+    "title": "Grants Agent",
+    "slug": "grants-agent",
+    "description": "Your SEAI grant specialist. The Grants Agent manages the entire grant application lifecycle — from checking customer eligibility to preparing, submitting, and tracking SEAI applications. It stays up to date with the latest grant rates, criteria changes, and deadlines, ensuring every application has the highest chance of approval.",
+    "features": [
+      "Automatic SEAI eligibility checks for every customer",
+      "Pre-filled grant applications with error validation",
+      "Real-time tracking of application status and deadlines",
+      "Automatic updates when grant rates or criteria change",
+      "Documentation management and compliance verification",
+      "Customer communication throughout the grant process"
+    ],
+    "icon": "FileText",
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "logistics-agent",
+    "type": "service",
+    "title": "Logistics Agent",
+    "slug": "logistics-agent",
+    "description": "Your supply chain manager. The Logistics Agent handles equipment ordering, delivery scheduling, and inventory management across all your active jobs. It coordinates with your suppliers, tracks deliveries, and ensures the right materials arrive at the right job site at the right time — eliminating costly stockouts and delays.",
+    "features": [
+      "Automated purchase order generation based on job requirements",
+      "Supplier coordination and delivery scheduling",
+      "Real-time inventory tracking across warehouses and job sites",
+      "Stockout prevention with proactive reorder alerts",
+      "Material cost tracking and budget management",
+      "Multi-supplier price comparison for best-value procurement"
+    ],
+    "icon": "Truck",
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "permitting-agent",
+    "type": "service",
+    "title": "Permitting Agent",
+    "slug": "permitting-agent",
+    "description": "Your regulatory compliance expert. The Permitting Agent manages ESB grid connection applications, planning permission checks, building control notifications, and all other regulatory requirements. It pre-checks every application for completeness, tracks submission status, and chases responses — removing the biggest bottleneck in Irish solar installations.",
+    "features": [
+      "ESB microgeneration application preparation and submission",
+      "Planning permission pre-checks and risk assessment",
+      "Building control compliance notifications",
+      "Document completeness validation before submission",
+      "Application status tracking with automated follow-ups",
+      "Knowledge base of current ESB and regulatory requirements"
+    ],
+    "icon": "ShieldCheck",
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "qa-agent",
+    "type": "service",
+    "title": "QA Agent",
+    "slug": "qa-agent",
+    "description": "Your quality guardian. The QA Agent monitors installation quality across every job, managing snag lists, verifying compliance with NCET standards, and tracking installer certifications. It ensures that every installation meets the high standards your customers expect — and that your reputation stays spotless.",
+    "features": [
+      "Automated snag list generation and resolution tracking",
+      "NCET compliance verification for every installation",
+      "Installer certification and training status monitoring",
+      "Post-installation customer satisfaction surveys",
+      "Quality trend analysis and improvement recommendations",
+      "Photo documentation and quality record management"
+    ],
+    "icon": "CheckCircle",
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "reporting-agent",
+    "type": "service",
+    "title": "Reporting Agent",
+    "slug": "reporting-agent",
+    "description": "Your business intelligence analyst. The Reporting Agent transforms raw operational data into clear, actionable insights. It generates real-time dashboards showing revenue, margins, pipeline health, installer productivity, and customer satisfaction — giving you the information you need to make confident decisions and drive growth.",
+    "features": [
+      "Real-time revenue and margin tracking dashboards",
+      "Pipeline analysis with conversion rate insights",
+      "Installer and team productivity metrics",
+      "Customer acquisition cost and lifetime value analysis",
+      "Automated weekly and monthly business reports",
+      "Custom report generation for stakeholder presentations"
+    ],
+    "icon": "BarChart3",
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  }
+]

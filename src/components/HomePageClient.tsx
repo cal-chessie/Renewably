@@ -523,7 +523,7 @@ function PricingSection() {
 
         <ScrollReveal delay={0.2}>
           <p className="text-[#535353] text-lg sm:text-xl leading-relaxed mb-6 max-w-2xl mx-auto">
-            Most solar installers pay &euro;1,000&ndash;&euro;1,500 per month plus a one-time setup fee.
+            Most solar installers pay €1,000 – €1,500 per month plus a one-time setup fee.
           </p>
         </ScrollReveal>
 
@@ -728,8 +728,8 @@ function HowItStartsSection() {
             Ready to meet your new team?
           </h2>
           <p style={{ color: '#374151', fontSize: 16, marginBottom: 24, textAlign: 'center' }}>
-            <a href="mailto:hello@renewably.com" style={{ textDecoration: 'underline', color: '#374151' }}>
-              hello@renewably.com
+            <a href="mailto:hello@renewably.ie" style={{ textDecoration: 'underline', color: '#374151' }}>
+              hello@renewably.ie
             </a>
           </p>
           <div style={{ display: 'block', textAlign: 'center', marginTop: 8 }}>

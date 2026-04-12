@@ -298,7 +298,7 @@ function InvestmentSection() {
 
         <ScrollReveal delay={0.1}>
           <p className="text-[#535353] text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto mb-6">
-            Most solar installers pay &euro;1,000&ndash;&euro;1,500 per month plus a one-time setup fee. You bring your own AI keys. You pay the models directly. No markup from us.
+            Most solar installers pay €1,000 – €1,500 per month plus a one-time setup fee. You bring your own AI keys. You pay the models directly. No markup from us.
           </p>
         </ScrollReveal>
 
@@ -343,10 +343,10 @@ function CTASection() {
         <ScrollReveal delay={0.15}>
           <p className="text-[#374151] text-lg sm:text-xl mb-10">
             <a
-              href="mailto:hello@renewably.com"
+              href="mailto:hello@renewably.ie"
               className="underline hover:text-[#1A1A1A] transition-colors font-semibold"
             >
-              hello@renewably.com
+              hello@renewably.ie
             </a>
           </p>
         </ScrollReveal>

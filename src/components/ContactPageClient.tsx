@@ -49,6 +49,7 @@ const contactInfo = [
    ============================================================ */
 export default function ContactPageClient() {
   const [formState, setFormState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [formError, setFormError] = useState<string>("");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -67,9 +68,36 @@ export default function ContactPageClient() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormState("sending");
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setFormState("sent");
+    setFormError("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: "",
+          company: formData.company,
+          jobsPerMonth: formData.jobsPerMonth,
+          message: formData.message,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setFormError(data.error || "Something went wrong. Please try again.");
+        setFormState("error");
+        return;
+      }
+
+      setFormState("sent");
+    } catch {
+      setFormError("Could not connect to the server. Please check your connection and try again.");
+      setFormState("error");
+    }
   };
 
   const inputStyle: React.CSSProperties = {
@@ -247,6 +275,30 @@ export default function ContactPageClient() {
                       <p className="text-[#535353]">
                         We&apos;ll be in touch within 24 hours. In the meantime, check your inbox for a confirmation email.
                       </p>
+                    </motion.div>
+                  ) : formState === "error" ? (
+                    <motion.div
+                      key="error"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="bg-red-50 border border-red-200 rounded-2xl p-10 text-center"
+                    >
+                      <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-6">
+                        <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold text-[#1A1A1A] mb-2">Something went wrong</h3>
+                      <p className="text-[#535353] mb-6">{formError}</p>
+                      <button
+                        type="button"
+                        onClick={() => setFormState("idle")}
+                        className="px-6 py-3 bg-[#F3D840] hover:bg-[#E5C832] text-[#1A1A1A] font-bold rounded-full transition-all duration-300 shadow-md"
+                        style={{ fontSize: 15, fontWeight: 700, borderRadius: 9999 }}
+                      >
+                        Try Again
+                      </button>
                     </motion.div>
                   ) : (
                     <motion.form

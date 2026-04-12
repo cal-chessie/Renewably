@@ -61,14 +61,9 @@ const agents = [
 ];
 
 const pricingItems = [
-  { name: "CEO agent", price: "~\u20AC60/month" },
-  { name: "Ops agent", price: "~\u20AC50/month" },
-  { name: "Support agent", price: "~\u20AC40/month" },
-  { name: "Grants agent", price: "~\u20AC40/month" },
-  { name: "Logistics agent", price: "~\u20AC40/month" },
-  { name: "Permitting agent", price: "~\u20AC40/month" },
-  { name: "QA agent", price: "~\u20AC35/month" },
-  { name: "Reporting agent", price: "~\u20AC30/month" },
+  { name: "Monthly subscription", price: "€1,000 – €1,500" },
+  { name: "Setup fee", price: "One-time" },
+  { name: "AI costs", price: "You pay directly (~€50–€200/mo)" },
 ];
 
 const comparisons = [
@@ -206,7 +201,7 @@ function PricingSection() {
           className="bg-[#F3D840] rounded-2xl px-8 py-8 sm:px-12 sm:py-10 text-center mb-4"
         >
           <p className="text-[#1A1A1A] text-3xl sm:text-4xl lg:text-5xl font-extrabold">
-            Total workforce: ~&#8364;335/month
+            €1,000 – €1,500/month for your full AI team
           </p>
         </motion.div>
 
@@ -218,7 +213,7 @@ function PricingSection() {
 
         <ScrollReveal delay={0.4}>
           <p className="text-center text-[#374151] text-sm font-semibold">
-            No setup fee. Cancel any agent anytime.
+            One-time setup fee. You bring your own AI keys — you pay the models directly.
           </p>
         </ScrollReveal>
       </div>
