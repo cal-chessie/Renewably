@@ -105,19 +105,20 @@ export default function BlogPageClient() {
         </section>
 
         {/* ── CTA ── */}
-        <section className="bg-[#F3D840] py-16 md:py-20">
+        <section className="bg-[#F3D840] py-16 md:py-20" style={{ paddingTop: 96, paddingBottom: 96 }}>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <ScrollReveal>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1A1A1A] mb-4">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1A1A1A] mb-4" style={{ marginBottom: 24 }}>
                 Want the agents behind these articles?
               </h2>
-              <p className="text-[#374151] text-base sm:text-lg mb-8 max-w-xl mx-auto">
+              <p className="text-[#374151] text-base sm:text-lg mb-8 max-w-xl mx-auto" style={{ marginBottom: 40 }}>
                 Everything we write about is deployed in real solar companies
                 across Ireland. Let&apos;s show you how it works.
               </p>
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
+                style={{ padding: '10px 24px', fontSize: 14, fontWeight: 700, letterSpacing: '0.02em', backgroundColor: '#1A1A1A', color: '#fff', borderRadius: 9999 }}
               >
                 Let&apos;s Talk
                 <svg
