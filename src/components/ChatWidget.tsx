@@ -69,7 +69,7 @@ function TypingIndicator() {
         border: `2px solid ${YELLOW}33`,
       }}>
         <img
-          src="/robot-3-nobg.png"
+          src="/robot-2-nobg.png"
           alt=""
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
@@ -405,7 +405,7 @@ export default function ChatWidget() {
               }}
             >
               <img
-                src="/robot-3-nobg.png"
+                src="/robot-2-nobg.png"
                 alt="Chat with Renewably"
                 style={{
                   width: "100%",
@@ -606,7 +606,7 @@ export default function ChatWidget() {
                         }}
                       >
                         <img
-                          src="/robot-3-nobg.png"
+                          src="/robot-2-nobg.png"
                           alt=""
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />

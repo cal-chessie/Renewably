@@ -83,3 +83,26 @@ Stage Summary:
 - Chat widget now uses the yellow 3D robot (robot-3) with transparent background
 - Robot appears as the floating chat button icon, typing indicator avatar, and bot message avatar
 - The Renewably logo remains in the chat panel header
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Fix wrong robot - use robot-2.jpg (correct one) instead of robot-3.jpg
+
+Work Log:
+- User reported the wrong robot was used in the chat widget
+- Analyzed both screenshots with VLM to identify the CORRECT robot
+- Compared all robot files (robot-1 through robot-5, chat-robot.png) against user's original screenshot
+- VLM confirmed robot-2.jpg is the correct match (small round antenna, glowing white circular eyes, rounded torso with light panel, waving pose)
+- robot-3.jpg was WRONG (tall antenna with light bulb, dark screen eyes, angular torso)
+- Installed rembg (AI background removal) with CPU/onnxruntime support
+- Used rembg to cleanly remove the yellow background from robot-2.jpg
+- Cropped the result tightly (464x695, RGBA with transparency)
+- Saved as robot-2-nobg.png
+- Updated all 3 references in ChatWidget.tsx from robot-3-nobg.png to robot-2-nobg.png
+- ESLint passes cleanly
+
+Stage Summary:
+- Chat widget now uses the CORRECT robot (robot-2) with AI-removed transparent background
+- Previous wrong robot (robot-3) has been replaced
+- File: /public/robot-2-nobg.png (464x695, transparent PNG)
