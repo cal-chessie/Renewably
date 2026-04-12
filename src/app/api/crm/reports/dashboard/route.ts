@@ -224,11 +224,9 @@ export async function GET(request: NextRequest) {
 
     const conversionFunnel = {
       leads: allDeals.filter((d) => d.stage.name === 'Lead').length,
-      survey: allDeals.filter((d) => d.stage.name === 'Survey').length,
-      quote: allDeals.filter((d) => d.stage.name === 'Quote').length,
-      approved: allDeals.filter((d) => d.stage.name === 'Approved').length,
-      install: allDeals.filter((d) => d.stage.name === 'Install').length,
-      commissioned: allDeals.filter((d) => d.stage.name === 'Commissioned').length,
+      qualified: allDeals.filter((d) => d.stage.name === 'Qualified').length,
+      proposal: allDeals.filter((d) => d.stage.name === 'Proposal').length,
+      negotiation: allDeals.filter((d) => d.stage.name === 'Negotiation').length,
       won: wonDeals.length,
       lost: allDeals.filter((d) => d.stage.name === 'Lost').length,
     }

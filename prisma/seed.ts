@@ -48,48 +48,46 @@ async function main() {
 
   console.log('✅ Users created');
 
-  // ===== COMPANIES =====
+  // ===== COMPANIES (Solar installers — potential clients) =====
   const companies = await Promise.all([
-    db.company.create({ data: { name: 'GreenTech Solutions', website: 'https://greentech.ie', industry: 'Renewable Energy', employees: 45, annualRevenue: '2.5M', city: 'Dublin', country: 'Ireland', phone: '+353 1 555 0001', description: 'Leading provider of commercial solar panel installations in Ireland.' } }),
-    db.company.create({ data: { name: 'EcoWind Ireland', website: 'https://ecowind.ie', industry: 'Wind Energy', employees: 120, annualRevenue: '8M', city: 'Cork', country: 'Ireland', phone: '+353 21 555 0002', description: 'Large-scale wind farm development and maintenance company.' } }),
-    db.company.create({ data: { name: 'Sustainable Homes Ltd', website: 'https://sus homes.ie', industry: 'Construction', employees: 30, annualRevenue: '1.2M', city: 'Galway', country: 'Ireland', phone: '+353 91 555 0003', description: 'Sustainable residential construction and retrofit specialists.' } }),
-    db.company.create({ data: { name: 'CleanHeat Systems', website: 'https://cleanheat.ie', industry: 'HVAC', employees: 25, annualRevenue: '800K', city: 'Limerick', country: 'Ireland', phone: '+353 61 555 0004', description: 'Heat pump and renewable heating system installers.' } }),
-    db.company.create({ data: { name: 'Atlantic Energy Partners', website: 'https://atlanticenergy.ie', industry: 'Energy Consulting', employees: 15, annualRevenue: '500K', city: 'Dublin', country: 'Ireland', phone: '+353 1 555 0005', description: 'Energy efficiency consulting for commercial and residential clients.' } }),
-    db.company.create({ data: { name: 'BioGreen Fuels', website: 'https://biogreen.ie', industry: 'Bioenergy', employees: 60, annualRevenue: '3.5M', city: 'Waterford', country: 'Ireland', phone: '+353 51 555 0006', description: 'Producer and distributor of biofuels and biomass energy solutions.' } }),
-    db.company.create({ data: { name: 'SolarStream Manufacturing', website: 'https://solarstream.ie', industry: 'Manufacturing', employees: 200, annualRevenue: '15M', city: 'Kildare', country: 'Ireland', phone: '+353 45 555 0007', description: 'Ireland\'s leading manufacturer of solar thermal panels.' } }),
-    db.company.create({ data: { name: 'EV Charge Network', website: 'https://evchargenetwork.ie', industry: 'Electric Vehicles', employees: 35, annualRevenue: '1.8M', city: 'Dublin', country: 'Ireland', phone: '+353 1 555 0008', description: 'Design and installation of EV charging infrastructure.' } }),
+    db.company.create({ data: { name: 'SunPower Ireland', website: 'https://sunpower.ie', industry: 'Solar PV Installation', employees: 45, annualRevenue: '2.5M', city: 'Dublin', country: 'Ireland', phone: '+353 1 555 0001', description: 'Leading residential and commercial solar PV installer in Leinster. SEAI registered, RECI certified.' } }),
+    db.company.create({ data: { name: 'Cork Solar Solutions', website: 'https://corksolar.ie', industry: 'Solar PV Installation', employees: 120, annualRevenue: '8M', city: 'Cork', country: 'Ireland', phone: '+353 21 555 0002', description: 'Munster\'s largest solar installer. Commercial and agricultural focus. 500+ installs completed.' } }),
+    db.company.create({ data: { name: 'Galway Green Energy', website: 'https://galwaygreen.ie', industry: 'Solar PV Installation', employees: 30, annualRevenue: '1.2M', city: 'Galway', country: 'Ireland', phone: '+353 91 555 0003', description: 'Residential solar specialist covering Connacht. Strong reputation for quality installs.' } }),
+    db.company.create({ data: { name: 'Midland Solar', website: 'https://midlandsolar.ie', industry: 'Solar PV Installation', employees: 25, annualRevenue: '800K', city: 'Tullamore', country: 'Ireland', phone: '+353 57 555 0004', description: 'Growing installer covering the Midlands. Looking to scale operations with better admin systems.' } }),
+    db.company.create({ data: { name: 'BrightSpark Energy', website: 'https://brightspark.ie', industry: 'Solar PV Installation', employees: 15, annualRevenue: '500K', city: 'Dublin', country: 'Ireland', phone: '+353 1 555 0005', description: 'Newer installer focused on the residential market. Tech-savvy team, early adopter mindset.' } }),
+    db.company.create({ data: { name: 'SouthEast Solar', website: 'https://southeastsolar.ie', industry: 'Solar PV Installation', employees: 60, annualRevenue: '3.5M', city: 'Waterford', country: 'Ireland', phone: '+353 51 555 0006', description: 'Established installer covering the South East. Large commercial projects and housing developments.' } }),
+    db.company.create({ data: { name: 'Photon Electrical', website: 'https://photonelectrical.ie', industry: 'Solar PV + Electrical', employees: 18, annualRevenue: '950K', city: 'Kildare', country: 'Ireland', phone: '+353 45 555 0007', description: 'RECI registered electrical contractor expanding into solar PV. Needs help with permitting and grants.' } }),
+    db.company.create({ data: { name: 'NorthWest Renewables', website: 'https://nwrenewables.ie', industry: 'Solar PV Installation', employees: 35, annualRevenue: '1.8M', city: 'Sligo', country: 'Ireland', phone: '+353 71 555 0008', description: 'Leading installer in the North West. Handles residential, commercial, and agricultural projects.' } }),
   ]);
 
   console.log('✅ Companies created');
 
-  // ===== CONTACTS =====
+  // ===== CONTACTS (Decision makers at solar companies) =====
   const contacts = await Promise.all([
-    db.contact.create({ data: { firstName: 'Patrick', lastName: 'O\'Sullivan', email: 'patrick@greentech.ie', phone: '+353 1 555 1001', jobTitle: 'CEO', source: 'linkedin', status: 'customer', city: 'Dublin', companyId: companies[0].id, lastContactAt: new Date('2026-04-10') } }),
-    db.contact.create({ data: { firstName: 'Ciara', lastName: 'Byrne', email: 'ciara@greentech.ie', phone: '+353 1 555 1002', jobTitle: 'Operations Manager', source: 'referral', status: 'customer', city: 'Dublin', companyId: companies[0].id, lastContactAt: new Date('2026-04-08') } }),
-    db.contact.create({ data: { firstName: 'Michael', lastName: 'Fitzgerald', email: 'michael@ecowind.ie', phone: '+353 21 555 2001', jobTitle: 'Technical Director', source: 'website', status: 'prospect', city: 'Cork', companyId: companies[1].id, lastContactAt: new Date('2026-04-05') } }),
-    db.contact.create({ data: { firstName: 'Aoife', lastName: 'Kelly', email: 'aoife@sustainablehomes.ie', phone: '+353 91 555 3001', jobTitle: 'Managing Director', source: 'event', status: 'lead', city: 'Galway', companyId: companies[2].id, lastContactAt: new Date('2026-04-11') } }),
-    db.contact.create({ data: { firstName: 'Declan', lastName: 'Murphy', email: 'declan@cleanheat.ie', phone: '+353 61 555 4001', jobTitle: 'Founder', source: 'cold', status: 'prospect', city: 'Limerick', companyId: companies[3].id, lastContactAt: new Date('2026-04-03') } }),
-    db.contact.create({ data: { firstName: 'Niamh', lastName: 'O\'Connor', email: 'niamh@atlanticenergy.ie', phone: '+353 1 555 5001', jobTitle: 'Lead Consultant', source: 'website', status: 'customer', city: 'Dublin', companyId: companies[4].id, lastContactAt: new Date('2026-04-09') } }),
-    db.contact.create({ data: { firstName: 'Sean', lastName: 'Doyle', email: 'sean@biogreen.ie', phone: '+353 51 555 6001', jobTitle: 'Sales Manager', source: 'referral', status: 'customer', city: 'Waterford', companyId: companies[5].id, lastContactAt: new Date('2026-04-07') } }),
-    db.contact.create({ data: { firstName: 'Rachel', lastName: 'McCarthy', email: 'rachel@solarstream.ie', phone: '+353 45 555 7001', jobTitle: 'Head of Partnerships', source: 'linkedin', status: 'prospect', city: 'Kildare', companyId: companies[6].id, lastContactAt: new Date('2026-04-06') } }),
-    db.contact.create({ data: { firstName: 'Eoin', lastName: 'Ryan', email: 'eoin@evchargenetwork.ie', phone: '+353 1 555 8001', jobTitle: 'CEO', source: 'website', status: 'lead', city: 'Dublin', companyId: companies[7].id, lastContactAt: new Date('2026-04-02') } }),
-    db.contact.create({ data: { firstName: 'Lisa', lastName: 'Chen', email: 'lisa.chen@gmail.com', phone: '+353 87 123 4567', jobTitle: 'Homeowner', source: 'website', status: 'lead', city: 'Dublin', description: 'Interested in residential solar panel installation for her 4-bed home in Rathmines.' } }),
-    db.contact.create({ data: { firstName: 'Tom', lastName: 'Henderson', email: 'tom@hendersonfarm.ie', phone: '+353 47 555 9001', jobTitle: 'Farm Owner', source: 'referral', status: 'prospect', city: 'Meath', description: 'Looking for solar solution for dairy farm operations.' } }),
-    db.contact.create({ data: { firstName: 'Grainne', lastName: 'Ni Riain', email: 'grainne@hotelview.ie', phone: '+353 64 555 1001', jobTitle: 'General Manager', source: 'event', status: 'lead', city: 'Kerry', description: 'Interested in energy efficiency audit for boutique hotel chain.' } }),
+    db.contact.create({ data: { firstName: 'Patrick', lastName: 'O\'Sullivan', email: 'patrick@sunpower.ie', phone: '+353 1 555 1001', jobTitle: 'Managing Director', source: 'linkedin', status: 'customer', city: 'Dublin', companyId: companies[0].id, lastContactAt: new Date('2026-04-10') } }),
+    db.contact.create({ data: { firstName: 'Ciara', lastName: 'Byrne', email: 'ciara@sunpower.ie', phone: '+353 1 555 1002', jobTitle: 'Operations Manager', source: 'referral', status: 'customer', city: 'Dublin', companyId: companies[0].id, lastContactAt: new Date('2026-04-08') } }),
+    db.contact.create({ data: { firstName: 'Michael', lastName: 'Fitzgerald', email: 'michael@corksolar.ie', phone: '+353 21 555 2001', jobTitle: 'Technical Director', source: 'website', status: 'prospect', city: 'Cork', companyId: companies[1].id, lastContactAt: new Date('2026-04-05') } }),
+    db.contact.create({ data: { firstName: 'Aoife', lastName: 'Kelly', email: 'aoife@galwaygreen.ie', phone: '+353 91 555 3001', jobTitle: 'Owner', source: 'event', status: 'lead', city: 'Galway', companyId: companies[2].id, lastContactAt: new Date('2026-04-11') } }),
+    db.contact.create({ data: { firstName: 'Declan', lastName: 'Murphy', email: 'declan@midlandsolar.ie', phone: '+353 57 555 4001', jobTitle: 'Founder', source: 'cold', status: 'prospect', city: 'Tullamore', companyId: companies[3].id, lastContactAt: new Date('2026-04-03') } }),
+    db.contact.create({ data: { firstName: 'Niamh', lastName: 'O\'Connor', email: 'niamh@brightspark.ie', phone: '+353 1 555 5001', jobTitle: 'CEO', source: 'website', status: 'customer', city: 'Dublin', companyId: companies[4].id, lastContactAt: new Date('2026-04-09') } }),
+    db.contact.create({ data: { firstName: 'Sean', lastName: 'Doyle', email: 'sean@southeastsolar.ie', phone: '+353 51 555 6001', jobTitle: 'Sales Director', source: 'referral', status: 'customer', city: 'Waterford', companyId: companies[5].id, lastContactAt: new Date('2026-04-07') } }),
+    db.contact.create({ data: { firstName: 'Rachel', lastName: 'McCarthy', email: 'rachel@photonelectrical.ie', phone: '+353 45 555 7001', jobTitle: 'Director', source: 'linkedin', status: 'prospect', city: 'Kildare', companyId: companies[6].id, lastContactAt: new Date('2026-04-06') } }),
+    db.contact.create({ data: { firstName: 'Eoin', lastName: 'Ryan', email: 'eoin@nwrenewables.ie', phone: '+353 71 555 8001', jobTitle: 'Managing Director', source: 'website', status: 'lead', city: 'Sligo', companyId: companies[7].id, lastContactAt: new Date('2026-04-02') } }),
+    db.contact.create({ data: { firstName: 'Lisa', lastName: 'Chen', email: 'lisa.chen@gmail.com', phone: '+353 87 123 4567', jobTitle: 'Homeowner', source: 'website', status: 'lead', city: 'Dublin', description: 'Enquired about Renewably after finding the website. Asking about costs for a small operation.' } }),
+    db.contact.create({ data: { firstName: 'Tom', lastName: 'Henderson', email: 'tom@hendersonsolar.ie', phone: '+353 47 555 9001', jobTitle: 'Owner', source: 'referral', status: 'prospect', city: 'Meath', description: 'Runs a one-man solar installation business. Wants to scale but drowning in admin.' } }),
+    db.contact.create({ data: { firstName: 'Grainne', lastName: 'Ni Riain', email: 'grainne@greenbuild.ie', phone: '+353 64 555 1001', jobTitle: 'Operations Lead', source: 'event', status: 'lead', city: 'Kerry', description: 'Met at the SEAI Energy Show. Interested in AI for permitting and grant applications.' } }),
   ]);
 
   console.log('✅ Contacts created');
 
-  // ===== PIPELINE STAGES (Solar-specific) =====
+  // ===== PIPELINE STAGES (Agency Sales Pipeline) =====
   const stages = await Promise.all([
     db.pipelineStage.create({ data: { name: 'Lead', order: 1, color: '#9CA3AF', isDefault: true } }),
-    db.pipelineStage.create({ data: { name: 'Survey', order: 2, color: '#60A5FA' } }),
-    db.pipelineStage.create({ data: { name: 'Quote', order: 3, color: '#F3D840' } }),
-    db.pipelineStage.create({ data: { name: 'Approved', order: 4, color: '#34D399' } }),
-    db.pipelineStage.create({ data: { name: 'Install', order: 5, color: '#F97316' } }),
-    db.pipelineStage.create({ data: { name: 'Commissioned', order: 6, color: '#8B5CF6' } }),
-    db.pipelineStage.create({ data: { name: 'Won', order: 7, color: '#22C55E' } }),
-    db.pipelineStage.create({ data: { name: 'Lost', order: 8, color: '#EF4444' } }),
+    db.pipelineStage.create({ data: { name: 'Qualified', order: 2, color: '#60A5FA' } }),
+    db.pipelineStage.create({ data: { name: 'Proposal', order: 3, color: '#F3D840' } }),
+    db.pipelineStage.create({ data: { name: 'Negotiation', order: 4, color: '#FB923C' } }),
+    db.pipelineStage.create({ data: { name: 'Won', order: 5, color: '#22C55E' } }),
+    db.pipelineStage.create({ data: { name: 'Lost', order: 6, color: '#EF4444' } }),
   ]);
 
   console.log('✅ Pipeline stages created');
@@ -106,21 +104,21 @@ async function main() {
   const inTwoMonths = new Date(now.getFullYear(), now.getMonth() + 2, 1);
 
   const deals = await Promise.all([
-    // Won/Commissioned deals
-    db.deal.create({ data: { title: 'GreenTech Commercial Solar PV', value: 45000, currency: 'EUR', probability: 100, stageId: stages[6].id, contactId: contacts[0].id, companyId: companies[0].id, assigneeId: agent1.id, creatorId: admin.id, closeDate: threeMonthsAgo, createdAt: threeMonthsAgo, description: 'Commercial solar panel installation for GreenTech office building. 32x JA Solar 440W panels with SolarEdge inverter.' } }),
-    db.deal.create({ data: { title: 'Atlantic Energy ESB Connection', value: 12000, currency: 'EUR', probability: 100, stageId: stages[6].id, contactId: contacts[5].id, companyId: companies[4].id, assigneeId: agent2.id, creatorId: admin.id, closeDate: twoMonthsAgo, createdAt: twoMonthsAgo, description: 'ESB grid application and commissioning for commercial solar installation.' } }),
-    db.deal.create({ data: { title: 'BioGreen Farm Solar Array', value: 30000, currency: 'EUR', probability: 100, stageId: stages[6].id, contactId: contacts[6].id, companyId: companies[5].id, assigneeId: agent1.id, creatorId: admin.id, closeDate: oneMonthAgo, createdAt: twoMonthsAgo, description: '50kW ground-mount solar array for agricultural processing facility.' } }),
+    // Won deals (closed clients on Renewably subscriptions)
+    db.deal.create({ data: { title: 'SunPower Ireland - Pro Plan', value: 15000, currency: 'EUR', probability: 100, stageId: stages[4].id, contactId: contacts[0].id, companyId: companies[0].id, assigneeId: agent1.id, creatorId: admin.id, closeDate: threeMonthsAgo, createdAt: threeMonthsAgo, description: 'Pro plan subscription (12 months) + setup fee. Full AI workforce deployment including CRM, lead gen, and grants agent.' } }),
+    db.deal.create({ data: { title: 'BrightSpark Energy - Starter Plan', value: 6490, currency: 'EUR', probability: 100, stageId: stages[4].id, contactId: contacts[5].id, companyId: companies[4].id, assigneeId: agent2.id, creatorId: admin.id, closeDate: twoMonthsAgo, createdAt: twoMonthsAgo, description: 'Starter plan (6 months) + setup fee. Niamh wanted to test AI lead generation before committing to full workforce.' } }),
+    db.deal.create({ data: { title: 'SouthEast Solar - Enterprise Plan', value: 21000, currency: 'EUR', probability: 100, stageId: stages[4].id, contactId: contacts[6].id, companyId: companies[5].id, assigneeId: agent1.id, creatorId: admin.id, closeDate: oneMonthAgo, createdAt: twoMonthsAgo, description: 'Enterprise plan (12 months) + setup fee. Full AI workforce + custom integrations with their existing CRM.' } }),
 
     // Active pipeline
-    db.deal.create({ data: { title: 'EcoWind Office Solar Install', value: 25000, currency: 'EUR', probability: 70, stageId: stages[4].id, contactId: contacts[2].id, companyId: companies[1].id, assigneeId: agent1.id, creatorId: agent1.id, closeDate: inOneMonth, createdAt: twoWeeksAgo, description: '20kW rooftop solar installation for EcoWind headquarters. Panels ordered, scheduling install team.' } }),
-    db.deal.create({ data: { title: 'Sustainable Homes Showhouse', value: 18000, currency: 'EUR', probability: 60, stageId: stages[3].id, contactId: contacts[3].id, companyId: companies[2].id, assigneeId: agent2.id, creatorId: admin.id, closeDate: inOneMonth, createdAt: oneWeekAgo, description: 'Solar PV + battery storage for sustainable showhouse. Client approved quote, waiting on SEAI grant confirmation.' } }),
-    db.deal.create({ data: { title: 'CleanHeat Heat Pump + Solar', value: 22000, currency: 'EUR', probability: 50, stageId: stages[2].id, contactId: contacts[4].id, companyId: companies[3].id, assigneeId: agent1.id, creatorId: agent1.id, closeDate: inTwoMonths, createdAt: oneWeekAgo, description: 'Combined solar PV and heat pump installation. Site survey completed, preparing quote.' } }),
-    db.deal.create({ data: { title: 'SolarStream Manufacturing Plant', value: 85000, currency: 'EUR', probability: 40, stageId: stages[1].id, contactId: contacts[7].id, companyId: companies[6].id, assigneeId: admin.id, creatorId: admin.id, closeDate: inTwoMonths, createdAt: twoWeeksAgo, description: 'Large-scale solar for manufacturing facility. 200kW system. Awaiting structural survey.' } }),
-    db.deal.create({ data: { title: 'EV Charge Network Depot', value: 35000, currency: 'EUR', probability: 30, stageId: stages[0].id, contactId: contacts[8].id, companyId: companies[7].id, assigneeId: agent2.id, creatorId: agent2.id, closeDate: inTwoMonths, createdAt: twoWeeksAgo, description: 'Solar carport with EV charging at depot location. Initial enquiry, needs site assessment.' } }),
-    db.deal.create({ data: { title: 'Lisa Chen Residential Solar PV', value: 8500, currency: 'EUR', probability: 55, stageId: stages[2].id, contactId: contacts[9].id, assigneeId: agent2.id, creatorId: agent2.id, closeDate: inTwoWeeks, createdAt: oneWeekAgo, description: '6kW residential solar system with battery storage. Quote provided, awaiting decision.' } }),
+    db.deal.create({ data: { title: 'Cork Solar Solutions - Pro Plan', value: 15000, currency: 'EUR', probability: 70, stageId: stages[2].id, contactId: contacts[2].id, companyId: companies[1].id, assigneeId: agent1.id, creatorId: agent1.id, closeDate: inOneMonth, createdAt: twoWeeksAgo, description: 'Proposal sent for Pro plan. Michael is reviewing with his board. 120 installs/year — huge upside for AI automation.' } }),
+    db.deal.create({ data: { title: 'Galway Green Energy - Starter Plan', value: 6490, currency: 'EUR', probability: 60, stageId: stages[3].id, contactId: contacts[3].id, companyId: companies[2].id, assigneeId: agent2.id, creatorId: admin.id, closeDate: inOneMonth, createdAt: oneWeekAgo, description: 'Negotiating Starter plan pricing. Aoife wants to start with lead gen and CRM agents only. Budget conscious but keen.' } }),
+    db.deal.create({ data: { title: 'Midland Solar - Pro Plan', value: 15000, currency: 'EUR', probability: 50, stageId: stages[1].id, contactId: contacts[4].id, companyId: companies[3].id, assigneeId: agent1.id, creatorId: agent1.id, closeDate: inTwoMonths, createdAt: oneWeekAgo, description: 'Qualified lead. Declan is struggling with admin and permitting. Demo showed 70% time savings on ESB applications.' } }),
+    db.deal.create({ data: { title: 'Photon Electrical - Pro Plan', value: 15000, currency: 'EUR', probability: 40, stageId: stages[1].id, contactId: contacts[7].id, companyId: companies[6].id, assigneeId: admin.id, creatorId: admin.id, closeDate: inTwoMonths, createdAt: twoWeeksAgo, description: 'Rachel is expanding into solar PV and needs help with grants and permitting. Qualified but comparing with a UK-based competitor.' } }),
+    db.deal.create({ data: { title: 'NorthWest Renewables - Enterprise', value: 21000, currency: 'EUR', probability: 30, stageId: stages[0].id, contactId: contacts[8].id, companyId: companies[7].id, assigneeId: agent2.id, creatorId: agent2.id, closeDate: inTwoMonths, createdAt: twoWeeksAgo, description: 'Initial enquiry from website. Eoin runs a large operation covering 5 counties. Needs full AI workforce. Needs convincing on ROI.' } }),
+    db.deal.create({ data: { title: 'Tom Henderson - Starter Plan', value: 6490, currency: 'EUR', probability: 55, stageId: stages[2].id, contactId: contacts[10].id, assigneeId: agent2.id, creatorId: agent2.id, closeDate: inTwoWeeks, createdAt: oneWeekAgo, description: 'One-man operation drowning in admin. Proposal sent for Starter plan. Referral from Sean at SouthEast Solar.' } }),
 
     // Recently lost
-    db.deal.create({ data: { title: 'Henderson Farm Solar', value: 40000, currency: 'EUR', probability: 0, stageId: stages[7].id, contactId: contacts[10].id, assigneeId: agent1.id, creatorId: agent1.id, closeDate: oneWeekAgo, createdAt: oneMonthAgo, lostReason: 'Client chose a competitor offering lower panel prices. Follow up in Q3.' } }),
+    db.deal.create({ data: { title: 'Kildare Solar Co - Pro Plan', value: 15000, currency: 'EUR', probability: 0, stageId: stages[5].id, contactId: contacts[9].id, assigneeId: agent1.id, creatorId: agent1.id, closeDate: oneWeekAgo, createdAt: oneMonthAgo, lostReason: 'Went with a generic CRM solution instead. Said they would revisit AI-specific tools in 6 months.' } }),
   ]);
 
   console.log('✅ Deals created');
@@ -129,12 +127,12 @@ async function main() {
   const tags = await Promise.all([
     db.tag.create({ data: { name: 'Hot Lead', color: '#EF4444' } }),
     db.tag.create({ data: { name: 'VIP', color: '#F59E0B' } }),
-    db.tag.create({ data: { name: 'Renewable Energy', color: '#22C55E' } }),
-    db.tag.create({ data: { name: 'Construction', color: '#8B5CF6' } }),
-    db.tag.create({ data: { name: 'Startup', color: '#06B6D4' } }),
-    db.tag.create({ data: { name: 'Enterprise', color: '#3B82F6' } }),
+    db.tag.create({ data: { name: 'Solar PV', color: '#22C55E' } }),
+    db.tag.create({ data: { name: 'Commercial Focus', color: '#8B5CF6' } }),
+    db.tag.create({ data: { name: 'Small Installer', color: '#06B6D4' } }),
+    db.tag.create({ data: { name: 'Enterprise Client', color: '#3B82F6' } }),
     db.tag.create({ data: { name: 'Follow-up Required', color: '#F97316' } }),
-    db.tag.create({ data: { name: 'Long-term Contract', color: '#10B981' } }),
+    db.tag.create({ data: { name: 'Annual Contract', color: '#10B981' } }),
   ]);
 
   // Contact tags
@@ -165,16 +163,16 @@ async function main() {
 
   // ===== ACTIVITIES =====
   const activities = await Promise.all([
-    db.activity.create({ data: { type: 'call', subject: 'Discovery call with Patrick', description: 'Discussed requirements for upcoming project. Very interested in expanding scope.', duration: 45, status: 'completed', contactId: contacts[0].id, companyId: companies[0].id, userId: agent1.id, createdAt: new Date('2026-04-10T10:00:00'), completedAt: new Date('2026-04-10T10:45:00') } }),
-    db.activity.create({ data: { type: 'email', subject: 'Proposal sent to Ciara', description: 'Sent updated proposal for Phase 2 of the marketing campaign.', status: 'completed', contactId: contacts[1].id, companyId: companies[0].id, userId: agent1.id, createdAt: new Date('2026-04-08T14:30:00'), completedAt: new Date('2026-04-08T14:30:00') } }),
-    db.activity.create({ data: { type: 'meeting', subject: 'EcoWind requirements workshop', description: 'Full-day workshop to define website redesign requirements.', duration: 480, status: 'completed', contactId: contacts[2].id, companyId: companies[1].id, userId: agent1.id, createdAt: new Date('2026-04-05T09:00:00'), completedAt: new Date('2026-04-05T17:00:00') } }),
-    db.activity.create({ data: { type: 'call', subject: 'Follow-up with Aoife', description: 'Left voicemail about scheduling SEO kickoff meeting.', duration: 3, status: 'completed', contactId: contacts[3].id, companyId: companies[2].id, userId: agent2.id, createdAt: new Date('2026-04-11T11:00:00'), completedAt: new Date('2026-04-11T11:03:00') } }),
-    db.activity.create({ data: { type: 'email', subject: 'SolarStream partnership intro', description: 'Sent introductory email with case studies and partnership proposal.', status: 'completed', contactId: contacts[7].id, companyId: companies[6].id, userId: admin.id, createdAt: new Date('2026-04-06T09:00:00'), completedAt: new Date('2026-04-06T09:00:00') } }),
+    db.activity.create({ data: { type: 'call', subject: 'QBR with Patrick - SunPower', description: 'Quarterly business review. Patrick happy with AI lead gen performance. 47 qualified leads generated in Q1. Discussing upgrade to Enterprise plan.', duration: 45, status: 'completed', contactId: contacts[0].id, companyId: companies[0].id, userId: agent1.id, createdAt: new Date('2026-04-10T10:00:00'), completedAt: new Date('2026-04-10T10:45:00') } }),
+    db.activity.create({ data: { type: 'email', subject: 'Renewal proposal sent to Ciara', description: 'Sent Pro plan renewal proposal for SunPower Ireland. Highlighting ROI metrics from the past 3 months.', status: 'completed', contactId: contacts[1].id, companyId: companies[0].id, userId: agent1.id, createdAt: new Date('2026-04-08T14:30:00'), completedAt: new Date('2026-04-08T14:30:00') } }),
+    db.activity.create({ data: { type: 'meeting', subject: 'Cork Solar - product demo', description: 'Full demo of the AI workforce platform for Michael and his team. Showed live lead gen, CRM automation, and SEAI grants handling.', duration: 90, status: 'completed', contactId: contacts[2].id, companyId: companies[1].id, userId: agent1.id, createdAt: new Date('2026-04-05T09:00:00'), completedAt: new Date('2026-04-05T10:30:00') } }),
+    db.activity.create({ data: { type: 'call', subject: 'Follow-up with Aoife', description: 'Left voicemail about Starter plan pricing. Aoife keen but wants to see the grants agent in action before committing.', duration: 3, status: 'completed', contactId: contacts[3].id, companyId: companies[2].id, userId: agent2.id, createdAt: new Date('2026-04-11T11:00:00'), completedAt: new Date('2026-04-11T11:03:00') } }),
+    db.activity.create({ data: { type: 'email', subject: 'Case studies sent to Rachel', description: 'Sent SunPower and SouthEast Solar case studies showing ROI. Highlighted the permitting agent time savings.', status: 'completed', contactId: contacts[7].id, companyId: companies[6].id, userId: admin.id, createdAt: new Date('2026-04-06T09:00:00'), completedAt: new Date('2026-04-06T09:00:00') } }),
     db.activity.create({ data: { type: 'meeting', subject: 'Proposal review with Rachel', description: 'Reviewing partnership proposal and discussing KPIs.', duration: 60, status: 'scheduled', scheduledAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 10, 0), contactId: contacts[7].id, companyId: companies[6].id, userId: admin.id, createdAt: new Date('2026-04-11T15:00:00') } }),
-    db.activity.create({ data: { type: 'call', subject: 'Eoin initial discovery', description: 'First call to understand EV Charge Network requirements.', duration: 30, status: 'completed', contactId: contacts[8].id, companyId: companies[7].id, userId: agent2.id, createdAt: new Date('2026-04-04T14:00:00'), completedAt: new Date('2026-04-04T14:30:00') } }),
-    db.activity.create({ data: { type: 'note', subject: 'Lisa needs quick turnaround', description: 'Lisa mentioned she has a tight deadline - needs decision within 2 weeks. Prioritize.', contactId: contacts[9].id, userId: agent2.id, createdAt: new Date('2026-04-09T16:00:00') } }),
-    db.activity.create({ data: { type: 'email', subject: 'Niamh monthly report sent', description: 'Sent March performance report showing 23% increase in organic traffic.', status: 'completed', contactId: contacts[5].id, companyId: companies[4].id, userId: agent2.id, createdAt: new Date('2026-04-09T10:00:00'), completedAt: new Date('2026-04-09T10:00:00') } }),
-    db.activity.create({ data: { type: 'meeting', subject: 'Declan demo - CleanHeat strategy', description: 'Demo of our digital strategy framework and tools.', duration: 90, status: 'scheduled', scheduledAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 14, 0), contactId: contacts[4].id, companyId: companies[3].id, userId: agent1.id, createdAt: new Date('2026-04-10T11:00:00') } }),
+    db.activity.create({ data: { type: 'call', subject: 'Eoin initial discovery', description: 'First call with Eoin at NorthWest Renewables. Runs 35 installs/month. Main pain point: lead follow-up times averaging 4 days. Needs full AI workforce.', duration: 30, status: 'completed', contactId: contacts[8].id, companyId: companies[7].id, userId: agent2.id, createdAt: new Date('2026-04-04T14:00:00'), completedAt: new Date('2026-04-04T14:30:00') } }),
+    db.activity.create({ data: { type: 'note', subject: 'Tom Henderson - strong referral', description: 'Tom was referred by Sean at SouthEast Solar. Sean gave a glowing recommendation. Tom runs a 1-man shop doing 4-5 installs/month, drowning in ESB paperwork.', contactId: contacts[10].id, userId: agent2.id, createdAt: new Date('2026-04-09T16:00:00') } }),
+    db.activity.create({ data: { type: 'email', subject: 'BrightSpark monthly performance report', description: 'Sent April performance report to Niamh. AI lead gen generated 23 new enquiries, 8 converted to site surveys. 34% conversion rate.', status: 'completed', contactId: contacts[5].id, companyId: companies[4].id, userId: agent2.id, createdAt: new Date('2026-04-09T10:00:00'), completedAt: new Date('2026-04-09T10:00:00') } }),
+    db.activity.create({ data: { type: 'meeting', subject: 'Midland Solar - product demo', description: 'Live demo of the Renewably platform for Declan. Focus on permitting agent and ESB application automation.', duration: 90, status: 'scheduled', scheduledAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 14, 0), contactId: contacts[4].id, companyId: companies[3].id, userId: agent1.id, createdAt: new Date('2026-04-10T11:00:00') } }),
   ]);
 
   console.log('✅ Activities created');
@@ -195,12 +193,12 @@ async function main() {
 
   // ===== NOTES =====
   const notes = await Promise.all([
-    db.note.create({ data: { content: 'Patrick is very keen on expanding the digital presence. Mentioned they want to target the UK market as well next year. Budget is flexible for the right proposal.', contactId: contacts[0].id, companyId: companies[0].id, userId: agent1.id, createdAt: new Date('2026-04-10T11:00:00') } }),
-    db.note.create({ data: { content: 'EcoWind has a very clear vision for their website. Michael wants a modern, clean design with strong lead gen forms. They have in-house content writers.', contactId: contacts[2].id, companyId: companies[1].id, userId: agent1.id, createdAt: new Date('2026-04-05T17:30:00') } }),
-    db.note.create({ data: { content: 'Aoife seems interested but has been hard to reach. She mentioned they are comparing 3 agencies. Need to differentiate on renewable energy expertise.', contactId: contacts[3].id, companyId: companies[2].id, userId: agent2.id, createdAt: new Date('2026-04-11T11:15:00') } }),
-    db.note.create({ data: { content: 'SolarStream is a major opportunity - they manufacture panels for all of Ireland. Partnership could bring in 5-10 referral deals per year. Rachel is the key decision maker.', contactId: contacts[7].id, companyId: companies[6].id, userId: admin.id, createdAt: new Date('2026-04-06T10:00:00') } }),
-    db.note.create({ data: { content: 'Declan is a no-nonsense business owner. Prefers straightforward communication. Show results, not promises. Best approach is a demo of actual campaigns we have run.', contactId: contacts[4].id, companyId: companies[3].id, userId: agent1.id, createdAt: new Date('2026-04-03T16:00:00') } }),
-    db.note.create({ data: { content: 'Lisa is ready to move quickly. She has received quotes from 2 other solar installers and wants us to help her generate more leads for her installation business. Decision expected this week.', contactId: contacts[9].id, userId: agent2.id, createdAt: new Date('2026-04-09T16:30:00') } }),
+    db.note.create({ data: { content: 'Patrick is very happy with the AI workforce. Lead gen agent is his favourite - reduced response time from 4 hours to under 2 minutes. He wants to add the logistics agent next quarter.', contactId: contacts[0].id, companyId: companies[0].id, userId: agent1.id, createdAt: new Date('2026-04-10T11:00:00') } }),
+    db.note.create({ data: { content: 'Cork Solar is the biggest opportunity this quarter. 120 installs/year, 15-person team. If we land them, that is EUR 15K/year recurring. Michael needs to see the SEAI grants agent handling real applications.', contactId: contacts[2].id, companyId: companies[1].id, userId: agent1.id, createdAt: new Date('2026-04-05T11:00:00') } }),
+    db.note.create({ data: { content: 'Aoife is comparing us against 2 other options - a generic CRM and a UK-based solar software. Our advantage: Irish-focused, AI-native, purpose-built for solar PV. Need to push the demo.', contactId: contacts[3].id, companyId: companies[2].id, userId: agent2.id, createdAt: new Date('2026-04-11T11:15:00') } }),
+    db.note.create({ data: { content: 'Rachel at Photon Electrical is expanding from electrical into solar. She needs the grants agent and permitting agent the most. RECI registered but new to SEAI applications. Good fit for Pro plan.', contactId: contacts[7].id, companyId: companies[6].id, userId: admin.id, createdAt: new Date('2026-04-06T10:00:00') } }),
+    db.note.create({ data: { content: 'Declan at Midland Solar is a no-nonsense operator. Wants to see real results, not promises. Best approach: show the SouthEast Solar case study where we saved them 25 hours/week on admin.', contactId: contacts[4].id, companyId: companies[3].id, userId: agent1.id, createdAt: new Date('2026-04-03T16:00:00') } }),
+    db.note.create({ data: { content: 'Tom Henderson was referred by Sean Doyle at SouthEast Solar. Strong referral. Tom does 4-5 installs/month and handles all admin himself. Starter plan is the right entry point - show him the ROI calculator.', contactId: contacts[10].id, userId: agent2.id, createdAt: new Date('2026-04-09T16:30:00') } }),
   ]);
 
   console.log('✅ Notes created');
@@ -209,24 +207,28 @@ async function main() {
   const templates = await Promise.all([
     db.proposalTemplate.create({
       data: {
-        name: 'Website Redesign Package',
-        description: 'Standard website redesign with SEO, content strategy, and lead generation.',
+        name: 'Renewably Pro Plan',
+        description: 'Full AI workforce subscription - 9 agents covering every aspect of a solar installation business.',
         lineItems: JSON.stringify([
-          { name: 'Website Design & Development', description: 'Custom responsive design with up to 15 pages', quantity: 1, unitPrice: 12000, total: 12000, sortOrder: 0 },
-          { name: 'SEO Audit & Strategy', description: 'Full technical audit and 6-month SEO roadmap', quantity: 1, unitPrice: 3000, total: 3000, sortOrder: 1 },
-          { name: 'Content Strategy', description: 'Content calendar and copywriting for 10 pages', quantity: 1, unitPrice: 2500, total: 2500, sortOrder: 2 },
-          { name: 'Monthly Maintenance', description: 'Hosting, security updates, and performance monitoring', quantity: 12, unitPrice: 500, total: 6000, sortOrder: 3 },
+          { name: 'AI Lead Generation Agent', description: '24/7 lead capture, qualification, and nurture across all channels', quantity: 1, unitPrice: 300, total: 300, sortOrder: 0 },
+          { name: 'AI CRM & Sales Agent', description: 'Pipeline management, follow-ups, proposal generation, deal tracking', quantity: 1, unitPrice: 250, total: 250, sortOrder: 1 },
+          { name: 'AI Grants & Financing Agent', description: 'SEAI grant applications, financing qualification, customer checks', quantity: 1, unitPrice: 200, total: 200, sortOrder: 2 },
+          { name: 'AI Logistics Agent', description: 'Equipment ordering, delivery scheduling, inventory management', quantity: 1, unitPrice: 100, total: 100, sortOrder: 3 },
+          { name: 'AI Permitting Agent', description: 'ESB grid applications, planning permission, building control', quantity: 1, unitPrice: 100, total: 100, sortOrder: 4 },
+          { name: 'AI QA & Reporting Agents', description: 'Quality monitoring, KPI dashboards, business intelligence', quantity: 1, unitPrice: 50, total: 50, sortOrder: 5 },
+          { name: 'Monthly Subscription (12 months)', description: 'Full AI workforce platform access and support', quantity: 12, unitPrice: 1000, total: 12000, sortOrder: 6 },
         ]),
       },
     }),
     db.proposalTemplate.create({
       data: {
-        name: 'Digital Marketing Retainer',
-        description: 'Monthly digital marketing retainer including PPC, social media, and analytics.',
+        name: 'Renewably Starter Plan',
+        description: 'Essential AI agents for smaller installers - lead gen, CRM, and grants.',
         lineItems: JSON.stringify([
-          { name: 'PPC Campaign Management', description: 'Google Ads and social media advertising', quantity: 1, unitPrice: 2000, total: 2000, sortOrder: 0 },
-          { name: 'Social Media Management', description: 'Content creation and posting across 3 platforms', quantity: 1, unitPrice: 1500, total: 1500, sortOrder: 1 },
-          { name: 'Analytics & Reporting', description: 'Monthly performance reports and insights', quantity: 1, unitPrice: 500, total: 500, sortOrder: 2 },
+          { name: 'AI Lead Generation Agent', description: '24/7 lead capture and qualification from website, social, and directories', quantity: 1, unitPrice: 250, total: 250, sortOrder: 0 },
+          { name: 'AI CRM & Sales Agent', description: 'Pipeline management, automated follow-ups, and proposal generation', quantity: 1, unitPrice: 200, total: 200, sortOrder: 1 },
+          { name: 'AI Grants Agent', description: 'SEAI grant eligibility checks and application assistance', quantity: 1, unitPrice: 150, total: 150, sortOrder: 2 },
+          { name: 'Monthly Subscription (6 months)', description: 'Starter platform access and email support', quantity: 6, unitPrice: 1000, total: 6000, sortOrder: 3 },
         ]),
       },
     }),
@@ -568,9 +570,9 @@ async function main() {
       description: 'When a deal has been in the Qualified stage for 7+ days, automatically create a follow-up task for the assigned agent.',
       isActive: true,
       triggerType: 'deal_stage_change',
-      triggerConfig: JSON.stringify({ stage: 'Qualified' }),
+      triggerConfig: JSON.stringify({ stage: 'Proposal' }),
       actions: JSON.stringify([
-        { type: 'create_task', config: { title: 'Follow up on qualified deal', priority: 'high', description: 'This deal has been in Qualified stage for 7+ days. Reach out to the contact to move the deal forward.' } },
+        { type: 'create_task', config: { title: 'Follow up on proposal', priority: 'high', description: 'This deal has been in Proposal stage for 7+ days. Reach out to the contact to move the deal forward.' } },
         { type: 'notify', config: { user: 'deal_owner', message: 'A deal has been in Qualified stage for 7+ days. Consider reaching out.' } },
       ]),
       executionCount: 12,

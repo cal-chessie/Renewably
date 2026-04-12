@@ -440,3 +440,35 @@ Stage Summary:
 - Blog page fully rebuilt with 7 sections matching About page quality
 - File: /home/z/my-project/src/components/BlogPageClient.tsx (complete rewrite)
 - File: /home/z/my-project/src/app/blog/page.tsx (metadata update)
+---
+Task ID: 1
+Agent: Main
+Task: Backend & CRM hardening — auth, middleware, lead capture, data model fix
+
+Work Log:
+- Created src/middleware.ts — server-side route protection for all /crm/* and /api/crm/* routes
+- Upgraded src/lib/auth.ts — PBKDF2 password hashing (100k iterations), legacy SHA-256 fallback with auto-upgrade on login
+- Exported SessionData type from sessions.ts for proper typing
+- Upgraded src/app/api/crm/auth/route.ts — isActive check, PBKDF2 auto-upgrade, proper error handling
+- Removed dead dependencies: next-auth, next-intl
+- Fixed installer stats pricing mismatch (99/249/599 → 1000/1250/1500 EUR)
+- Fixed reports/dashboard conversion funnel stage names (Survey/Quote/Approved → Qualified/Proposal/Negotiation)
+- Wired chat widget to CRM lead capture — visitor ID deduplication, buying signal detection, async contact creation
+- Added visitorId tracking to ChatWidget (sessionStorage-based)
+- Updated src/app/api/chat/route.ts with async lead capture logic
+- Fixed pipeline stages: changed from solar-installation stages (Lead/Survey/Quote/Approved/Install/Commissioned) to agency sales stages (Lead/Qualified/Proposal/Negotiation/Won/Lost)
+- Rewrote seed data: 8 solar installer companies, 12 contacts (decision makers), 10 deals (subscription sales), agency-specific activities/notes/proposals/workflows
+- Updated proposal templates: Renewably Pro Plan and Starter Plan
+- Updated tags: Solar PV, Commercial Focus, Small Installer, Enterprise Client, Annual Contract
+- Dashboard route stages synced to sales pipeline
+- All 43 CRM API routes verified: 100% auth guards, error handling intact
+
+Stage Summary:
+- CRM is now a proper AGENCY sales pipeline tracking subscription deals to solar installers
+- Server-side auth via middleware.ts protects all CRM routes
+- Password hashing upgraded to PBKDF2 with auto-migration
+- Chat widget captures leads into CRM with visitor deduplication
+- All public CTAs funnel to /contact → CRM contact creation
+- Dead dependencies removed (next-auth, next-intl)
+- Zero lint errors
+

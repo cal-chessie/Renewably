@@ -32,13 +32,11 @@ export async function GET(request: NextRequest) {
     // Ensure solar pipeline stages exist
     const solarStages = [
       { name: 'Lead', order: 1, color: '#9CA3AF', isDefault: true },
-      { name: 'Survey', order: 2, color: '#60A5FA' },
-      { name: 'Quote', order: 3, color: '#F3D840' },
-      { name: 'Approved', order: 4, color: '#34D399' },
-      { name: 'Install', order: 5, color: '#F97316' },
-      { name: 'Commissioned', order: 6, color: '#8B5CF6' },
-      { name: 'Won', order: 7, color: '#22C55E' },
-      { name: 'Lost', order: 8, color: '#EF4444' },
+      { name: 'Qualified', order: 2, color: '#60A5FA' },
+      { name: 'Proposal', order: 3, color: '#F3D840' },
+      { name: 'Negotiation', order: 4, color: '#FB923C' },
+      { name: 'Won', order: 5, color: '#22C55E' },
+      { name: 'Lost', order: 6, color: '#EF4444' },
     ]
     for (const stage of solarStages) {
       await db.pipelineStage.upsert({
