@@ -6,6 +6,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
 import Image from "next/image";
 import MiniDesktop from "@/components/MiniDesktop";
+import OperationsDashboard from "@/components/OperationsDashboard";
 
 /* ============================================================
    DATA — 8 AI Agents
@@ -24,7 +25,6 @@ const agents = [
     tagline: "Runs the day to day. Coordinates installs. Manages timelines.",
     body: "The operations agent is your project manager. It tracks every job from quote to completion. It knows where each install is — assessment done, grant submitted, permit approved, equipment ordered, crew scheduled, installation complete, paperwork signed.",
     closing: "When a job stalls, the ops agent knows. When a timeline slips, the ops agent alerts you. When a customer asks 'where is my install?', the ops agent has the answer.",
-    image: "/agents/agent-operations.jpg",
   },
   {
     num: "03",
@@ -111,6 +111,13 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           {agent.num === "01" ? (
             <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
               <MiniDesktop />
+              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
+                {agent.num}
+              </div>
+            </div>
+          ) : agent.num === "02" ? (
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+              <OperationsDashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
