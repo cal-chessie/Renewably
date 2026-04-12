@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Renewably.ie — Full Website Audit Report"""
+"""Renewably.ie Full Website Audit Report - PDF Generator"""
 
-import os
+import os, sys
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch, cm
-from reportlab.lib import colors
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
-from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib import colors
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
-    HRFlowable, KeepTogether
+    Paragraph, Spacer, Table, TableStyle, PageBreak,
+    KeepTogether, HRFlowable
 )
 from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.pdfbase import pdfmetrics
@@ -17,625 +17,93 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase.pdfmetrics import registerFontFamily
 import hashlib
 
+# ━━ Font Registration ━━
+pdfmetrics.registerFont(TTFont('Times New Roman', '/usr/share/fonts/truetype/english/Times-New-Roman.ttf'))
+pdfmetrics.registerFont(TTFont('Calibri', '/usr/share/fonts/truetype/english/calibri-regular.ttf'))
+pdfmetrics.registerFont(TTFont('DejaVuSans', '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'))
+registerFontFamily('Times New Roman', normal='Times New Roman', bold='Times New Roman')
+registerFontFamily('Calibri', normal='Calibri', bold='Calibri')
+
 # ━━ Color Palette ━━
-ACCENT = colors.HexColor('#5226d4')
-ACCENT_LIGHT = colors.HexColor('#e8dfe6')
-TEXT_PRIMARY = colors.HexColor('#1d1f20')
-TEXT_MUTED = colors.HexColor('#777f83')
-BG_SURFACE = colors.HexColor('#d2dbdf')
-BG_PAGE = colors.HexColor('#f3f4f5')
-RED = colors.HexColor('#D94032')
-GREEN = colors.HexColor('#2D8B4E')
-AMBER = colors.HexColor('#C67F17')
+ACCENT = colors.HexColor('#5a37c3')
+TEXT_PRIMARY = colors.HexColor('#1e1d1b')
+TEXT_MUTED = colors.HexColor('#8b867f')
+BG_SURFACE = colors.HexColor('#e5e1dc')
+BG_PAGE = colors.HexColor('#f1efec')
+CRITICAL_COLOR = colors.HexColor('#DC2626')
+HIGH_COLOR = colors.HexColor('#EA580C')
+MEDIUM_COLOR = colors.HexColor('#CA8A04')
+LOW_COLOR = colors.HexColor('#6B7280')
+PASS_COLOR = colors.HexColor('#16A34A')
+FAIL_COLOR = colors.HexColor('#DC2626')
+WARN_COLOR = colors.HexColor('#CA8A04')
+
 TABLE_HEADER_COLOR = ACCENT
 TABLE_HEADER_TEXT = colors.white
 TABLE_ROW_EVEN = colors.white
 TABLE_ROW_ODD = BG_SURFACE
 
-# ━━ Fonts ━━
-pdfmetrics.registerFont(TTFont('TimesNewRoman', '/usr/share/fonts/truetype/english/Times-New-Roman.ttf'))
-pdfmetrics.registerFont(TTFont('Calibri', '/usr/share/fonts/truetype/english/calibri-regular.ttf'))
-registerFontFamily('TimesNewRoman', normal='TimesNewRoman', bold='TimesNewRoman')
-registerFontFamily('Calibri', normal='Calibri', bold='Calibri')
-
-PAGE_W, PAGE_H = A4
-LEFT_M = 0.9 * inch
-RIGHT_M = 0.9 * inch
-TOP_M = 0.75 * inch
-BOT_M = 0.75 * inch
-AVAIL_W = PAGE_W - LEFT_M - RIGHT_M
-
 # ━━ Styles ━━
-s_title = ParagraphStyle('Title', fontName='TimesNewRoman', fontSize=24, leading=30, textColor=ACCENT, spaceAfter=6)
-s_h1 = ParagraphStyle('H1', fontName='TimesNewRoman', fontSize=16, leading=22, textColor=ACCENT, spaceBefore=18, spaceAfter=8)
-s_h2 = ParagraphStyle('H2', fontName='TimesNewRoman', fontSize=13, leading=18, textColor=TEXT_PRIMARY, spaceBefore=14, spaceAfter=6)
-s_body = ParagraphStyle('Body', fontName='TimesNewRoman', fontSize=10.5, leading=16, textColor=TEXT_PRIMARY, alignment=TA_JUSTIFY, spaceAfter=6)
-s_body_left = ParagraphStyle('BodyLeft', fontName='TimesNewRoman', fontSize=10.5, leading=16, textColor=TEXT_PRIMARY, alignment=TA_LEFT, spaceAfter=6)
-s_muted = ParagraphStyle('Muted', fontName='TimesNewRoman', fontSize=9, leading=13, textColor=TEXT_MUTED, alignment=TA_LEFT, spaceAfter=4)
-s_bullet = ParagraphStyle('Bullet', fontName='TimesNewRoman', fontSize=10.5, leading=16, textColor=TEXT_PRIMARY, alignment=TA_LEFT, leftIndent=18, spaceAfter=4, bulletIndent=6, bulletFontName='TimesNewRoman', bulletFontSize=10.5)
-s_crit = ParagraphStyle('Crit', fontName='TimesNewRoman', fontSize=10.5, leading=16, textColor=RED, alignment=TA_LEFT, spaceAfter=4, leftIndent=18, bulletIndent=6, bulletFontName='TimesNewRoman', bulletFontSize=10.10)
-s_warn = ParagraphStyle('Warn', fontName='TimesNewRoman', fontSize=10.5, leading=16, textColor=AMBER, alignment=TA_LEFT, spaceAfter=4, leftIndent=18, bulletIndent=6, bulletFontName='TimesNewRoman', bulletFontSize=10.5)
-s_th = ParagraphStyle('TableHeader', fontName='TimesNewRoman', fontSize=10, leading=14, textColor=colors.white, alignment=TA_CENTER)
-s_td = ParagraphStyle('TableCell', fontName='TimesNewRoman', fontSize=9.5, leading=14, textColor=TEXT_PRIMARY, alignment=TA_LEFT)
-s_td_c = ParagraphStyle('TableCellC', fontName='TimesNewRoman', fontSize=9.5, leading=14, textColor=TEXT_PRIMARY, alignment=TA_CENTER)
-s_caption = ParagraphStyle('Caption', fontName='TimesNewRoman', fontSize=9, leading=12, textColor=TEXT_MUTED, alignment=TA_CENTER, spaceAfter=6, spaceBefore=3)
-s_sev = ParagraphStyle('Severity', fontName='TimesNewRoman', fontSize=9, leading=12, alignment=TA_CENTER)
-s_score = ParagraphStyle('Score', fontName='TimesNewRoman', fontSize=9.5, leading=13, textColor=TEXT_PRIMARY, alignment=TA_CENTER)
-
-
-def sev_badge(level):
-    m = {"CRITICAL": RED, "HIGH": colors.HexColor('#E06040'), "MEDIUM": AMBER, "LOW": GREEN}
-    c = m.get(level, TEXT_MUTED)
-    return ParagraphStyle('SevBadge', fontName='TimesNewRoman', fontSize=8, leading=11, textColor=colors.white, alignment=TA_CENTER, backColor=c)
-
-def bullet(text, style=s_bullet):
-    return Paragraph(f'<bullet>&bull;</bullet> {text}', style)
-
-def critical(text):
-    return Paragraph(f'<bullet>&bull;</bullet> <b>CRITICAL:</b> {text}', s_crit)
-
-def high(text):
-    return Paragraph(f'<bullet>&bull;</bullet> <b>HIGH:</b> {text}', s_warn)
-
-def medium(text):
-    return Paragraph(f'<bullet>&bull;</bullet> <b>MEDIUM:</b> {text}', s_bullet)
-
-def low(text):
-    return Paragraph(f'<bullet>&bull;</bullet> LOW: {text}', s_bullet)
-
-def tip(text):
-    return Paragraph(f'<bullet>&bull;</bullet> <b>FIX:</b> {text}', ParagraphStyle('Tip', fontName='TimesNewRoman', fontSize=10, leading=15, textColor=GREEN, alignment=TA_LEFT, spaceAfter=4, leftIndent=18, bulletIndent=6))
-
-def hr():
-    return HRFlowable(width="100%", thickness=0.5, color=BG_SURFACE, spaceAfter=6, spaceBefore=6)
-
-def make_table(headers, rows, col_widths=None):
-    if col_widths is None:
-        col_widths = [AVAIL_W / len(headers)] * len(headers)
-    data = [[Paragraph(f'<b>{h}</b>', s_th) for h in headers]]
-    for row in rows:
-        data.append(row)
-    t = Table(data, colWidths=col_widths, hAlign='CENTER')
-    style_cmds = [
-        ('BACKGROUND', (0, 0), (-1, 0), TABLE_HEADER_COLOR),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 6),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
-        ('TOPPADDING', (0, 0), (-1, -1), 5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-        ('GRID', (0, 0), (-1, -1), 0.4, TEXT_MUTED),
-    ]
-    for i in range(1, len(data)):
-        bg = TABLE_ROW_ODD if i % 2 == 0 else TABLE_ROW_EVEN
-        style_cmds.append(('BACKGROUND', (0, i), (-1, i), bg))
-    t.setStyle(TableStyle(style_cmds))
-    return t
-
-
-# ── Cover ──
-cover_elements = []
-cover_elements.append(Spacer(1, 120))
-cover_elements.append(Paragraph('<b>Renewably.ie</b>', ParagraphStyle('CoverBrand', fontName='TimesNewRoman', fontSize=14, leading=18, textColor=TEXT_MUTED, alignment=TA_CENTER, spaceAfter=4)))
-cover_elements.append(HRFlowable(width="30%", thickness=1.5, color=ACCENT, spaceAfter=12, spaceBefore=12))
-cover_elements.append(Paragraph('Full Website Audit Report', s_title))
-cover_elements.append(Paragraph('Comprehensive review of content, SEO, accessibility, performance, and technical infrastructure.', s_muted))
-cover_elements.append(Spacer(1, 40))
-cover_elements.append(Paragraph('April 2026', s_muted))
-
-# ── TOC ──
-toc = TableOfContents()
-toc.levelStyles = [
-    ParagraphStyle('TOC1', fontName='TimesNewRoman', fontSize=12, leftIndent=20, spaceBefore=6, spaceAfter=3),
-    ParagraphStyle('TOC2', fontName='TimesNewRoman', fontSize=10, leftIndent=40, spaceBefore=2, spaceAfter=2),
-]
-
-# ── Content ──
-story = []
-
-# Helper for headings with bookmarks
-heading_counter = [0]
-def add_heading(text, style, level=0):
-    key = 'h_%s' % hashlib.md5(text.encode()).hexdigest()[:8]
-    p = Paragraph(f'<a name="{key}"/>{text}</a>', style)
-    p.bookmark_name = text
-    p.bookmark_level = level
-    p.bookmark_text = text
-    p.bookmark_key = key
-    return p
-
-story.append(Paragraph('<b>Table of Contents</b>', ParagraphStyle('TOCTitle', fontName='TimesNewRoman', fontSize=18, leading=24, textColor=TEXT_PRIMARY, spaceAfter=12)))
-story.append(toc)
-
-# ═══════════════════════════════════════════════
-# SECTION 1: EXECUTIVE SUMMARY
-# ═══════════════════════════════════════════════
-story.append(add_heading('Executive Summary', s_h1, 0))
-story.append(Paragraph(
-    'This audit covers the complete renewably.ie website across 7 public-facing pages '
-    '(Home, About, Services, Workforce, Blog, Contact, and 5 blog posts), along with shared '
-    'components (Header, Footer, ChatWidget, LoadingScreen, CustomCursor), CRM admin routes, '
-    'SEO infrastructure, and technical configuration. The site is built on Next.js 16 with '
-    'App Router, Tailwind CSS v4, shadcn/ui, and Framer Motion.', s_body))
-story.append(Spacer(1, 6))
-story.append(Paragraph(
-    'The website presents a polished, brand-consistent experience with strong visual design, '
-    'compelling copy, and interactive elements. However, several critical issues require immediate '
-    'attention: a missing Open Graph image that breaks social sharing, broken footer links to '
-    'non-existent legal pages, an email domain mismatch across two pages, inconsistent agent '
-    'data across three different pages, and the absence of a cookie consent banner required by '
-    'GDPR regulations for an Irish-operating business.', s_body))
-story.append(Spacer(1, 6))
-story.append(Paragraph(
-    'The audit identified 38 individual findings across 8 categories. Of these, 6 are rated '
-    'Critical, 10 are High priority, 14 are Medium, and 8 are Low. The most impactful '
-    'improvements would be: fixing the email domain mismatch, creating missing legal pages, '
-    'generating an OG image, adding the services page to the sitemap, and standardising the '
-    'agent list and pricing across all pages.', s_body))
-
-# Summary table
-story.append(Spacer(1, 12))
-story.append(make_table(
-    ['Category', 'Critical', 'High', 'Medium', 'Low'],
-    [
-        [Paragraph('Content & Copy', s_td_c), Paragraph('1', s_td_c), Paragraph('2', s_td_c), Paragraph('3', s_td_c), Paragraph('0', s_td_c)],
-        [Paragraph('SEO & Metadata', s_td_c), Paragraph('2', s_td_c), Paragraph('2', s_td_c), Paragraph('1', s_td_c), Paragraph('0', s_td_c)],
-        [Paragraph('Broken Links & Missing Pages', s_td_c), Paragraph('2', s_td_c), Paragraph('1', s_td_c), Paragraph('1', s_td_c), Paragraph('0', s_td_c)],
-        [Paragraph('Accessibility & GDPR', s_td_c), Paragraph('0', s_td_c), Paragraph('2', s_td_c), Paragraph('2', s_td_c), Paragraph('1', s_td_c)],
-        [Paragraph('Performance & Technical', s_td_c), Paragraph('0', s_td_c), Paragraph('1', s_td_c), Paragraph('3', s_td_c), Paragraph('4', s_td_c)],
-        [Paragraph('Design & Branding', s_td_c), Paragraph('1', s_td_c), Paragraph('2', s_td_c), Paragraph('2', s_td_c), Paragraph('2', s_td_c)],
-        [Paragraph('Infrastructure', s_td_c), Paragraph('0', s_td_c), Paragraph('0', s_td_c), Paragraph('2', s_td_c), Paragraph('1', s_td_c)],
-    ],
-    [AVAIL_W * 0.30, AVAIL_W * 0.14, AVAIL_W * 0.14, AVAIL_W * 0.14, AVAIL_W * 0.14, AVAIL_W * 0.14],
-))
-story.append(Paragraph('Table 1: Finding summary by category', s_caption))
-
-# ═══════════════════════════════════════════════
-# SECTION 2: CRITICAL FINDINGS
-# ═══════════════════════════════════════════════
-story.append(add_heading('Critical Findings (Fix Immediately)', s_h1, 0))
-
-story.append(add_heading('Missing Open Graph Image', s_h2, 1))
-story.append(critical(
-    'The layout.tsx metadata references /og-image.png for both OpenGraph and Twitter Card '
-    'images, but this file does not exist in the /public directory. When anyone shares a page '
-    'on Facebook, Twitter, LinkedIn, or Slack, the preview will show no image. This significantly '
-    'reduces click-through rates and makes the site look unfinished when shared.'))
-story.append(Paragraph(
-    'Impact: Every social media share across all pages fails to display a preview image. '
-    'The site URL is referenced as https://renewably.ie, meaning the production site has the same '
-    'problem. This is the single most impactful fix for social media visibility and inbound traffic.', s_body))
-story.append(tip('Create a 1200x630px PNG image with the Renewably brand colours (#F3D840 and #0A0A0A), '
-    'the logo, and a tagline. Save it as /public/og-image.png. Alternatively, use Next.js generateMetadata '
-    'to create dynamic OG images per page.'))
-
-story.append(add_heading('Wrong Email Domain on Two Pages', s_h2, 1))
-story.append(critical(
-    'The homepage (HomePageClient.tsx, line 731) and the workforce page (WorkforcePageClient.tsx, '
-    'line 346) both link to hello@renewably.com. The correct domain used everywhere else is '
-    'hello@renewably.ie. The .com domain may be a competitor\'s domain or simply unmonitored. '
-    'Customers clicking this link will never reach the business.'))
-story.append(Paragraph(
-    'Impact: Any customer who clicks the CTA email link on the homepage or workforce page gets '
-    'sent to the wrong address. Given that these are the two highest-traffic pages, this '
-    'represents a direct and ongoing loss of potential leads. The contact page, footer, and '
-    'layout metadata all correctly use hello@renewably.ie.', s_body))
-story.append(tip('Replace hello@renewably.com with hello@renewably.ie in HomePageClient.tsx (line 731) '
-    'and WorkforcePageClient.tsx (line 346).'))
-
-story.append(add_heading('Missing Legal Pages (/privacy and /terms)', s_h2, 1))
-story.append(critical(
-    'The footer links to /privacy and /terms, but neither page exists. Clicking either link '
-    'shows the default Next.js 404 page. For an Irish-operating business handling personal data '
-    '(customer names, emails, phone numbers, company details), a Privacy Policy and Terms '
-    'of Service are not optional. They are required by GDPR, ePrivacy Regulations, and the '
-    'Consumer Rights Act 2022.'))
-story.append(Paragraph(
-    'Impact: The absence of these pages is both a legal compliance risk and a trust signal. '
-    'B2B customers evaluating AI services will check for a privacy policy. Its absence '
-    'suggests an unprofessional operation. Additionally, Google may penalise the site in '
-    'search rankings for lacking required legal pages.', s_body))
-story.append(tip('Create /app/privacy/page.tsx and /app/terms/page.tsx with proper content. '
-    'Add both to sitemap.ts. At minimum, the privacy policy must cover: data controller identity, '
-    'data collected, legal basis for processing, data retention periods, user rights (access, '
-    'rectification, erasure, portability), cookie usage, and third-party data sharing. The terms '
-    'must cover: service description, payment terms, limitation of liability, and governing law '
-    '(Republic of Ireland / EU).'))
-
-story.append(add_heading('Missing /services Page from Sitemap', s_h2, 1))
-story.append(critical(
-    'The /services page exists and is fully functional, but it is not included in sitemap.ts. '
-    'Search engines may not discover or index the services page through the sitemap, reducing '
-    'its organic search visibility. Given that "solar AI services" and related keywords are '
-    'high-value search terms for the target audience, this omission directly impacts lead generation.'))
-story.append(tip('Add { url: `${baseUrl}/services`, lastModified: new Date(), changeFrequency: "monthly", '
-    'priority: 0.9 } to the sitemap array in /src/app/sitemap.ts.'))
-
-story.append(add_heading('Blog Posts Missing from Sitemap', s_h2, 1))
-story.append(critical(
-    'The sitemap only lists 5 top-level pages. None of the 5 blog posts are included. Blog '
-    'posts are some of the most valuable SEO content on the site, targeting long-tail keywords '
-    'like "AI site assessment 2026" and "SEAI grant automation." Without sitemap entries, search '
-    'engines must discover these pages through internal links alone, which slows indexing and '
-    'reduces crawl efficiency.'))
-story.append(tip('Add a dynamic sitemap that iterates over the blog-data.ts posts array. '
-    'For each post, add { url: `${baseUrl}/blog/${post.slug}`, lastModified: new Date(post.date), '
-    'changeFrequency: "monthly", priority: 0.6 }.'))
-
-story.append(add_heading('CRM Routes Exposed Without Authentication', s_h2, 1))
-story.append(critical(
-    'The entire /crm/ directory (14 pages including pipeline, contacts, invoices, proposals, '
-    'reports, meetings, tasks) is publicly accessible. While a login page exists, there is no '
-    'server-side authentication guard on the layout or individual routes. Anyone can navigate to '
-    '/crm/pipeline and view the full CRM interface without logging in. This exposes '
-    'sensitive business data including customer names, deal values, and pipeline stages.'))
-story.append(tip('Add authentication middleware to /src/app/crm/layout.tsx. Redirect unauthenticated '
-    'users to /crm/login. Use Next.js middleware.ts for route-level protection.'))
-
-# ═══════════════════════════════════════════════
-# SECTION 3: HIGH PRIORITY
-# ═══════════════════════════════════════════════
-story.append(add_heading('High Priority Findings', s_h1, 0))
-
-story.append(add_heading('Inconsistent Agent List Across Three Pages', s_h2, 1))
-story.append(high(
-    'The website describes the AI workforce differently across the Home, Services, and Workforce '
-    'pages. The Home page lists 9 agents (including a "Marketing Agent"), the Services page lists '
-    '8 agents (no Marketing Agent), and the Workforce page lists 8 agents (CEO, Operations, Support, '
-    'Grants, Logistics, Permitting, QA, Reporting). Agent descriptions also differ between pages.'))
-story.append(Paragraph(
-    'Impact: Confusing for visitors. A potential customer who reads the homepage and then visits '
-    'the workforce page may wonder what happened to the Marketing Agent. The inconsistency '
-    'undermines credibility and suggests the product description is not well-defined.', s_body))
-story.append(tip('Standardise on 8 agents across all pages (matching the Workforce page). '
-    'Either remove the Marketing Agent from the homepage or explicitly explain it as "coming soon." '
-    'Copy the exact agent names, titles, and descriptions from WorkforcePageClient.tsx to the other pages.'))
-
-story.append(add_heading('Services Page Pricing Out of Sync', s_h2, 1))
-story.append(high(
-    'The Services page shows per-agent pricing totalling approximately 335 EUR/month. The Workforce '
-    'page has no pricing. The homepage pricing section says "EUR 1,000-1,500 per month plus a one-time '
-    'setup fee," which contradicts the Services page total of 335 EUR. The contact form "jobs per '
-    'month" selector suggests the pricing should scale with volume, but no volume-based pricing '
-    'is presented anywhere.', s_body))
-story.append(tip('Align all pricing references. If the per-agent pricing is correct, update the '
-    'homepage range to match the total. If the homepage range is correct, remove per-agent pricing '
-    'from the Services page and present it as a package price.'))
-
-story.append(add_heading('Contact Form Does Not Submit Data', s_h2, 1))
-story.append(high(
-    'The contact form uses a simulated submission (setTimeout with 1500ms delay) with no actual '
-    'backend endpoint. When a customer fills out the form and clicks Send Message, they see a '
-    '"Message sent" success screen, but no data is actually transmitted. The form collects '
-    'name, email, company, jobs per month, and message, all of which is valuable lead data.', s_body))
-story.append(tip('Create an API route (/api/contact) that receives the form data. Consider sending '
-    'to hello@renewably.ie via email service (SendGrid, Resend, or Postmark). Store submissions '
-    'in a database for CRM integration. Add proper form validation and spam protection.'))
-
-story.append(add_heading('OpenGraph and Twitter Metadata Outdated', s_h2, 1))
-story.append(high(
-    'The OG title reads "AI as a Service for Sales, Marketing & Automation" and the Twitter title '
-    'matches. However, the website is now positioned specifically as "AI Workforce for Solar '
-    'Installers." The outdated description does not match the current branding, which could reduce '
-    'click-through rates when shared and confuse users who see the meta title in SERPs.', s_body))
-story.append(tip('Update both titles in layout.tsx to match the current positioning: '
-    '"Renewably - AI Workforce for Solar Installers." The description should highlight the '
-    '8 AI agents and Irish solar operations focus.'))
-
-story.append(add_heading('Missing Favicon Variants and Manifest', s_h2, 1))
-story.append(high(
-    'The site only has a single 40x40 PNG favicon set for both icon and apple-touch-icon. Modern '
-    'browsers expect multiple favicon sizes (16x16, 32x32, 180x180). There is no web app manifest.json, '
-    'which means the site cannot be "installed" on mobile devices. No PWA support exists despite '
-    'the chat widget suggesting always-on availability.', s_body))
-story.append(tip('Generate favicons at 16x16, 32x32, and 180x180 (apple-touch-icon). '
-    'Create a site.webmanifest with app name, theme colour (#F3D840), and icons array. '
-    'Link the manifest in layout.tsx <head>.'))
-
-story.append(add_heading('No Cookie Consent Banner', s_h2, 1))
-story.append(high(
-    'The website uses no cookies currently, but the chat widget (WhatsApp link, email redirect) and '
-    'any future analytics implementation will require cookies. More importantly, under the ePrivacy '
-    'Regulations and the GDPR, any website targeting EU users must display a cookie consent '
-    'banner before setting non-essential cookies. Operating in Ireland without one is a '
-    'compliance risk.', s_body))
-story.append(tip('Implement a cookie consent banner using a lightweight solution like '
-    'CookieYes, Osano, or a custom component. Categories must include: Necessary, Analytics, '
-    'Marketing. Store user preference and respect Do Not Sell signals.'))
-
-story.append(add_heading('Header Contrast on Light Sections', s_h2, 1))
-story.append(high(
-    'The header uses white text (#FFF) and a transparent background. On dark sections, this works well. '
-    'However, the header sits on top of light sections (white, #FFFDF5, #F3D840) without any '
-    'background change. The scroll progress bar is only 2px tall and white text may have '
-    'insufficient contrast, especially the smaller navigation links. No backdrop-blur or '
-    'background transition is applied as the user scrolls between dark and light sections.', s_body))
-story.append(tip('Add a conditional background to the header based on scroll position. Use a '
-    'semi-transparent dark background (rgba(10,10,10,0.85)) with backdrop-blur when the header '
-    'is over light sections. Framer Motion useScroll + useMotionValueEvent can detect the '
-    'current section colour.'))
-
-story.append(add_heading('Duplicate robots.txt Files', s_h2, 1))
-story.append(high(
-    'Both /public/robots.txt (static) and /app/robots.ts (dynamic) exist. The static file allows '
-    'all crawlers to access everything. The dynamic file allows all crawlers but disallows /api/. '
-    'The static file may override the dynamic one depending on the server configuration. Having both '
-    'creates uncertainty about which rules are actually enforced.', s_body))
-story.append(tip('Delete /public/robots.txt and rely solely on the dynamic /app/robots.ts. '
-    'This is the Next.js best practice and ensures rules stay in sync with the route structure.'))
-
-# ═══════════════════════════════════════════════
-# SECTION 4: MEDIUM PRIORITY
-# ═══════════════════════════════════════════════
-story.append(add_heading('Medium Priority Findings', s_h1, 0))
-
-story.append(add_heading('Footer Missing Two Agents', s_h2, 1))
-story.append(medium(
-    'The footer workforce links list only 6 agents: CEO, Operations, Customer Support, Grants, '
-    'Permitting, and QA. The Logistics Agent and Reporting Agent are missing. All 8 agents have '
-    'dedicated dashboard mockups and detailed pages on the Workforce page. The incomplete footer '
-    'suggests these agents were added after the footer was last updated.', s_body))
-story.append(tip('Add Logistics Agent and Reporting Agent to the workforceLinks array in Footer.tsx. '
-    'Point them to /workforce with appropriate anchor IDs if individual agent sections are added.'))
-
-story.append(add_heading('Chat Widget Uses Surrogate Pair Emoji', s_h2, 1))
-story.append(medium(
-    'The chat widget greeting text reads "Hey! followed by a wave emoji. Depending on the font '
-    'and rendering context, this emoji may render as a tofu square or error character on some '
-    'browsers, particularly when the page first loads before fonts are fully applied. Given that '
-    'surrogate pair emoji rendering issues have affected other parts of the site (dashboards), '
-    'this is a known risk area.', s_body))
-story.append(tip('Replace the emoji with plain text or an SVG wave icon. For example: '
-    '"Hey there! How can we help you today?" without the emoji, or use a small inline SVG wave icon.'))
-
-story.append(add_heading('Blog Hero Too Tall for Index Page', s_h2, 1))
-story.append(medium(
-    'The blog index hero section uses minHeight: 100vh (full viewport height). For a content-heavy '
-    'site where users expect to see article listings quickly, a full-screen hero pushes the actual '
-    'content below the fold. Users must scroll an entire viewport before seeing any blog posts, '
-    'which increases bounce rate. The About and Contact pages use more appropriate hero heights.', s_body))
-story.append(tip('Reduce the blog hero to approximately 60-70vh, matching the About and Contact pages. '
-    'This puts the first blog post closer to the fold while maintaining visual impact.'))
-
-story.append(add_heading('No Custom 404 Page', s_h2, 1))
-story.append(medium(
-    'There is no custom not-found.tsx file. When users navigate to a broken link or non-existent page, '
-    'they see the default Next.js 404 page, which does not match the site design. A custom 404 '
-    'page should use the same dark theme and branding, provide navigation back to the site, and '
-    'suggest relevant content (blog posts, contact page, workforce page).', s_body))
-story.append(tip('Create /src/app/not-found.tsx with a dark-themed 404 page matching the site design. '
-    'Include links to the homepage, blog, and contact page. Add a search suggestion if a search '
-    'feature exists.'))
-
-story.append(add_heading('Loading Screen Adds Unnecessary Delay', s_h2, 1))
-story.append(medium(
-    'The loading screen shows for 1000ms (1 full second) before revealing the page content. '
-    'This delay occurs on every page load, including return visits. While a branded loading screen '
-    'can create a premium feel, a full second is long enough to feel like slow performance. Users '
-    'on repeat visits should see content immediately.', s_body))
-story.append(tip('Reduce the loading screen duration to 400-500ms for first-time visitors. '
-    'Implement session or localStorage tracking to skip the loading screen entirely for return '
-    'visitors.'))
-
-story.append(add_heading('Custom Cursor Hidden on Some Backgrounds', s2))
-story.append(medium(
-    'The custom cursor uses mix-blend-difference, which inverts colours relative to the background. '
-    'On the yellow (#F3D840) sections (pricing, CTA, How It Starts), the cursor becomes nearly '
-    'invisible because the inverted yellow on yellow produces very low contrast. On the dark '
-    'sections with white text, the cursor is similarly hard to see. The feature works well on '
-    'mid-tone backgrounds but not on the extreme light and dark backgrounds used throughout the site.', s_body))
-story.append(tip('Either disable the custom cursor entirely, or add a conditional that hides it when '
-    'the page background is very light (#F3D840, white, #FFFDF5) or very dark (#0A0A0A). The '
-    'visual effect adds minimal value for a B2B audience and may confuse users who are not '
-    'expecting a custom cursor.'))
-
-story.append(add_heading('Services Page Uses Static Agent Images', s_h2, 1))
-story.append(medium(
-    'The Services page still uses static JPEG images (/agents/agent-*.jpg) for agent cards. The '
-    'Workforce page now uses interactive dashboard mockup components for all 8 agents. This '
-    'creates an inconsistency where two pages show the same agents in entirely different ways. '
-    'The static images are also much less engaging than the live dashboard simulations.', s_body))
-story.append(tip('Consider either updating the Services page to use the dashboard components '
-    '(or simplified versions of them), or at minimum ensure the static images are consistent with '
-    'the dashboard aesthetic. Remove the yellow gradient overlay from the static images since '
-    'the dashboards do not have one.'))
-
-story.append(add_heading('Video Autoplay Without User Consent', s_h2, 1))
-story.append(medium(
-    'The platform tour section on the homepage uses autoPlay, muted, and loop on a WebM video. '
-    'While muted autoplay is acceptable for most browsers, autoplaying video consumes bandwidth '
-    'and battery, particularly on mobile devices. Under GDPR best practices and the UK/Ireland '
-    'Equality Act considerations, media should not autoplay without some form of user awareness.', s_body))
-story.append(tip('Consider using a poster frame (image) with a play button overlay. Only load '
-    'and play the video when the user clicks play. This also reduces initial page load size.'))
-
-story.append(add_heading('Footer Contact Section Lacks Address', s_h2, 1))
-story.append(medium(
-    'The footer "Get In Touch" section only lists "Ireland" as the location. For a business '
-    'serving Irish solar installers, having no address, county, or region information in the '
-    'footer is a missed trust signal. A registered business address adds legitimacy and helps '
-    'with local SEO.', s_body))
-story.append(tip('Add the registered business address to the location field in the footer. '
-    'Even a county-level address (e.g., "Dublin, Ireland") is better than just "Ireland."'))
-
-story.append(add_heading('Blog Post Rendering Uses Basic Markdown Parser', s_h2, 1))
-story.append(medium(
-    'Blog posts use a custom "markdown-lite" renderer (BlogPostClient.tsx) that only handles '
-    'bold text, headings, and horizontal rules. It cannot render lists, code blocks, blockquotes '
-    'with proper formatting, numbered items, or any advanced markdown. This limits the types of '
-    'content that can be published and may cause formatting issues if more complex posts are '
-    'written.', s_body))
-story.append(tip('Consider using a lightweight markdown library like react-markdown or remark to '
-    'render blog content. This supports full Markdown syntax including lists, tables, code blocks, '
-    'and images without maintaining a custom parser.'))
-
-story.append(add_heading('Schema.org Missing LocalBusiness and FAQ', s_h2, 1))
-story.append(medium(
-    'The site has Organization and WebSite structured data, but is missing several valuable '
-    'schema types. There is no LocalBusiness schema (which would surface the address, phone, '
-    'hours, and reviews in Google SERPs), no FAQ schema (which could win rich results for common '
-    'questions), and no Service schema for individual agent services.', s_body))
-story.append(tip('Add LocalBusiness schema with the business name, address, phone, email, and URL. '
-    'Add FAQ schema with common questions about AI workforce services and solar installation automation. '
-    'Add Service schema for each agent on the Workforce page.'))
-
-# ═══════════════════════════════════════════════
-# SECTION 5: LOW PRIORITY
-# ═══════════════════════════════════════════════
-story.append(add_heading('Low Priority Findings', s_h1, 0))
-
-story.append(add_heading('Large Unused Public Assets', s_h2, 1))
-story.append(low(
-    'The /public directory contains approximately 30 images, including robot-1.jpg through '
-    'robot-5.jpg, robot-hero.jpg, robot-2-cropped.png, chat-robot.png, hero-visual.png, '
-    'hero-illustration.png, system-illustration.png, ai-illustration.png, funnel-illustration.png, '
-    'and crm-illustration.png. Several of these are likely unused or duplicated. Each unused '
-    'image adds to the deployment size and slows initial page loads.', s_body))
-story.append(tip('Audit image references across all components and remove unused assets from '
-    '/public. Use next/image optimisation and consider WebP conversion for remaining images.'))
-
-story.append(add_heading('No Phone Number Format for Irish Market', s_h2, 1))
-story.append(low(
-    'The phone number +353 873958424 is displayed without spaces in most places (footer, '
-    'contact info, chat widget WhatsApp link). Irish phone number convention typically includes a '
-    'space after the area code: +353 87 395 8424. This is a minor readability issue but '
-    'affects all pages.', s_body))
-story.append(tip('Update the phone number display format to "+353 87 395 8424" across all '
-    'instances (Footer.tsx, ContactPageClient.tsx, ChatWidget.tsx, blog-data.ts, layout.tsx).'))
-
-story.append(add_heading('No Social Proof or Testimonials Section', s2))
-story.append(low(
-    'The site has no testimonials, case studies, customer logos, review scores, or social proof '
-    'elements anywhere. For a B2B service where trust is the primary conversion factor, this '
-    'is a missed opportunity. Irish solar installers evaluating a significant monthly investment '
-    'need evidence that the service works for businesses like theirs.', s_body))
-story.append(tip('Add a testimonials section or case study page featuring real results from '
-    'Irish solar installers. Include customer names, company names, and specific metrics '
-    '(install count increase, approval rate improvement, hours saved per week).'))
-
-story.append(add_heading('No Analytics Integration', s2))
-story.append(low(
-    'There is no evidence of Google Analytics, Plausible, or any other analytics tool being '
-    'integrated. Without analytics, there is no way to measure user behaviour, identify drop-off '
-    'points in the conversion funnel, or track which blog posts drive the most leads.', s_body))
-story.append(tip('Integrate a privacy-focused analytics tool (Plausible, Fathom, Umami) that '
-    'is GDPR-compliant by default. This is essential for measuring the impact of SEO and '
-    'content changes.'))
-
-story.append(add_heading('LinkedIn URL May Be Incorrect', s2))
-story.append(low(
-    'The footer links to "ie.linkedin.com/company/renewably." This subdomain-specific URL '
-    'may be incorrect. Standard LinkedIn company URLs use "linkedin.com/company/slug" without '
-    'a country subdomain. If the company page does not exist at this URL, it will show a 404 '
-    'when users click the link.', s_body))
-story.append(tip('Verify the LinkedIn company page URL. If the company page is at the '
-    'standard URL, update the href in Footer.tsx.'))
-
-story.append(add_heading('Services Page Not Linked from Navigation', s2))
-story.append(low(
-    'The header navigation links are: Home, About Us, Workforce, Blog, Contact Us. The Services '
-    'page (/services) is not in the main navigation despite being a major content page with '
-    'agent details and pricing information. Users can only reach it through direct URL or '
-    'internal links.', s_body))
-story.append(tip('Either add "Services" to the header navigation, or ensure the homepage '
-    'and other pages clearly link to the services page. Consider adding it as a secondary link '
-    'or CTA button.'))
-
-story.append(add_heading('Blog Hero Heading Mismatch', s2))
-story.append(low(
-    'The blog index page heading reads "How Solar Installers Stop Losing Leads," which sounds '
-    'like an individual article title rather than a blog index page. The tagline says "Practical '
-    'guides on AI operations," which is more appropriate for a blog index. The heading creates '
-    'expectation of a single article when the user is actually seeing a list of five posts.', s_body))
-story.append(tip('Change the heading to something more appropriate for a blog index, such as '
-    '"Insights for Solar Installers" or "The Renewably Blog" with a subtitle about practical '
-    'AI operations guides.'))
-
-story.append(add_heading('No Sitemap for Blog Individual Posts', s2))
-story.append(low(
-    'The sitemap.ts generates a static sitemap at build time but does not include individual blog '
-    'post URLs. While search engines can discover posts through internal links, explicit sitemap '
-    'entries improve crawl efficiency and ensure all posts are indexed promptly.', s_body))
-story.append(tip('Already covered in Critical findings. Ensure implementation includes dynamic '
-    'post-level entries.'))
-
-# ═══════════════════════════════════════════════
-# SECTION 6: RECOMMENDATIONS
-# ═══════════════════════════════════════════════
-story.append(add_heading('Prioritised Recommendations', s_h1, 0))
-
-story.append(Paragraph(
-    'Based on the findings above, the following actions are recommended in priority order. '
-    'Each action includes the estimated impact on the business and the effort required for '
-    'implementation.', s_body))
-story.append(Spacer(1, 8))
-
-recs = [
-    ['1', 'Fix email domain', 'HIGH', 'LOW', '30 min', 'Replace .com with .ie on 2 pages'],
-    ['2', 'Create legal pages', 'CRITICAL', 'MEDIUM', '4 hours', 'Privacy Policy + Terms of Service'],
-    ['3', 'Add OG image', 'CRITICAL', 'LOW', '1 hour', 'Single PNG, fixes all social shares'],
-    ['4', 'Fix sitemap', 'CRITICAL', 'LOW', '30 min', 'Add services + blog posts'],
-    ['5', 'CRM auth guard', 'CRITICAL', 'MEDIUM', '2 hours', 'Protect sensitive data'],
-    ['6', 'Standardise agents', 'HIGH', 'MEDIUM', '2 hours', '3 pages must agree'],
-    ['7', 'Cookie consent', 'HIGH', 'MEDIUM', '2 hours', 'GDPR compliance'],
-    ['8', 'Form backend', 'HIGH', 'HIGH', '4 hours', 'API route + email service'],
-    ['9', 'Header contrast', 'HIGH', 'LOW', '1 hour', 'Scroll-aware background'],
-    ['10', 'Update meta titles', 'HIGH', 'LOW', '15 min', 'Better social sharing'],
-    ['11', 'Favicons + manifest', 'HIGH', 'LOW', '1 hour', 'PWA support'],
-    ['12', 'Standardise pricing', 'HIGH', 'MEDIUM', '1 hour', 'Consistent messaging'],
-    ['13', 'Add testimonials', 'MEDIUM', 'LOW', '8 hours', 'Social proof'],
-    ['14', 'Add analytics', 'MEDIUM', 'LOW', '2 hours', 'Measure everything'],
-]
-
-story.append(make_table(
-    ['#', 'Action', 'Severity', 'Effort', 'Est. Time', 'Notes'],
-    [[Paragraph(r[0], s_td_c), Paragraph(r[1], s_td), Paragraph(r[2], s_sev), Paragraph(r[3], s_sev), Paragraph(r[4], s_sev), Paragraph(r[5], s_td)]],
-    col_widths=[30, 160, 65, 55, 65, 200],
-))
-story.append(Paragraph('Table 2: Prioritised action plan', s_caption))
-
-# ═══════════════════════════════════════════════
-# SECTION 7: PAGES AUDIT DETAIL
-# ═══════════════════════════════════════════════
-story.append(add_heading('Page-by-Page Audit', s_h1, 0))
-
-# Table for page audit
-page_data = [
-    ['Home (/)', Paragraph('10 sections, strong copy, CTA issues', s_td), Paragraph('4', s_td_c), Paragraph('Needs work', s_td)],
-    ['About (/about)', Paragraph('Hero, problems, values, CTA. Clean.', s_td), Paragraph('1', s_td_c), Paragraph('Good', s_td)],
-    ['Services (/services)', Paragraph('Agents, pricing, before/after. Outdated data.', s_td), Paragraph('3', s_td_c), Paragraph('Needs work', s_td)],
-    ['Workforce (/workforce)', Paragraph('8 agent dashboards, scenario flow, investment', s_td), Paragraph('0', s_td_c), Paragraph('Excellent', s_td)],
-    ['Blog (/blog)', Paragraph('5 articles, index too tall, clean cards.', s_td), Paragraph('1', s_td_c), Paragraph('Good', s_td)],
-    ['Contact (/contact)', Paragraph('Hero, form (non-functional), sidebar. Solid layout.', s_td), Paragraph('1', s_td_c), Paragraph('Needs work', s_td)],
-    ['Blog Posts (x5)', Paragraph('Long-form content, basic markdown parser.', s_td), Paragraph('0', s_td_c), Paragraph('Good', s_td)],
-    ['CRM (/crm/*)', Paragraph('14 pages, full CRM. No auth guard.', s_td), Paragraph('1', s_td_c), Paragraph('Critical', s_td)],
-]
-
-story.append(Spacer(1, 8))
-story.append(make_table(
-    ['Page', 'Summary', 'Issues', 'Rating'],
-    page_data,
-    [AVAIL_W * 0.26, AVAIL_W * 0.40, 70, 90],
-))
-story.append(Paragraph('Table 3: Page-by-page audit summary', s_caption))
-
-# ═══════════════════════════════════════════════
-# BUILD
-# ═══════════════════════════════════════════════
-output_path = '/home/z/my-project/download/Renewably_Website_Audit_Report.pdf'
-
-# We'll skip cover page for this audit to keep it simple and focused
-doc = SimpleDocTemplate(
-    output_path,
-    pagesize=A4,
-    leftMargin=LEFT_M,
-    rightMargin=RIGHT_M,
-    topMargin=TOP_M,
-    bottomMargin=BOT_M,
+styles = getSampleStyleSheet()
+
+title_style = ParagraphStyle(
+    name='Title', fontName='Times New Roman', fontSize=28,
+    leading=34, alignment=TA_LEFT, textColor=TEXT_PRIMARY,
+    spaceAfter=6
+)
+h1_style = ParagraphStyle(
+    name='H1', fontName='Times New Roman', fontSize=20,
+    leading=26, alignment=TA_LEFT, textColor=TEXT_PRIMARY,
+    spaceBefore=18, spaceAfter=10
+)
+h2_style = ParagraphStyle(
+    name='H2', fontName='Times New Roman', fontSize=15,
+    leading=20, alignment=TA_LEFT, textColor=ACCENT,
+    spaceBefore=14, spaceAfter=8
+)
+h3_style = ParagraphStyle(
+    name='H3', fontName='Times New Roman', fontSize=12,
+    leading=16, alignment=TA_LEFT, textColor=TEXT_PRIMARY,
+    spaceBefore=10, spaceAfter=6
+)
+body_style = ParagraphStyle(
+    name='Body', fontName='Times New Roman', fontSize=10.5,
+    leading=16, alignment=TA_JUSTIFY, textColor=TEXT_PRIMARY,
+    spaceBefore=0, spaceAfter=6
+)
+bullet_style = ParagraphStyle(
+    name='Bullet', fontName='Times New Roman', fontSize=10.5,
+    leading=16, alignment=TA_LEFT, textColor=TEXT_PRIMARY,
+    leftIndent=20, bulletIndent=8, spaceBefore=2, spaceAfter=2
+)
+header_cell_style = ParagraphStyle(
+    name='HeaderCell', fontName='Times New Roman', fontSize=10,
+    leading=14, alignment=TA_CENTER, textColor=colors.white
+)
+cell_style = ParagraphStyle(
+    name='Cell', fontName='Times New Roman', fontSize=10,
+    leading=14, alignment=TA_LEFT, textColor=TEXT_PRIMARY
+)
+cell_center = ParagraphStyle(
+    name='CellCenter', fontName='Times New Roman', fontSize=10,
+    leading=14, alignment=TA_CENTER, textColor=TEXT_PRIMARY
+)
+caption_style = ParagraphStyle(
+    name='Caption', fontName='Times New Roman', fontSize=9,
+    leading=12, alignment=TA_CENTER, textColor=TEXT_MUTED,
+    spaceBefore=3, spaceAfter=6
+)
+callout_style = ParagraphStyle(
+    name='Callout', fontName='Times New Roman', fontSize=11,
+    leading=16, alignment=TA_LEFT, textColor=ACCENT,
+    leftIndent=15, rightIndent=15, spaceBefore=6, spaceAfter=6,
+    borderPadding=8
 )
 
-# We need TocDocTemplate for TOC
-class AuditDocTemplate(SimpleDocTemplate):
+# ━━ TOC Template ━━
+from reportlab.platypus import SimpleDocTemplate
+
+class TocDocTemplate(SimpleDocTemplate):
     def afterFlowable(self, flowable):
         if hasattr(flowable, 'bookmark_name'):
             level = getattr(flowable, 'bookmark_level', 0)
@@ -643,29 +111,597 @@ class AuditDocTemplate(SimpleDocTemplate):
             key = getattr(flowable, 'bookmark_key', '')
             self.notify('TOCEntry', (level, text, self.page, key))
 
-doc2 = AuditDocTemplate(
+A4_W, A4_H = A4
+LM = 1.0 * inch
+RM = 1.0 * inch
+TM = 0.8 * inch
+BM = 0.8 * inch
+available_w = A4_W - LM - RM
+H1_ORPHAN_THRESHOLD = (A4_H - TM - BM) * 0.15
+
+def add_heading(text, style, level=0):
+    key = 'h_%s' % hashlib.md5(text.encode()).hexdigest()[:8]
+    p = Paragraph('<a name="%s"/>%s' % (key, text), style)
+    p.bookmark_name = text
+    p.bookmark_level = level
+    p.bookmark_text = text
+    p.bookmark_key = key
+    return [p]
+
+def add_major_section(text, style):
+    from reportlab.platypus import CondPageBreak
+    return [
+        CondPageBreak(H1_ORPHAN_THRESHOLD),
+        add_heading(text, style, level=0),
+    ]
+
+def make_table(headers, rows, col_ratios=None):
+    hdr = [Paragraph('<b>%s</b>' % h, header_cell_style) for h in headers]
+    data = [hdr]
+    for row in rows:
+        data.append([Paragraph(str(c), cell_style) if i == 0 else Paragraph(str(c), cell_center) for i, c in enumerate(row)])
+    if col_ratios:
+        cw = [r * available_w for r in col_ratios]
+    else:
+        n = len(headers)
+        cw = [available_w / n] * n
+    t = Table(data, colWidths=cw, hAlign='CENTER')
+    style_cmds = [
+        ('BACKGROUND', (0, 0), (-1, 0), TABLE_HEADER_COLOR),
+        ('TEXTCOLOR', (0, 0), (-1, 0), TABLE_HEADER_TEXT),
+        ('GRID', (0, 0), (-1, -1), 0.5, TEXT_MUTED),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+    ]
+    for i in range(1, len(data)):
+        bg = TABLE_ROW_EVEN if i % 2 == 1 else TABLE_ROW_ODD
+        style_cmds.append(('BACKGROUND', (0, i), (-1, i), bg))
+    t.setStyle(TableStyle(style_cmds))
+    return t
+
+def priority_table(headers, rows, col_ratios=None):
+    hdr = [Paragraph('<b>%s</b>' % h, header_cell_style) for h in headers]
+    data = [hdr]
+    color_map = {'CRITICAL': CRITICAL_COLOR, 'HIGH': HIGH_COLOR, 'MEDIUM': MEDIUM_COLOR, 'LOW': LOW_COLOR}
+    for row in rows:
+        styled = []
+        for i, c in enumerate(row):
+            if i == 0 and c in color_map:
+                styled.append(Paragraph('<b>%s</b>' % c, ParagraphStyle('p', parent=cell_center, textColor=color_map[c])))
+            elif i == 0:
+                styled.append(Paragraph(str(c), cell_center))
+            else:
+                styled.append(Paragraph(str(c), cell_style))
+        data.append(styled)
+    if col_ratios:
+        cw = [r * available_w for r in col_ratios]
+    else:
+        n = len(headers)
+        cw = [available_w / n] * n
+    t = Table(data, colWidths=cw, hAlign='CENTER')
+    style_cmds = [
+        ('BACKGROUND', (0, 0), (-1, 0), TABLE_HEADER_COLOR),
+        ('TEXTCOLOR', (0, 0), (-1, 0), TABLE_HEADER_TEXT),
+        ('GRID', (0, 0), (-1, -1), 0.5, TEXT_MUTED),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+    ]
+    for i in range(1, len(data)):
+        bg = TABLE_ROW_EVEN if i % 2 == 1 else TABLE_ROW_ODD
+        style_cmds.append(('BACKGROUND', (0, i), (-1, i), bg))
+    t.setStyle(TableStyle(style_cmds))
+    return t
+
+def compliance_table(headers, rows, col_ratios=None):
+    hdr = [Paragraph('<b>%s</b>' % h, header_cell_style) for h in headers]
+    data = [hdr]
+    status_map = {'PASS': PASS_COLOR, 'FAIL': FAIL_COLOR, 'PARTIAL': WARN_COLOR}
+    for row in rows:
+        styled = []
+        for i, c in enumerate(row):
+            if i == 1 and c in status_map:
+                styled.append(Paragraph('<b>%s</b>' % c, ParagraphStyle('s', parent=cell_center, textColor=status_map[c])))
+            elif i == 1:
+                styled.append(Paragraph(str(c), cell_center))
+            else:
+                styled.append(Paragraph(str(c), cell_style))
+        data.append(styled)
+    if col_ratios:
+        cw = [r * available_w for r in col_ratios]
+    else:
+        n = len(headers)
+        cw = [available_w / n] * n
+    t = Table(data, colWidths=cw, hAlign='CENTER')
+    style_cmds = [
+        ('BACKGROUND', (0, 0), (-1, 0), TABLE_HEADER_COLOR),
+        ('TEXTCOLOR', (0, 0), (-1, 0), TABLE_HEADER_TEXT),
+        ('GRID', (0, 0), (-1, -1), 0.5, TEXT_MUTED),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+    ]
+    for i in range(1, len(data)):
+        bg = TABLE_ROW_EVEN if i % 2 == 1 else TABLE_ROW_ODD
+        style_cmds.append(('BACKGROUND', (0, i), (-1, i), bg))
+    t.setStyle(TableStyle(style_cmds))
+    return t
+
+# ━━ Build Document ━━
+output_path = '/home/z/my-project/download/Renewably_Website_Audit_Report.pdf'
+
+doc = TocDocTemplate(
     output_path,
     pagesize=A4,
-    leftMargin=LEFT_M,
-    rightMargin=RIGHT_M,
-    topMargin=TOP_M,
-    bottomMargin=BOT_M,
+    leftMargin=LM, rightMargin=RM, topMargin=TM, bottomMargin=BM,
+    title='Renewably.ie Full Website Audit Report',
+    author='Z.ai',
+    subject='Comprehensive Website Audit - April 2026',
+    creator='Z.ai'
 )
 
-from reportlab.platypus import PageBreak
+story = []
 
-# Insert cover elements before TOC
-final_story = cover_elements + [PageBreak()] + story
+# ━━ Table of Contents ━━
+toc = TableOfContents()
+toc.levelStyles = [
+    ParagraphStyle(name='TOC1', fontSize=13, leftIndent=20, fontName='Times New Roman', spaceBefore=6, spaceAfter=3),
+    ParagraphStyle(name='TOC2', fontSize=11, leftIndent=40, fontName='Times New Roman', spaceBefore=3, spaceAfter=2),
+]
+story.append(Paragraph('<b>Table of Contents</b>', title_style))
+story.append(Spacer(1, 12))
+story.append(toc)
+story.append(PageBreak())
 
-doc2.multiBuild(final_story)
+# ━━ 1. Executive Summary ━━
+story.extend(add_major_section('<b>1. Executive Summary</b>', h1_style))
+story.append(Paragraph(
+    'This report presents a comprehensive audit of renewably.ie, an AI-as-a-Service platform '
+    'designed specifically for solar PV installers in Ireland. The website is built on Next.js 16 with '
+    'React 19, Tailwind CSS v4, and Framer Motion. It comprises 6 public pages (Home, About, Workforce, '
+    'Services, Blog, Contact), 8 interactive dashboard mockups for the AI workforce, a live AI chat widget '
+    'powered by z-ai-web-dev-sdk, and a comprehensive CRM system with 30+ API routes.',
+    body_style
+))
+story.append(Spacer(1, 8))
+story.append(Paragraph(
+    'The overall architecture is solid, the brand identity is strong and consistent, and the interactive '
+    'dashboard components on the Workforce page represent a significant competitive differentiator. However, '
+    'the audit identified <b>5 critical issues</b>, <b>5 high-priority issues</b>, <b>9 medium-priority issues</b>, '
+    'and <b>5 low-priority items</b> that require attention. The most urgent problems include broken email links '
+    'across two pages, a security misconfiguration, missing legal pages required for GDPR compliance, a contact '
+    'form that silently discards all submissions, and a three-way pricing inconsistency across the site.',
+    body_style
+))
+story.append(Spacer(1, 8))
 
-print(f"Audit report generated: {output_path}")
-print(f"File size: {os.path.getsize(output_path) / 1024:.1f} KB")
+# Summary table
+story.append(make_table(
+    ['Severity', 'Count', 'Key Areas Affected'],
+    [
+        ['CRITICAL', '5', 'Email links, security, form, legal pages, OG image'],
+        ['HIGH', '5', 'Pricing, agent count, navigation, chat AI, build config'],
+        ['MEDIUM', '9', 'Emojis, colours, dependencies, meta, XSS, etc.'],
+        ['LOW', '5', 'Package name, dead refs, clock flash, favicon'],
+    ],
+    [0.12, 0.08, 0.80]
+))
+story.append(Paragraph('<b>Table 1.</b> Issue severity summary', caption_style))
+story.append(Spacer(1, 12))
 
-import subprocess
-page_count = subprocess.run(['python3', '-c', f'''
-from pypdf import PdfReader
-r = PdfReader("{output_path}")
-print(len(r.pages))
-'''], capture_output=True, text=True).stdout.strip()
-print(f"Pages: {page_count}")
+# ━━ 2. Critical Issues ━━
+story.extend(add_major_section('<b>2. Critical Issues</b>', h1_style))
+
+story.extend(add_heading('<b>2.1 Broken Email Links</b>', h2_style))
+story.append(Paragraph(
+    'The email address <b>hello@renewably.com</b> appears on the Home page (line 731) and the Workforce '
+    'page (line 347), but the correct domain is <b>hello@renewably.ie</b>. This means any visitor clicking '
+    'the email link on two of the most important pages will be directed to a non-existent domain. This is '
+    'a direct business impact issue: potential customers trying to reach out will receive bounce messages '
+    'or dead-end navigation, damaging trust and losing leads. The Services page (line 388) and Contact '
+    'page correctly use hello@renewably.ie, making the inconsistency even more confusing.',
+    body_style
+))
+story.append(Paragraph(
+    '<b>Files affected:</b> src/components/HomePageClient.tsx (line 731), '
+    'src/components/WorkforcePageClient.tsx (line 347)', body_style
+))
+
+story.extend(add_heading('<b>2.2 Security: X-Frame-Options Misconfiguration</b>', h2_style))
+story.append(Paragraph(
+    'In next.config.ts (line 20), the X-Frame-Options header is set to <b>ALLOWALL</b>, which completely '
+    'disables clickjacking protection. This allows any external website to embed renewably.ie in an iframe, '
+    'potentially tricking users into performing actions on the site without their knowledge. This is a '
+    'well-known security vulnerability. The value should be changed to <b>SAMEORIGIN</b> for production, '
+    'which allows only renewably.ie itself to embed its own pages in iframes while blocking all third-party '
+    'embeds. Additionally, Content-Security-Policy headers should be reviewed and tightened.',
+    body_style
+))
+story.append(Paragraph(
+    '<b>File affected:</b> next.config.ts (line 20)', body_style
+))
+
+story.extend(add_heading('<b>2.3 Contact Form Does Not Submit Data</b>', h2_style))
+story.append(Paragraph(
+    'The contact form on the Contact page (ContactPageClient.tsx, lines 67-72) simulates a submission '
+    'with a setTimeout of 1500ms and then displays a "Message sent!" success state. However, there is '
+    '<b>no actual API call, no email sending, and no database storage</b>. Every form submission is '
+    'silently discarded. Users believe their enquiry has been received, but the data goes nowhere. This '
+    'is a critical business issue: potential leads filling out the contact form are completely lost. '
+    'The form collects valuable information (name, email, company, jobs per month, message) that should '
+    'be persisted to a database, sent to hello@renewably.ie via an email API, and ideally fed into the CRM.',
+    body_style
+))
+story.append(Paragraph(
+    '<b>File affected:</b> src/components/ContactPageClient.tsx (lines 67-72)', body_style
+))
+
+story.extend(add_heading('<b>2.4 Missing Legal Pages (GDPR Compliance)</b>', h2_style))
+story.append(Paragraph(
+    'The footer links to /privacy and /terms pages, but <b>neither page exists</b>. Clicking these links '
+    'results in 404 errors. Under GDPR (General Data Protection Regulation), which applies to all '
+    'businesses operating in Ireland and the EU, having accessible Privacy Policy and Terms of Service '
+    'pages is a legal requirement. The absence of these pages is not only a compliance risk but also '
+    'undermines trust with potential customers who expect to see these links lead somewhere. Furthermore, '
+    'the chat widget stores conversation data and the contact form collects personal information, making '
+    'a Privacy Policy even more essential.',
+    body_style
+))
+story.append(Paragraph(
+    '<b>File affected:</b> src/components/Footer.tsx (lines 20-21)', body_style
+))
+
+story.extend(add_heading('<b>2.5 Missing Open Graph Image</b>', h2_style))
+story.append(Paragraph(
+    'The layout.tsx file references /og-image.png (line 32) for social media preview cards, but this '
+    'file does not exist in the public/ directory. When any page from renewably.ie is shared on Facebook, '
+    'Twitter/X, LinkedIn, or WhatsApp, the preview will show a broken image or no image at all. Social '
+    'media previews are critical for driving traffic and establishing credibility. A properly sized '
+    'OG image (1200x630 pixels) should be created and placed in the public directory.',
+    body_style
+))
+story.append(Paragraph(
+    '<b>File affected:</b> src/app/layout.tsx (line 32)', body_style
+))
+
+# ━━ 3. High Priority Issues ━━
+story.extend(add_major_section('<b>3. High Priority Issues</b>', h1_style))
+
+story.extend(add_heading('<b>3.1 Three-Way Pricing Inconsistency</b>', h2_style))
+story.append(Paragraph(
+    'The website presents three completely different pricing models depending on which page the visitor '
+    'is viewing. The Home page PricingSection states the cost is "1,000 - 1,500/month". The Workforce page '
+    'hero section says "1,000-1,500/mo". But the Services page breaks down individual agent pricing at '
+    '30-60/month each, totalling approximately 335/month for all agents. These three figures are '
+    'dramatically different: a visitor who sees 335/month on the Services page will be shocked when the '
+    'Home page says 1,000+, and vice versa. This inconsistency undermines trust and confuses the buying '
+    'decision. One canonical pricing structure must be established and applied consistently across all pages.',
+    body_style
+))
+
+story.append(make_table(
+    ['Page', 'Stated Price', 'Source'],
+    [
+        ['Home Page', 'EUR 1,000-1,500/month', 'HomePageClient.tsx PricingSection'],
+        ['Workforce Page', 'EUR 1,000-1,500/mo', 'WorkforcePageClient.tsx hero text'],
+        ['Services Page', 'EUR 335/month total', 'ServicesPageClient.tsx line 209'],
+        ['Chat API', 'EUR 999/month', 'api/chat/route.ts system prompt'],
+    ],
+    [0.20, 0.35, 0.45]
+))
+story.append(Paragraph('<b>Table 2.</b> Pricing inconsistency across pages', caption_style))
+
+story.extend(add_heading('<b>3.2 Agent Count and Naming Inconsistency</b>', h2_style))
+story.append(Paragraph(
+    'The Home page displays 9 agents (including a "Marketing Agent"), the Workforce page displays 8 agents '
+    '(CEO, Operations, Customer Support, Grants, Logistics, Permitting, QA, Reporting), and the chat API '
+    'system prompt describes 9 agents with completely different names (Lead Generation, CRM and Sales, '
+    'Grants and Financing, Logistics, Permitting and Compliance, Quality Assurance, Support, Reporting). '
+    'The chat AI will describe agents that do not exist on the website, creating confusion when visitors '
+    'ask the chatbot about the workforce. A single canonical list of agents with consistent names and '
+    'descriptions must be established and used everywhere: pages, chat API, marketing materials, and schemas.',
+    body_style
+))
+
+story.extend(add_heading('<b>3.3 Services Page Missing from Navigation</b>', h2_style))
+story.append(Paragraph(
+    'The /services page exists and contains detailed information about each AI agent, individual pricing, '
+    'before/after comparisons, and the target customer profile. However, it is <b>not linked in the main '
+    'navigation header</b>. The Header.tsx nav links array includes Home, About, Workforce, Blog, and '
+    'Contact, but omits Services entirely. Visitors can only discover the Services page through contextual '
+    'links on other pages. This is a significant navigation gap that reduces the discoverability of one of '
+    'the most commercially important pages on the site.',
+    body_style
+))
+story.append(Paragraph(
+    '<b>File affected:</b> src/components/Header.tsx (line 9)', body_style
+))
+
+story.extend(add_heading('<b>3.4 Chat AI Describes Wrong Agents</b>', h2_style))
+story.append(Paragraph(
+    'The chat API system prompt (api/chat/route.ts) describes 9 agents using names that do not match the '
+    'website. The prompt lists "Lead Generation Agent", "CRM and Sales Agent", etc., while the Workforce '
+    'page shows agents named "CEO", "Operations", "Customer Support", and so on. When a visitor asks '
+    'the chatbot "What agents do you have?", it will describe agents that do not exist on the website. '
+    'This creates a confusing experience where the AI contradicts the site content. The system prompt must '
+    'be updated to use the exact same agent names, descriptions, and count as the Workforce page.',
+    body_style
+))
+
+story.extend(add_heading('<b>3.5 ignoreBuildErrors: true</b>', h2_style))
+story.append(Paragraph(
+    'The next.config.ts has ignoreBuildErrors set to true, which silently suppresses all TypeScript errors '
+    'during production builds. While this prevents build failures, it also means genuine type errors, '
+    'missing imports, and broken type contracts can slip into production unnoticed. This is particularly '
+    'dangerous for a codebase of this size with 21 custom components and 30+ API routes. The flag should '
+    'be set to false, and all existing TypeScript errors should be resolved.',
+    body_style
+))
+
+# ━━ 4. Medium Priority Issues ━━
+story.extend(add_major_section('<b>4. Medium Priority Issues</b>', h1_style))
+
+story.extend(add_heading('<b>4.1 Emoji Usage in Dashboard Components</b>', h2_style))
+story.append(Paragraph(
+    'All 8 dashboard components (MiniDesktop, OperationsDashboard, GrantsDashboard, LogisticsDashboard, '
+    'PermittingDashboard, QADashboard, ReportingDashboard, SupportDashboard) extensively use emoji '
+    'characters for agent icons, status labels, taskbar icons, and panel headers. The brand guidelines '
+    'explicitly state "No surrogate pair emojis" because they render inconsistently across platforms. '
+    'On Windows, many of these emojis will appear as empty boxes or incorrect symbols. All emoji usage '
+    'should be replaced with white SVG icons or simple text labels, as specified in the brand guidelines '
+    '("White taskbar icons in dashboards").',
+    body_style
+))
+
+story.extend(add_heading('<b>4.2 Dashboard KPI Colour Mismatch</b>', h2_style))
+story.append(Paragraph(
+    'All dashboard components use the colour #F2CC2E for KPI value numbers, progress bars, and status '
+    'indicators. However, the brand primary yellow is #F3D840. While the difference is subtle (the '
+    'dashboard colour is slightly more orange/amber), it creates a perceptible inconsistency when '
+    'comparing dashboard mockups to the rest of the website. All instances of #F2CC2E in dashboard '
+    'components should be updated to #F3D840 for brand consistency.',
+    body_style
+))
+
+story.extend(add_heading('<b>4.3 Unused next-intl Dependency</b>', h2_style))
+story.append(Paragraph(
+    'The next-intl package is listed in package.json but is never imported or used anywhere in the '
+    'codebase. There is no internationalization routing, no locale detection, and no translated content. '
+    'This is a dead dependency that adds unnecessary weight to node_modules and may confuse future '
+    'developers into thinking i18n is implemented when it is not. It should be removed.',
+    body_style
+))
+
+story.extend(add_heading('<b>4.4 Outdated OG and Twitter Meta Titles</b>', h2_style))
+story.append(Paragraph(
+    'The Open Graph and Twitter card titles in layout.tsx (lines 56, 69) still use the generic phrase '
+    '"AI as a Service for Sales, Marketing and Automation". The site has since been repositioned as an '
+    '"AI Workforce for Solar PV Installers in Ireland" platform. The meta titles should be updated to '
+    'match the current positioning so that social media previews accurately reflect the site content.',
+    body_style
+))
+
+story.extend(add_heading('<b>4.5 lang="en" Should Be lang="en-IE"</b>', h2_style))
+story.append(Paragraph(
+    'The HTML lang attribute in layout.tsx (line 154) is set to "en" but should be "en-IE" to reflect '
+    'the Irish locale. The site uses Irish English spelling ("optimisation", "behaviour"), Irish-specific '
+    'terminology (SEAI, ESB, microgeneration), Irish place names, and en-IE locale for date formatting '
+    'in the blog and chat widget. Setting the correct lang attribute improves accessibility for '
+    'screen readers and ensures proper hyphenation and pronunciation for Irish English.',
+    body_style
+))
+
+story.extend(add_heading('<b>4.6 XSS Risk in Chat Widget</b>', h2_style))
+story.append(Paragraph(
+    'The ChatWidget.tsx uses dangerouslySetInnerHTML to render AI responses (line 324) with basic '
+    'markdown formatting. The formatInlineStyles function replaces markdown patterns with raw HTML, '
+    'but there is no sanitisation of the AI response content before rendering. If the AI response '
+    'were to contain a crafted HTML string (e.g., a script tag or an img tag with a tracking pixel), '
+    'it would be rendered as actual HTML. While the risk is low since responses come from a controlled '
+    'AI prompt, a sanitisation library such as DOMPurify should be added as a safety measure.',
+    body_style
+))
+
+story.extend(add_heading('<b>4.7 FAQ Schema Not Solar-Specific</b>', h2_style))
+story.append(Paragraph(
+    'The FAQ schema markup in the Home page (page.tsx, lines 42-94) contains generic questions about AI '
+    'agencies and AI-as-a-Service, such as "What makes Renewably different from other AI agencies?". '
+    'These questions do not reflect the site actual positioning as a solar industry-specific platform. '
+    'The FAQ questions and answers should be rewritten to address solar PV installer concerns, such as '
+    'SEAI grant handling, ESB grid applications, and ROI calculations for solar businesses.',
+    body_style
+))
+
+story.extend(add_heading('<b>4.8 Dashboard Font Inconsistency</b>', h2_style))
+story.append(Paragraph(
+    'The dashboard components use "Inter" as their font family, while the main website uses Poppins. '
+    'While this may be an intentional design choice to give dashboards a distinct "app" feel, it means '
+    'that the text within the dashboard mockups does not match the surrounding website typography. If '
+    'this is intentional, it is acceptable, but it should be documented as a deliberate design decision. '
+    'If consistency is preferred, the dashboard font should be changed to Poppins.',
+    body_style
+))
+
+story.extend(add_heading('<b>4.9 Missing /pricing Page Reference in Chat</b>', h2_style))
+story.append(Paragraph(
+    'The ChatWidget.tsx PAGE_CONTEXT_MAP (line 49) includes a mapping for "/pricing" but no /pricing '
+    'page exists on the site. This dead context entry has no effect on functionality but should be '
+    'removed to keep the codebase clean and prevent future confusion.',
+    body_style
+))
+
+# ━━ 5. Low Priority Issues ━━
+story.extend(add_major_section('<b>5. Low Priority Issues</b>', h1_style))
+
+story.extend(add_heading('<b>5.1 Generic Package Name</b>', h2_style))
+story.append(Paragraph(
+    'The package.json name field is still "nextjs_tailwind_shadcn_ts", which is the default from the '
+    'project scaffolding template. It should be renamed to "renewably" for proper identification.',
+    body_style
+))
+
+story.extend(add_heading('<b>5.2 Dashboard Clock Flash</b>', h2_style))
+story.append(Paragraph(
+    'The OperationsDashboard initialises its clock state to "12:00:00" (midnight). On first render, '
+    'before the useEffect fires to set the actual time, the dashboard briefly displays this incorrect '
+    'time. The initial state should be set to the current time to prevent this visual glitch.',
+    body_style
+))
+
+story.extend(add_heading('<b>5.3 Unused Public Assets</b>', h2_style))
+story.append(Paragraph(
+    'The public/ directory contains several image files that are not referenced anywhere in the codebase: '
+    'bot-avatar.png, chat-robot.png, robot-3-nobg.png, and various illustration files. These should be '
+    'removed to keep the project clean and reduce the static asset footprint.',
+    body_style
+))
+
+story.extend(add_heading('<b>5.4 AgentCard Dead Code</b>', h2_style))
+story.append(Paragraph(
+    'The AgentCard component in WorkforcePageClient.tsx has a fallback else branch (lines 167-181) that '
+    'references agent.image with a non-null assertion. However, the agents array has no image property, '
+    'and all 8 agents are handled by specific num checks, so this branch can never be reached. The dead '
+    'code should be removed or replaced with proper type safety.',
+    body_style
+))
+
+story.extend(add_heading('<b>5.5 img Tags Instead of Next.js Image</b>', h2_style))
+story.append(Paragraph(
+    'Several components use plain HTML img tags instead of the Next.js Image component, which provides '
+    'automatic optimisation, lazy loading, and responsive sizing. Affected files include Header.tsx, '
+    'ChatWidget.tsx (3 instances), and Footer.tsx. While this does not break functionality, it misses '
+    'out on performance optimisations that Next.js provides.',
+    body_style
+))
+
+# ━━ 6. Brand Guidelines Compliance ━━
+story.extend(add_major_section('<b>6. Brand Guidelines Compliance</b>', h1_style))
+story.append(Paragraph(
+    'The following table summarises compliance with the documented brand guidelines for renewably.ie. '
+    'Each guideline is assessed as PASS (fully compliant), PARTIAL (mostly compliant with some deviations), '
+    'or FAIL (significant non-compliance).',
+    body_style
+))
+story.append(Spacer(1, 12))
+
+story.append(compliance_table(
+    ['Guideline', 'Status', 'Notes'],
+    [
+        ['Primary Yellow #F3D840', 'PARTIAL', 'Dashboards use #F2CC2E instead of #F3D840'],
+        ['Dark #0A0A0A / #1A1A1A', 'PASS', 'Used consistently across all pages'],
+        ['British/Irish English', 'PASS', '"optimisation", "behaviour", Irish terminology used correctly'],
+        ['No surrogate pair emojis', 'FAIL', 'All 8 dashboard components use emoji characters extensively'],
+        ['Inline styles for HMR', 'PASS', 'Dashboards use inline styles; pages mix inline + Tailwind'],
+        ['White taskbar icons', 'FAIL', 'Emoji used instead of white SVG icons in all dashboards'],
+        ['Pricing EUR 999/month', 'PARTIAL', 'Three different prices shown across Home, Services, Workforce'],
+        ['9 AI agents (canonical)', 'PARTIAL', '8 on Workforce, 9 on Home, different names in chat API'],
+    ],
+    [0.28, 0.12, 0.60]
+))
+story.append(Paragraph('<b>Table 3.</b> Brand guidelines compliance summary', caption_style))
+
+# ━━ 7. Page-by-Page Assessment ━━
+story.extend(add_major_section('<b>7. Page-by-Page Assessment</b>', h1_style))
+
+story.append(make_table(
+    ['Page', 'Rating', 'Key Strengths', 'Key Issues'],
+    [
+        ['Home', 'B+', 'Strong narrative flow, excellent animations, good CTA structure', 'Wrong email, generic FAQ schema, 9 agents vs 8 on workforce page'],
+        ['About', 'A-', 'Strong founder narrative, authentic Irish voice, good values section', 'No significant issues found'],
+        ['Workforce', 'A', 'Outstanding interactive dashboards, Irish names and places', 'Wrong email, agent count mismatch with Home page'],
+        ['Services', 'B', 'Good pricing breakdown, before/after examples, clear targeting', 'Pricing contradicts Home page, agent list differs from Workforce'],
+        ['Blog', 'A-', '5 full-length articles, technically accurate, Irish English', 'Could benefit from more posts for SEO'],
+        ['Contact', 'B-', 'Polished UI, good form fields, clear expectations', 'Form does not actually submit any data'],
+    ],
+    [0.10, 0.08, 0.40, 0.42]
+))
+story.append(Paragraph('<b>Table 4.</b> Page quality assessment', caption_style))
+
+# ━━ 8. Recommendations ━━
+story.extend(add_major_section('<b>8. Prioritised Recommendations</b>', h1_style))
+
+story.append(Paragraph(
+    'Based on the findings of this audit, the following actions are recommended in order of priority. '
+    'Critical and high-priority items should be addressed before the next production deployment. '
+    'Medium-priority items should be scheduled for the next sprint cycle. Low-priority items can be '
+    'addressed during regular maintenance windows.',
+    body_style
+))
+story.append(Spacer(1, 12))
+
+story.append(priority_table(
+    ['#', 'Priority', 'Action', 'Effort'],
+    [
+        ['1', 'CRITICAL', 'Fix email from .com to .ie on Home and Workforce pages', '5 min'],
+        ['2', 'CRITICAL', 'Change X-Frame-Options to SAMEORIGIN in next.config.ts', '2 min'],
+        ['3', 'CRITICAL', 'Implement actual contact form submission (API + email)', '4-8 hours'],
+        ['4', 'CRITICAL', 'Create /privacy and /terms pages for GDPR compliance', '2-4 hours'],
+        ['5', 'CRITICAL', 'Create /og-image.png (1200x630) for social previews', '1-2 hours'],
+        ['6', 'HIGH', 'Reconcile pricing across Home, Workforce, Services, and Chat', '2-3 hours'],
+        ['7', 'HIGH', 'Align agent list across all pages and chat API', '2-3 hours'],
+        ['8', 'HIGH', 'Add /services to main navigation header', '5 min'],
+        ['9', 'HIGH', 'Update chat API system prompt with correct agent names', '30 min'],
+        ['10', 'HIGH', 'Set ignoreBuildErrors to false and fix TypeScript errors', '2-4 hours'],
+        ['11', 'MEDIUM', 'Replace all dashboard emojis with white SVG icons', '4-6 hours'],
+        ['12', 'MEDIUM', 'Change dashboard KPI colour from #F2CC2E to #F3D840', '30 min'],
+        ['13', 'MEDIUM', 'Update OG/Twitter titles to solar-specific positioning', '15 min'],
+        ['14', 'MEDIUM', 'Change lang="en" to lang="en-IE"', '2 min'],
+        ['15', 'MEDIUM', 'Rewrite FAQ schema with solar-specific questions', '1-2 hours'],
+        ['16', 'MEDIUM', 'Add XSS sanitisation for chat AI responses', '30 min'],
+        ['17', 'LOW', 'Remove unused next-intl dependency', '5 min'],
+        ['18', 'LOW', 'Clean up unused public/ assets', '10 min'],
+        ['19', 'LOW', 'Remove dead AgentCard fallback code', '10 min'],
+    ],
+    [0.05, 0.10, 0.60, 0.25]
+))
+story.append(Paragraph('<b>Table 5.</b> Prioritised action items with estimated effort', caption_style))
+
+# ━━ 9. Technical Stack Summary ━━
+story.extend(add_major_section('<b>9. Technical Stack Summary</b>', h1_style))
+story.append(Paragraph(
+    'The following table documents the current technology stack and key configuration for the renewably.ie '
+    'project. This information is useful for onboarding new developers and for reference during future '
+    'audits or migrations.',
+    body_style
+))
+story.append(Spacer(1, 12))
+
+story.append(make_table(
+    ['Technology', 'Version', 'Purpose'],
+    [
+        ['Next.js', '^16.1.1', 'Framework (App Router)'],
+        ['React', '^19.0.0', 'UI library'],
+        ['Tailwind CSS', '^4', 'Utility-first CSS'],
+        ['Framer Motion', '^12.23.2', 'Animations'],
+        ['z-ai-web-dev-sdk', '^0.0.17', 'AI chat completions'],
+        ['Prisma', '^6.11.1', 'ORM (CRM database)'],
+        ['Zustand', '^5.0.6', 'State management'],
+        ['Next Auth', '^4.24.11', 'Authentication (CRM)'],
+        ['Recharts', '^2.15.4', 'Charts'],
+        ['Lucide React', '^0.525.0', 'Icon library'],
+        ['Bun', 'Runtime', 'JavaScript runtime and package manager'],
+        ['Poppins', 'Google Fonts', 'Primary typeface'],
+        ['ReportLab', 'Python', 'PDF generation (this audit)'],
+    ],
+    [0.22, 0.15, 0.63]
+))
+story.append(Paragraph('<b>Table 6.</b> Technology stack overview', caption_style))
+
+# Flatten any nested lists
+flat_story = []
+for item in story:
+    if isinstance(item, list):
+        flat_story.extend(item)
+    else:
+        flat_story.append(item)
+
+# Build
+doc.multiBuild(flat_story)
+print(f"PDF generated: {output_path}")
