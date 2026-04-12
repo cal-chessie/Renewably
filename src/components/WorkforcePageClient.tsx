@@ -320,7 +320,7 @@ export default function WorkforcePageClient() {
         {/* Robot image background */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
           <Image
-            src="/robot-3.jpg"
+            src="/robot-2.jpg"
             alt=""
             fill
             style={{ objectFit: 'cover' }}
