@@ -107,7 +107,7 @@ export default function GrantsDashboard() {
   const [applications, setApplications] = useState<GrantApp[]>(INITIAL_APPLICATIONS.map((a) => ({ ...a })));
   const [documents, setDocuments] = useState<GrantDoc[]>(INITIAL_DOCUMENTS.map((d) => ({ ...d })));
   const [timeline, setTimeline] = useState<TimelineEvent[]>(INITIAL_TIMELINE.map((t) => ({ ...t })));
-  const [stats, setStats] = useState({ activeApps: 12, approvedToday: 3, avgProcessing: 14.00, totalGrantValue: 187.50 });
+  const [stats, setStats] = useState({ activeApps: 12, approvedToday: 3, avgProcessing: 14.00, totalGrantValue: 180.00 });
 
   // Clock
   useEffect(() => {
