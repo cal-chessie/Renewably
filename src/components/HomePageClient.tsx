@@ -216,7 +216,71 @@ function SolutionSection() {
 }
 
 /* ============================================================
-   SECTION 4: FEATURES SECTION — Off-White Background
+   SECTION 4: PLATFORM TOUR — Dark Background
+   ============================================================ */
+function PlatformTourSection() {
+  return (
+    <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28 overflow-hidden">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Badge */}
+        <ScrollReveal>
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15">
+              <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
+              <span className="text-white text-xs sm:text-sm font-semibold tracking-wide">
+                See it in action.
+              </span>
+            </div>
+          </div>
+        </ScrollReveal>
+
+        {/* Headline */}
+        <ScrollReveal delay={0.1}>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white text-center leading-tight mb-6">
+            This is what your Monday looks like now.
+          </h2>
+        </ScrollReveal>
+
+        {/* Sub-text */}
+        <ScrollReveal delay={0.2}>
+          <p className="text-white/60 text-lg sm:text-xl text-center leading-relaxed mb-12 max-w-2xl mx-auto">
+            No more chasing. No more spreadsheeting. No more &quot;I&apos;ll get to that tomorrow.&quot;
+            Open the dashboard. Your team is already working.
+          </p>
+        </ScrollReveal>
+
+        {/* Video container */}
+        <ScrollReveal delay={0.3}>
+          <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
+            {/* Yellow glow accent */}
+            <div className="absolute -inset-px rounded-2xl bg-gradient-to-b from-[#F3D840]/20 via-transparent to-transparent pointer-events-none z-10" />
+
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full aspect-video object-cover"
+              poster=""
+            >
+              <source src="/full-tour.webm" type="video/webm" />
+            </video>
+          </div>
+        </ScrollReveal>
+
+        {/* Bottom line */}
+        <ScrollReveal delay={0.4}>
+          <p className="text-center text-white/40 text-sm mt-8">
+            That is the platform. That is your workforce.
+          </p>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   SECTION 5: FEATURES SECTION — Off-White Background
    ============================================================ */
 function FeaturesSection() {
   const features = [
@@ -680,6 +744,7 @@ export default function HomePageClient() {
       <HeroSection />
       <ProblemSection />
       <SolutionSection />
+      <PlatformTourSection />
       <FeaturesSection />
       <AgentsSection />
       <PricingSection />
