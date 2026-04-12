@@ -1,127 +1,516 @@
 "use client";
 
+import { useRef } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
 import Image from "next/image";
 
-const services = [
+/* ============================================================
+   DATA
+   ============================================================ */
+const agents = [
   {
-    id: "ai-sales-agents",
-    title: "AI Sales Agents",
-    desc: "Autonomous AI agents that prospect, qualify, and nurture leads across multiple channels. They identify buying signals, engage prospects with personalised outreach, and route hot leads to your sales team with full context and timing.",
-    features: ["Automated prospecting", "Lead qualification scoring", "Multi-channel outreach", "Smart lead routing"],
-    image: "/crm-illustration.png",
+    num: "01",
+    title: "Customer Support Agent",
+    desc: "Answers every customer. Immediately. 24/7. Books consultations. Answers questions. Escalates only what needs you. No lost leads. No unanswered emails.",
+    image: "/robot-1.jpg",
   },
   {
-    id: "marketing-automation",
-    title: "Marketing Automation",
-    desc: "End-to-end campaign automation across email, social media, paid ads, and SMS. Our AI generates creative, tests variations, and optimises every campaign in real-time based on performance data and audience behaviour.",
-    features: ["AI content generation", "Multi-channel campaigns", "Real-time optimisation", "Audience segmentation"],
-    image: "/system-illustration.png",
+    num: "02",
+    title: "Grants Agent",
+    desc: "Handles every grant from start to finish. SEAI applications. Paperwork. Follow-ups. Resubmissions. Knows every form, every deadline, every requirement. Your approval rate goes up. Your admin time goes to zero.",
+    image: "/robot-2.jpg",
   },
   {
-    id: "intelligent-lead-generation",
-    title: "Intelligent Lead Generation",
-    desc: "AI-powered prospecting that identifies and engages your ideal customers before your competitors do. We analyse market signals, company data, and behavioural patterns to find high-intent buyers actively looking for solutions like yours.",
-    features: ["Intent signal detection", "Lookalike audience building", "Predictive lead scoring", "Automated enrichment"],
-    image: "/funnel-illustration.png",
+    num: "03",
+    title: "Operations Agent",
+    desc: "Manages every install from quote to completion. Tracks timelines. Coordinates crews. Flags delays. Reports daily. You know where every job is without chasing anyone.",
+    image: "/robot-3.jpg",
   },
   {
-    id: "workflow-automation",
-    title: "Workflow Automation",
-    desc: "Automated sequences for follow-ups, task assignments, approvals, notifications, and cross-team handoffs that eliminate manual bottlenecks. When a lead moves stages, every downstream action triggers automatically.",
-    features: ["Trigger-based workflows", "Cross-system automation", "Conditional logic rules", "SLA management"],
-    image: "/system-illustration.png",
+    num: "04",
+    title: "Logistics Agent",
+    desc: "Orders equipment. Schedules crews. Manages inventory. Confirms deliveries. Reschedules when weather hits. Runs the back end so you don\u2019t have to.",
+    image: "/robot-4.jpg",
   },
   {
-    id: "revenue-intelligence",
-    title: "Revenue Intelligence",
-    desc: "Real-time dashboards and predictive analytics tracking every metric from first touch to closed-won. Our AI spots trends, forecasts revenue, and surfaces the insights your team needs to make better decisions faster.",
-    features: ["Predictive forecasting", "Pipeline health scoring", "ROI attribution", "Custom dashboards"],
-    image: "/ai-illustration.png",
+    num: "05",
+    title: "Permitting Agent",
+    desc: "Handles ESB Networks applications. Tracks grid connection paperwork. Follows up on delays. Alerts you only when something needs your attention.",
+    image: "/robot-5.jpg",
   },
   {
-    id: "ai-platform-crm",
-    title: "AI Platform + CRM Integration",
-    desc: "We build a unified AI platform where every system talks to every other system. Leads, contacts, deals, emails, calls, and campaigns are all connected — giving your AI agents full context and your team complete visibility.",
-    features: ["Bi-directional CRM sync", "Unified contact profiles", "AI-powered insights", "Custom API integrations"],
-    image: "/crm-illustration.png",
+    num: "06",
+    title: "QA Agent",
+    desc: "Reviews every job before handover. Checks paperwork. Verifies photos. Confirms sign-offs. Catches mistakes before the customer does.",
+    image: "/robot-1.jpg",
+  },
+  {
+    num: "07",
+    title: "Reporting Agent",
+    desc: "Shows you exactly what\u2019s happening across every job. Weekly summaries. Bottlenecks identified. Money tracked. No more guessing.",
+    image: "/robot-2.jpg",
+  },
+  {
+    num: "08",
+    title: "CEO Agent",
+    desc: "Sets strategy. Assigns work. Manages the team. Reports to you weekly. Spots problems before you do.",
+    image: "/robot-3.jpg",
   },
 ];
 
+const pricingItems = [
+  { name: "CEO agent", price: "~\u20AC60/month" },
+  { name: "Ops agent", price: "~\u20AC50/month" },
+  { name: "Support agent", price: "~\u20AC40/month" },
+  { name: "Grants agent", price: "~\u20AC40/month" },
+  { name: "Logistics agent", price: "~\u20AC40/month" },
+  { name: "Permitting agent", price: "~\u20AC40/month" },
+  { name: "QA agent", price: "~\u20AC35/month" },
+  { name: "Reporting agent", price: "~\u20AC30/month" },
+];
+
+const comparisons = [
+  {
+    before: "You answer every customer email yourself. You lose leads at 6pm. On weekends. When you\u2019re on a roof.",
+    after: "Support agent handles it. You review the summary. Customers get answers instantly.",
+  },
+  {
+    before: "You spend 10 hours a week on grant paperwork. You miss deadlines. You make mistakes.",
+    after: "Grants agent handles it. Your approval rate doubles. You do zero hours.",
+  },
+  {
+    before: "You have no idea where every job is. You chase your team. You find out about delays too late.",
+    after: "Ops agent tracks everything. You open the dashboard. You know instantly.",
+  },
+  {
+    before: "Equipment orders get missed. Crews show up without materials. Jobs get delayed by a week.",
+    after: "Logistics agent orders everything. Confirms deliveries. Alerts you only when something goes wrong.",
+  },
+  {
+    before: "You lose money on admin. You lose sleep on coordination. You lose customers on follow-up.",
+    after: "You run a solar company. Not a chaos factory.",
+  },
+];
+
+const steps = [
+  "We talk for an hour.",
+  "You show us how you work today.",
+  "We build your team.",
+  "You approve the hires.",
+  "We turn it on.",
+];
+
+/* ============================================================
+   AGENT DETAIL SECTION (alternating layout with robot images)
+   ============================================================ */
+function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number }) {
+  const isReversed = index % 2 === 1;
+
+  return (
+    <ScrollReveal>
+      <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        {/* Image */}
+        <motion.div
+          initial={{ opacity: 0, x: isReversed ? 40 : -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
+        >
+          <div className="relative overflow-hidden rounded-2xl shadow-xl">
+            <Image
+              src={agent.image}
+              alt={`${agent.title} — AI workforce for solar`}
+              width={1360}
+              height={768}
+              className="w-full object-cover"
+            />
+            {/* Yellow gradient overlay at bottom */}
+            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#F3D840]/40 to-transparent" />
+            {/* Number badge */}
+            <div className="absolute top-4 left-4 bg-[#F3D840] text-[#1A1A1A] font-extrabold text-sm px-3 py-1.5 rounded-full shadow-lg">
+              {agent.num}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Copy */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className={`${isReversed ? "lg:order-1" : "lg:order-2"}`}
+        >
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1A1A1A] leading-tight mb-4">
+            {agent.title}
+          </h2>
+          <p className="text-[#535353] text-base sm:text-lg leading-relaxed">
+            {agent.desc}
+          </p>
+        </motion.div>
+      </div>
+    </ScrollReveal>
+  );
+}
+
+/* ============================================================
+   PRICING SECTION
+   ============================================================ */
+function PricingSection() {
+  const totalRef = useRef<HTMLDivElement>(null);
+  const totalInView = useInView(totalRef, { once: true, margin: "-60px" });
+
+  return (
+    <section className="bg-[#FFFDF5] py-20 md:py-28">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Badge */}
+        <ScrollReveal>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-6">
+            <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
+              What it costs.
+            </span>
+          </div>
+        </ScrollReveal>
+
+        {/* Intro */}
+        <ScrollReveal delay={0.1}>
+          <p className="text-[#535353] text-base sm:text-lg leading-relaxed mb-12 max-w-2xl">
+            Less than one junior admin. Less than the time you spend on grants yourself. Less than the customers you lose because nobody called back.
+          </p>
+        </ScrollReveal>
+
+        {/* Pricing list */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
+          {pricingItems.map((item, i) => (
+            <ScrollReveal key={item.name} delay={0.1 + i * 0.06}>
+              <div className="flex items-center justify-between p-4 sm:p-5 rounded-xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 transition-all duration-300 group">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-[#F3D840] group-hover:scale-125 transition-transform" />
+                  <span className="text-[#1A1A1A] font-semibold text-sm sm:text-base">{item.name}</span>
+                </div>
+                <span className="text-[#374151] font-bold text-sm sm:text-base">{item.price}</span>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+
+        {/* Total callout */}
+        <motion.div
+          ref={totalRef}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={totalInView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="bg-[#F3D840] rounded-2xl px-8 py-8 sm:px-12 sm:py-10 text-center mb-4"
+        >
+          <p className="text-[#1A1A1A] text-3xl sm:text-4xl lg:text-5xl font-extrabold">
+            Total workforce: ~&#8364;335/month
+          </p>
+        </motion.div>
+
+        <ScrollReveal delay={0.3}>
+          <p className="text-center text-[#535353] text-base sm:text-lg mb-4">
+            That&apos;s less than one day of a contractor. For a full team.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.4}>
+          <p className="text-center text-[#374151] text-sm font-semibold">
+            No setup fee. Cancel any agent anytime.
+          </p>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   BEFORE / AFTER SECTION
+   ============================================================ */
+function BeforeAfterSection() {
+  return (
+    <section className="bg-white py-20 md:py-28">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Badge */}
+        <ScrollReveal>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-12">
+            <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
+              What changes.
+            </span>
+          </div>
+        </ScrollReveal>
+
+        {/* Comparisons */}
+        <div className="space-y-8">
+          {comparisons.map((item, i) => (
+            <ScrollReveal key={i} delay={i * 0.1}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                {/* Before */}
+                <motion.div
+                  whileHover={{ y: -2 }}
+                  className="p-6 rounded-xl bg-[#FFFDF5] border-l-4 border-l-[#EF4444]/40 border border-[#EF4444]/15"
+                >
+                  <span className="inline-block text-[#EF4444]/70 text-xs font-bold uppercase tracking-wider mb-3">
+                    Before
+                  </span>
+                  <p className="text-[#535353] text-sm sm:text-base leading-relaxed">
+                    {item.before}
+                  </p>
+                </motion.div>
+
+                {/* After */}
+                <motion.div
+                  whileHover={{ y: -2 }}
+                  className="p-6 rounded-xl bg-[#FFFDF5] border-l-4 border-l-[#F3D840] border border-[#F3D840]/15"
+                >
+                  <span className="inline-block text-[#F3D840] text-xs font-bold uppercase tracking-wider mb-3">
+                    After
+                  </span>
+                  <p className="text-[#1A1A1A] text-sm sm:text-base leading-relaxed font-semibold">
+                    {item.after}
+                  </p>
+                </motion.div>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   AUDIENCE SECTION
+   ============================================================ */
+function AudienceSection() {
+  return (
+    <section className="bg-[#0A0A0A] py-20 md:py-28">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* Badge */}
+        <ScrollReveal>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 mb-10">
+            <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
+            <span className="text-white text-xs sm:text-sm font-semibold tracking-wide">
+              Who is this for.
+            </span>
+          </div>
+        </ScrollReveal>
+
+        {/* Headline */}
+        <ScrollReveal delay={0.1}>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-8">
+            Solar installers doing 20+ jobs a month.
+          </h2>
+        </ScrollReveal>
+
+        {/* Body */}
+        <ScrollReveal delay={0.2}>
+          <p className="text-white/70 text-lg sm:text-xl leading-relaxed mb-6">
+            You have more work than time. You&apos;re turning down leads because you can&apos;t handle the admin. You&apos;re burning out your best people.
+          </p>
+        </ScrollReveal>
+
+        {/* Closing */}
+        <ScrollReveal delay={0.3}>
+          <p className="text-white/50 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
+            Not for one-person shows. Not for hobbyists. For actual solar companies that want to scale without hiring ten more humans.
+          </p>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   HOW IT STARTS + CTA SECTION
+   ============================================================ */
+function HowItStartsSection() {
+  const stepsRef = useRef<HTMLDivElement>(null);
+  const stepsInView = useInView(stepsRef, { once: true, margin: "-80px" });
+
+  return (
+    <section className="bg-[#F3D840] py-20 md:py-28">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Badge */}
+        <ScrollReveal>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1A1A1A]/10 border border-[#1A1A1A]/15 mb-10">
+            <span className="text-[#1A1A1A] text-xs sm:text-sm font-semibold tracking-wide">
+              How it starts.
+            </span>
+          </div>
+        </ScrollReveal>
+
+        {/* Steps */}
+        <div ref={stepsRef} className="space-y-4 mb-12">
+          {steps.map((step, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -20 }}
+              animate={stepsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+              transition={{ delay: 0.2 + i * 0.15, duration: 0.4, ease: "easeOut" }}
+              className="flex items-center gap-4"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={stepsInView ? { scale: 1 } : { scale: 0 }}
+                transition={{ delay: 0.2 + i * 0.15, duration: 0.3, type: "spring", stiffness: 300 }}
+                className="w-8 h-8 rounded-full bg-[#1A1A1A] flex items-center justify-center shrink-0"
+              >
+                <span className="text-[#F3D840] font-bold text-xs">{i + 1}</span>
+              </motion.div>
+              <p className="text-[#1A1A1A] text-lg sm:text-xl font-semibold">{step}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Closing text */}
+        <ScrollReveal delay={0.5}>
+          <p className="text-[#374151] text-base sm:text-lg leading-relaxed mb-6">
+            You don&apos;t install software. You don&apos;t configure APIs. You don&apos;t learn a new system.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.6}>
+          <p className="text-[#1A1A1A] text-xl sm:text-2xl font-extrabold mb-12">
+            You just start managing instead of doing.
+          </p>
+        </ScrollReveal>
+
+        {/* CTA */}
+        <ScrollReveal delay={0.7}>
+          <div className="text-center">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1A1A1A] mb-4">
+              Let&apos;s talk.
+            </h2>
+            <p className="text-[#374151] text-base sm:text-lg mb-8">
+              <a href="mailto:hello@renewably.com" className="underline hover:text-[#1A1A1A] transition-colors">
+                hello@renewably.com
+              </a>
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
+            >
+              Get Started
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   MAIN EXPORT
+   ============================================================ */
 export default function ServicesPageClient() {
   return (
     <>
       <Header />
       <main className="pt-20">
-        {/* Hero Banner */}
-        <section className="bg-[#F3D840] py-20 md:py-28">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <ScrollReveal>
-              <p className="text-[#374151] font-semibold text-sm tracking-wider uppercase mb-3">Our Services</p>
-              <h1 className="text-4xl sm:text-5xl font-bold text-[#1A1A1A] mb-6">
-                AI Systems That Drive Revenue, On Autopilot
-              </h1>
-              <p className="text-[#535353] text-lg max-w-2xl mx-auto leading-relaxed">
-                A fully managed AI as a Service platform that deploys autonomous agents across your sales, marketing, and operations — powered by machine learning and built for growth.
-              </p>
-            </ScrollReveal>
+        {/* ===== HERO — Full-Width Robot Banner ===== */}
+        <section className="relative overflow-hidden">
+          {/* Robot image background */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/robot-hero.jpg"
+              alt=""
+              fill
+              className="object-cover"
+              priority
+            />
           </div>
+          {/* Dark overlay */}
+          <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#0A0A0A]/85 via-[#0A0A0A]/70 to-[#0A0A0A]/50" />
+
+          {/* Content */}
+          <div className="relative z-[2] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-40">
+            <div className="max-w-3xl">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mb-8"
+              >
+                <motion.span
+                  className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
+                  style={{ boxShadow: "0 0 8px rgba(243,216,64,0.6)" }}
+                />
+                <span className="text-[#F3D840] text-xs sm:text-sm font-bold tracking-wide">
+                  Renewably
+                </span>
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.08] tracking-tight mb-6"
+              >
+                AI Workforce That Runs Your Solar Company, On Autopilot
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+                className="text-white/70 text-lg sm:text-xl leading-relaxed max-w-2xl"
+              >
+                A fully managed AI workforce deployed across your operations, customer support, grants, and logistics. Built for solar companies that want to scale without finding staff they can&apos;t hire.
+              </motion.p>
+            </div>
+          </div>
+
+          {/* Yellow fade at bottom */}
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent z-[3] pointer-events-none" />
         </section>
 
-        {/* Services Detail */}
-        <section className="py-20 md:py-28 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
-            {services.map((service, idx) => (
-              <ScrollReveal key={service.id}>
-                <div id={service.id} className="grid lg:grid-cols-2 gap-12 items-center">
-                  <div className={idx % 2 === 1 ? 'lg:order-2' : ''}>
-                    <div className="w-12 h-12 rounded-lg bg-[#F3D840] flex items-center justify-center mb-4">
-                      <span className="text-[#374151] font-bold text-lg">{String(idx + 1).padStart(2, '0')}</span>
-                    </div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-4">{service.title}</h2>
-                    <p className="text-[#535353] leading-relaxed mb-6">{service.desc}</p>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {service.features.map((f) => (
-                        <li key={f} className="flex items-center gap-2 text-sm text-[#535353]">
-                          <svg className="w-4 h-4 text-[#374151] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className={idx % 2 === 1 ? 'lg:order-1' : ''}>
-                    <Image
-                      src={service.image}
-                      alt={`${service.title} illustration`}
-                      width={672}
-                      height={384}
-                      className="w-full rounded-2xl shadow-lg"
-                    />
-                  </div>
+        {/* ===== AGENTS SHOWCASE ===== */}
+        <section className="bg-white py-20 md:py-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Badge */}
+            <ScrollReveal>
+              <div className="text-center max-w-3xl mx-auto mb-20">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-6">
+                  <motion.span
+                    className="w-2 h-2 rounded-full bg-[#F3D840]"
+                    animate={{ scale: [1, 1.3, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                  <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
+                    Here&apos;s what we deploy.
+                  </span>
                 </div>
-              </ScrollReveal>
-            ))}
+              </div>
+            </ScrollReveal>
+
+            {/* Agent cards — alternating image/copy layout */}
+            <div className="space-y-20 md:space-y-28">
+              {agents.map((agent, i) => (
+                <AgentCard key={agent.num} agent={agent} index={i} />
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="bg-[#F3D840] py-20 md:py-24">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <ScrollReveal>
-              <h2 className="text-3xl font-bold text-[#1A1A1A] mb-4">Let&apos;s Build Your AI Stack</h2>
-              <p className="text-[#374151] mb-8 leading-relaxed">
-                Every business is unique. Book a call to discuss how we can design and deploy an AI system tailored to your sales process, marketing goals, and growth targets.
-              </p>
-              <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-4 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg">
-                Book a Strategy Call
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-              </Link>
-            </ScrollReveal>
-          </div>
-        </section>
+        {/* ===== PRICING ===== */}
+        <PricingSection />
+
+        {/* ===== BEFORE / AFTER ===== */}
+        <BeforeAfterSection />
+
+        {/* ===== AUDIENCE ===== */}
+        <AudienceSection />
+
+        {/* ===== HOW IT STARTS + CTA ===== */}
+        <HowItStartsSection />
       </main>
       <Footer />
     </>
