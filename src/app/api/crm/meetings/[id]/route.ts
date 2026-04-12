@@ -1,13 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getSessionFromRequest } from '@/lib/auth'
-
-async function getAuthUser(request: NextRequest) {
-  const session = getSessionFromRequest(request)
-  if (!session) return null
-  const user = await db.user.findUnique({ where: { id: session.userId } })
-  return user
-}
+import { requireAuth, unauthorized } from '@/lib/crm-auth'
 
 // GET: Single meeting
 export async function GET(
@@ -15,10 +8,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await getAuthUser(request)
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     const { id } = await params
 
@@ -51,10 +42,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await getAuthUser(request)
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     const { id } = await params
     const body = await request.json()
@@ -111,10 +100,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await getAuthUser(request)
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     const { id } = await params
 

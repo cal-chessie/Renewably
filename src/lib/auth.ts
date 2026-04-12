@@ -3,9 +3,69 @@
 // ============================================================================
 // PBKDF2 password hashing (upgrade from legacy SHA-256).
 // Legacy SHA-256 hashes are verified with fallback and auto-upgraded on login.
+// Secure cookie flags in production. In-memory rate limiter for brute-force protection.
 // ============================================================================
 
 import { createSession, getSession, deleteSession } from './sessions'
+
+// ─── Rate Limiter (in-memory, per IP) ───
+// Prevents brute-force attacks on the login endpoint.
+
+const loginAttempts = new Map<string, { count: number; firstAttempt: number }>()
+const MAX_LOGIN_ATTEMPTS = 10
+const LOGIN_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
+const LOCKOUT_DURATION_MS = 15 * 60 * 1000 // 15 minutes lockout after max attempts
+
+// Clean up old entries every 10 minutes
+setInterval(() => {
+  const now = Date.now()
+  for (const [key, val] of loginAttempts.entries()) {
+    if (now - val.firstAttempt > LOGIN_WINDOW_MS + LOCKOUT_DURATION_MS) {
+      loginAttempts.delete(key)
+    }
+  }
+}, 10 * 60 * 1000)
+
+export function checkRateLimit(ip: string): { allowed: boolean; retryAfterMs: number } {
+  const now = Date.now()
+  const entry = loginAttempts.get(ip)
+
+  if (!entry) {
+    loginAttempts.set(ip, { count: 1, firstAttempt: now })
+    return { allowed: true, retryAfterMs: 0 }
+  }
+
+  // If locked out, check if lockout has expired
+  if (entry.count >= MAX_LOGIN_ATTEMPTS) {
+    const lockoutEnd = entry.firstAttempt + LOCKOUT_DURATION_MS
+    if (now < lockoutEnd) {
+      return { allowed: false, retryAfterMs: lockoutEnd - now }
+    }
+    // Lockout expired, reset
+    loginAttempts.set(ip, { count: 1, firstAttempt: now })
+    return { allowed: true, retryAfterMs: 0 }
+  }
+
+  // If window has expired, reset
+  if (now - entry.firstAttempt > LOGIN_WINDOW_MS) {
+    loginAttempts.set(ip, { count: 1, firstAttempt: now })
+    return { allowed: true, retryAfterMs: 0 }
+  }
+
+  // Increment count
+  entry.count++
+
+  if (entry.count >= MAX_LOGIN_ATTEMPTS) {
+    return { allowed: false, retryAfterMs: LOCKOUT_DURATION_MS }
+  }
+
+  const remaining = MAX_LOGIN_ATTEMPTS - entry.count
+  return { allowed: true, retryAfterMs: 0 }
+}
+
+export function clearRateLimit(ip: string): void {
+  loginAttempts.delete(ip)
+}
 
 // ─── Password Hashing ───
 
@@ -110,11 +170,13 @@ export function parseCookies(cookieHeader: string): Record<string, string> {
 
 export function createSessionCookie(token: string): string {
   const maxAge = 7 * 24 * 60 * 60 // 7 days
-  return `crm_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}`
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : ''
+  return `crm_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${secure}`
 }
 
 export function createLogoutCookie(): string {
-  return 'crm_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0'
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : ''
+  return `crm_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${secure}`
 }
 
 export { createSession, deleteSession }

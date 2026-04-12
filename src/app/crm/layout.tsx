@@ -2,7 +2,7 @@
 
 import { CRMProvider, useCRM } from '@/components/crm/CRMProvider'
 import { AIAssistant } from '@/components/crm/AIAssistant'
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
   Users,
@@ -13,18 +13,23 @@ import {
   Zap,
   LogOut,
   Menu,
-  X,
   Calendar as CalendarIcon,
   BarChart3,
   Receipt,
   Sun,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
+
+// ============================================================================
+// CONSTANTS
+// ============================================================================
+const DARK = '#0A0A0A'
+const DARK2 = '#1A1A1A'
+const YELLOW = '#F3D840'
+const YELLOW_MUTED = '#C79828'
 
 const navItems = [
   { href: '/crm', label: 'Dashboard', icon: LayoutDashboard },
@@ -40,69 +45,111 @@ const navItems = [
   { href: '/crm/invoices', label: 'Invoices', icon: Receipt },
 ]
 
+// ============================================================================
+// NAV ITEM COMPONENT
+// ============================================================================
+function NavItem({ item, isActive, onNavigate }: {
+  item: typeof navItems[0]
+  isActive: boolean
+  onNavigate?: () => void
+}) {
+  return (
+    <button
+      onClick={() => {
+        window.location.href = item.href
+        onNavigate?.()
+      }}
+      style={{
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        padding: '10px 12px',
+        borderRadius: 8,
+        fontSize: 14,
+        fontWeight: 500,
+        color: isActive ? YELLOW : 'rgba(255,255,255,0.55)',
+        background: isActive ? `${YELLOW}15` : 'transparent',
+        border: 'none',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        textAlign: 'left',
+        fontFamily: 'inherit',
+      }}
+      onMouseEnter={(e) => {
+        if (!isActive) {
+          e.currentTarget.style.color = '#FFF'
+          e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive) {
+          e.currentTarget.style.color = 'rgba(255,255,255,0.55)'
+          e.currentTarget.style.background = 'transparent'
+        }
+      }}
+    >
+      <item.icon size={20} style={{ color: isActive ? YELLOW : undefined, flexShrink: 0 }} />
+      <span style={{ flex: 1 }}>{item.label}</span>
+      {isActive && (
+        <motion.div
+          layoutId="activeNav"
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: '50%',
+            background: YELLOW,
+          }}
+        />
+      )}
+    </button>
+  )
+}
+
+// ============================================================================
+// SIDEBAR NAV COMPONENT
+// ============================================================================
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname()
   const { user, logout } = useCRM()
 
   return (
-    <div className="flex flex-col h-full">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Logo */}
-      <div className="p-6 border-b border-white/10">
-        <div className="flex items-center gap-3">
+      <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <Image
             src="/logo-transparent.png"
             alt="Renewably"
             width={36}
             height={36}
-            className="rounded-lg"
+            style={{ borderRadius: 8 }}
           />
           <div>
-            <h1 className="text-white font-bold text-lg leading-tight">SolarPilot</h1>
-            <p className="text-white/40 text-xs">by Renewably</p>
+            <div style={{ color: '#FFF', fontWeight: 700, fontSize: 18, lineHeight: 1.2 }}>SolarPilot</div>
+            <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 12 }}>by Renewably</div>
           </div>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav style={{ flex: 1, padding: '12px 12px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 2 }}>
         {navItems.map((item) => {
           const isActive =
             item.href === '/crm'
               ? pathname === '/crm'
               : pathname.startsWith(item.href)
 
-          return (
-            <button
-              key={item.href}
-              onClick={() => {
-                window.location.href = item.href
-                onNavigate?.()
-              }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                isActive
-                  ? 'bg-[#F3D840]/10 text-[#F3D840]'
-                  : 'text-white/60 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <item.icon className={`h-5 w-5 ${isActive ? 'text-[#F3D840]' : ''}`} />
-              {item.label}
-              {isActive && (
-                <motion.div
-                  layoutId="activeNav"
-                  className="ml-auto h-1.5 w-1.5 rounded-full bg-[#F3D840]"
-                />
-              )}
-            </button>
-          )
+          return <NavItem key={item.href} item={item} isActive={isActive} onNavigate={onNavigate} />
         })}
       </nav>
 
-      {/* User */}
-      <div className="p-4 border-t border-white/10">
+      {/* User section */}
+      <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
         {user && (
-          <div className="flex items-center gap-3">
-            <Avatar className="h-9 w-9">
-              <AvatarFallback className="bg-[#F3D840] text-[#374151] text-sm font-bold">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Avatar style={{ width: 36, height: 36 }}>
+              <AvatarFallback style={{ background: YELLOW, color: '#374151', fontSize: 13, fontWeight: 700 }}>
                 {user.name
                   .split(' ')
                   .map((n: string) => n[0])
@@ -110,18 +157,42 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
                   .toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-white text-sm font-medium truncate">{user.name}</p>
-              <p className="text-white/40 text-xs truncate">{user.role}</p>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ color: '#FFF', fontSize: 14, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {user.name}
+              </div>
+              <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {user.role}
+              </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
               onClick={logout}
-              className="text-white/40 hover:text-white hover:bg-white/10 h-8 w-8"
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 6,
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'rgba(255,255,255,0.35)',
+                transition: 'all 0.2s',
+                padding: 0,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#FFF'
+                e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'rgba(255,255,255,0.35)'
+                e.currentTarget.style.background = 'transparent'
+              }}
+              aria-label="Log out"
             >
-              <LogOut className="h-4 w-4" />
-            </Button>
+              <LogOut size={16} />
+            </button>
           </div>
         )}
       </div>
@@ -129,6 +200,9 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
+// ============================================================================
+// CRM SHELL (sidebar + main content)
+// ============================================================================
 function CRMShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
@@ -138,41 +212,66 @@ function CRMShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div style={{ display: 'flex', height: '100vh', background: '#F9FAFB' }}>
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-64 flex-col bg-[#1A1A1A] shrink-0 border-r border-[#F3D840]/10">
+      <aside className="crm-sidebar-desktop"
+        style={{
+          width: 256,
+          flexShrink: 0,
+          background: DARK2,
+          borderRight: `1px solid ${YELLOW}15`,
+          flexDirection: 'column',
+        }}
+      >
         <SidebarNav />
       </aside>
 
-      {/* Mobile Sidebar */}
-      <div className="lg:hidden fixed top-0 left-0 z-50 p-2">
+      {/* Mobile Sidebar Toggle */}
+      <div className="crm-mobile-toggle"
+        style={{ position: 'fixed', top: 8, left: 8, zIndex: 50, padding: 8 }}
+      >
         <Sheet>
           <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="bg-[#F3D840] text-[#1A1A1A] hover:bg-[#E5C832] h-10 w-10 rounded-lg shadow-lg"
+            <button
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 8,
+                border: 'none',
+                background: YELLOW,
+                color: DARK,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                padding: 0,
+              }}
+              aria-label="Open menu"
             >
-              <Menu className="h-5 w-5" />
-            </Button>
+              <Menu size={20} />
+            </button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-64 bg-[#1A1A1A] border-0">
+          <SheetContent side="left" style={{ padding: 0, width: 256, background: DARK2, border: 'none' }}>
             <SidebarNav />
           </SheetContent>
         </Sheet>
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto">
-        <div className="min-h-full">{children}</div>
+      <main style={{ flex: 1, overflow: 'auto' }}>
+        <div style={{ minHeight: '100%' }}>{children}</div>
       </main>
 
-      {/* AI Assistant — floating chat widget */}
+      {/* AI Assistant floating chat widget */}
       <AIAssistant />
     </div>
   )
 }
 
+// ============================================================================
+// CRM LAYOUT (root wrapper)
+// ============================================================================
 export default function CRMLayout({ children }: { children: React.ReactNode }) {
   return (
     <CRMProvider>

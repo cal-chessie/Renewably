@@ -1,16 +1,14 @@
 import { NextResponse } from 'next/server'
-import { getSessionFromRequest } from '@/lib/auth'
+import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { db } from '@/lib/db'
 
 export async function GET(request: Request) {
   try {
-    const session = getSessionFromRequest(request)
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     const connection = await db.googleCalendarConnection.findUnique({
-      where: { userId: session.userId },
+      where: { userId: user.id },
     })
 
     if (!connection || !connection.isActive) {

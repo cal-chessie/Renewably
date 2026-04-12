@@ -195,3 +195,24 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* CRM Sidebar Responsive */
+.crm-sidebar-desktop {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .crm-sidebar-desktop {
+    display: flex;
+  }
+}
+
+.crm-mobile-toggle {
+  display: flex;
+}
+
+@media (min-width: 1024px) {
+  .crm-mobile-toggle {
+    display: none;
+  }
+}

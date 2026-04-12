@@ -79,8 +79,15 @@ export async function POST(request: NextRequest) {
     let savedContact = false;
 
     try {
+      // Ensure the "Lead" pipeline stage exists
+      const leadStage = await db.pipelineStage.upsert({
+        where: { name: "Lead" },
+        update: {},
+        create: { name: "Lead", order: 1, color: "#9CA3AF", isDefault: true },
+      });
+
       // Create the contact record in the CRM
-      await db.contact.create({
+      const contact = await db.contact.create({
         data: {
           firstName: firstName.trim(),
           lastName: lastName.trim(),
@@ -90,6 +97,33 @@ export async function POST(request: NextRequest) {
           source: "website",
           status: "lead",
           description: message.trim(),
+        },
+      });
+
+      // Create a Deal in the pipeline so this lead shows up in the CRM pipeline view
+      // Estimate monthly value based on installs per month (avg €1,250/mo subscription)
+      const estimatedMonthlyValue = estimateDealValue(body.jobsPerMonth?.trim());
+
+      await db.deal.create({
+        data: {
+          title: `${fullName} — Website Enquiry`,
+          description: message.trim(),
+          value: estimatedMonthlyValue,
+          currency: "EUR",
+          probability: 30,
+          stageId: leadStage.id,
+          contactId: contact.id,
+          closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+        },
+      });
+
+      // Log the activity
+      await db.activity.create({
+        data: {
+          type: "note",
+          title: "New website enquiry",
+          description: `Contact form submission from ${fullName} (${email.trim()}).${body.company?.trim() ? ` Company: ${body.company.trim()}.` : ""}${body.jobsPerMonth?.trim() ? ` Installs/month: ${body.jobsPerMonth.trim()}.` : ""}`,
+          contactId: contact.id,
         },
       });
 
@@ -192,4 +226,21 @@ export async function POST(request: NextRequest) {
 function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email.trim());
+}
+
+/**
+ * Estimate annual deal value based on installs per month.
+ * Uses the Renewably pricing model: €1,000-€1,500/mo subscription.
+ * We estimate annual contract value for pipeline tracking.
+ */
+function estimateDealValue(jobsPerMonth?: string): number {
+  if (!jobsPerMonth) return 15000; // Default €15k annual estimate
+
+  const range = jobsPerMonth.toLowerCase();
+  // Estimate based on volume — larger installers may go for higher plans
+  if (range.includes("50+")) return 24000; // Enterprise: €2,000/mo x 12
+  if (range.includes("20-50")) return 18000; // Pro: €1,500/mo x 12
+  if (range.includes("10-20")) return 15000; // Standard: €1,250/mo x 12
+  if (range.includes("5-10")) return 12000; // Starter: €1,000/mo x 12
+  return 12000; // Default to starter
 }

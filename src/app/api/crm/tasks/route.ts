@@ -1,21 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getSessionFromRequest } from '@/lib/auth'
-
-async function getAuthUser(request: NextRequest) {
-  const session = getSessionFromRequest(request)
-  if (!session) return null
-  const user = await db.user.findUnique({ where: { id: session.userId } })
-  return user
-}
+import { requireAuth, unauthorized } from '@/lib/crm-auth'
 
 // GET: List tasks
 export async function GET(request: NextRequest) {
   try {
-    const user = await getAuthUser(request)
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     const { searchParams } = new URL(request.url)
     const priority = searchParams.get('priority') || ''
@@ -85,10 +76,8 @@ export async function GET(request: NextRequest) {
 // POST: Create task
 export async function POST(request: NextRequest) {
   try {
-    const user = await getAuthUser(request)
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     const body = await request.json()
     const {
@@ -134,10 +123,8 @@ export async function POST(request: NextRequest) {
 // PUT: Bulk update task status (for drag & drop)
 export async function PUT(request: NextRequest) {
   try {
-    const user = await getAuthUser(request)
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     const body = await request.json()
     const { taskId, status, title, description, priority, dueDate, assigneeId } = body

@@ -1,14 +1,6 @@
 import { db } from '@/lib/db'
-import { getSessionFromRequest } from '@/lib/auth'
+import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { NextRequest, NextResponse } from 'next/server'
-
-// Helper to check auth
-async function getAuthUser(request: NextRequest) {
-  const session = getSessionFromRequest(request)
-  if (!session) return null
-  const user = await db.user.findUnique({ where: { id: session.userId } })
-  return user
-}
 
 // Plan pricing map (EUR/month) — matches dashboard route
 const PLAN_PRICES: Record<string, number> = {
@@ -20,10 +12,8 @@ const PLAN_PRICES: Record<string, number> = {
 // GET: Installer KPIs for CRM dashboard
 export async function GET(request: NextRequest) {
   try {
-    const user = await getAuthUser(request)
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     // Fetch all installers with subscription data in a single query
     const installers = await db.installerProfile.findMany({

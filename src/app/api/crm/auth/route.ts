@@ -18,11 +18,33 @@ import {
   createSessionCookie,
   createLogoutCookie,
   deleteSession,
+  checkRateLimit,
+  clearRateLimit,
 } from '@/lib/auth'
 
-// POST: Login
+// Helper to extract client IP from request headers
+function getClientIp(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for')
+  if (forwarded) return forwarded.split(',')[0].trim()
+  const realIp = request.headers.get('x-real-ip')
+  if (realIp) return realIp
+  return 'unknown'
+}
+
+// POST: Login (with rate limiting)
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting check
+    const ip = getClientIp(request)
+    const rateCheck = checkRateLimit(ip)
+    if (!rateCheck.allowed) {
+      const retryAfterSecs = Math.ceil(rateCheck.retryAfterMs / 1000)
+      return NextResponse.json(
+        { error: `Too many login attempts. Try again in ${retryAfterSecs} minutes.`, retryAfter: retryAfterSecs },
+        { status: 429, headers: { 'Retry-After': String(retryAfterSecs) } }
+      )
+    }
+
     const body = await request.json()
     const { email, password } = body
 
@@ -76,6 +98,8 @@ export async function POST(request: NextRequest) {
     })
 
     response.headers.append('Set-Cookie', createSessionCookie(token))
+    // Clear rate limit on successful login
+    clearRateLimit(ip)
     return response
   } catch (error) {
     console.error('Login error:', error)

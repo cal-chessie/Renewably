@@ -1,22 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getSessionFromRequest } from '@/lib/auth'
-
-// Helper to check auth
-async function getAuthUser(request: NextRequest) {
-  const session = getSessionFromRequest(request)
-  if (!session) return null
-  const user = await db.user.findUnique({ where: { id: session.userId } })
-  return user
-}
+import { requireAuth, unauthorized } from '@/lib/crm-auth'
 
 // GET: List contacts
 export async function GET(request: NextRequest) {
   try {
-    const user = await getAuthUser(request)
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search') || ''
@@ -81,10 +71,8 @@ export async function GET(request: NextRequest) {
 // POST: Create contact
 export async function POST(request: NextRequest) {
   try {
-    const user = await getAuthUser(request)
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     const body = await request.json()
     const {

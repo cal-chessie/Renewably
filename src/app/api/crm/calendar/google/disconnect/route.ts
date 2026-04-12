@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSessionFromRequest } from '@/lib/auth'
+import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { db } from '@/lib/db'
 
 export async function POST(request: NextRequest) {
   try {
-    const session = getSessionFromRequest(request)
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     await db.googleCalendarConnection.delete({
-      where: { userId: session.userId },
+      where: { userId: user.id },
     })
 
     return NextResponse.json({ success: true, message: 'Google Calendar disconnected' })

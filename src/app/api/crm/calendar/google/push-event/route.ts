@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSessionFromRequest } from '@/lib/auth'
+import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { db } from '@/lib/db'
 
 export async function POST(request: NextRequest) {
   try {
-    const session = getSessionFromRequest(request)
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     const body = await request.json()
     const { meetingId } = body
@@ -28,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     const connection = await db.googleCalendarConnection.findUnique({
-      where: { userId: session.userId },
+      where: { userId: user.id },
     })
 
     if (!connection || !connection.isActive) {
@@ -66,7 +64,7 @@ export async function POST(request: NextRequest) {
         const tokens = await tokenResponse.json()
         accessToken = tokens.access_token
         await db.googleCalendarConnection.update({
-          where: { userId: session.userId },
+          where: { userId: user.id },
           data: {
             accessToken: tokens.access_token,
             expiresAt: new Date(Date.now() + tokens.expires_in * 1000),

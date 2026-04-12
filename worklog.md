@@ -472,3 +472,125 @@ Stage Summary:
 - Dead dependencies removed (next-auth, next-intl)
 - Zero lint errors
 
+---
+Task ID: crm-auth-refactor
+Agent: Sub Agent
+Task: Update all CRM API routes to use shared auth helper from @/lib/crm-auth
+
+Work Log:
+- Reviewed shared auth helper at src/lib/crm-auth.ts (exports: requireAuth, unauthorized, requireAdmin)
+- Identified 49 CRM route files to update (excluding auth/route.ts and calendar/google/callback/route.ts)
+- Categorized files into two groups:
+  - Category A (43 files): Had local getAuthUser function + getSessionFromRequest import
+  - Category B (6 files): Calendar/google routes that used getSessionFromRequest directly (no getAuthUser wrapper)
+- Applied automated refactoring via Python script:
+  - Category A: Removed local getAuthUser function, replaced import, replaced usage pattern
+  - Category B: Replaced import, converted session-based auth to user-based auth (session → user, session.userId → user.id)
+- Ran second pass to clean up leftover getAuthUser function definitions (regex had missed nested braces in db.user.findUnique calls)
+- Verified: zero remaining getAuthUser references, getSessionFromRequest only in auth/route.ts (expected)
+- Spot-checked 9 files across all categories to confirm correctness
+
+Files NOT modified (as instructed):
+- src/app/api/crm/auth/route.ts (has its own auth logic with login/logout/session)
+- src/app/api/crm/calendar/google/callback/route.ts (OAuth callback, gets userId from state param, no session import)
+
+Stage Summary:
+- Modified: 49 CRM API route files
+- Pattern change: `getAuthUser(request)` + manual null check → `requireAuth(request)` + `if (!user) return unauthorized()`
+- Pattern change: `getSessionFromRequest(request)` + `session.userId` → `requireAuth(request)` + `user.id`
+- Import change: `from '@/lib/auth'` → `from '@/lib/crm-auth'`
+- No functional changes — auth behaviour is identical (session → user lookup, null/isActive checks)
+- The shared helper adds isActive check that some local getAuthUser functions were missing
+
+---
+Task ID: cleanup-crm
+Agent: Sub Agent
+Task: Cut fat from CRM codebase — check for unused deps, dead imports, stale env vars, orphan files, lint health
+
+Work Log:
+
+1. Unused dependency check (next-auth, @next-auth/prisma-adapter, bcryptjs, argon2, passport):
+   - None found in package.json — all previously removed in task ID 1 (Backend & CRM hardening)
+   - No action needed
+
+2. next-auth import scan across all src/ files:
+   - Zero source code files import from next-auth
+   - Only historical mentions found in worklog.md (this file) referencing past removal
+   - No action needed
+
+3. .env file scan for next-auth references:
+   - Only .env exists (no .env.example or .env.local)
+   - .env contains only: DATABASE_URL=file:/home/z/my-project/db/custom.db
+   - No next-auth references found
+   - No action needed
+
+4. Supabase schema file check (src/lib/supabase-schema.ts):
+   - File does NOT exist at src/lib/supabase-schema.ts
+   - Note: download/supabase-schema.sql exists (SQL DDL, not TypeScript) — this is a reference artifact, not imported by any source file
+   - No action needed
+
+5. Lint check (bun run lint):
+   - Ran `eslint .` — passed clean, zero errors, zero warnings
+   - Codebase is in good shape
+
+Stage Summary:
+- Codebase is clean: no unused auth deps, no dead next-auth imports, no stale env vars, no orphan schema files
+- All previous cleanup from task ID 1 was successful and complete
+- Lint: 0 errors, 0 warnings
+- No files removed or modified in this pass
+
+---
+Task ID: crm-harden-v2
+Agent: Main Agent
+Task: CRM hardening v2 — shared auth helper, rate limiting, funnel wiring, UI polish
+
+Work Log:
+
+1. Created shared auth helper: src/lib/crm-auth.ts
+   - Exports: requireAuth(request), unauthorized(), requireAdmin(request)
+   - Eliminates duplicated getAuthUser function across 49 CRM API routes
+   - Includes isActive check on every auth validation
+
+2. Updated 49 CRM API route files to use shared auth helper
+   - Category A (43 files): Removed local getAuthUser, replaced with requireAuth + unauthorized
+   - Category B (6 files): Calendar/google routes converted from session-based to user-based auth
+   - Auth route and OAuth callback route left untouched (have their own logic)
+
+3. Added rate limiting to auth endpoint (src/lib/auth.ts):
+   - In-memory per-IP rate limiter: 10 attempts per 15-minute window
+   - 15-minute lockout after max attempts exceeded
+   - Auto-cleanup of stale entries every 10 minutes
+   - Exported: checkRateLimit(ip), clearRateLimit(ip)
+   - Wired into POST /api/crm/auth with 429 response + Retry-After header
+   - Successful login clears the rate limit counter
+
+4. Added Secure cookie flag for production:
+   - createSessionCookie() and createLogoutCookie() now append "; Secure" when NODE_ENV=production
+
+5. Wired contact form to CRM pipeline (src/app/api/contact/route.ts):
+   - Contact form now creates: Contact + Deal + Activity in a single transaction
+   - Deal automatically placed in "Lead" pipeline stage
+   - Deal value estimated from installs/month field (€12k-€24k annual based on pricing tiers)
+   - Activity logged with full submission context
+   - Pipeline stage auto-created via upsert if missing
+
+6. Polished CRM layout (src/app/crm/layout.tsx):
+   - Converted sidebar from Tailwind classes to inline styles (project convention)
+   - Added responsive CSS classes in globals.css for sidebar show/hide
+   - Removed unused imports (useRouter, useState)
+   - Cleaner hover effects and consistent spacing
+
+7. Codebase audit confirmed:
+   - Zero unused dependencies (next-auth, bcryptjs, etc. already removed)
+   - Zero dead imports
+   - Lint passes clean (0 errors, 0 warnings)
+   - No orphan files
+
+Stage Summary:
+- Auth security: PBKDF2 hashing, rate limiting (10/15min), Secure cookies in production, middleware route protection
+- Funnel wiring: Contact form → Contact + Deal + Activity (fully automated)
+- Chat widget → CRM lead capture (already wired in prior session)
+- Code quality: 49 API routes DRY'd into shared helper, zero lint errors
+- CRM UI: Sidebar polished with inline styles, responsive mobile/desktop
+- Claude Code/cowork ready: Clean patterns, no dead code, well-documented
+
