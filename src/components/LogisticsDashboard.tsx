@@ -252,7 +252,7 @@ export default function LogisticsDashboard() {
             <div style={S.statCard}><div style={S.statNumber}>{stats.activeOrders}</div><div style={S.statLabel}>ACTIVE ORDERS</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.deliveredToday}</div><div style={S.statLabel}>DELIVERED TODAY</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.onTimeRate.toFixed(2)}</div><div style={S.statLabel}>ON-TIME RATE (%)</div></div>
-            <div style={S.statCard}><div style={S.statNumber}>{stats.inventoryValue.toFixed(2)}</div><div style={S.statLabel}>INVENTORY VALUE (\u20ac K)</div></div>
+            <div style={S.statCard}><div style={S.statNumber}>{stats.inventoryValue.toFixed(2)}</div><div style={S.statLabel}>INVENTORY VALUE (€ K)</div></div>
           </div>
 
           {/* Two Column: Orders + Inventory */}
