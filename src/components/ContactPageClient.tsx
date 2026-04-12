@@ -72,14 +72,29 @@ export default function ContactPageClient() {
     setFormState("sent");
   };
 
-  const inputClasses =
-    "w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:border-[#F3D840] focus:ring-2 focus:ring-[#F3D840]/20 transition-all duration-300 outline-none text-[#1A1A1A] placeholder:text-[#9CA3AF] bg-white";
-  const labelClasses = "block text-sm font-semibold text-[#374151] mb-2";
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '12px 16px',
+    borderRadius: 12,
+    border: '1px solid #e5e7eb',
+    outline: 'none',
+    color: '#1A1A1A',
+    backgroundColor: '#fff',
+    fontSize: 15,
+    transition: 'all 0.3s',
+  };
+  const labelStyle: React.CSSProperties = {
+    display: 'block',
+    fontSize: 14,
+    fontWeight: 600,
+    color: '#374151',
+    marginBottom: 8,
+  };
 
   return (
     <main>
         {/* ===== HERO — Dark with photo + copy ===== */}
-        <section data-theme="dark" className="relative overflow-hidden bg-[#0A0A0A]">
+        <section data-theme="dark" style={{ position: 'relative', overflow: 'hidden', backgroundColor: '#0A0A0A' }}>
           {/* Subtle dot grid */}
           <div
             className="absolute inset-0 opacity-[0.03]"
@@ -89,15 +104,15 @@ export default function ContactPageClient() {
             }}
           />
 
-          <div className="relative z-[1] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="relative z-[1] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32" style={{ paddingTop: 128, paddingBottom: 128 }}>
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center" style={{ gap: 48 }}>
               {/* Left: Photo */}
               <ScrollReveal>
                 <motion.div
                   initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative max-w-md mx-auto lg:mx-0"
+                  className="relative max-w-md mx-auto lg:mx-0" style={{ maxWidth: 448 }}
                 >
                   <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                     <Image
@@ -245,7 +260,7 @@ export default function ContactPageClient() {
                       {/* Name row */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                          <label htmlFor="firstName" className={labelClasses}>First Name</label>
+                          <label htmlFor="firstName" style={labelStyle}>First Name</label>
                           <input
                             type="text"
                             id="firstName"
@@ -254,11 +269,11 @@ export default function ContactPageClient() {
                             placeholder="John"
                             value={formData.firstName}
                             onChange={handleChange}
-                            className={inputClasses}
+                            style={inputStyle}
                           />
                         </div>
                         <div>
-                          <label htmlFor="lastName" className={labelClasses}>Last Name</label>
+                          <label htmlFor="lastName" style={labelStyle}>Last Name</label>
                           <input
                             type="text"
                             id="lastName"
@@ -267,14 +282,14 @@ export default function ContactPageClient() {
                             placeholder="Doe"
                             value={formData.lastName}
                             onChange={handleChange}
-                            className={inputClasses}
+                            style={inputStyle}
                           />
                         </div>
                       </div>
 
                       {/* Email */}
                       <div>
-                        <label htmlFor="email" className={labelClasses}>Email Address</label>
+                        <label htmlFor="email" style={labelStyle}>Email Address</label>
                         <input
                           type="email"
                           id="email"
@@ -283,13 +298,13 @@ export default function ContactPageClient() {
                           placeholder="john@solarcompany.ie"
                           value={formData.email}
                           onChange={handleChange}
-                          className={inputClasses}
+                          style={inputStyle}
                         />
                       </div>
 
                       {/* Company */}
                       <div>
-                        <label htmlFor="company" className={labelClasses}>Company Name</label>
+                        <label htmlFor="company" style={labelStyle}>Company Name</label>
                         <input
                           type="text"
                           id="company"
@@ -297,19 +312,19 @@ export default function ContactPageClient() {
                           placeholder="SolarCo Ireland"
                           value={formData.company}
                           onChange={handleChange}
-                          className={inputClasses}
+                          style={inputStyle}
                         />
                       </div>
 
                       {/* Jobs per month */}
                       <div>
-                        <label htmlFor="jobsPerMonth" className={labelClasses}>How many installs per month?</label>
+                        <label htmlFor="jobsPerMonth" style={labelStyle}>How many installs per month?</label>
                         <select
                           id="jobsPerMonth"
                           name="jobsPerMonth"
                           value={formData.jobsPerMonth}
                           onChange={handleChange}
-                          className={inputClasses + " bg-white"}
+                          style={{ ...inputStyle, backgroundColor: '#fff' }}
                         >
                           <option value="">Select range</option>
                           <option value="1-5">1–5 installs/month</option>
@@ -322,7 +337,7 @@ export default function ContactPageClient() {
 
                       {/* Message */}
                       <div>
-                        <label htmlFor="message" className={labelClasses}>Tell us what you need help with</label>
+                        <label htmlFor="message" style={labelStyle}>Tell us what you need help with</label>
                         <textarea
                           id="message"
                           name="message"
@@ -331,7 +346,7 @@ export default function ContactPageClient() {
                           placeholder="We're struggling with grant paperwork and customer follow-up. We do about 25 installs a month..."
                           value={formData.message}
                           onChange={handleChange}
-                          className={inputClasses + " resize-y"}
+                          style={{ ...inputStyle, resize: 'vertical' }}
                         />
                       </div>
 
