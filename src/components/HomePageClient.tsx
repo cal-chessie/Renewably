@@ -63,7 +63,7 @@ function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mb-10"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mb-14"
         >
           <motion.span
             className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
@@ -540,7 +540,7 @@ function PricingSection() {
         <ScrollReveal delay={0.5}>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2.5 px-10 py-[18px] text-[17px] bg-[#1A1A1A] hover:bg-[#374151] text-white font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
+            className="inline-flex items-center gap-3 px-12 py-5 text-[18px] tracking-wide bg-[#1A1A1A] hover:bg-[#374151] text-white font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
           >
             Book a Call
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
