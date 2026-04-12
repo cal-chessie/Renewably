@@ -391,7 +391,7 @@ function HowItStartsSection() {
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
             >
               Get Started
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -339,7 +339,7 @@ export default function ContactPageClient() {
                       <button
                         type="submit"
                         disabled={formState === "sending"}
-                        className="w-full sm:w-auto px-8 py-4 bg-[#F3D840] hover:bg-[#E5C832] text-[#1A1A1A] font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-[#F3D840]/20 hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full sm:w-auto px-6 py-3 bg-[#F3D840] hover:bg-[#E5C832] text-[#1A1A1A] font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-[#F3D840]/20 hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
                         {formState === "sending" ? (
                           <>
