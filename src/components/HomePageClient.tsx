@@ -690,7 +690,7 @@ function HowItStartsSection() {
   const stepsInView = useInView(stepsRef, { once: true, margin: "-80px" });
 
   return (
-    <section className="bg-[#F3D840] py-20 md:py-28 overflow-hidden">
+    <section className="bg-[#F3D840] py-20 md:py-28 overflow-hidden" style={{ paddingTop: 128, paddingBottom: 128 }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
         <ScrollReveal>
