@@ -582,11 +582,11 @@ function BeforeAfterSection() {
   ];
 
   return (
-    <section className="bg-white py-20 md:py-28 overflow-hidden">
+    <section className="bg-white py-20 md:py-28 overflow-hidden" style={{ paddingTop: 96, paddingBottom: 96 }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20" style={{ marginBottom: 40 }}>
             <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
               What changes.
             </span>
@@ -594,19 +594,20 @@ function BeforeAfterSection() {
         </ScrollReveal>
 
         {/* Comparison cards */}
-        <div className="space-y-8">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
           {comparisons.map((item, i) => (
             <ScrollReveal key={i} delay={i * 0.12}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6" style={{ gap: 24 }}>
                 {/* Before */}
                 <motion.div
                   whileHover={{ y: -2 }}
                   className="p-6 rounded-xl bg-[#FFFDF5] border-l-4 border-l-[#EF4444]/40 border border-[#EF4444]/15"
+                  style={{ padding: '28px 24px' }}
                 >
-                  <span className="inline-block text-[#EF4444]/70 text-xs font-bold uppercase tracking-wider mb-3">
+                  <span className="inline-block text-[#EF4444]/70 text-xs font-bold uppercase tracking-wider" style={{ marginBottom: 12, display: 'block' }}>
                     Before
                   </span>
-                  <p className="text-[#535353] text-sm sm:text-base leading-relaxed">
+                  <p className="text-[#535353] text-sm sm:text-base leading-relaxed" style={{ fontSize: 16, lineHeight: 1.7 }}>
                     {item.before}
                   </p>
                 </motion.div>
@@ -615,11 +616,12 @@ function BeforeAfterSection() {
                 <motion.div
                   whileHover={{ y: -2 }}
                   className="p-6 rounded-xl bg-[#FFFDF5] border-l-4 border-l-[#F3D840] border border-[#F3D840]/15"
+                  style={{ padding: '28px 24px' }}
                 >
-                  <span className="inline-block text-[#F3D840] text-xs font-bold uppercase tracking-wider mb-3">
+                  <span className="inline-block text-[#F3D840] text-xs font-bold uppercase tracking-wider" style={{ marginBottom: 12, display: 'block' }}>
                     After
                   </span>
-                  <p className="text-[#1A1A1A] text-sm sm:text-base leading-relaxed font-semibold">
+                  <p className="text-[#1A1A1A] text-sm sm:text-base leading-relaxed font-semibold" style={{ fontSize: 16, lineHeight: 1.7 }}>
                     {item.after}
                   </p>
                 </motion.div>
