@@ -96,7 +96,10 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
 
   return (
     <ScrollReveal>
-      <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <div
+        className="grid grid-cols-1 lg:grid-cols-2 items-center"
+        style={{ gap: 48, alignItems: 'center' }}
+      >
         {/* Image */}
         <motion.div
           initial={{ opacity: 0, x: isReversed ? 40 : -40 }}
@@ -115,7 +118,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           ) : (
             <div className="relative overflow-hidden rounded-2xl shadow-xl">
               <Image
-                src={agent.image}
+                src={agent.image!}
                 alt={`${agent.title} — Renewably AI Workforce`}
                 width={1344}
                 height={768}
@@ -135,18 +138,18 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className={`${isReversed ? "lg:order-1" : "lg:order-2"}`}
+          className={isReversed ? "lg:order-first" : "lg:order-last"}
         >
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1A1A1A] leading-tight mb-3">
+          <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, marginBottom: 12 }}>
             {agent.title}
           </h2>
-          <p className="text-[#F3D840] text-base sm:text-lg font-bold mb-5 leading-snug">
+          <p style={{ color: '#F3D840', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', fontWeight: 700, marginBottom: 20, lineHeight: 1.5 }}>
             {agent.tagline}
           </p>
-          <p className="text-[#535353] text-base sm:text-lg leading-relaxed mb-4">
+          <p style={{ color: '#535353', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', lineHeight: 1.7, marginBottom: 16 }}>
             {agent.body}
           </p>
-          <p className="text-[#1A1A1A] text-base sm:text-lg leading-relaxed font-semibold">
+          <p style={{ color: '#1A1A1A', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', lineHeight: 1.7, fontWeight: 600 }}>
             {agent.closing}
           </p>
         </motion.div>
@@ -381,9 +384,9 @@ export default function WorkforcePageClient() {
       </section>
 
       {/* ===== EIGHT AGENTS ===== */}
-      <section className="bg-white py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-20 md:space-y-28">
+      <section style={{ backgroundColor: '#fff', paddingTop: 96, paddingBottom: 96 }}>
+        <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 24, paddingRight: 24 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 120 }}>
             {agents.map((agent, i) => (
               <AgentCard key={agent.num} agent={agent} index={i} />
             ))}
