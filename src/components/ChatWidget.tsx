@@ -47,7 +47,7 @@ export default function ChatWidget() {
         <div className="absolute inset-0 bg-[#F3D840]" />
         {/* Robot image */}
         <Image
-          src="/chat-robot.png"
+          src="/robot-2.jpg"
           alt="Chat with Renewably"
           width={64}
           height={64}
@@ -76,7 +76,7 @@ export default function ChatWidget() {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#F3D840]/15 flex items-center justify-center overflow-hidden">
                   <Image
-                    src="/chat-robot.png"
+                    src="/robot-2.jpg"
                     alt=""
                     width={36}
                     height={36}
