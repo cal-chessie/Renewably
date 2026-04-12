@@ -1,60 +1,72 @@
 "use client";
 
+import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
+import Image from "next/image";
 import { posts } from "@/lib/blog-data";
 
 export default function BlogPageClient() {
   return (
     <main>
-        {/* ── Hero (dark) ── */}
-        <section data-theme="dark" className="relative overflow-hidden bg-[#0A0A0A] py-20 md:py-28">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-              {/* Text side */}
-              <div className="flex-1 text-center lg:text-left">
-                <ScrollReveal>
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 mb-8">
-                    <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
-                    <span className="text-white text-xs sm:text-sm font-semibold tracking-wide">
-                      Blog
-                    </span>
-                  </div>
-                </ScrollReveal>
+        {/* ── Hero (dark, full-screen robot bg) ── */}
+        <section data-theme="dark" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+          {/* Robot hero background */}
+          <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+            <Image
+              src="/robot-hero.jpg"
+              alt=""
+              fill
+              style={{ objectFit: 'cover' }}
+              priority
+            />
+          </div>
+          {/* Dark overlay */}
+          <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(135deg, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.6) 50%, rgba(10,10,10,0.3) 100%)' }} />
 
-                <ScrollReveal delay={0.1}>
-                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
-                    How Solar Installers
-                    <br />
-                    <span className="text-[#F3D840]">Stop Losing Leads</span>
-                  </h1>
-                </ScrollReveal>
+          {/* Content */}
+          <div style={{ position: 'relative', zIndex: 2, maxWidth: 896, width: '100%', padding: '0 16px', textAlign: 'center' }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', marginBottom: 32, padding: '6px 16px', fontSize: 13, fontWeight: 600, letterSpacing: '0.03em' }}
+            >
+              <motion.span
+                style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840', boxShadow: '0 0 8px rgba(243,216,64,0.6)' }}
+                animate={{ scale: [1, 1.3, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              <span style={{ color: 'rgba(255,255,255,0.85)' }}>
+                Blog
+              </span>
+            </motion.div>
 
-                <ScrollReveal delay={0.2}>
-                  <p className="text-white/60 text-lg sm:text-xl max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                    Practical guides on AI operations, grants, permitting, logistics,
-                    and customer support. Written for solar companies doing twenty
-                    plus jobs a month.
-                  </p>
-                </ScrollReveal>
-              </div>
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, color: '#fff', lineHeight: 1.08, letterSpacing: '-0.02em', marginBottom: 24 }}
+            >
+              How Solar Installers
+              <br />
+              <span style={{ color: '#F3D840' }}>Stop Losing Leads</span>
+            </motion.h1>
 
-              {/* Robot image side */}
-              <ScrollReveal delay={0.15} className="flex-shrink-0">
-                <div className="relative">
-                  <div className="absolute -inset-4 bg-[#F3D840]/10 rounded-3xl blur-2xl" />
-                  <img
-                    src="/robot-2.jpg"
-                    alt="AI-powered blog for solar installers"
-                    className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 object-cover rounded-3xl shadow-2xl"
-                  />
-                </div>
-              </ScrollReveal>
-            </div>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+              style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(1.1rem, 2vw, 1.35rem)', lineHeight: 1.6, maxWidth: 640, margin: '0 auto' }}
+            >
+              Practical guides on AI operations, grants, permitting, logistics,
+              and customer support. Written for solar companies doing twenty
+              plus jobs a month.
+            </motion.p>
           </div>
 
-          {/* Subtle gradient */}
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+          {/* White fade at bottom */}
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 120, background: 'linear-gradient(to top, #fff, transparent)', zIndex: 3, pointerEvents: 'none' }} />
         </section>
 
         {/* ── Blog Posts ── */}
