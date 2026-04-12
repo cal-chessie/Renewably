@@ -77,10 +77,10 @@ function getOrderStatusStyle(status: OrderStatus): React.CSSProperties {
 
 function getOrderStatusLabel(status: OrderStatus): string {
   const map: Record<OrderStatus, string> = {
-    ordered: "\ud83d\udccb ORDERED",
-    dispatched: "\ud83d\ude9a DISPATCHED",
-    delivered: "\u2705 DELIVERED",
-    delayed: "\u26a0\ufe0f DELAYED",
+    ordered: "ORDERED",
+    dispatched: "DISPATCHED",
+    delivered: "DELIVERED",
+    delayed: "DELAYED",
   };
   return map[status];
 }
@@ -92,9 +92,9 @@ function getStockColor(stock: number, reorderPoint: number): string {
 }
 
 function getStockLabel(stock: number, reorderPoint: number): string {
-  if (stock > reorderPoint * 2) return "\u2713 HIGH";
-  if (stock > reorderPoint) return "\u26a0\ufe0f MEDIUM";
-  return "\ud83d\udd34 LOW";
+  if (stock > reorderPoint * 2) return "HIGH";
+  if (stock > reorderPoint) return "MEDIUM";
+  return "LOW";
 }
 
 function fmtTime() {
@@ -238,7 +238,7 @@ export default function LogisticsDashboard() {
         {/* Taskbar */}
         <div style={S.taskbar}>
           <div style={S.taskbarIcons}>
-            {["\ud83d\ude9a", "\u26a1", "\ud83d\udcc4", "\ud83e\udd16"].map((icon) => (
+            {["\u26a1"].map((icon) => (
               <div key={icon} style={S.taskbarIcon}>{icon}</div>
             ))}
           </div>
@@ -269,17 +269,17 @@ export default function LogisticsDashboard() {
                         {getOrderStatusLabel(order.status)}
                       </span>
                     </div>
-                    <div style={S.orderCustomer}>\ud83d\udc64 {order.customer} &middot; {order.county}</div>
+                    <div style={S.orderCustomer}>{order.customer} &middot; {order.county}</div>
                     <div style={S.orderItems}>{order.items}</div>
-                    <div style={S.orderDate}>\ud83d\udcc5 Ordered: {order.ordered}</div>
+                    <div style={S.orderDate}>Ordered: {order.ordered}</div>
                     {order.status !== "delivered" && (
                       <div style={S.progressBar}><div style={{ ...S.progressFill, width: `${order.progress}%` }} /></div>
                     )}
                     {order.eta && (
-                      <div style={{ ...S.orderDate, color: "#F2CC2E" }}>\ud83d\ude9a ETA: {order.eta}</div>
+                      <div style={{ ...S.orderDate, color: "#F2CC2E" }}>ETA: {order.eta}</div>
                     )}
                     {order.delivered && (
-                      <div style={{ ...S.orderDate, color: "#22C55E" }}>\u2705 Delivered: {order.delivered}</div>
+                      <div style={{ ...S.orderDate, color: "#22C55E" }}>Delivered: {order.delivered}</div>
                     )}
                   </div>
                 ))}
@@ -318,8 +318,8 @@ export default function LogisticsDashboard() {
 
         {/* Footer */}
         <div style={S.logisticsFooter}>
-          <span>\ud83d\ude9a AI-powered logistics &middot; Automated ordering &middot; Real-time tracking</span>
-          <span>\ud83d\udd04 Auto-refresh every 4 seconds</span>
+          <span>AI-powered logistics &middot; Automated ordering &middot; Real-time tracking</span>
+          <span>Auto-refresh every 4 seconds</span>
         </div>
       </div>
 

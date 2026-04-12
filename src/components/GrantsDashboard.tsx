@@ -77,11 +77,11 @@ function getGrantStatusStyle(status: AppStatus): React.CSSProperties {
 
 function getGrantStatusLabel(status: AppStatus): string {
   const map: Record<AppStatus, string> = {
-    submitted: "\ud83d\udce5 SUBMITTED",
-    "under-review": "\ud83d\udd04 UNDER REVIEW",
-    approved: "\u2705 APPROVED",
-    rejected: "\u274c REJECTED",
-    resubmitted: "\ud83d\udcce RESUBMITTED",
+    submitted: "SUBMITTED",
+    "under-review": "UNDER REVIEW",
+    approved: "APPROVED",
+    rejected: "REJECTED",
+    resubmitted: "RESUBMITTED",
   };
   return map[status];
 }
@@ -93,9 +93,9 @@ function getDocStatusColor(status: DocStatus): string {
 }
 
 function getDocStatusLabel(status: DocStatus): string {
-  if (status === "verified") return "\u2705 VERIFIED";
-  if (status === "pending") return "\u23f3 PENDING";
-  return "\u274c MISSING";
+  if (status === "verified") return "VERIFIED";
+  if (status === "pending") return "PENDING";
+  return "MISSING";
 }
 
 function fmtTime() {
@@ -237,7 +237,7 @@ export default function GrantsDashboard() {
         {/* Taskbar */}
         <div style={S.taskbar}>
           <div style={S.taskbarIcons}>
-            {["\ud83d\udcb0", "\u26a1", "\ud83d\udcc4", "\ud83e\udd16"].map((icon) => (
+            {["\u26a1"].map((icon) => (
               <div key={icon} style={S.taskbarIcon}>{icon}</div>
             ))}
           </div>
@@ -268,14 +268,14 @@ export default function GrantsDashboard() {
                         {getGrantStatusLabel(app.status)}
                       </span>
                     </div>
-                    <div style={S.grantCustomer}>\ud83d\udc64 {app.customer} &middot; {app.county}</div>
-                    <div style={S.grantAmount}>\ud83d\udcb0 {app.scheme} &middot; \u20ac{app.amount.toLocaleString('en-IE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                    <div style={S.grantDate}>\ud83d\udcc5 Submitted: {app.submitted}</div>
+                    <div style={S.grantCustomer}>{app.customer} &middot; {app.county}</div>
+                    <div style={S.grantAmount}>{app.scheme} &middot; \u20ac{app.amount.toLocaleString('en-IE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                    <div style={S.grantDate}>Submitted: {app.submitted}</div>
                     {app.status !== "approved" && app.status !== "rejected" && (
                       <div style={S.progressBar}><div style={{ ...S.progressFill, width: `${app.progress}%` }} /></div>
                     )}
                     {app.approved && (
-                      <div style={{ ...S.grantDate, color: "#22C55E" }}>\u2705 Approved: {app.approved}</div>
+                      <div style={{ ...S.grantDate, color: "#22C55E" }}>Approved: {app.approved}</div>
                     )}
                   </div>
                 ))}
@@ -314,8 +314,8 @@ export default function GrantsDashboard() {
 
         {/* Footer */}
         <div style={S.grantsFooter}>
-          <span>\ud83d\udcb0 AI-powered grant management &middot; SEAI &middot; Auto-submit &middot; 92% approval rate</span>
-          <span>\ud83d\udd04 Auto-refresh every 4 seconds</span>
+          <span>AI-powered grant management &middot; SEAI &middot; Auto-submit &middot; 92% approval rate</span>
+          <span>Auto-refresh every 4 seconds</span>
         </div>
       </div>
 
