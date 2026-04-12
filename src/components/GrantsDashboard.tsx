@@ -255,7 +255,7 @@ export default function GrantsDashboard() {
             <div style={S.statCard}><div style={S.statNumber}>{stats.activeApps}</div><div style={S.statLabel}>ACTIVE APPLICATIONS</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.approvedToday}</div><div style={S.statLabel}>APPROVED TODAY</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.avgProcessing.toFixed(2)}</div><div style={S.statLabel}>AVG PROCESSING (days)</div></div>
-            <div style={S.statCard}><div style={S.statNumber}>{stats.totalGrantValue.toFixed(2)}</div><div style={S.statLabel}>TOTAL GRANT VALUE (\u20ack)</div></div>
+            <div style={S.statCard}><div style={S.statNumber}>{stats.totalGrantValue.toFixed(2)}</div><div style={S.statLabel}>TOTAL GRANT VALUE (\u20ac K)</div></div>
           </div>
 
           {/* Two Column: Applications + Documents */}
