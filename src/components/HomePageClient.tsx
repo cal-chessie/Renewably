@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -423,141 +423,55 @@ function AgentsSection() {
 }
 
 /* ============================================================
-   SECTION 6: VIDEO TOUR SECTION — Dark Background
-   ============================================================ */
-function VideoTourSection() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-
-  const togglePlay = () => {
-    if (!videoRef.current) return;
-    if (videoRef.current.paused) {
-      videoRef.current.play();
-      setIsPlaying(true);
-    } else {
-      videoRef.current.pause();
-      setIsPlaying(false);
-    }
-  };
-
-  return (
-    <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28 overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ScrollReveal>
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-6">
-              <span className="text-[#F3D840] text-xs sm:text-sm font-semibold tracking-wide">Platform Tour</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4">See It In Action</h2>
-            <p className="text-white/60 text-lg leading-relaxed">
-              Watch how the AI agents work across your entire solar operations &mdash; from first customer inquiry to completed installation.
-            </p>
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal delay={0.2}>
-          <div
-            className="relative rounded-2xl overflow-hidden border border-white/10 cursor-pointer group"
-            style={{ boxShadow: "0 0 40px rgba(243,216,64,0.08)" }}
-            onClick={togglePlay}
-          >
-            <video
-              ref={videoRef}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full aspect-video object-cover"
-            >
-              <source src="https://paperclip.ing/videos/full-tour.webm" type="video/webm" />
-            </video>
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <motion.div
-                animate={{ opacity: isPlaying ? 0 : 1, scale: isPlaying ? 0.8 : 1 }}
-                transition={{ duration: 0.3 }}
-                className="w-20 h-20 rounded-full bg-[#F3D840] flex items-center justify-center shadow-2xl"
-              >
-                <svg className="w-8 h-8 text-[#1A1A1A] ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-              </motion.div>
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0A0A0A] to-transparent pointer-events-none" />
-            <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md rounded-full px-3 py-1.5 border border-white/10">
-              <span className="text-white/80 text-xs font-medium">Full Platform Tour</span>
-            </div>
-          </div>
-        </ScrollReveal>
-      </div>
-    </section>
-  );
-}
-
-/* ============================================================
    SECTION 8: PRICING SECTION — Off-White Background
    ============================================================ */
 function PricingSection() {
-  const pricingItems = [
-    { name: "CEO agent", price: "~\u20AC60/month" },
-    { name: "Ops agent", price: "~\u20AC50/month" },
-    { name: "Support agent", price: "~\u20AC40/month" },
-    { name: "Grants agent", price: "~\u20AC40/month" },
-    { name: "Logistics agent", price: "~\u20AC40/month" },
-    { name: "Permitting agent", price: "~\u20AC40/month" },
-    { name: "QA agent", price: "~\u20AC35/month" },
-    { name: "Reporting agent", price: "~\u20AC30/month" },
-  ];
-
   return (
     <section className="bg-[#FFFDF5] py-20 md:py-28 overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-10">
             <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
               What it costs.
             </span>
           </div>
         </ScrollReveal>
 
-        {/* Intro */}
         <ScrollReveal delay={0.1}>
-          <p className="text-[#535353] text-base sm:text-lg leading-relaxed mb-12 max-w-2xl">
-            Less than one junior admin. Less than the time you spend on grants yourself. Less than the customers you lose because nobody called back.
+          <p className="text-[#1A1A1A] text-2xl sm:text-3xl font-extrabold mb-8">
+            Less than a junior admin.
           </p>
         </ScrollReveal>
 
-        {/* Pricing list */}
-        <div className="space-y-3 mb-10">
-          {pricingItems.map((item, i) => (
-            <ScrollReveal key={item.name} delay={0.15 + i * 0.08}>
-              <div className="flex items-center justify-between p-5 rounded-xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 transition-all duration-300 group">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#F3D840] group-hover:scale-125 transition-transform" />
-                  <span className="text-[#1A1A1A] font-semibold text-base sm:text-lg">{item.name}</span>
-                </div>
-                <span className="text-[#374151] font-bold text-base sm:text-lg">{item.price}</span>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
+        <ScrollReveal delay={0.2}>
+          <p className="text-[#535353] text-lg sm:text-xl leading-relaxed mb-6 max-w-2xl mx-auto">
+            Most solar installers pay &euro;1,000&ndash;&euro;1,500 per month plus a one-time setup fee.
+          </p>
+        </ScrollReveal>
 
-        {/* Total callout */}
-        <ScrollReveal delay={0.6}>
-          <motion.div
-            whileInView={{ scale: [0.97, 1] }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="bg-[#F3D840] rounded-2xl px-8 py-8 sm:px-12 sm:py-10 text-center mb-6"
+        <ScrollReveal delay={0.3}>
+          <p className="text-[#535353] text-lg sm:text-xl leading-relaxed mb-6 max-w-2xl mx-auto">
+            You bring your own AI keys. You pay the models directly. No markup from us.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.4}>
+          <p className="text-[#1A1A1A] text-lg sm:text-xl font-semibold mb-10">
+            We&apos;ll give you an exact quote after a 30 minute call.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.5}>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
           >
-            <p className="text-[#1A1A1A] text-3xl sm:text-4xl lg:text-5xl font-extrabold">
-              Total workforce: ~&#8364;335/month
-            </p>
-          </motion.div>
-        </ScrollReveal>
-
-        <ScrollReveal delay={0.7}>
-          <p className="text-center text-[#535353] text-base sm:text-lg">
-            That&apos;s less than one day of a contractor. For a full team.
-          </p>
+            Book a Call
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
         </ScrollReveal>
       </div>
     </section>
@@ -750,8 +664,8 @@ function HowItStartsSection() {
               Let&apos;s talk.
             </h2>
             <p className="text-[#374151] text-base sm:text-lg mb-8">
-              <a href="mailto:hello@renewably.ie" className="underline hover:text-[#1A1A1A] transition-colors">
-                hello@renewably.ie
+              <a href="mailto:hello@renewably.com" className="underline hover:text-[#1A1A1A] transition-colors">
+                hello@renewably.com
               </a>
             </p>
             <MagneticButton href="/contact">
@@ -778,7 +692,6 @@ export default function HomePageClient() {
       <SolutionSection />
       <FeaturesSection />
       <AgentsSection />
-      <VideoTourSection />
       <PricingSection />
       <BeforeAfterSection />
       <AudienceSection />
