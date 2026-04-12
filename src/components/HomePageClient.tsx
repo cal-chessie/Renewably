@@ -14,30 +14,19 @@ import ScrollReveal from "@/components/ScrollReveal";
 function HeroSection() {
   return (
     <section data-theme="dark" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Dark solid background */}
-      <div className="absolute inset-0 z-0" style={{ backgroundColor: '#0A0A0A' }} />
-
-      {/* Subtle radial glow behind robot */}
-      <div className="absolute inset-0 z-[1]" style={{ background: 'radial-gradient(ellipse 60% 50% at 65% 50%, rgba(243,216,64,0.06) 0%, transparent 70%)' }} />
-
-      {/* Robot image - positioned right side, above overlays */}
-      <div className="absolute inset-0 z-[2] hidden lg:flex items-center justify-end pointer-events-none" style={{ paddingRight: '8%' }}>
-        <motion.div
-          initial={{ opacity: 0, x: 60 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.8, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <Image
-            src="/robot-2-nobg.png"
-            alt="Renewably AI workforce"
-            width={480}
-            height={580}
-            className="object-contain"
-            priority
-            style={{ filter: 'drop-shadow(0 0 60px rgba(243,216,64,0.15))' }}
-          />
-        </motion.div>
+      {/* Full-screen background image */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/robot-hero.jpg"
+          alt=""
+          fill
+          className="object-cover"
+          priority
+        />
       </div>
+
+      {/* Dark gradient overlay */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-br from-[#0A0A0A]/80 via-[#0A0A0A]/50 to-[#0A0A0A]/30" />
 
       {/* Subtle dot grid on dark */}
       <div
@@ -67,9 +56,8 @@ function HeroSection() {
       {/* Yellow fade at very bottom */}
       <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#F3D840] to-transparent z-[3] pointer-events-none" />
 
-      {/* Hero content — left-aligned on desktop, centered on mobile */}
-      <div className="relative z-[4] max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center lg:text-left" style={{ maxWidth: '100%' }}>
-        <div className="max-w-2xl lg:ml-[8%]">
+      {/* Hero content */}
+      <div className="relative z-[4] max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Brand badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -120,7 +108,6 @@ function HeroSection() {
             </svg>
           </MagneticButton>
         </motion.div>
-        </div>
       </div>
     </section>
   );
