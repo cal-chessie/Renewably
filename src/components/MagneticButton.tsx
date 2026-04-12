@@ -52,7 +52,7 @@ export default function MagneticButton({
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={handleMouseLeave}
-        className={`inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-[#F3D840] to-[#E5C832] hover:from-[#E5C832] hover:to-[#D4BA28] text-[#1A1A1A] font-bold rounded-full transition-all duration-300 ${isHovered ? "shadow-xl shadow-[#F3D840]/25 scale-105" : "shadow-lg shadow-[#F3D840]/15"} ${className}`}
+        className={`inline-flex items-center justify-center gap-2.5 px-10 py-[18px] text-[17px] bg-gradient-to-r from-[#F3D840] to-[#E5C832] hover:from-[#E5C832] hover:to-[#D4BA28] text-[#1A1A1A] font-bold rounded-full transition-all duration-300 ${isHovered ? "shadow-xl shadow-[#F3D840]/25 scale-105" : "shadow-lg shadow-[#F3D840]/15"} ${className}`}
       >
         {children}
       </Component>

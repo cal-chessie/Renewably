@@ -540,7 +540,7 @@ function PricingSection() {
         <ScrollReveal delay={0.5}>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
+            className="inline-flex items-center gap-2.5 px-10 py-[18px] text-[17px] bg-[#1A1A1A] hover:bg-[#374151] text-white font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
           >
             Book a Call
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
