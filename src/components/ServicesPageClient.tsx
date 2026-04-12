@@ -410,7 +410,7 @@ function HowItStartsSection() {
    ============================================================ */
 export default function ServicesPageClient() {
   return (
-    <main className="pt-20">
+    <main>
         {/* ===== HERO — Full-Width Robot Banner ===== */}
         <section data-theme="dark" className="relative overflow-hidden">
           {/* Robot image background */}

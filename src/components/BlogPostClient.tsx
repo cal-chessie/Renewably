@@ -110,7 +110,7 @@ export default function BlogPostClient() {
 
   if (!post) {
     return (
-      <main className="pt-20">
+      <main>
           <section className="py-32 text-center bg-white">
             <h1 className="text-4xl font-extrabold text-[#1A1A1A] mb-4">
               Post Not Found
@@ -132,7 +132,7 @@ export default function BlogPostClient() {
     .slice(0, 3);
 
   return (
-    <main className="pt-20">
+    <main>
         {/* ── Article Header (dark) ── */}
         <article>
           <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28">

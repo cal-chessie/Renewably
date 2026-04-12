@@ -44,7 +44,7 @@ const values = [
 
 export default function AboutPageClient() {
   return (
-    <main className="pt-20">
+    <main>
         {/* Hero — Dark */}
         <section data-theme="dark" className="relative overflow-hidden bg-[#0A0A0A]">
           <div

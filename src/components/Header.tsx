@@ -118,11 +118,11 @@ export default function Header() {
       >
         {/* Animated background layer (motion values, zero re-renders) */}
         <motion.div
-          className="absolute inset-0 header-bg"
+          className="absolute inset-0"
           style={{
-            backgroundColor: "rgba(255,255,255,var(--header-bg,0))",
-            backdropFilter: "blur(var(--header-blur,0px))",
-            WebkitBackdropFilter: "blur(var(--header-blur,0px))",
+            backgroundColor: "rgba(255,255,255,1)",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
             opacity: bgOpacity,
           }}
         />

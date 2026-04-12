@@ -6,7 +6,7 @@ import { posts } from "@/lib/blog-data";
 
 export default function BlogPageClient() {
   return (
-    <main className="pt-20">
+    <main>
         {/* ── Hero (dark) ── */}
         <section data-theme="dark" className="relative overflow-hidden bg-[#0A0A0A] py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

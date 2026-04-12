@@ -77,7 +77,7 @@ export default function ContactPageClient() {
   const labelClasses = "block text-sm font-semibold text-[#374151] mb-2";
 
   return (
-    <main className="pt-20">
+    <main>
         {/* ===== HERO — Dark with photo + copy ===== */}
         <section data-theme="dark" className="relative overflow-hidden bg-[#0A0A0A]">
           {/* Subtle dot grid */}
