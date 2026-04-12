@@ -38,35 +38,35 @@ export default function Header() {
       <header className="fixed top-0 left-0 right-0 z-[100] h-16 md:h-[72px]">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex items-center justify-between h-full">
-            <Link href="/" className="flex items-center gap-3 group">
+            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
               <Image
                 src="/logo-transparent.png"
                 alt="Renewably"
-                width={52}
-                height={52}
+                width={44}
+                height={44}
                 className="transition-transform duration-300 group-hover:scale-110 brightness-0 invert"
                 priority
               />
-              <span className="text-[22px] font-extrabold tracking-tight text-white hidden sm:inline">
+              <span className="text-[20px] font-extrabold tracking-tight text-white hidden sm:inline">
                 Renewably
               </span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-0.5">
+            <nav className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => {
                 const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`relative px-3.5 py-2 text-[13px] font-medium rounded-lg group transition-colors duration-200 ${
+                    className={`relative px-4 py-2 text-[13.5px] font-medium rounded-lg group transition-colors duration-200 ${
                       isActive ? "text-[#F3D840]" : "text-white/80 hover:text-white"
                     }`}
                   >
                     {link.label}
-                    <span className="absolute bottom-1 left-3.5 right-3.5 h-[1.5px] rounded-full bg-[#F3D840] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" />
+                    <span className="absolute bottom-1 left-4 right-4 h-[1.5px] rounded-full bg-[#F3D840] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" />
                     {isActive && (
-                      <span className="absolute bottom-1 left-3.5 right-3.5 h-[1.5px] rounded-full bg-[#F3D840]" />
+                      <span className="absolute bottom-1 left-4 right-4 h-[1.5px] rounded-full bg-[#F3D840]" />
                     )}
                   </Link>
                 );
@@ -76,7 +76,7 @@ export default function Header() {
             <div className="flex items-center gap-2">
               <Link
                 href="/contact"
-                className="hidden md:inline-flex items-center gap-2 px-5 py-2 text-[13px] font-bold rounded-full bg-[#F3D840] text-[#1A1A1A] hover:bg-[#E5C832] transition-all duration-200 hover:shadow-lg hover:shadow-[#F3D840]/30 active:scale-[0.97]"
+                className="hidden md:inline-flex items-center gap-2 px-6 py-2.5 text-[14px] font-bold rounded-full bg-[#F3D840] text-[#1A1A1A] hover:bg-[#E5C832] transition-all duration-200 hover:shadow-lg hover:shadow-[#F3D840]/30 active:scale-[0.97] shrink-0"
               >
                 Book a Call
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
