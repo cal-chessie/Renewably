@@ -82,3 +82,27 @@ Stage Summary:
 - New /workforce page created with all 8 agents, scenario flow, investment section, and CTA
 - All navigation updated: Header, Footer, Sitemap all point to /workforce
 - Old /services page files still exist but are no longer linked anywhere
+
+---
+Task ID: 5
+Agent: Main Agent
+Task: Add floating chat widget with robot avatar (AI Chat + WhatsApp)
+
+Work Log:
+- Evaluated all 5 robot images via VLM for chat widget avatar suitability — robot-2 (waving, 9/10) selected
+- Generated background-free chat robot avatar: /public/chat-robot.png (1024x1024)
+- Built ChatWidget.tsx component with:
+  - Floating yellow button (bottom-right, z-150) with pulsing ring animation
+  - Robot avatar on the button with hover scale effect
+  - Spring-animated panel on open with dark header ("Renewably AI" + green online indicator)
+  - Two action buttons: "Chat with AI" (links to /contact) and "WhatsApp" (links to wa.me/353873958424)
+  - Each button has coloured accent (yellow for AI, green for WhatsApp) with hover/tap animations
+  - "Typically replies within minutes" footer note
+- Added ChatWidget to SiteShell.tsx so it appears globally on every page
+- Lint: zero errors
+
+Stage Summary:
+- Chat widget live on all pages at bottom-right
+- Floating robot button with pulsing yellow ring animation
+- Panel opens with spring animation showing AI Chat and WhatsApp options
+- WhatsApp pre-fills message: "Hi Renewably, I'd like to learn more about your AI workforce."
