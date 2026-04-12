@@ -422,6 +422,10 @@ function AgentsSection() {
       title: "Reporting agent",
       desc: "Shows you exactly what's happening. Weekly summaries. Bottlenecks identified.",
     },
+    {
+      title: "Marketing agent",
+      desc: "Runs campaigns. Generates leads. Writes copy. Manages socials. Fills your pipeline while you sleep.",
+    },
   ];
 
   return (
@@ -441,7 +445,7 @@ function AgentsSection() {
         {/* Agent cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-16">
           {agents.map((agent, i) => (
-            <ScrollReveal key={agent.title} delay={i * 0.1}>
+            <ScrollReveal key={agent.title} delay={i * 0.08}>
               <motion.div
                 whileHover={{ y: -4, boxShadow: "0 12px 30px rgba(243,216,64,0.1)" }}
                 className="p-6 lg:p-8 rounded-2xl bg-white border-2 border-[#F3D840]/30 hover:border-[#F3D840]/60 transition-all duration-300 cursor-pointer group h-full"
@@ -458,6 +462,23 @@ function AgentsSection() {
               </motion.div>
             </ScrollReveal>
           ))}
+
+          {/* Much more card */}
+          <ScrollReveal delay={0.72}>
+            <Link href="/workforce">
+              <motion.div
+                whileHover={{ y: -4, boxShadow: "0 12px 30px rgba(243,216,64,0.15)" }}
+                className="p-6 lg:p-8 rounded-2xl bg-[#0A0A0A] border-2 border-[#F3D840]/40 hover:border-[#F3D840] transition-all duration-300 cursor-pointer group h-full flex flex-col items-center justify-center text-center min-h-[120px]"
+              >
+                <span className="text-[#F3D840] text-2xl font-extrabold mb-2 group-hover:scale-110 transition-transform duration-300">
+                  + Much More
+                </span>
+                <span className="text-white/50 text-sm">
+                  See the full workforce
+                </span>
+              </motion.div>
+            </Link>
+          </ScrollReveal>
         </div>
 
         {/* Callout + closing */}
