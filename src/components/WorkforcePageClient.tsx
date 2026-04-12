@@ -12,6 +12,7 @@ import GrantsDashboard from "@/components/GrantsDashboard";
 import LogisticsDashboard from "@/components/LogisticsDashboard";
 import PermittingDashboard from "@/components/PermittingDashboard";
 import QADashboard from "@/components/QADashboard";
+import ReportingDashboard from "@/components/ReportingDashboard";
 
 /* ============================================================
    DATA — 8 AI Agents
@@ -72,7 +73,6 @@ const agents = [
     tagline: "Shows you exactly what's happening. Weekly summaries. Bottlenecks identified.",
     body: "The reporting agent is your dashboard. It tracks every metric that matters. Jobs in progress. Jobs completed. Revenue forecast. Bottlenecks identified. Agent performance. Cost tracking.",
     closing: "Every week, you get a summary. No guesswork. No spreadsheets. Just the truth about your business.",
-    image: "/agents/agent-reporting.jpg",
   },
 ];
 
@@ -153,6 +153,13 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           ) : agent.num === "07" ? (
             <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
               <QADashboard />
+              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
+                {agent.num}
+              </div>
+            </div>
+          ) : agent.num === "08" ? (
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+              <ReportingDashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
