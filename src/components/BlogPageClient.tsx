@@ -14,7 +14,7 @@ export default function BlogPageClient() {
           {/* Robot hero background */}
           <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
             <Image
-              src="/robot-hero.jpg"
+              src="/robot-2.jpg"
               alt=""
               fill
               style={{ objectFit: 'cover' }}
