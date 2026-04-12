@@ -42,3 +42,24 @@ Stage Summary:
 - Created: `src/components/ReportingDashboard.tsx`
 - Modified: `src/components/WorkforcePageClient.tsx` (import + agent "08" condition)
 - All 8 agents now have interactive dashboard mockups (01-08)
+---
+Task ID: 1
+Agent: Main Agent
+Task: Build world-class AI chat widget for renewably.ie
+
+Work Log:
+- Explored entire codebase structure: layout, components, pages, API routes
+- Read existing ChatWidget.tsx (was just a contact router, not real chat)
+- Generated robot-at-computer avatar image at /public/bot-avatar.png
+- Created /src/app/api/chat/route.ts - AI chat backend using z-ai-web-dev-sdk with comprehensive Renewably-specific system prompt
+- Completely rewrote /src/components/ChatWidget.tsx with full AI chat capabilities
+- Fixed parsing error (backtick instead of double quote on template literal)
+- Verified no surrogate pair emojis or unicode escapes
+- ESLint passes cleanly
+
+Stage Summary:
+- Chat widget is now a fully functional AI chat interface (not just a contact router)
+- Features: real-time AI responses via z-ai-web-dev-sdk, typing indicator, smart quick-reply suggestions, context-aware (knows current page), auto-scroll, auto-resize textarea, animated floating button with unread badge, Renewably logo in header, robot-at-computer avatar for bot messages, dark user message bubbles, responsive design
+- Bot avatar: /public/bot-avatar.png (robot sitting at computer)
+- API endpoint: POST /api/chat
+- ChatWidget.tsx already imported in SiteShell.tsx - renders on all pages automatically
