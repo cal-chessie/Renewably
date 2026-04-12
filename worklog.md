@@ -63,3 +63,23 @@ Stage Summary:
 - Bot avatar: /public/bot-avatar.png (robot sitting at computer)
 - API endpoint: POST /api/chat
 - ChatWidget.tsx already imported in SiteShell.tsx - renders on all pages automatically
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Replace chat widget robot avatar with the yellow 3D robot (robot-3.jpg), remove black background
+
+Work Log:
+- Analyzed user's screenshot with VLM to identify the robot as robot-3.jpg (3D yellow robot on black background)
+- Used Python/Pillow to remove black background from robot-3.jpg, creating robot-3-nobg.png with transparency
+- Cropped the image to remove excess empty space around the robot (788x768 final size)
+- Updated all 3 references in ChatWidget.tsx from bot-avatar.png to robot-3-nobg.png:
+  1. TypingIndicator component avatar (line 72)
+  2. Floating button icon (line 408)
+  3. Bot message avatar (line 609)
+- ESLint passes cleanly
+
+Stage Summary:
+- Chat widget now uses the yellow 3D robot (robot-3) with transparent background
+- Robot appears as the floating chat button icon, typing indicator avatar, and bot message avatar
+- The Renewably logo remains in the chat panel header
