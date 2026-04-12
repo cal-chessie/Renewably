@@ -739,41 +739,41 @@ function HowItStartsSection() {
           </p>
         </ScrollReveal>
 
-        {/* CTA */}
-        <ScrollReveal delay={0.7}>
-          <div style={{ textAlign: 'center', paddingTop: 64 }}>
-            <h2 style={{ color: '#1A1A1A', fontSize: 48, fontWeight: 800, lineHeight: 1.1, marginBottom: 24 }}>
-              Ready to meet your new team?
-            </h2>
-            <p style={{ color: '#374151', fontSize: 18, marginBottom: 40 }}>
-              <a href="mailto:hello@renewably.com" style={{ textDecoration: 'underline' }}>
-                hello@renewably.com
-              </a>
-            </p>
+        {/* CTA — no ScrollReveal, guaranteed visible */}
+        <div style={{ textAlign: 'center', paddingTop: 80 }}>
+          <h2 style={{ color: '#1A1A1A', fontSize: 48, fontWeight: 800, lineHeight: 1.1, marginBottom: 24, textAlign: 'center' }}>
+            Ready to meet your new team?
+          </h2>
+          <p style={{ color: '#374151', fontSize: 18, marginBottom: 40, textAlign: 'center' }}>
+            <a href="mailto:hello@renewably.com" style={{ textDecoration: 'underline', color: '#374151' }}>
+              hello@renewably.com
+            </a>
+          </p>
+          <div style={{ display: 'block', textAlign: 'center', marginTop: 16 }}>
             <a
               href="/contact"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 12,
-                padding: '16px 40px',
-                fontSize: 17,
+                gap: 10,
+                padding: '18px 44px',
+                fontSize: 18,
                 fontWeight: 700,
                 letterSpacing: '0.02em',
                 color: '#F3D840',
-                backgroundColor: '#1A1A1A',
+                backgroundColor: '#0A0A0A',
                 borderRadius: 9999,
                 textDecoration: 'none',
+                border: 'none',
+                lineHeight: 1,
               }}
             >
               Let&apos;s Talk
-              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
+              <span style={{ display: 'inline-block', marginLeft: 4 }}>&#8594;</span>
             </a>
           </div>
-        </ScrollReveal>
+        </div>
       </div>
     </section>
   );
