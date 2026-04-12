@@ -327,3 +327,45 @@ Stage Summary:
 - Modified: src/components/ContactPageClient.tsx (real form submission + error handling)
 - Contact form now fully functional: validates input, saves to DB, sends notification emails, sends auto-reply, shows success/error states
 - Build status: Clean (lint passes)
+
+---
+Task ID: contact-rebuild
+Agent: Main Agent
+Task: Rebuild Contact page to be "best in the world"
+
+Work Log:
+- Read existing ContactPageClient.tsx (503 lines) — decent but basic
+- Read supporting components: MagneticButton, ScrollReveal, contact API route
+- Completely rewrote ContactPageClient.tsx from scratch (~700 lines)
+- Updated contact/page.tsx with stronger metadata and OpenGraph tags
+- Fixed React lint error (setState in effect → moved logic into toggle handler)
+
+New sections added:
+1. Hero Section — Parallax scrolling, animated yellow glow orb, founder photo with badge, quick stats (< 24h response, 60 min call, 5-7 days to go live)
+2. Pain Points Section — 6 interactive toggleable cards ("Sound familiar? Tick the ones that keep you up at night"), pre-fills message field when selected, contextual "Call Now" banner appears
+3. Form Section — Progress indicator bar (Name/Email/Company/Message), yellow focus borders with glow, phone field added, character count on message, privacy policy link
+4. Sticky Sidebar — Interactive contact channel cards with hover states, "What happens next" dark card, yellow "Call Now" CTA card, social proof testimonial mini-card
+5. Timeline Section — "Five steps. That's it." vertical timeline with spring-animated numbered circles, connecting line
+6. FAQ Accordion — 6 real FAQs with animated expand/collapse, "Still have questions?" with email + call CTAs
+7. Final Yellow CTA — "Your AI team is ready. Are you?" with dark button + call button
+
+Features:
+- Parallax hero with useScroll/useTransform
+- Animated floating yellow glow orb (20s loop)
+- Pain point selection auto-fills message textarea
+- Form progress indicator
+- Interactive contact cards with hover effects
+- Spring-animated timeline circles
+- Animated FAQ accordion
+- Social proof sidebar
+- All inline styles (Tailwind v4 HMR pattern)
+- No surrogate pair emojis
+- Literal € character throughout
+- British/Irish English
+- Fully responsive
+
+Stage Summary:
+- Rewritten: src/components/ContactPageClient.tsx (complete rebuild, ~700 lines)
+- Updated: src/app/contact/page.tsx (stronger metadata + OG tags)
+- ESLint: Clean
+- Build: Clean
