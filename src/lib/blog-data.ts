@@ -444,7 +444,7 @@ Try it for one week. Count how many messages the agent handles. Count how many l
     category: "Permitting",
     readTime: "9 min read",
     excerpt:
-      "ESB Networks applications are the single biggest bottleneck in solar installation. Application submitted. No response for two weeks. You follow up. Nothing. You call. Hold music. The customer asks where their install is. You don't know. Here's how AI agents are turning eight-week permit nightmares into ten-day approvals.",
+      "ESB Networks applications are the single biggest bottleneck in solar installation. Application submitted. No response for two weeks. You follow up. Nothing. You call. Hold music. The customer asks where their install is. You don't know. Here's how AI agents are turning six-week permit nightmares into ten-day approvals.",
     nextSlug: "ai-crew-equipment-logistics-solar",
     content: `ESB Networks applications are the single biggest bottleneck in solar installation.
 
