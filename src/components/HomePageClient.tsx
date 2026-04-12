@@ -13,7 +13,7 @@ import ScrollReveal from "@/components/ScrollReveal";
    ============================================================ */
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section data-theme="dark" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Full-screen background image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -130,7 +130,7 @@ function ProblemSection() {
   const calloutInView = useInView(calloutRef, { once: true, margin: "-80px" });
 
   return (
-    <section className="bg-[#0A0A0A] py-20 md:py-28 overflow-hidden">
+    <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28 overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
         <ScrollReveal>
@@ -441,7 +441,7 @@ function VideoTourSection() {
   };
 
   return (
-    <section className="bg-[#0A0A0A] py-20 md:py-28 overflow-hidden">
+    <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <div className="text-center max-w-3xl mx-auto mb-12">
@@ -643,7 +643,7 @@ function BeforeAfterSection() {
    ============================================================ */
 function AudienceSection() {
   return (
-    <section className="bg-[#0A0A0A] py-20 md:py-28 overflow-hidden">
+    <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28 overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Badge */}
         <ScrollReveal>

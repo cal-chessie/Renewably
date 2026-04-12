@@ -1,7 +1,5 @@
 "use client";
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -112,9 +110,7 @@ export default function BlogPostClient() {
 
   if (!post) {
     return (
-      <>
-        <Header />
-        <main className="pt-20">
+      <main className="pt-20">
           <section className="py-32 text-center bg-white">
             <h1 className="text-4xl font-extrabold text-[#1A1A1A] mb-4">
               Post Not Found
@@ -126,9 +122,7 @@ export default function BlogPostClient() {
               &larr; Back to Blog
             </Link>
           </section>
-        </main>
-        <Footer />
-      </>
+      </main>
     );
   }
 
@@ -138,12 +132,10 @@ export default function BlogPostClient() {
     .slice(0, 3);
 
   return (
-    <>
-      <Header />
-      <main className="pt-20">
+    <main className="pt-20">
         {/* ── Article Header (dark) ── */}
         <article>
-          <section className="bg-[#0A0A0A] py-20 md:py-28">
+          <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
               <ScrollReveal>
                 <Link
@@ -281,7 +273,5 @@ export default function BlogPostClient() {
         {/* ── Next Article ── */}
         {post.nextSlug && <NextArticleCard nextSlug={post.nextSlug} />}
       </main>
-      <Footer />
-    </>
   );
 }

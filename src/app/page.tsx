@@ -1,5 +1,3 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import HomePageClient from "@/components/HomePageClient";
 
 function HomePageSchema() {
@@ -102,11 +100,9 @@ export default function Home() {
     <>
       <HomePageSchema />
       <FAQSchema />
-      <Header />
       <main>
         <HomePageClient />
       </main>
-      <Footer />
     </>
   );
 }

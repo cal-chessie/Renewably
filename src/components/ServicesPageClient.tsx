@@ -2,8 +2,6 @@
 
 import { useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
 import Image from "next/image";
@@ -288,7 +286,7 @@ function BeforeAfterSection() {
    ============================================================ */
 function AudienceSection() {
   return (
-    <section className="bg-[#0A0A0A] py-20 md:py-28">
+    <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Badge */}
         <ScrollReveal>
@@ -412,11 +410,9 @@ function HowItStartsSection() {
    ============================================================ */
 export default function ServicesPageClient() {
   return (
-    <>
-      <Header />
-      <main className="pt-20">
+    <main className="pt-20">
         {/* ===== HERO — Full-Width Robot Banner ===== */}
-        <section className="relative overflow-hidden">
+        <section data-theme="dark" className="relative overflow-hidden">
           {/* Robot image background */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -512,7 +508,5 @@ export default function ServicesPageClient() {
         {/* ===== HOW IT STARTS + CTA ===== */}
         <HowItStartsSection />
       </main>
-      <Footer />
-    </>
   );
 }

@@ -1,7 +1,5 @@
 "use client";
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
 import Image from "next/image";
@@ -46,11 +44,9 @@ const values = [
 
 export default function AboutPageClient() {
   return (
-    <>
-      <Header />
-      <main className="pt-20">
+    <main className="pt-20">
         {/* Hero — Dark */}
-        <section className="relative overflow-hidden bg-[#0A0A0A]">
+        <section data-theme="dark" className="relative overflow-hidden bg-[#0A0A0A]">
           <div
             className="absolute inset-0 opacity-[0.03]"
             style={{
@@ -217,7 +213,5 @@ export default function AboutPageClient() {
           </div>
         </section>
       </main>
-      <Footer />
-    </>
   );
 }

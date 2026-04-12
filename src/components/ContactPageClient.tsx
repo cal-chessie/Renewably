@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
 import Image from "next/image";
@@ -79,11 +77,9 @@ export default function ContactPageClient() {
   const labelClasses = "block text-sm font-semibold text-[#374151] mb-2";
 
   return (
-    <>
-      <Header />
-      <main className="pt-20">
+    <main className="pt-20">
         {/* ===== HERO — Dark with photo + copy ===== */}
-        <section className="relative overflow-hidden bg-[#0A0A0A]">
+        <section data-theme="dark" className="relative overflow-hidden bg-[#0A0A0A]">
           {/* Subtle dot grid */}
           <div
             className="absolute inset-0 opacity-[0.03]"
@@ -432,7 +428,5 @@ export default function ContactPageClient() {
           </div>
         </section>
       </main>
-      <Footer />
-    </>
   );
 }

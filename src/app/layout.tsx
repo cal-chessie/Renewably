@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import LoadingScreen from "@/components/LoadingScreen";
 import CustomCursor from "@/components/CustomCursor";
+import SiteShell from "@/components/SiteShell";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -154,7 +155,7 @@ export default function RootLayout({
       <body className={`${poppins.variable} ${poppins.className} min-h-screen`}>
         <LoadingScreen />
         <CustomCursor />
-        {children}
+        <SiteShell>{children}</SiteShell>
       </body>
     </html>
   );
