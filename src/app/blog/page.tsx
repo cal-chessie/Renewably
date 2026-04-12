@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Practical guides on AI-powered operations, SEAI grants, ESB permitting, logistics, customer support, and revenue forecasting. Written for solar companies doing 20+ jobs a month in Ireland.",
   alternates: { canonical: "https://renewably.ie/blog" },
   openGraph: {
-    title: "Renewably Blog — How Solar Installers Stop Losing Leads",
+    title: "Renewably Blog — Solar is Changing. Stay Ahead.",
     description:
       "Practical guides on AI operations, SEAI grants, ESB permitting, and more. Written for Irish solar installers.",
     url: "https://renewably.ie/blog",
