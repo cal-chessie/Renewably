@@ -42,8 +42,8 @@ export default function Header() {
               <Image
                 src="/logo-transparent.png"
                 alt="Renewably"
-                width={44}
-                height={44}
+                width={52}
+                height={52}
                 className="transition-transform duration-300 group-hover:scale-110 brightness-0 invert"
                 priority
               />
