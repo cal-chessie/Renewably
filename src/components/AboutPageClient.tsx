@@ -137,15 +137,6 @@ const values = [
   },
 ];
 
-const stats = [
-  { value: "9", suffix: "", label: "AI Agents Deployed" },
-  { value: "3x", suffix: "", label: "Faster Grant Approvals" },
-  { value: "40", suffix: "%", label: "More Installs Per Month" },
-  { value: "24", suffix: "/7", label: "Customer Response" },
-  { value: "2", suffix: "min", label: "Average Reply Time" },
-  { value: "20", suffix: "+", label: "Irish Installers Served" },
-];
-
 const agents = [
   "CEO Agent",
   "Operations Agent",
@@ -338,74 +329,6 @@ function HeroSection() {
         }}
       />
     </section>
-  );
-}
-
-/* ============================================================
-   STATS BAR
-   ============================================================ */
-function StatsBar() {
-  const barRef = useRef<HTMLDivElement>(null);
-  const isInView = useScroll({
-    target: barRef,
-    offset: ["start end", "end start"],
-  });
-  const barOpacity = useTransform(isInView.scrollYProgress, [0.1, 0.3], [0, 1]);
-
-  return (
-    <motion.div ref={barRef} style={{ opacity: barOpacity }} data-theme="dark">
-      <section style={{ backgroundColor: DARK, padding: "48px 0" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-              gap: 32,
-            }}
-          >
-            {stats.map((stat, i) => (
-              <ScrollReveal key={stat.label} delay={i * 0.08}>
-                <div style={{ textAlign: "center" }}>
-                  <p
-                    style={{
-                      fontSize: "clamp(28px, 4vw, 40px)",
-                      fontWeight: 800,
-                      color: YELLOW,
-                      lineHeight: 1.1,
-                      marginBottom: 4,
-                    }}
-                  >
-                    {stat.value}
-                    {stat.suffix && (
-                      <span
-                        style={{
-                          fontSize: "0.6em",
-                          fontWeight: 700,
-                          color: "rgba(243,216,64,0.7)",
-                        }}
-                      >
-                        {stat.suffix}
-                      </span>
-                    )}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: 12,
-                      color: "rgba(255,255,255,0.4)",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.08em",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {stat.label}
-                  </p>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-    </motion.div>
   );
 }
 
