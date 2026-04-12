@@ -58,3 +58,27 @@ Stage Summary:
 - All dark action buttons standardised to bg-[#1A1A1A] hover:bg-[#374151]
 - Header/Footer retained on inner pages (not duplicated — layout.tsx does not include them)
 - All lint checks pass clean
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: Replace Services page with new Workforce page + fix all dashboard images (Chinese text / typos)
+
+Work Log:
+- Audited all 14 dashboard/agent/illustration images using VLM (vision AI)
+- Identified 6 problematic images: agent-support (Chinese + garbled English), agent-ceo (Chinese), agent-permitting (3/10 rating, severe typos), agent-reporting (many typos), crm-illustration (Chinese), hero-visual (Chinese)
+- Regenerated all 6 images with clean English-only text using z-ai-generate
+- Strategy: switched to visual-first dashboards (charts, graphs, numbers) with minimal text to avoid AI text generation issues
+- Verified all 6 regenerated images with VLM — no Chinese, no typos, all rated 8-9/10
+- Built new WorkforcePageClient.tsx with: Hero section (dark, robot image), 8 agent detail cards (alternating layout), "How It Works Together" scenario section (numbered steps on dark bg), Investment section (cream bg), CTA section (yellow bg)
+- Created /workforce/page.tsx with proper SEO metadata
+- Updated Header.tsx: nav link "Services" → "Workforce", href /services → /workforce
+- Updated Footer.tsx: serviceLinks → workforceLinks (CEO Agent, Operations Agent, etc.), column title "Services" → "Workforce"
+- Updated sitemap.ts: /services → /workforce
+- Lint check: zero errors
+
+Stage Summary:
+- 6 images regenerated and verified clean (no Chinese text, no typos)
+- New /workforce page created with all 8 agents, scenario flow, investment section, and CTA
+- All navigation updated: Header, Footer, Sitemap all point to /workforce
+- Old /services page files still exist but are no longer linked anywhere

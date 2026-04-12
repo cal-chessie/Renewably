@@ -1,13 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 
-const serviceLinks = [
-  { label: "AI Workforce for Solar", href: "/services" },
-  { label: "Grant Automation", href: "/services" },
-  { label: "Permit Tracking", href: "/services" },
-  { label: "Installer Coordination", href: "/services" },
-  { label: "Customer Support AI", href: "/services" },
-  { label: "Site Assessment AI", href: "/services" },
+const workforceLinks = [
+  { label: "CEO Agent", href: "/workforce" },
+  { label: "Operations Agent", href: "/workforce" },
+  { label: "Customer Support Agent", href: "/workforce" },
+  { label: "Grants Agent", href: "/workforce" },
+  { label: "Permitting Agent", href: "/workforce" },
+  { label: "QA Agent", href: "/workforce" },
 ];
 
 const companyLinks = [
@@ -94,13 +94,13 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Services */}
+          {/* Column 2: Workforce */}
           <div>
             <h3 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">
-              Services
+              Workforce
             </h3>
             <ul className="space-y-3">
-              {serviceLinks.map((link) => (
+              {workforceLinks.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
