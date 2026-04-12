@@ -76,7 +76,8 @@ export default function Header() {
             <div className="flex items-center gap-2">
               <Link
                 href="/contact"
-                className="hidden md:inline-flex items-center gap-2.5 px-8 py-3 text-[15px] tracking-wide font-bold rounded-full bg-[#F3D840] text-[#1A1A1A] hover:bg-[#E5C832] transition-all duration-200 hover:shadow-lg hover:shadow-[#F3D840]/30 active:scale-[0.97] shrink-0"
+                className="hidden md:inline-flex items-center gap-2.5 rounded-full font-bold transition-all duration-200 active:scale-[0.97] shrink-0"
+                style={{ padding: "12px 32px", fontSize: 15, letterSpacing: "0.02em", backgroundColor: "#F3D840", color: "#1A1A1A" }}
               >
                 Book a Call
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -165,7 +166,8 @@ export default function Header() {
                   <Link
                     href="/contact"
                     onClick={closeMobile}
-                    className="flex items-center justify-center gap-2.5 w-full px-6 py-4 text-[16px] tracking-wide bg-[#F3D840] hover:bg-[#E5C832] text-[#1A1A1A] font-bold rounded-full transition-all duration-200 active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2.5 w-full rounded-full font-bold transition-all duration-200 active:scale-[0.98]"
+                    style={{ padding: "16px 24px", fontSize: 16, letterSpacing: "0.02em", backgroundColor: "#F3D840", color: "#1A1A1A" }}
                   >
                     Book a Call
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

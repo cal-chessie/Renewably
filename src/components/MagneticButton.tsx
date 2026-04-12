@@ -11,6 +11,25 @@ interface MagneticButtonProps {
   strength?: number;
 }
 
+const btnStyle: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 12,
+  padding: "20px 48px",
+  fontSize: 18,
+  fontWeight: 700,
+  letterSpacing: "0.02em",
+  color: "#1A1A1A",
+  background: "linear-gradient(to right, #F3D840, #E5C832)",
+  borderRadius: 9999,
+  border: "none",
+  cursor: "pointer",
+  textDecoration: "none",
+  transition: "all 0.3s ease",
+  boxShadow: "0 10px 25px rgba(243,216,64,0.15)",
+};
+
 export default function MagneticButton({
   children,
   className = "",
@@ -43,6 +62,10 @@ export default function MagneticButton({
 
   const Component = href ? "a" : "button";
 
+  const hoverStyle = isHovered
+    ? { ...btnStyle, boxShadow: "0 20px 40px rgba(243,216,64,0.25)", transform: "scale(1.05)" }
+    : btnStyle;
+
   return (
     <motion.div style={{ x, y }}>
       <Component
@@ -52,7 +75,8 @@ export default function MagneticButton({
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={handleMouseLeave}
-        className={`inline-flex items-center justify-center gap-3 px-12 py-5 text-[18px] tracking-wide bg-gradient-to-r from-[#F3D840] to-[#E5C832] hover:from-[#E5C832] hover:to-[#D4BA28] text-[#1A1A1A] font-bold rounded-full transition-all duration-300 ${isHovered ? "shadow-xl shadow-[#F3D840]/25 scale-105" : "shadow-lg shadow-[#F3D840]/15"} ${className}`}
+        style={hoverStyle}
+        className={className}
       >
         {children}
       </Component>
