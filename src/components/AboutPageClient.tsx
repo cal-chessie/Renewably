@@ -1405,7 +1405,6 @@ export default function AboutPageClient() {
   return (
     <main>
       <HeroSection />
-      <StatsBar />
       <StorySection />
       <ProblemsSection />
       <ValuesSection />
