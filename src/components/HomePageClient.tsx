@@ -692,65 +692,65 @@ function HowItStartsSection() {
   const stepsInView = useInView(stepsRef, { once: true, margin: "-80px" });
 
   return (
-    <section className="bg-[#F3D840] py-20 md:py-28 overflow-hidden" style={{ paddingTop: 160, paddingBottom: 160 }}>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section style={{ backgroundColor: '#F3D840', paddingTop: 160, paddingBottom: 160, overflow: 'hidden' }}>
+      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 24, paddingRight: 24 }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1A1A1A]/10 border border-[#1A1A1A]/15" style={{ marginBottom: 40 }}>
-            <span className="text-[#1A1A1A] text-xs sm:text-sm font-semibold tracking-wide">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, backgroundColor: 'rgba(26,26,26,0.1)', border: '1px solid rgba(26,26,26,0.15)', marginBottom: 48 }}>
+            <span style={{ color: '#1A1A1A', fontSize: 13, fontWeight: 600, letterSpacing: '0.03em' }}>
               How it starts.
             </span>
           </div>
         </ScrollReveal>
 
         {/* Steps */}
-        <div ref={stepsRef} style={{ display: 'flex', flexDirection: 'column', gap: 24, marginBottom: 64 }}>
+        <div ref={stepsRef} style={{ display: 'flex', flexDirection: 'column', gap: 28, marginBottom: 72 }}>
           {steps.map((step, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, x: -20 }}
               animate={stepsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
               transition={{ delay: 0.2 + i * 0.15, duration: 0.4, ease: "easeOut" }}
-              className="flex items-center gap-4" style={{ padding: '12px 0' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 0' }}
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={stepsInView ? { scale: 1 } : { scale: 0 }}
                 transition={{ delay: 0.2 + i * 0.15, duration: 0.3, type: "spring", stiffness: 300 }}
-                className="w-8 h-8 rounded-full bg-[#1A1A1A] flex items-center justify-center shrink-0" style={{ width: 36, height: 36, minWidth: 36 }}
+                style={{ width: 40, height: 40, minWidth: 40, borderRadius: '50%', backgroundColor: '#1A1A1A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
-                <span className="text-[#F3D840] font-bold text-xs" style={{ fontSize: 13 }}>{i + 1}</span>
+                <span style={{ color: '#F3D840', fontWeight: 700, fontSize: 14 }}>{i + 1}</span>
               </motion.div>
-              <p className="text-[#1A1A1A] text-lg sm:text-xl font-semibold" style={{ fontSize: 18 }}>{step}</p>
+              <p style={{ color: '#1A1A1A', fontSize: 20, fontWeight: 600 }}>{step}</p>
             </motion.div>
           ))}
         </div>
 
         {/* Closing text */}
         <ScrollReveal delay={0.5}>
-          <p className="text-[#374151] text-base sm:text-lg leading-relaxed" style={{ marginBottom: 24 }}>
+          <p style={{ color: '#374151', fontSize: 18, lineHeight: 1.7, marginBottom: 24 }}>
             You don&apos;t install software. You don&apos;t configure APIs. You don&apos;t learn a new system.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.6}>
-          <p className="text-[#1A1A1A] text-xl sm:text-2xl font-extrabold" style={{ marginBottom: 48 }}>
+          <p style={{ color: '#1A1A1A', fontSize: 24, fontWeight: 800, marginBottom: 48 }}>
             You just start managing instead of doing.
           </p>
         </ScrollReveal>
 
         {/* CTA */}
         <ScrollReveal delay={0.7}>
-          <div className="text-center" style={{ paddingTop: 64 }}>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1A1A1A]" style={{ marginBottom: 16 }}>
+          <div style={{ textAlign: 'center', paddingTop: 64 }}>
+            <h2 style={{ color: '#1A1A1A', fontSize: 48, fontWeight: 800, lineHeight: 1.1, marginBottom: 16 }}>
               Ready to meet your new team?
             </h2>
-            <p className="text-[#374151] text-base sm:text-lg" style={{ marginBottom: 32 }}>
-              <a href="mailto:hello@renewably.com" className="underline hover:text-[#1A1A1A] transition-colors">
+            <p style={{ color: '#374151', fontSize: 18, marginBottom: 32 }}>
+              <a href="mailto:hello@renewably.com" style={{ textDecoration: 'underline' }}>
                 hello@renewably.com
               </a>
             </p>
-            <MagneticButton href="/contact" style={{ padding: '14px 36px', fontSize: 16 }}>
+            <MagneticButton href="/contact" style={{ padding: '16px 40px', fontSize: 17 }}>
               Let&apos;s Talk
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
