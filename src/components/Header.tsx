@@ -46,14 +46,17 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2.5 group">
             <Image
               src="/logo-transparent.png"
               alt="Renewably"
-              width={60}
-              height={60}
-              className="transition-transform duration-300 group-hover:scale-110"
+              width={40}
+              height={40}
+              className={`transition-all duration-300 group-hover:scale-110 ${!scrolled ? 'brightness-0 invert' : ''}`}
             />
+            <span className={`text-lg font-extrabold tracking-tight transition-colors duration-300 ${scrolled ? 'text-[#1A1A1A]' : 'text-white'}`}>
+              Renewably
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -64,7 +67,7 @@ export default function Header() {
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-300 ${
                   scrolled
                     ? "text-[#1A1A1A] hover:text-[#374151] hover:bg-[#F3D840]/10"
-                    : "text-[#1A1A1A] hover:text-[#374151] hover:bg-white/20"
+                    : "text-white/90 hover:text-white hover:bg-white/10"
                 }`}
               >
                 {link.label}
@@ -75,7 +78,11 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <Link
               href="/contact"
-              className="hidden md:inline-flex items-center gap-2 px-6 py-2.5 bg-[#F3D840] hover:bg-[#E5C832] text-[#1A1A1A] text-sm font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-[#F3D840]/20 hover:scale-105"
+              className={`hidden md:inline-flex items-center gap-2 px-6 py-2.5 text-sm font-bold rounded-full transition-all duration-300 hover:scale-105 ${
+                scrolled
+                  ? "bg-[#F3D840] hover:bg-[#E5C832] text-[#1A1A1A] shadow-md hover:shadow-lg hover:shadow-[#F3D840]/20"
+                  : "bg-[#F3D840] hover:bg-[#E5C832] text-[#1A1A1A] shadow-lg hover:shadow-xl hover:shadow-[#F3D840]/30"
+              }`}
             >
               Book a Call
               <svg
@@ -100,17 +107,23 @@ export default function Header() {
             >
               <div className="w-6 h-5 flex flex-col justify-between relative">
                 <span
-                  className={`absolute left-0 w-6 h-0.5 bg-[#1A1A1A] transition-all duration-300 ${
+                  className={`absolute left-0 w-6 h-0.5 transition-all duration-300 ${
+                    mobileOpen || scrolled ? "bg-[#1A1A1A]" : "bg-white"
+                  } ${
                     mobileOpen ? "top-2 rotate-45" : "top-0"
                   }`}
                 />
                 <span
-                  className={`absolute left-0 top-2 w-6 h-0.5 bg-[#1A1A1A] transition-all duration-300 ${
+                  className={`absolute left-0 top-2 w-6 h-0.5 transition-all duration-300 ${
+                    mobileOpen || scrolled ? "bg-[#1A1A1A]" : "bg-white"
+                  } ${
                     mobileOpen ? "opacity-0" : "opacity-100"
                   }`}
                 />
                 <span
-                  className={`absolute left-0 w-6 h-0.5 bg-[#1A1A1A] transition-all duration-300 ${
+                  className={`absolute left-0 w-6 h-0.5 transition-all duration-300 ${
+                    mobileOpen || scrolled ? "bg-[#1A1A1A]" : "bg-white"
+                  } ${
                     mobileOpen ? "top-2 -rotate-45" : "top-4"
                   }`}
                 />
@@ -149,9 +162,12 @@ export default function Header() {
                     <Image
                       src="/logo-transparent.png"
                       alt="Renewably"
-                      width={48}
-                      height={48}
+                      width={32}
+                      height={32}
                     />
+                    <span className="text-base font-extrabold tracking-tight text-[#1A1A1A]">
+                      Renewably
+                    </span>
                   </Link>
                   <button
                     onClick={() => setMobileOpen(false)}
