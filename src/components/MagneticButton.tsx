@@ -6,6 +6,7 @@ import { motion, useSpring } from "framer-motion";
 interface MagneticButtonProps {
   children: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
   href?: string;
   onClick?: () => void;
   strength?: number;
@@ -33,6 +34,7 @@ const btnStyle: React.CSSProperties = {
 export default function MagneticButton({
   children,
   className = "",
+  style: customStyle,
   href,
   onClick,
   strength = 0.3,
@@ -62,9 +64,11 @@ export default function MagneticButton({
 
   const Component = href ? "a" : "button";
 
+  const mergedStyle = customStyle ? { ...btnStyle, ...customStyle } : btnStyle;
+
   const hoverStyle = isHovered
-    ? { ...btnStyle, boxShadow: "0 20px 40px rgba(243,216,64,0.25)", transform: "scale(1.05)" }
-    : btnStyle;
+    ? { ...mergedStyle, boxShadow: "0 20px 40px rgba(243,216,64,0.25)", transform: "scale(1.05)" }
+    : mergedStyle;
 
   return (
     <motion.div style={{ x, y }}>

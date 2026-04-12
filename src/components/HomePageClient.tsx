@@ -692,7 +692,7 @@ function HowItStartsSection() {
   const stepsInView = useInView(stepsRef, { once: true, margin: "-80px" });
 
   return (
-    <section className="bg-[#F3D840] py-20 md:py-28 overflow-hidden" style={{ paddingTop: 128, paddingBottom: 128 }}>
+    <section className="bg-[#F3D840] py-20 md:py-28 overflow-hidden" style={{ paddingTop: 160, paddingBottom: 160 }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
         <ScrollReveal>
@@ -704,14 +704,14 @@ function HowItStartsSection() {
         </ScrollReveal>
 
         {/* Steps */}
-        <div ref={stepsRef} style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 48 }}>
+        <div ref={stepsRef} style={{ display: 'flex', flexDirection: 'column', gap: 24, marginBottom: 64 }}>
           {steps.map((step, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, x: -20 }}
               animate={stepsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
               transition={{ delay: 0.2 + i * 0.15, duration: 0.4, ease: "easeOut" }}
-              className="flex items-center gap-4" style={{ padding: '8px 0' }}
+              className="flex items-center gap-4" style={{ padding: '12px 0' }}
             >
               <motion.div
                 initial={{ scale: 0 }}
@@ -728,30 +728,30 @@ function HowItStartsSection() {
 
         {/* Closing text */}
         <ScrollReveal delay={0.5}>
-          <p className="text-[#374151] text-base sm:text-lg leading-relaxed mb-6">
+          <p className="text-[#374151] text-base sm:text-lg leading-relaxed" style={{ marginBottom: 24 }}>
             You don&apos;t install software. You don&apos;t configure APIs. You don&apos;t learn a new system.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.6}>
-          <p className="text-[#1A1A1A] text-xl sm:text-2xl font-extrabold mb-12">
+          <p className="text-[#1A1A1A] text-xl sm:text-2xl font-extrabold" style={{ marginBottom: 48 }}>
             You just start managing instead of doing.
           </p>
         </ScrollReveal>
 
         {/* CTA */}
         <ScrollReveal delay={0.7}>
-          <div className="text-center">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1A1A1A] mb-4">
-              Let&apos;s talk.
+          <div className="text-center" style={{ paddingTop: 64 }}>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1A1A1A]" style={{ marginBottom: 16 }}>
+              Ready to meet your new team?
             </h2>
-            <p className="text-[#374151] text-base sm:text-lg mb-8">
+            <p className="text-[#374151] text-base sm:text-lg" style={{ marginBottom: 32 }}>
               <a href="mailto:hello@renewably.com" className="underline hover:text-[#1A1A1A] transition-colors">
                 hello@renewably.com
               </a>
             </p>
-            <MagneticButton href="/contact">
-              Get Started
+            <MagneticButton href="/contact" style={{ padding: '14px 36px', fontSize: 16 }}>
+              Let&apos;s Talk
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
