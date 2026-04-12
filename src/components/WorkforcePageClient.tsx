@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
 import Image from "next/image";
+import MiniDesktop from "@/components/MiniDesktop";
 
 /* ============================================================
    DATA — 8 AI Agents
@@ -105,19 +106,28 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
         >
-          <div className="relative overflow-hidden rounded-2xl shadow-xl">
-            <Image
-              src={agent.image}
-              alt={`${agent.title} — Renewably AI Workforce`}
-              width={1344}
-              height={768}
-              className="w-full object-cover"
-            />
-            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#F3D840]/40 to-transparent" />
-            <div className="absolute top-4 left-4 bg-[#F3D840] text-[#1A1A1A] font-extrabold text-sm px-3 py-1.5 rounded-full shadow-lg">
-              {agent.num}
+          {agent.num === "01" ? (
+            <div className="relative overflow-hidden rounded-2xl shadow-xl">
+              <MiniDesktop />
+              <div className="absolute top-4 left-4 bg-[#F3D840] text-[#1A1A1A] font-extrabold text-sm px-3 py-1.5 rounded-full shadow-lg" style={{ zIndex: 10 }}>
+                {agent.num}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="relative overflow-hidden rounded-2xl shadow-xl">
+              <Image
+                src={agent.image}
+                alt={`${agent.title} — Renewably AI Workforce`}
+                width={1344}
+                height={768}
+                className="w-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#F3D840]/40 to-transparent" />
+              <div className="absolute top-4 left-4 bg-[#F3D840] text-[#1A1A1A] font-extrabold text-sm px-3 py-1.5 rounded-full shadow-lg">
+                {agent.num}
+              </div>
+            </div>
+          )}
         </motion.div>
 
         {/* Copy */}
