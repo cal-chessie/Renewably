@@ -74,25 +74,25 @@ function HeroSection() {
           </span>
         </motion.div>
 
-        {/* H1 - Line 1 */}
+        {/* Setup line */}
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="text-xl sm:text-2xl lg:text-3xl font-medium text-white/70 mb-4"
+        >
+          You don&apos;t need more staff.
+        </motion.p>
+
+        {/* Hero statement */}
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.1] tracking-tight text-white mb-3"
-        >
-          You don&apos;t need more staff.
-        </motion.h1>
-
-        {/* H2 - Line 2: the punch */}
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-          className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.1] tracking-tight text-[#F3D840] mb-10"
+          transition={{ delay: 0.7, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.08] tracking-tight text-[#F3D840] mb-12"
         >
           You need a workforce that never sleeps.
-        </motion.h2>
+        </motion.h1>
 
         {/* CTA */}
         <motion.div
