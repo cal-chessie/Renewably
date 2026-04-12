@@ -248,6 +248,7 @@ function InvestmentSection() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.3}>
+          <div style={{ marginTop: 32 }}>
           <Link
             href="/contact"
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
@@ -258,6 +259,7 @@ function InvestmentSection() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
+          </div>
         </ScrollReveal>
       </div>
     </section>
@@ -289,6 +291,7 @@ function CTASection() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.25}>
+          <div style={{ marginTop: 32 }}>
           <Link
             href="/contact"
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
@@ -299,6 +302,7 @@ function CTASection() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
+          </div>
         </ScrollReveal>
       </div>
     </section>
