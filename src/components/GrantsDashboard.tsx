@@ -107,7 +107,7 @@ export default function GrantsDashboard() {
   const [applications, setApplications] = useState<GrantApp[]>(INITIAL_APPLICATIONS.map((a) => ({ ...a })));
   const [documents, setDocuments] = useState<GrantDoc[]>(INITIAL_DOCUMENTS.map((d) => ({ ...d })));
   const [timeline, setTimeline] = useState<TimelineEvent[]>(INITIAL_TIMELINE.map((t) => ({ ...t })));
-  const [stats, setStats] = useState({ activeApps: 12, approvedToday: 3, avgProcessing: 14.00, totalGrantValue: 180.00 });
+  const [stats, setStats] = useState({ activeApps: 12, approvedToday: 3, avgProcessing: 14.00, totalGrantValue: 14.40 });
 
   // Clock
   useEffect(() => {
@@ -124,7 +124,6 @@ export default function GrantsDashboard() {
         const next = prev.map((app) => ({ ...app }));
         const newEvents: TimelineEvent[] = [];
         let approvedDelta = 0;
-        let grantValueDelta = 0;
 
         next.forEach((app) => {
           if (app.status === "submitted" && Math.random() > 0.8) {
@@ -136,7 +135,6 @@ export default function GrantsDashboard() {
             app.progress = 100;
             app.approved = new Date().toISOString().slice(0, 10);
             approvedDelta++;
-            grantValueDelta += app.amount / 1000;
             newEvents.push({ time: fmtTime(), event: `SEAI grant approved \u2014 ${app.customer} (\u20ac${app.amount.toLocaleString('en-IE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})` });
           } else if (app.status === "under-review" && Math.random() > 0.95) {
             app.status = "rejected";
@@ -179,6 +177,12 @@ export default function GrantsDashboard() {
           });
         }
 
+        // Calculate total grant value from approved applications
+        const totalGrantValue = parseFloat(
+          next.filter((a) => a.status === "approved").reduce((sum, a) => sum + a.amount, 0) / 1000
+            .toFixed(2)
+        );
+
         // Update stats
         const activeApps = next.filter((a) => a.status !== "approved" && a.status !== "rejected").length;
         if (approvedDelta > 0) {
@@ -186,10 +190,10 @@ export default function GrantsDashboard() {
             ...s,
             activeApps,
             approvedToday: s.approvedToday + approvedDelta,
-            totalGrantValue: s.totalGrantValue + grantValueDelta,
+            totalGrantValue,
           }));
         } else {
-          setStats((s) => ({ ...s, activeApps }));
+          setStats((s) => ({ ...s, activeApps, totalGrantValue }));
         }
 
         return next;
