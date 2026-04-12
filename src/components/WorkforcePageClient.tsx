@@ -154,11 +154,11 @@ function ScenarioSection() {
   const stepsInView = useInView(stepsRef, { once: true, margin: "-60px" });
 
   return (
-    <section className="bg-[#0A0A0A] py-20 md:py-28">
+    <section className="bg-[#0A0A0A] py-20 md:py-28" style={{ paddingTop: 128, paddingBottom: 128 }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15" style={{ marginBottom: 48 }}>
             <motion.span
               className="w-2 h-2 rounded-full bg-[#F3D840]"
               animate={{ scale: [1, 1.3, 1] }}
@@ -172,26 +172,26 @@ function ScenarioSection() {
 
         {/* Intro */}
         <ScrollReveal delay={0.1}>
-          <p className="text-white/70 text-lg sm:text-xl leading-relaxed mb-12">
+          <p className="text-white/70 text-lg sm:text-xl leading-relaxed" style={{ marginBottom: 56 }}>
             A customer submits a web form at 10pm.
           </p>
         </ScrollReveal>
 
         {/* Steps */}
-        <div ref={stepsRef} className="space-y-3 mb-14">
+        <div ref={stepsRef} className="space-y-3" style={{ marginBottom: 64 }}>
           {scenarioSteps.map((step, i) => (
             <motion.div
               key={step.agent}
               initial={{ opacity: 0, x: -20 }}
               animate={stepsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
               transition={{ delay: 0.15 + i * 0.08, duration: 0.45, ease: "easeOut" }}
-              className="flex items-start gap-4"
+              className="flex items-start gap-4" style={{ marginBottom: 12, paddingBottom: 12 }}
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={stepsInView ? { scale: 1 } : { scale: 0 }}
                 transition={{ delay: 0.15 + i * 0.08, duration: 0.3, type: "spring", stiffness: 300 }}
-                className="w-7 h-7 rounded-full bg-[#F3D840] flex items-center justify-center shrink-0 mt-0.5"
+                className="w-7 h-7 rounded-full bg-[#F3D840] flex items-center justify-center shrink-0 mt-0.5" style={{ width: 32, height: 32, minWidth: 32 }}
               >
                 <span className="text-[#1A1A1A] font-extrabold text-[11px]">{i + 1}</span>
               </motion.div>
@@ -205,11 +205,11 @@ function ScenarioSection() {
 
         {/* Closing */}
         <ScrollReveal delay={0.3}>
-          <div className="border-t border-white/10 pt-10">
-            <p className="text-white/60 text-base sm:text-lg leading-relaxed mb-3">
+          <div className="border-t border-white/10" style={{ paddingTop: 56 }}>
+            <p className="text-white/60 text-base sm:text-lg leading-relaxed" style={{ marginBottom: 16 }}>
               You review the weekly summary. You approve the strategy. You intervene only when you want to.
             </p>
-            <p className="text-[#F3D840] text-xl sm:text-2xl font-extrabold">
+            <p className="text-[#F3D840] text-xl sm:text-2xl font-extrabold" style={{ fontSize: 28 }}>
               That&apos;s the workforce.
             </p>
           </div>
