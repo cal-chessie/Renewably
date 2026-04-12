@@ -44,7 +44,8 @@ export default function Header() {
                 alt="Renewably"
                 width={44}
                 height={44}
-                className="transition-transform duration-300 group-hover:scale-110 brightness-0 invert"
+                className="transition-transform duration-300 group-hover:scale-110"
+                style={{ filter: 'brightness(0) invert(1)' }}
                 priority
               />
               <span className="text-[20px] font-extrabold tracking-tight text-white hidden sm:inline">
@@ -132,7 +133,7 @@ export default function Header() {
               <div className="flex flex-col h-full">
                 <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
                   <Link href="/" onClick={closeMobile} className="flex items-center gap-2">
-                    <Image src="/logo-transparent.png" alt="Renewably" width={28} height={28} />
+                    <Image src="/logo-transparent.png" alt="Renewably" width={28} height={28} style={{ filter: 'brightness(0)' }} />
                     <span className="text-[15px] font-extrabold tracking-tight text-[#1A1A1A]">Renewably</span>
                   </Link>
                   <button onClick={closeMobile} className="p-2 -mr-2 rounded-xl hover:bg-gray-100 transition-colors" aria-label="Close menu">
