@@ -167,8 +167,9 @@ function ProblemSection() {
           animate={calloutInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="bg-[#F3D840] rounded-2xl px-8 py-10 sm:px-12 sm:py-12"
+          style={{ padding: '56px 48px' }}
         >
-          <p className="text-[#1A1A1A] text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight">
+          <p className="text-[#1A1A1A] text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight" style={{ fontSize: 40, lineHeight: 1.2 }}>
             That&apos;s not a business. That&apos;s a hostage situation.
           </p>
         </motion.div>
