@@ -74,25 +74,25 @@ function HeroSection() {
           </span>
         </motion.div>
 
-        {/* H1 */}
+        {/* H1 - Line 1 */}
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.08] tracking-tight text-white mb-6"
+          className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.1] tracking-tight text-white mb-3"
         >
           You don&apos;t need more staff.
         </motion.h1>
 
-        {/* Highlight line - the punch */}
-        <motion.p
+        {/* H2 - Line 2: the punch */}
+        <motion.h2
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.6 }}
-          className="text-[#F3D840] text-2xl sm:text-3xl lg:text-4xl font-bold mb-12"
+          className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.1] tracking-tight text-[#F3D840] mb-10"
         >
           You need a workforce that never sleeps.
-        </motion.p>
+        </motion.h2>
 
         {/* CTA */}
         <motion.div
