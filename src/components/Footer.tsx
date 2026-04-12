@@ -28,15 +28,16 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5" style={{ gap: 64 }}>
           {/* Column 1: Logo & Description */}
           <div className="sm:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <Link href="/" style={{ display: 'inline-flex' }}>
+            <Link href="/" style={{ display: 'inline-flex', alignItems: 'center' }}>
               <Image
                 src="/logo-transparent.png"
                 alt="Renewably"
                 width={40}
                 height={40}
                 className="brightness-0 invert"
+                style={{ objectFit: 'contain' }}
               />
-              <span style={{ color: 'white', fontSize: 18, fontWeight: 800, letterSpacing: '-0.025em', marginLeft: 10 }}>
+              <span style={{ color: 'white', fontSize: 18, fontWeight: 800, letterSpacing: '-0.025em', marginLeft: 10, lineHeight: '40px' }}>
                 Renewably
               </span>
             </Link>
