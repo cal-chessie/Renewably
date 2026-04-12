@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import MiniDesktop from "@/components/MiniDesktop";
 import OperationsDashboard from "@/components/OperationsDashboard";
+import SupportDashboard from "@/components/SupportDashboard";
 
 /* ============================================================
    DATA — 8 AI Agents
@@ -32,7 +33,6 @@ const agents = [
     tagline: "Answers every message. Books every consult. Never sleeps.",
     body: "The support agent is your front desk. It answers emails, web forms, chat messages, and phone calls. It answers questions about pricing, grants, timelines, and technical specifications. It books consultations directly into your calendar. It follows up with customers who haven't responded.",
     closing: "Only what needs you gets to you. Everything else — handled.",
-    image: "/agents/agent-support.jpg",
   },
   {
     num: "04",
@@ -118,6 +118,13 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           ) : agent.num === "02" ? (
             <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
               <OperationsDashboard />
+              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
+                {agent.num}
+              </div>
+            </div>
+          ) : agent.num === "03" ? (
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+              <SupportDashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
