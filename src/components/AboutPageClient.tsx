@@ -179,7 +179,7 @@ function HeroSection() {
       {/* Robot hero background */}
       <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
         <Image
-          src="/robot-1.jpg"
+          src="/robot-4.jpg"
           alt=""
           fill
           style={{ objectFit: "cover" }}
