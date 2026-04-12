@@ -369,3 +369,49 @@ Stage Summary:
 - Updated: src/app/contact/page.tsx (stronger metadata + OG tags)
 - ESLint: Clean
 - Build: Clean
+
+---
+Task ID: blog-rebuild
+Agent: Main Agent
+Task: Rebuild Blog listing page and Blog article page to be world-class
+
+Work Log:
+- Read existing BlogPageClient.tsx (155 lines), BlogPostClient.tsx (277 lines), blog-data.ts (845 lines, 8 rich posts), blog.json (6 posts), blog page routes
+- Confirmed blog listing uses blog-data.ts (not blog.json)
+- Identified 7 categories across posts: Operations, Grants, Customer Support, Permitting, Logistics, Reporting, Lead Generation
+- Completely rewrote BlogPageClient.tsx from scratch (~280 lines)
+- Completely rewrote BlogPostClient.tsx from scratch (~420 lines)
+- Updated blog/page.tsx with stronger metadata + OG tags
+- Fixed React lint errors: useState after conditional return, unused imports
+
+Blog Listing Page (BlogPageClient.tsx) features:
+- Parallax hero with animated glow orbs and stat bar (8 Articles, 7 Topics, Solar Focused)
+- Featured post card (latest article) with dark background, category-colored badge, dot grid overlay, floating glow
+- Category filter bar with animated buttons, active state colors per category (7 colors defined)
+- 2-column article card grid with category-colored hover borders and badges
+- Animated filter transitions with AnimatePresence
+- "Not reading, but ready to act?" CTA section with dual MagneticButtons
+- Final yellow CTA: "Your competitors are reading this."
+
+Blog Article Page (BlogPostClient.tsx) features:
+- Dark header with category-colored glow orb, author avatar, share button (native Web Share API + clipboard fallback)
+- Table of Contents sidebar with clickable headings and "Copy link" button
+- Improved markdown rendering: headings with scroll-margin-top for TOC navigation, styled separators with yellow dots, pull quotes with yellow left border
+- Inline share bar at article bottom (LinkedIn + Twitter)
+- Yellow CTA section
+- "More on [Category]" related posts grid (same category, up to 3)
+- "Up next" dark section for next article in chain
+- "All Articles" back button
+- 404 state with MagneticButton
+
+Design:
+- Category-specific color coding: Operations=#3B82F6, Grants=#10B981, Customer Support=#F59E0B, Permitting=#8B5CF6, Logistics=#EF4444, Reporting=#06B6D4, Lead Generation=#EC4899
+- All inline styles (Tailwind v4 HMR pattern)
+- No surrogate pair emojis, literal characters, British/Irish English
+
+Stage Summary:
+- Rewritten: src/components/BlogPageClient.tsx (complete rebuild, ~280 lines)
+- Rewritten: src/components/BlogPostClient.tsx (complete rebuild, ~420 lines)
+- Updated: src/app/blog/page.tsx (stronger metadata + OG tags)
+- ESLint: Clean
+- Build: Clean

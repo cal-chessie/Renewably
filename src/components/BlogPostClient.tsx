@@ -1,51 +1,214 @@
 "use client";
 
+import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
+import MagneticButton from "@/components/MagneticButton";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { posts, getPostBySlug } from "@/lib/blog-data";
-import { useMemo } from "react";
 
 /* ============================================================
-   Markdown-lite renderer
+   CONSTANTS
+   ============================================================ */
+const DARK = "#0A0A0A";
+const YELLOW = "#F3D840";
+
+const categoryColors: Record<string, string> = {
+  Operations: "#3B82F6",
+  Grants: "#10B981",
+  "Customer Support": "#F59E0B",
+  Permitting: "#8B5CF6",
+  Logistics: "#EF4444",
+  Reporting: "#06B6D4",
+  "Lead Generation": "#EC4899",
+};
+
+/* ============================================================
+   ICONS
+   ============================================================ */
+function ArrowLeftIcon() {
+  return (
+    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12" />
+      <polyline points="12 19 5 12 12 5" />
+    </svg>
+  );
+}
+
+function ArrowRightIcon({ color = "#F3D840" }: { color?: string }) {
+  return (
+    <svg width="16" height="16" fill="none" stroke={color} viewBox="0 0 24 24" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12" />
+      <polyline points="12 5 19 12 12 19" />
+    </svg>
+  );
+}
+
+function ClockIcon({ color = "#9CA3AF" }: { color?: string }) {
+  return (
+    <svg width="14" height="14" fill="none" stroke={color} viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  );
+}
+
+function ShareIcon() {
+  return (
+    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+    </svg>
+  );
+}
+
+function LinkIcon() {
+  return (
+    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+      <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+    </svg>
+  );
+}
+
+/* ============================================================
+   TABLE OF CONTENTS
+   ============================================================ */
+function TableOfContents({ blocks }: { blocks: string[] }) {
+  const headings = blocks
+    .filter((b) => b.startsWith("## "))
+    .map((b) => b.replace("## ", "").trim());
+
+  const [copied, setCopied] = useState(false);
+
+  if (headings.length === 0) return null;
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <ScrollReveal>
+      <div style={{
+        padding: 24, borderRadius: 16, backgroundColor: "#F9FAFB",
+        border: "1px solid rgba(26,26,26,0.06)", marginBottom: 48,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+          <h4 style={{ fontSize: 13, fontWeight: 700, color: "#1A1A1A", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+            Contents
+          </h4>
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleCopyLink}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              padding: "5px 12px", borderRadius: 8, fontSize: 12, fontWeight: 600,
+              backgroundColor: copied ? "#10B981" : "#fff", color: copied ? "#fff" : "#535353",
+              border: "1px solid rgba(26,26,26,0.08)", cursor: "pointer",
+            }}
+          >
+            <LinkIcon /> {copied ? "Copied!" : "Copy link"}
+          </motion.button>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {headings.map((h, i) => (
+            <a
+              key={i}
+              href={`#section-${i}`}
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById(`section-${i}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+              style={{
+                fontSize: 14, color: "#535353", lineHeight: 1.6,
+                paddingLeft: 12, borderLeft: "2px solid rgba(26,26,26,0.08)",
+                textDecoration: "none", transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = YELLOW;
+                e.currentTarget.style.borderLeftColor = YELLOW;
+                e.currentTarget.style.paddingLeft = 16;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "#535353";
+                e.currentTarget.style.borderLeftColor = "rgba(26,26,26,0.08)";
+                e.currentTarget.style.paddingLeft = 12;
+              }}
+            >
+              {h}
+            </a>
+          ))}
+        </div>
+      </div>
+    </ScrollReveal>
+  );
+}
+
+/* ============================================================
+   MARKDOWN RENDERERS
    ============================================================ */
 function renderInline(text: string) {
-  // Convert **bold** to <strong>
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
-      return (
-        <strong key={i} className="font-bold text-[#1A1A1A]">
-          {part.slice(2, -2)}
-        </strong>
-      );
+      return <strong key={i} style={{ fontWeight: 700, color: "#1A1A1A" }}>{part.slice(2, -2)}</strong>;
     }
     return <span key={i}>{part}</span>;
   });
 }
 
-function RenderedBlock({ text }: { text: string }) {
+function RenderedBlock({ text, index }: { text: string; index: number }) {
+  // Heading
   if (text.startsWith("## ")) {
+    const headingIndex = index;
     return (
-      <ScrollReveal>
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1A1A1A] mt-12 mb-5 leading-tight">
+      <ScrollReveal key={index}>
+        <h2
+          id={`section-${headingIndex}`}
+          style={{
+            fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 800, color: "#1A1A1A",
+            lineHeight: 1.2, marginTop: 48, marginBottom: 20, paddingTop: 20,
+            scrollMarginTop: 100,
+          }}
+        >
           {text.replace("## ", "")}
         </h2>
       </ScrollReveal>
     );
   }
 
+  // Separator
   if (text.startsWith("---")) {
-    return <hr className="border-none border-t border-[#F3D840]/30 my-10" />;
+    return (
+      <div key={index} style={{ margin: "32px 0", display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ flex: 1, height: 1, backgroundColor: "rgba(243,216,64,0.2)" }} />
+        <div style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: YELLOW }} />
+        <div style={{ flex: 1, height: 1, backgroundColor: "rgba(243,216,64,0.2)" }} />
+      </div>
+    );
   }
 
-  // Pull quote: line starting with "** and ending with **"
+  // Pull quote (full line bold)
   const pullQuoteMatch = text.match(/^\*\*(.+)\*\*$/);
   if (pullQuoteMatch) {
     return (
-      <ScrollReveal>
-        <blockquote className="border-l-4 border-[#F3D840] pl-6 py-2 my-8">
-          <p className="text-xl sm:text-2xl font-bold text-[#1A1A1A] leading-relaxed italic">
+      <ScrollReveal key={index}>
+        <blockquote style={{
+          borderLeft: "4px solid", borderLeftColor: YELLOW,
+          paddingLeft: 24, paddingTop: 8, paddingBottom: 8, margin: "32px 0",
+        }}>
+          <p style={{
+            fontSize: "clamp(18px, 2.5vw, 22px)", fontWeight: 700, color: "#1A1A1A",
+            lineHeight: 1.5, fontStyle: "italic",
+          }}>
             {pullQuoteMatch[1]}
           </p>
         </blockquote>
@@ -53,50 +216,61 @@ function RenderedBlock({ text }: { text: string }) {
     );
   }
 
+  // Regular paragraph
   return (
-    <ScrollReveal>
-      <p className="text-[#4A4A4A] text-base sm:text-lg leading-relaxed mb-6">
-        {renderInline(text)}
-      </p>
-    </ScrollReveal>
+    <p key={index} style={{
+      fontSize: 16, lineHeight: 1.8, color: "#4A4A4A", marginBottom: 20,
+    }}>
+      {renderInline(text)}
+    </p>
   );
 }
 
 /* ============================================================
-   Next Article navigation
+   RELATED POST CARD
    ============================================================ */
-function NextArticleCard({ nextSlug }: { nextSlug: string }) {
-  const next = getPostBySlug(nextSlug);
-  if (!next) return null;
+function RelatedCard({ post }: { post: typeof posts[0] }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const catColor = categoryColors[post.category] || "#9CA3AF";
 
   return (
-    <section className="bg-[#0A0A0A]">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-        <ScrollReveal>
-          <p className="text-[#F3D840] text-xs font-bold uppercase tracking-widest mb-4">
-            Next article
-          </p>
-          <Link
-            href={`/blog/${next.slug}`}
-            className="group block"
-          >
-            <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#F3D840] transition-colors duration-300 mb-2">
-              {next.title}
-            </h3>
-            <div className="flex items-center gap-3 text-white/50 text-sm">
-              <span>{next.category}</span>
-              <span className="w-1 h-1 rounded-full bg-white/30" />
-              <span>{next.readTime}</span>
-            </div>
-          </Link>
-        </ScrollReveal>
-      </div>
-    </section>
+    <Link href={`/blog/${post.slug}`} className="group block">
+      <motion.div
+        whileHover={{ y: -2 }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        style={{
+          padding: 24, borderRadius: 16, backgroundColor: "#F9FAFB",
+          border: `1px solid ${isHovered ? `${catColor}25` : "rgba(26,26,26,0.06)"}`,
+          transition: "all 0.2s ease", cursor: "pointer",
+        }}
+      >
+        <span style={{
+          fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 9999,
+          backgroundColor: `${catColor}15`, color: catColor, marginBottom: 12, display: "inline-block",
+        }}>
+          {post.category}
+        </span>
+        <h4 style={{
+          fontSize: 16, fontWeight: 700, color: "#1A1A1A", lineHeight: 1.35, marginBottom: 8,
+        }}>
+          {post.title}
+        </h4>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{ fontSize: 12, color: "#9CA3AF", display: "flex", alignItems: "center", gap: 4 }}>
+            <ClockIcon /> {post.readTime}
+          </span>
+          <motion.div animate={{ x: isHovered ? 3 : 0 }} transition={{ duration: 0.2 }}>
+            <ArrowRightIcon color="#9CA3AF" />
+          </motion.div>
+        </div>
+      </motion.div>
+    </Link>
   );
 }
 
 /* ============================================================
-   Main Component
+   MAIN COMPONENT
    ============================================================ */
 export default function BlogPostClient() {
   const params = useParams();
@@ -111,167 +285,273 @@ export default function BlogPostClient() {
   if (!post) {
     return (
       <main>
-          <section className="py-32 text-center bg-white">
-            <h1 className="text-4xl font-extrabold text-[#1A1A1A] mb-4">
-              Post Not Found
-            </h1>
-            <Link
-              href="/blog"
-              className="text-[#374151] hover:text-[#F3D840] transition-colors font-semibold"
-            >
-              &larr; Back to Blog
-            </Link>
-          </section>
+        <section style={{ padding: "128px 20px", textAlign: "center", backgroundColor: "#fff" }}>
+          <h1 style={{ fontSize: 36, fontWeight: 800, color: "#1A1A1A", marginBottom: 16 }}>Post Not Found</h1>
+          <p style={{ fontSize: 16, color: "#9CA3AF", marginBottom: 24 }}>The article you are looking for does not exist.</p>
+          <MagneticButton href="/blog">
+            <ArrowLeftIcon /> Back to Blog
+          </MagneticButton>
+        </section>
       </main>
     );
   }
 
-  // Related posts: pick 3 from same or similar category, excluding current
-  const related = posts
-    .filter((p) => p.slug !== slug)
-    .slice(0, 3);
+  const related = posts.filter((p) => p.slug !== slug && p.category === post.category).slice(0, 3);
+  const catColor = categoryColors[post.category] || YELLOW;
+  const nextPost = post.nextSlug ? getPostBySlug(post.nextSlug) : null;
 
   return (
     <main>
-        {/* ── Article Header (dark) ── */}
-        <article>
-          <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28">
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-              <ScrollReveal>
-                <Link
-                  href="/blog"
-                  className="inline-flex items-center gap-2 text-white/60 hover:text-[#F3D840] text-sm font-medium mb-8 transition-colors"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 16l-4-4m0 0l4-4m-4 4h18"
-                    />
-                  </svg>
-                  Back to Blog
-                </Link>
-              </ScrollReveal>
+      {/* ===== ARTICLE HEADER ===== */}
+      <article>
+        <section style={{ position: "relative", overflow: "hidden", backgroundColor: DARK }}>
+          {/* Dot grid */}
+          <div style={{
+            position: "absolute", inset: 0, opacity: 0.03,
+            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }} />
 
-              <ScrollReveal delay={0.1}>
-                <div className="flex items-center gap-3 mb-5">
-                  <span className="inline-block px-3 py-1 text-xs font-bold bg-[#F3D840] text-[#1A1A1A] rounded-full">
-                    {post.category}
-                  </span>
-                  <span className="text-white/40 text-sm">{post.readTime}</span>
+          {/* Glow */}
+          <motion.div
+            animate={{ x: [0, 30, -20, 0], y: [0, -20, 30, 0] }}
+            transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+            style={{
+              position: "absolute", top: "-30%", right: "5%", width: 400, height: 400,
+              borderRadius: "50%", background: `radial-gradient(circle, ${catColor}15 0%, transparent 70%)`,
+              filter: "blur(60px)", pointerEvents: "none",
+            }}
+          />
+
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-[1]" style={{ paddingTop: 120, paddingBottom: 64 }}>
+            {/* Back link */}
+            <ScrollReveal>
+              <Link
+                href="/blog"
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  color: "rgba(255,255,255,0.5)", fontSize: 14, fontWeight: 500,
+                  textDecoration: "none", marginBottom: 32,
+                  transition: "color 0.2s",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = YELLOW; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.5)"; }}
+              >
+                <ArrowLeftIcon /> All articles
+              </Link>
+            </ScrollReveal>
+
+            {/* Meta */}
+            <ScrollReveal delay={0.1}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24, flexWrap: "wrap" }}>
+                <span style={{
+                  fontSize: 12, fontWeight: 700, padding: "5px 14px", borderRadius: 9999,
+                  backgroundColor: catColor, color: "#fff",
+                }}>
+                  {post.category}
+                </span>
+                <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 13, color: "rgba(255,255,255,0.4)" }}>
+                  <ClockIcon color="rgba(255,255,255,0.4)" /> {post.readTime}
+                </span>
+                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)" }}>
+                  {new Date(post.date).toLocaleDateString("en-IE", { day: "numeric", month: "long", year: "numeric" })}
+                </span>
+              </div>
+            </ScrollReveal>
+
+            {/* Title */}
+            <ScrollReveal delay={0.2}>
+              <h1 style={{
+                fontSize: "clamp(28px, 5vw, 44px)", fontWeight: 800, color: "#fff",
+                lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: 20,
+              }}>
+                {post.title}
+              </h1>
+            </ScrollReveal>
+
+            {/* Excerpt */}
+            <ScrollReveal delay={0.3}>
+              <p style={{
+                fontSize: 17, lineHeight: 1.7, color: "rgba(255,255,255,0.45)",
+                maxWidth: 600, marginBottom: 32,
+              }}>
+                {post.excerpt}
+              </p>
+            </ScrollReveal>
+
+            {/* Author + Share */}
+            <ScrollReveal delay={0.4}>
+              <div style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.08)", flexWrap: "wrap", gap: 16,
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: "50%", backgroundColor: YELLOW,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 14, fontWeight: 800, color: "#1A1A1A",
+                  }}>
+                    R
+                  </div>
+                  <div>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>Renewably Team</p>
+                    <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>AI Operations, Ireland</p>
+                  </div>
                 </div>
-              </ScrollReveal>
-
-              <ScrollReveal delay={0.15}>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-6">
-                  {post.title}
-                </h1>
-              </ScrollReveal>
-
-              <ScrollReveal delay={0.2}>
-                <p className="text-white/50 text-base sm:text-lg leading-relaxed max-w-2xl">
-                  {post.excerpt}
-                </p>
-              </ScrollReveal>
-
-              <ScrollReveal delay={0.25}>
-                <time
-                  className="block mt-6 text-white/30 text-sm"
-                  dateTime={post.date}
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({ title: post.title, url: window.location.href }).catch(() => {});
+                    } else {
+                      navigator.clipboard.writeText(window.location.href).catch(() => {});
+                    }
+                  }}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: 8,
+                    padding: "8px 18px", borderRadius: 9999, fontSize: 13, fontWeight: 600,
+                    backgroundColor: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.6)",
+                    border: "1px solid rgba(255,255,255,0.1)", cursor: "pointer",
+                  }}
                 >
-                  {new Date(post.date).toLocaleDateString("en-IE", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </time>
-              </ScrollReveal>
-            </div>
-          </section>
+                  <ShareIcon /> Share
+                </motion.button>
+              </div>
+            </ScrollReveal>
+          </div>
 
-          {/* ── Article Content ── */}
-          <section className="bg-white py-16 md:py-24">
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-              {blocks.map((block, i) => (
-                <RenderedBlock key={i} text={block} />
+          {/* Bottom fade */}
+          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 60, background: "linear-gradient(to top, #fff, transparent)", zIndex: 2, pointerEvents: "none" }} />
+        </section>
+
+        {/* ===== ARTICLE CONTENT ===== */}
+        <section style={{ backgroundColor: "#fff", paddingTop: 64, paddingBottom: 64 }}>
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Table of Contents */}
+            <TableOfContents blocks={blocks} />
+
+            {/* Content blocks */}
+            {blocks.map((block, i) => {
+              const el = RenderedBlock({ text: block, index: i });
+              // Assign heading IDs for TOC navigation
+              if (block.startsWith("## ")) {
+                return <div key={i}>{el}</div>;
+              }
+              return <div key={i}>{el}</div>;
+            })}
+
+            {/* Inline share bar */}
+            <div style={{
+              display: "flex", alignItems: "center", gap: 12, padding: "24px 0",
+              borderTop: "1px solid rgba(26,26,26,0.06)", marginTop: 40,
+            }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#9CA3AF" }}>Share this article</span>
+              <div style={{ display: "flex", gap: 8 }}>
+                {[
+                  { label: "LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${typeof window !== "undefined" ? window.location.href : ""}` },
+                  { label: "Twitter", href: `https://twitter.com/intent/tweet?text=${post.title}&url=${typeof window !== "undefined" ? window.location.href : ""}` },
+                ].map((s) => (
+                  <motion.a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    style={{
+                      padding: "6px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600,
+                      backgroundColor: "#F9FAFB", color: "#535353", border: "1px solid rgba(26,26,26,0.06)",
+                      textDecoration: "none", transition: "all 0.2s",
+                    }}
+                  >
+                    {s.label}
+                  </motion.a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      </article>
+
+      {/* ===== CTA ===== */}
+      <section style={{ backgroundColor: YELLOW, paddingTop: 72, paddingBottom: 72 }}>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8" style={{ textAlign: "center" }}>
+          <ScrollReveal>
+            <h2 style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 800, color: "#1A1A1A", lineHeight: 1.1, marginBottom: 16 }}>
+              Ready to see this in action?
+            </h2>
+            <p style={{ fontSize: 16, color: "#374151", marginBottom: 32, maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
+              Every agent on this page is deployed in real solar companies across Ireland. Book a call and we will show you how.
+            </p>
+            <MagneticButton href="/contact">
+              Book a Free Call <ArrowRightIcon />
+            </MagneticButton>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* ===== RELATED ARTICLES ===== */}
+      {related.length > 0 && (
+        <section style={{ backgroundColor: "#fff", paddingTop: 64, paddingBottom: 64 }}>
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <ScrollReveal>
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1A1A1A", marginBottom: 24 }}>
+                More on {post.category}
+              </h2>
+            </ScrollReveal>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {related.map((r) => (
+                <RelatedCard key={r.slug} post={r} />
               ))}
             </div>
-          </section>
-        </article>
+          </div>
+        </section>
+      )}
 
-        {/* ── CTA ── */}
-        <section className="bg-[#F3D840] py-16 md:py-20">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      {/* ===== NEXT ARTICLE ===== */}
+      {nextPost && (
+        <section style={{ backgroundColor: DARK }}>
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8" style={{ paddingTop: 64, paddingBottom: 64 }}>
             <ScrollReveal>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1A1A1A] mb-4">
-                Ready to see this in action?
-              </h2>
-              <p className="text-[#374151] text-base sm:text-lg mb-8 max-w-xl mx-auto">
-                Every agent on this page is deployed in real solar companies
-                across Ireland. Book a call and we&apos;ll show you how.
+              <p style={{ fontSize: 12, fontWeight: 700, color: YELLOW, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16 }}>
+                Up next
               </p>
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
-              >
-                Let&apos;s Talk
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
+              <Link href={`/blog/${nextPost.slug}`} className="group block">
+                <motion.div whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+                  <h3 style={{
+                    fontSize: "clamp(18px, 3vw, 24px)", fontWeight: 700, color: "#fff",
+                    lineHeight: 1.3, marginBottom: 8, transition: "color 0.2s",
+                  }}>
+                    {nextPost.title}
+                  </h3>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <span style={{
+                      fontSize: 12, fontWeight: 700, padding: "3px 10px", borderRadius: 9999,
+                      backgroundColor: categoryColors[nextPost.category] || "rgba(255,255,255,0.1)",
+                      color: "#fff",
+                    }}>
+                      {nextPost.category}
+                    </span>
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", display: "flex", alignItems: "center", gap: 4 }}>
+                      <ClockIcon color="rgba(255,255,255,0.4)" /> {nextPost.readTime}
+                    </span>
+                  </div>
+                </motion.div>
               </Link>
             </ScrollReveal>
           </div>
         </section>
+      )}
 
-        {/* ── Related Articles ── */}
-        <section className="bg-white py-16 md:py-20">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <ScrollReveal>
-              <h2 className="text-2xl font-extrabold text-[#1A1A1A] mb-8">
-                More from the blog
-              </h2>
-            </ScrollReveal>
-            <div className="space-y-4">
-              {related.map((r, i) => (
-                <ScrollReveal key={r.slug} delay={i * 0.08}>
-                  <Link
-                    href={`/blog/${r.slug}`}
-                    className="group block p-5 rounded-xl border border-gray-100 hover:border-[#F3D840] transition-all duration-300"
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="px-2.5 py-0.5 text-xs font-bold bg-[#F3D840]/15 text-[#374151] rounded-full">
-                        {r.category}
-                      </span>
-                      <span className="text-gray-400 text-xs">{r.readTime}</span>
-                    </div>
-                    <h3 className="text-base sm:text-lg font-bold text-[#1A1A1A] group-hover:text-[#374151] transition-colors">
-                      {r.title}
-                    </h3>
-                  </Link>
-                </ScrollReveal>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── Next Article ── */}
-        {post.nextSlug && <NextArticleCard nextSlug={post.nextSlug} />}
-      </main>
+      {/* ===== BACK TO BLOG ===== */}
+      <section style={{ backgroundColor: "#F9FAFB", paddingTop: 48, paddingBottom: 48 }}>
+        <div style={{ textAlign: "center" }}>
+          <MagneticButton href="/blog">
+            <ArrowLeftIcon /> All Articles
+          </MagneticButton>
+        </div>
+      </section>
+    </main>
   );
 }
