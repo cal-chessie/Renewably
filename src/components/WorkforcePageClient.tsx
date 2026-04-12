@@ -310,60 +310,59 @@ export default function WorkforcePageClient() {
   return (
     <main>
       {/* ===== HERO ===== */}
-      <section data-theme="dark" className="relative overflow-hidden">
+      <section data-theme="dark" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
         {/* Robot image background */}
-        <div className="absolute inset-0 z-0">
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
           <Image
-            src="/service-hero.jpg"
+            src="/robot-hero.jpg"
             alt=""
             fill
-            className="object-cover"
+            style={{ objectFit: 'cover' }}
             priority
           />
         </div>
         {/* Dark overlay */}
-        <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#0A0A0A]/85 via-[#0A0A0A]/70 to-[#0A0A0A]/50" />
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(135deg, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.6) 50%, rgba(10,10,10,0.3) 100%)' }} />
 
         {/* Content */}
-        <div className="relative z-[2] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-40">
-          <div className="max-w-3xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mb-8"
-            >
-              <motion.span
-                className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
-                style={{ boxShadow: "0 0 8px rgba(243,216,64,0.6)" }}
-              />
-              <span className="text-[#F3D840] text-xs sm:text-sm font-bold tracking-wide">
-                Renewably
-              </span>
-            </motion.div>
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: 896, width: '100%', padding: '0 16px', textAlign: 'center' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', marginBottom: 32, padding: '6px 16px', fontSize: 13, fontWeight: 600, letterSpacing: '0.03em' }}
+          >
+            <motion.span
+              style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840', boxShadow: '0 0 8px rgba(243,216,64,0.6)' }}
+              animate={{ scale: [1, 1.3, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+            <span style={{ color: 'rgba(255,255,255,0.85)' }}>
+              Ready to meet your new team?
+            </span>
+          </motion.div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.08] tracking-tight mb-6"
-            >
-              The AI Workforce
-            </motion.h1>
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, color: '#F3D840', lineHeight: 1.08, letterSpacing: '-0.02em', marginBottom: 24 }}
+          >
+            The AI Workforce
+          </motion.h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.6 }}
-              className="text-white/70 text-lg sm:text-xl leading-relaxed max-w-2xl"
-            >
-              Eight AI employees. One team. Your solar company, automated.
-            </motion.p>
-          </div>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+            style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(1.1rem, 2vw, 1.35rem)', lineHeight: 1.6, maxWidth: 640, margin: '0 auto' }}
+          >
+            Eight AI employees. One team. Your solar company, automated.
+          </motion.p>
         </div>
 
         {/* Yellow fade at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent z-[3] pointer-events-none" />
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 120, background: 'linear-gradient(to top, #F3D840, transparent)', zIndex: 3, pointerEvents: 'none' }} />
       </section>
 
       {/* ===== EIGHT AGENTS ===== */}
