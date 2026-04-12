@@ -10,6 +10,7 @@ import OperationsDashboard from "@/components/OperationsDashboard";
 import SupportDashboard from "@/components/SupportDashboard";
 import GrantsDashboard from "@/components/GrantsDashboard";
 import LogisticsDashboard from "@/components/LogisticsDashboard";
+import PermittingDashboard from "@/components/PermittingDashboard";
 
 /* ============================================================
    DATA — 8 AI Agents
@@ -56,7 +57,6 @@ const agents = [
     tagline: "Handles ESB. Tracks submissions. Follows up on delays.",
     body: "The permitting agent is your ESB Networks specialist. It knows every application type — NC6 for domestic, NC7 for commercial. It knows every form, every attachment, every submission method. It completes applications. It submits to the correct portal or email address. It tracks every submission. It follows up on day 5, day 10, day 15. It alerts you only when intervention is needed.",
     closing: "Average approval time: from 6 weeks to 10 days.",
-    image: "/agents/agent-permitting.jpg",
   },
   {
     num: "07",
@@ -139,6 +139,13 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           ) : agent.num === "05" ? (
             <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
               <LogisticsDashboard />
+              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
+                {agent.num}
+              </div>
+            </div>
+          ) : agent.num === "06" ? (
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+              <PermittingDashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
