@@ -80,14 +80,16 @@ async function main() {
 
   console.log('✅ Contacts created');
 
-  // ===== PIPELINE STAGES =====
+  // ===== PIPELINE STAGES (Solar-specific) =====
   const stages = await Promise.all([
-    db.pipelineStage.create({ data: { name: 'Lead', order: 1, color: '#94A3B8', isDefault: true } }),
-    db.pipelineStage.create({ data: { name: 'Qualified', order: 2, color: '#60A5FA' } }),
-    db.pipelineStage.create({ data: { name: 'Proposal', order: 3, color: '#F3D840' } }),
-    db.pipelineStage.create({ data: { name: 'Negotiation', order: 4, color: '#FB923C' } }),
-    db.pipelineStage.create({ data: { name: 'Won', order: 5, color: '#4ADE80' } }),
-    db.pipelineStage.create({ data: { name: 'Lost', order: 6, color: '#F87171' } }),
+    db.pipelineStage.create({ data: { name: 'Lead', order: 1, color: '#9CA3AF', isDefault: true } }),
+    db.pipelineStage.create({ data: { name: 'Survey', order: 2, color: '#60A5FA' } }),
+    db.pipelineStage.create({ data: { name: 'Quote', order: 3, color: '#F3D840' } }),
+    db.pipelineStage.create({ data: { name: 'Approved', order: 4, color: '#34D399' } }),
+    db.pipelineStage.create({ data: { name: 'Install', order: 5, color: '#F97316' } }),
+    db.pipelineStage.create({ data: { name: 'Commissioned', order: 6, color: '#8B5CF6' } }),
+    db.pipelineStage.create({ data: { name: 'Won', order: 7, color: '#22C55E' } }),
+    db.pipelineStage.create({ data: { name: 'Lost', order: 8, color: '#EF4444' } }),
   ]);
 
   console.log('✅ Pipeline stages created');
@@ -104,21 +106,21 @@ async function main() {
   const inTwoMonths = new Date(now.getFullYear(), now.getMonth() + 2, 1);
 
   const deals = await Promise.all([
-    // Won deals
-    db.deal.create({ data: { title: 'GreenTech Solar Installation', value: 45000, currency: 'EUR', probability: 100, stageId: stages[4].id, contactId: contacts[0].id, companyId: companies[0].id, assigneeId: agent1.id, creatorId: admin.id, closeDate: threeMonthsAgo, createdAt: threeMonthsAgo, description: 'Commercial solar panel installation for GreenTech office building.' } }),
-    db.deal.create({ data: { title: 'Atlantic Energy Audit Contract', value: 12000, currency: 'EUR', probability: 100, stageId: stages[4].id, contactId: contacts[5].id, companyId: companies[4].id, assigneeId: agent2.id, creatorId: admin.id, closeDate: twoMonthsAgo, createdAt: twoMonthsAgo, description: 'Annual energy audit and consulting contract.' } }),
-    db.deal.create({ data: { title: 'BioGreen Marketing Retainer', value: 30000, currency: 'EUR', probability: 100, stageId: stages[4].id, contactId: contacts[6].id, companyId: companies[5].id, assigneeId: agent1.id, creatorId: admin.id, closeDate: oneMonthAgo, createdAt: twoMonthsAgo, description: 'Digital marketing and SEO retainer for BioGreen Fuels.' } }),
+    // Won/Commissioned deals
+    db.deal.create({ data: { title: 'GreenTech Commercial Solar PV', value: 45000, currency: 'EUR', probability: 100, stageId: stages[6].id, contactId: contacts[0].id, companyId: companies[0].id, assigneeId: agent1.id, creatorId: admin.id, closeDate: threeMonthsAgo, createdAt: threeMonthsAgo, description: 'Commercial solar panel installation for GreenTech office building. 32x JA Solar 440W panels with SolarEdge inverter.' } }),
+    db.deal.create({ data: { title: 'Atlantic Energy ESB Connection', value: 12000, currency: 'EUR', probability: 100, stageId: stages[6].id, contactId: contacts[5].id, companyId: companies[4].id, assigneeId: agent2.id, creatorId: admin.id, closeDate: twoMonthsAgo, createdAt: twoMonthsAgo, description: 'ESB grid application and commissioning for commercial solar installation.' } }),
+    db.deal.create({ data: { title: 'BioGreen Farm Solar Array', value: 30000, currency: 'EUR', probability: 100, stageId: stages[6].id, contactId: contacts[6].id, companyId: companies[5].id, assigneeId: agent1.id, creatorId: admin.id, closeDate: oneMonthAgo, createdAt: twoMonthsAgo, description: '50kW ground-mount solar array for agricultural processing facility.' } }),
 
     // Active pipeline
-    db.deal.create({ data: { title: 'EcoWind Website Redesign', value: 25000, currency: 'EUR', probability: 70, stageId: stages[2].id, contactId: contacts[2].id, companyId: companies[1].id, assigneeId: agent1.id, creatorId: agent1.id, closeDate: inOneMonth, createdAt: twoWeeksAgo, description: 'Full website redesign with lead generation focus.' } }),
-    db.deal.create({ data: { title: 'Sustainable Homes SEO', value: 18000, currency: 'EUR', probability: 60, stageId: stages[2].id, contactId: contacts[3].id, companyId: companies[2].id, assigneeId: agent2.id, creatorId: admin.id, closeDate: inOneMonth, createdAt: oneWeekAgo, description: '6-month SEO campaign for sustainable construction company.' } }),
-    db.deal.create({ data: { title: 'CleanHeat Digital Strategy', value: 22000, currency: 'EUR', probability: 50, stageId: stages[1].id, contactId: contacts[4].id, companyId: companies[3].id, assigneeId: agent1.id, creatorId: agent1.id, closeDate: inTwoMonths, createdAt: oneWeekAgo, description: 'Comprehensive digital marketing strategy.' } }),
-    db.deal.create({ data: { title: 'SolarStream Partnership', value: 50000, currency: 'EUR', probability: 40, stageId: stages[1].id, contactId: contacts[7].id, companyId: companies[6].id, assigneeId: admin.id, creatorId: admin.id, closeDate: inTwoMonths, createdAt: twoWeeksAgo, description: 'Strategic partnership for content marketing and lead gen.' } }),
-    db.deal.create({ data: { title: 'EV Charge Network Launch', value: 35000, currency: 'EUR', probability: 30, stageId: stages[0].id, contactId: contacts[8].id, companyId: companies[7].id, assigneeId: agent2.id, creatorId: agent2.id, closeDate: inTwoMonths, createdAt: twoWeeksAgo, description: 'Brand launch campaign and website for new EV charging company.' } }),
-    db.deal.create({ data: { title: 'Lisa Chen Residential Solar', value: 8500, currency: 'EUR', probability: 55, stageId: stages[2].id, contactId: contacts[9].id, assigneeId: agent2.id, creatorId: agent2.id, closeDate: inTwoWeeks, createdAt: oneWeekAgo, description: 'Lead generation campaign for residential solar installation.' } }),
+    db.deal.create({ data: { title: 'EcoWind Office Solar Install', value: 25000, currency: 'EUR', probability: 70, stageId: stages[4].id, contactId: contacts[2].id, companyId: companies[1].id, assigneeId: agent1.id, creatorId: agent1.id, closeDate: inOneMonth, createdAt: twoWeeksAgo, description: '20kW rooftop solar installation for EcoWind headquarters. Panels ordered, scheduling install team.' } }),
+    db.deal.create({ data: { title: 'Sustainable Homes Showhouse', value: 18000, currency: 'EUR', probability: 60, stageId: stages[3].id, contactId: contacts[3].id, companyId: companies[2].id, assigneeId: agent2.id, creatorId: admin.id, closeDate: inOneMonth, createdAt: oneWeekAgo, description: 'Solar PV + battery storage for sustainable showhouse. Client approved quote, waiting on SEAI grant confirmation.' } }),
+    db.deal.create({ data: { title: 'CleanHeat Heat Pump + Solar', value: 22000, currency: 'EUR', probability: 50, stageId: stages[2].id, contactId: contacts[4].id, companyId: companies[3].id, assigneeId: agent1.id, creatorId: agent1.id, closeDate: inTwoMonths, createdAt: oneWeekAgo, description: 'Combined solar PV and heat pump installation. Site survey completed, preparing quote.' } }),
+    db.deal.create({ data: { title: 'SolarStream Manufacturing Plant', value: 85000, currency: 'EUR', probability: 40, stageId: stages[1].id, contactId: contacts[7].id, companyId: companies[6].id, assigneeId: admin.id, creatorId: admin.id, closeDate: inTwoMonths, createdAt: twoWeeksAgo, description: 'Large-scale solar for manufacturing facility. 200kW system. Awaiting structural survey.' } }),
+    db.deal.create({ data: { title: 'EV Charge Network Depot', value: 35000, currency: 'EUR', probability: 30, stageId: stages[0].id, contactId: contacts[8].id, companyId: companies[7].id, assigneeId: agent2.id, creatorId: agent2.id, closeDate: inTwoMonths, createdAt: twoWeeksAgo, description: 'Solar carport with EV charging at depot location. Initial enquiry, needs site assessment.' } }),
+    db.deal.create({ data: { title: 'Lisa Chen Residential Solar PV', value: 8500, currency: 'EUR', probability: 55, stageId: stages[2].id, contactId: contacts[9].id, assigneeId: agent2.id, creatorId: agent2.id, closeDate: inTwoWeeks, createdAt: oneWeekAgo, description: '6kW residential solar system with battery storage. Quote provided, awaiting decision.' } }),
 
     // Recently lost
-    db.deal.create({ data: { title: 'FarmTech Agricultural Solar', value: 40000, currency: 'EUR', probability: 0, stageId: stages[5].id, contactId: contacts[10].id, assigneeId: agent1.id, creatorId: agent1.id, closeDate: oneWeekAgo, createdAt: oneMonthAgo, lostReason: 'Budget constraints - postponed to next quarter.' } }),
+    db.deal.create({ data: { title: 'Henderson Farm Solar', value: 40000, currency: 'EUR', probability: 0, stageId: stages[7].id, contactId: contacts[10].id, assigneeId: agent1.id, creatorId: agent1.id, closeDate: oneWeekAgo, createdAt: oneMonthAgo, lostReason: 'Client chose a competitor offering lower panel prices. Follow up in Q3.' } }),
   ]);
 
   console.log('✅ Deals created');
@@ -557,6 +559,7 @@ async function main() {
   const wfNow = new Date();
   const wfFiveDaysAgo = new Date(wfNow.getFullYear(), wfNow.getMonth(), wfNow.getDate() - 5);
   const wfThreeDaysAgo = new Date(wfNow.getFullYear(), wfNow.getMonth(), wfNow.getDate() - 3);
+  const wfTwoDaysAgo = new Date(wfNow.getFullYear(), wfNow.getMonth(), wfNow.getDate() - 2);
   const wfOneDayAgo = new Date(wfNow.getFullYear(), wfNow.getMonth(), wfNow.getDate() - 1);
 
   const workflowRule1 = await db.workflowRule.create({

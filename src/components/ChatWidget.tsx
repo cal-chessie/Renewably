@@ -55,6 +55,17 @@ function uid() {
   return `msg-${Date.now()}-${++msgCounter}`;
 }
 
+// Persistent visitor ID for lead deduplication (stored in sessionStorage per tab)
+function getVisitorId(): string {
+  if (typeof window === 'undefined') return `srv-${Date.now()}`;
+  let id = sessionStorage.getItem('renewably_vid');
+  if (!id) {
+    id = `v-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    sessionStorage.setItem('renewably_vid', id);
+  }
+  return id;
+}
+
 /* ─── Typing Indicator Component ─── */
 function TypingIndicator() {
   return (
@@ -183,6 +194,7 @@ export default function ChatWidget() {
 
       try {
         const pageContext = PAGE_CONTEXT_MAP[pathname] || `page: ${pathname}`;
+        const visitorId = getVisitorId();
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -192,6 +204,7 @@ export default function ChatWidget() {
               content: m.content,
             })),
             pageContext,
+            visitorId,
           }),
         });
 

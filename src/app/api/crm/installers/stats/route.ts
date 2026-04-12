@@ -10,11 +10,11 @@ async function getAuthUser(request: NextRequest) {
   return user
 }
 
-// Plan pricing map (EUR/month for monthly billing)
+// Plan pricing map (EUR/month) — matches dashboard route
 const PLAN_PRICES: Record<string, number> = {
-  starter: 99,
-  pro: 249,
-  enterprise: 599,
+  starter: 1000,
+  pro: 1250,
+  enterprise: 1500,
 }
 
 // GET: Installer KPIs for CRM dashboard

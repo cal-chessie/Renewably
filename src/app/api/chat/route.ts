@@ -1,5 +1,15 @@
+// ============================================================================
+// RENEWABLY.IE — PUBLIC CHAT API (with CRM lead capture)
+// ============================================================================
+// POST /api/chat
+//
+// Handles visitor chat via z-ai-web-dev-sdk.
+// Detects buying signals and captures leads into the CRM as contacts.
+// ============================================================================
+
 import { NextRequest, NextResponse } from "next/server";
 import ZAI from "z-ai-web-dev-sdk";
+import { db } from "@/lib/db";
 
 const SYSTEM_PROMPT = `You are the Renewably AI Assistant — the friendly, knowledgeable face of renewably.ie, Ireland's leading AI-as-a-Service platform for solar PV installers.
 
@@ -56,6 +66,20 @@ Renewably provides an AI-powered workforce of 9 specialised agents that automate
 - Use the Euro sign naturally (e.g., "€1,000/month" or "from €1,000/mo").
 - Always be encouraging and positive about solar energy and the future of renewables in Ireland.`;
 
+// ─── Lead Signal Detection ───
+// Patterns that indicate a visitor is a potential lead worth capturing
+
+const LEAD_SIGNALS = [
+  /\b(demo|book.*call|get.*started|sign.*up|trial|interested|pricing|quote|how much|cost|price|want.*to.*buy|looking.*for)\b/i,
+  /\b(install(er)?|solar.*pv|solar.*panel|my.*business|my.*company)\b/i,
+  /\b(email|e-mail|my.*name is|i'm|i am|we are|we're)\b/i,
+];
+
+const STRONG_LEAD_SIGNALS = [
+  /\b(book.*demo|get.*started|sign.*up|trial|want.*to.*buy|looking.*for.*ai|interested.*in)\b/i,
+  /\b(my.*email|my.*name is|contact me|reach me|call me)\b/i,
+];
+
 interface ChatMessage {
   role: "user" | "assistant" | "system";
   content: string;
@@ -64,9 +88,10 @@ interface ChatMessage {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { messages, pageContext } = body as {
+    const { messages, pageContext, visitorId } = body as {
       messages: ChatMessage[];
       pageContext?: string;
+      visitorId?: string;
     };
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -97,6 +122,24 @@ export async function POST(request: NextRequest) {
 
     const reply = completion.choices[0]?.message?.content || "Sorry, I couldn't generate a response. Please try again.";
 
+    // ─── Lead Capture Logic ───
+    // After the first substantive exchange, check if the visitor shows buying signals
+    // Capture leads asynchronously — don't block the response
+    const userMessages = messages.filter((m) => m.role === "user");
+    if (userMessages.length >= 1) {
+      const latestUserMsg = userMessages[userMessages.length - 1].content;
+
+      // Check for lead signals
+      const isStrongLead = STRONG_LEAD_SIGNALS.some((p) => p.test(latestUserMsg));
+      const isLead = !isStrongLead && LEAD_SIGNALS.some((p) => p.test(latestUserMsg));
+
+      // Only capture after at least 2 messages to avoid false positives on greetings
+      if ((isStrongLead && userMessages.length >= 1) || (isLead && userMessages.length >= 2)) {
+        // Fire and forget — don't block the chat response
+        captureChatLead(latestUserMsg, pageContext, visitorId, isStrongLead).catch(() => {});
+      }
+    }
+
     return NextResponse.json({ reply });
   } catch (error: unknown) {
     console.error("Chat API error:", error);
@@ -105,5 +148,77 @@ export async function POST(request: NextRequest) {
       { error: "Failed to generate response. Please try again." },
       { status: 500 }
     );
+  }
+}
+
+// ─── Async Lead Capture ───
+// Creates a contact in the CRM from chat interactions
+
+async function captureChatLead(
+  message: string,
+  pageContext?: string,
+  visitorId?: string,
+  isStrongLead: boolean = false
+) {
+  try {
+    // Check if we already have a recent chat lead from this visitor
+    if (visitorId) {
+      const existingRecent = await db.contact.findFirst({
+        where: {
+          source: "chat",
+          description: { contains: visitorId },
+          createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+        },
+      });
+      if (existingRecent) {
+        // Update existing contact's description with new interaction
+        await db.contact.update({
+          where: { id: existingRecent.id },
+          data: {
+            description: `${existingRecent.description}\n\n[${new Date().toISOString()}] ${message}`,
+            status: isStrongLead ? "prospect" : existingRecent.status,
+          },
+        });
+
+        // Log the activity
+        await db.activity.create({
+          data: {
+            type: "note",
+            title: "Chat interaction",
+            description: `Visitor sent: "${message.slice(0, 200)}"`,
+            contactId: existingRecent.id,
+          },
+        });
+        return;
+      }
+    }
+
+    // Create a new contact from the chat interaction
+    const contact = await db.contact.create({
+      data: {
+        firstName: "Chat",
+        lastName: `Visitor${visitorId ? `-${visitorId.slice(0, 8)}` : `-${Date.now().toString(36)}`}`,
+        email: null,
+        phone: null,
+        source: "chat",
+        status: isStrongLead ? "prospect" : "lead",
+        description: `[Chat Lead Capture - ${new Date().toISOString()}]${visitorId ? `\nVisitor ID: ${visitorId}` : ""}${pageContext ? `\nPage: ${pageContext}` : ""}\n\nMessage: ${message}`,
+      },
+    });
+
+    // Log the activity
+    await db.activity.create({
+      data: {
+        type: "note",
+        title: isStrongLead ? "Strong chat lead captured" : "Chat lead captured",
+        description: `New lead from chat widget.\nPage: ${pageContext || "unknown"}\nMessage: "${message.slice(0, 200)}"`,
+        contactId: contact.id,
+      },
+    });
+
+    console.log(`[Chat Lead] ${isStrongLead ? "STRONG" : "soft"} lead captured: ${contact.id}`);
+  } catch (error) {
+    // Never block the chat response with lead capture errors
+    console.warn("[Chat Lead] Could not capture lead:", error instanceof Error ? error.message : error);
   }
 }

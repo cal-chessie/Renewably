@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
 import { join } from 'path'
 
-interface SessionData {
+export interface SessionData {
   userId: string
   email: string
   name: string

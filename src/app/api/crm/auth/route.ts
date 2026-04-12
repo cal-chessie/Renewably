@@ -1,7 +1,17 @@
+// ============================================================================
+// RENEWABLY.IE — CRM AUTHENTICATION API
+// ============================================================================
+// POST: Login (with legacy password auto-upgrade)
+// GET:  Validate current session
+// DELETE: Logout
+// ============================================================================
+
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import {
   verifyPassword,
+  hashPassword,
+  isLegacyHash,
   getSessionFromRequest,
   parseCookies,
   createSession as createSessionToken,
@@ -30,6 +40,15 @@ export async function POST(request: NextRequest) {
 
     if (!(await verifyPassword(password, user.password))) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 })
+    }
+
+    // Auto-upgrade legacy SHA-256 password to PBKDF2
+    if (isLegacyHash(user.password)) {
+      const newHash = await hashPassword(password)
+      await db.user.update({
+        where: { id: user.id },
+        data: { password: newHash },
+      })
     }
 
     // Update last login
@@ -106,7 +125,7 @@ export async function GET(request: NextRequest) {
     })
 
     if (!user || !user.isActive) {
-      const response = NextResponse.json({ error: 'User not found' }, { status: 401 })
+      const response = NextResponse.json({ error: 'User not found or inactive' }, { status: 401 })
       response.headers.append('Set-Cookie', createLogoutCookie())
       return response
     }
