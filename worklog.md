@@ -135,3 +135,22 @@ Stage Summary:
 - White frosted glass background that fades in on scroll
 - Bottom shadow that appears on scroll
 - Yellow progress bar at very top
+
+---
+Task ID: 1
+Agent: main
+Task: Update hero headline to "You don't need more staff. You need a workforce that never sleeps."
+
+Work Log:
+- Read current Header.tsx (already transparent, no changes needed)
+- Read HomePageClient.tsx to find hero section
+- Replaced three-line hero (H1 + sub-headline + highlight) with clean two-punch structure:
+  - "You don't need more staff." (white H1)
+  - "You need a workforce that never sleeps." (yellow punchline)
+- Tightened CTA animation delay from 1.4s to 1.1s for better pacing
+- Ran lint - passed clean
+
+Stage Summary:
+- Hero section now has a sharper, more modern two-line headline
+- Header remains transparent overlay (no white background)
+- File updated: src/components/HomePageClient.tsx

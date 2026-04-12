@@ -81,34 +81,24 @@ function HeroSection() {
           transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.08] tracking-tight text-white mb-6"
         >
-          You&apos;re trying to run a solar company.
+          You don&apos;t need more staff.
         </motion.h1>
 
-        {/* Sub-headline */}
+        {/* Highlight line - the punch */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.6 }}
-          className="text-white/70 text-xl sm:text-2xl lg:text-3xl font-medium mb-8"
-        >
-          But you can&apos;t find the staff.
-        </motion.p>
-
-        {/* Highlight line */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.1, duration: 0.6 }}
           className="text-[#F3D840] text-2xl sm:text-3xl lg:text-4xl font-bold mb-12"
         >
-          We built the next best thing.
+          You need a workforce that never sleeps.
         </motion.p>
 
         {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.4, duration: 0.5 }}
+          transition={{ delay: 1.1, duration: 0.5 }}
         >
           <MagneticButton href="/contact">
             Let&apos;s Talk
