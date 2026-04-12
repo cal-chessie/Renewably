@@ -106,9 +106,9 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
         >
           {agent.num === "01" ? (
-            <div className="relative overflow-hidden rounded-2xl shadow-xl">
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
               <MiniDesktop />
-              <div className="absolute top-4 left-4 bg-[#F3D840] text-[#1A1A1A] font-extrabold text-sm px-3 py-1.5 rounded-full shadow-lg" style={{ zIndex: 10 }}>
+              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
             </div>
