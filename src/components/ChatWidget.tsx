@@ -14,7 +14,7 @@ export default function ChatWidget() {
       {/* ── Floating Button ── */}
       <motion.button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-5 right-5 z-[150] w-16 h-16 rounded-full shadow-2xl flex items-center justify-center overflow-hidden group"
+        className="fixed bottom-5 right-5 z-[150] w-14 h-20 rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden group"
         style={{
           boxShadow: "0 4px 24px rgba(243,216,64,0.45), 0 0 0 0 rgba(243,216,64,0.3)",
         }}
@@ -43,16 +43,14 @@ export default function ChatWidget() {
         }
         aria-label="Open chat"
       >
-        {/* Yellow background */}
-        <div className="absolute inset-0 bg-[#F3D840]" />
-        {/* Robot image */}
+        {/* Robot image - tight crop, no background */}
         <Image
-          src="/robot-2.jpg"
+          src="/robot-2-cropped.png"
           alt="Chat with Renewably"
-          width={64}
-          height={64}
-          className={`relative z-[1] w-full h-full object-contain transition-transform duration-300 ${
-            open ? "scale-75 rotate-0" : "group-hover:scale-110"
+          width={56}
+          height={80}
+          className={`relative z-[1] w-full h-full object-cover transition-transform duration-300 ${
+            open ? "scale-90" : "group-hover:scale-110"
           }`}
           priority
         />
@@ -76,11 +74,11 @@ export default function ChatWidget() {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#F3D840]/15 flex items-center justify-center overflow-hidden">
                   <Image
-                    src="/robot-2.jpg"
+                    src="/robot-2-cropped.png"
                     alt=""
                     width={36}
                     height={36}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
