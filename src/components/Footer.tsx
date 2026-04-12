@@ -24,8 +24,8 @@ const legalLinks = [
 export default function Footer() {
   return (
     <footer className="bg-[#1A1A1A] text-gray-400">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-16">
           {/* Column 1: Logo & Description */}
           <div className="sm:col-span-2">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
@@ -228,7 +228,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="border-t border-white/10 mt-16 pt-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
             &copy; 2026 Renewably. All rights reserved.
           </p>
