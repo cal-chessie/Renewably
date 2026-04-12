@@ -258,7 +258,7 @@ export default function GrantsDashboard() {
           <div style={S.twoCol}>
             {/* Active Applications */}
             <div style={S.panel}>
-              <div style={S.panelHeader}>\ud83d\udccb ACTIVE APPLICATIONS</div>
+              <div style={S.panelHeader}>ACTIVE APPLICATIONS</div>
               <div style={S.panelContent}>
                 {applications.map((app) => (
                   <div key={app.id} style={S.grantCard}>
@@ -284,11 +284,11 @@ export default function GrantsDashboard() {
 
             {/* Document Status */}
             <div style={S.panel}>
-              <div style={S.panelHeader}>\ud83d\udcc4 DOCUMENT STATUS</div>
+              <div style={S.panelHeader}>DOCUMENT STATUS</div>
               <div style={S.panelContent}>
                 {documents.map((doc, i) => (
                   <div key={i} style={S.docItem}>
-                    <span style={S.docName}>\ud83d\udcc4 {doc.name} &middot; {doc.customer}</span>
+                    <span style={S.docName}>{doc.name} &middot; {doc.customer}</span>
                     <span style={{ ...S.docStatusLabel, color: getDocStatusColor(doc.status) }}>
                       {getDocStatusLabel(doc.status)}
                     </span>

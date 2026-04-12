@@ -259,7 +259,7 @@ export default function LogisticsDashboard() {
           <div style={S.twoCol}>
             {/* Active Orders */}
             <div style={S.panel}>
-              <div style={S.panelHeader}>\ud83d\udce6 ACTIVE ORDERS</div>
+              <div style={S.panelHeader}>ACTIVE ORDERS</div>
               <div style={S.panelContent}>
                 {orders.map((order) => (
                   <div key={order.id} style={S.orderCard}>
@@ -270,7 +270,7 @@ export default function LogisticsDashboard() {
                       </span>
                     </div>
                     <div style={S.orderCustomer}>\ud83d\udc64 {order.customer} &middot; {order.county}</div>
-                    <div style={S.orderItems}>\ud83d\udce6 {order.items}</div>
+                    <div style={S.orderItems}>{order.items}</div>
                     <div style={S.orderDate}>\ud83d\udcc5 Ordered: {order.ordered}</div>
                     {order.status !== "delivered" && (
                       <div style={S.progressBar}><div style={{ ...S.progressFill, width: `${order.progress}%` }} /></div>
@@ -288,11 +288,11 @@ export default function LogisticsDashboard() {
 
             {/* Inventory Status */}
             <div style={S.panel}>
-              <div style={S.panelHeader}>\ud83d\udcca INVENTORY STATUS</div>
+              <div style={S.panelHeader}>INVENTORY STATUS</div>
               <div style={S.panelContent}>
                 {inventory.map((item, i) => (
                   <div key={i} style={S.inventoryItem}>
-                    <span style={S.itemName}>\ud83d\udce6 {item.name}</span>
+                    <span style={S.itemName}>{item.name}</span>
                     <span style={{ ...S.itemStock, color: getStockColor(item.stock, item.reorderPoint) }}>
                       {item.stock} units &middot; {getStockLabel(item.stock, item.reorderPoint)}
                     </span>
