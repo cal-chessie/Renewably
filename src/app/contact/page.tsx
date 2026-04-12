@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import ContactPageClient from "@/components/ContactPageClient";
 
 export const metadata: Metadata = {
-  title: "Contact — Book a Free AI Strategy Call",
-  description: "Get in touch with Renewably to discover how our AI as a Service platform can transform your sales, marketing, and operations. Book a free strategy call today.",
+  title: "Contact — Let's Talk | Renewably",
+  description: "Get in touch with Renewably. We deploy AI agents across your solar operations — customer support, grants, logistics, and more. Book a free strategy call today.",
   alternates: { canonical: "https://renewably.ie/contact" },
 };
 
