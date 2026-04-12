@@ -28,6 +28,10 @@ export const metadata: Metadata = {
     default: `${siteConfig.name} — AI Workforce for Solar Installers`,
     template: `%s | ${siteConfig.name}`,
   },
+  icons: {
+    icon: "/logo-icon.png",
+    apple: "/logo-icon.png",
+  },
   description: siteConfig.description,
   keywords: [
     "AI workforce Ireland",
