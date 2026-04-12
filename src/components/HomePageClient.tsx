@@ -540,16 +540,18 @@ function PricingSection() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.5}>
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-3 rounded-full font-bold transition-all duration-300 shadow-md hover:shadow-lg"
-            style={{ padding: "10px 24px", fontSize: 14, letterSpacing: "0.02em", backgroundColor: "#1A1A1A", color: "#fff" }}
+          <div style={{ marginTop: 48 }}>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-3 rounded-full font-bold transition-all duration-300 shadow-md hover:shadow-lg"
+              style={{ padding: "10px 24px", fontSize: 14, letterSpacing: "0.02em", backgroundColor: "#1A1A1A", color: "#fff" }}
           >
             Book a Call
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
+          </div>
         </ScrollReveal>
       </div>
     </section>
