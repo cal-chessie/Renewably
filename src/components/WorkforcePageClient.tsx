@@ -8,6 +8,7 @@ import Image from "next/image";
 import MiniDesktop from "@/components/MiniDesktop";
 import OperationsDashboard from "@/components/OperationsDashboard";
 import SupportDashboard from "@/components/SupportDashboard";
+import GrantsDashboard from "@/components/GrantsDashboard";
 
 /* ============================================================
    DATA — 8 AI Agents
@@ -40,7 +41,6 @@ const agents = [
     tagline: "Knows every SEAI scheme. Fills every form. Chases every application.",
     body: "The grants agent is your SEAI expert. It knows every grant scheme — Solar PV, Battery Storage, Heat Pumps. It knows every form, every requirement, every deadline. It completes applications. It gathers supporting documents. It tracks submission status. It follows up on delays. It resubmits rejections within 24 hours.",
     closing: "Your approval rate goes up. Your admin time goes to zero.",
-    image: "/agents/agent-grants.jpg",
   },
   {
     num: "05",
@@ -125,6 +125,13 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           ) : agent.num === "03" ? (
             <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
               <SupportDashboard />
+              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
+                {agent.num}
+              </div>
+            </div>
+          ) : agent.num === "04" ? (
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+              <GrantsDashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
