@@ -33,11 +33,11 @@ interface TimelineEvent {
 }
 
 const INITIAL_APPLICATIONS: GrantApp[] = [
-  { id: "SEAI-2026-0842", customer: "Mary Walsh", county: "Cork", scheme: "Solar PV", amount: 1800, status: "approved", progress: 100, submitted: "2026-02-15", approved: "2026-03-12" },
-  { id: "SEAI-2026-0841", customer: "Pat Smith", county: "Dublin", scheme: "Solar PV + Battery", amount: 3000, status: "under-review", progress: 65, submitted: "2026-02-28", approved: null },
-  { id: "SEAI-2026-0840", customer: "Anne Doyle", county: "Galway", scheme: "Solar PV", amount: 1800, status: "submitted", progress: 30, submitted: "2026-03-05", approved: null },
-  { id: "SEAI-2026-0839", customer: "Tom Kelly", county: "Limerick", scheme: "Battery Storage", amount: 1200, status: "rejected", progress: 100, submitted: "2026-01-20", approved: null },
-  { id: "SEAI-2026-0838", customer: "Siobh\u00e1n N\u00ed Fhaol\u00e1in", county: "Kerry", scheme: "Solar PV", amount: 1800, status: "resubmitted", progress: 80, submitted: "2026-02-10", approved: null },
+  { id: "SEAI-2026-0842", customer: "Mary Walsh", county: "Cork", scheme: "Solar PV", amount: 1800.00, status: "approved", progress: 100, submitted: "2026-02-15", approved: "2026-03-12" },
+  { id: "SEAI-2026-0841", customer: "Pat Smith", county: "Dublin", scheme: "Solar PV + Battery", amount: 3000.00, status: "under-review", progress: 65, submitted: "2026-02-28", approved: null },
+  { id: "SEAI-2026-0840", customer: "Anne Doyle", county: "Galway", scheme: "Solar PV", amount: 1800.00, status: "submitted", progress: 30, submitted: "2026-03-05", approved: null },
+  { id: "SEAI-2026-0839", customer: "Tom Kelly", county: "Limerick", scheme: "Battery Storage", amount: 1200.00, status: "rejected", progress: 100, submitted: "2026-01-20", approved: null },
+  { id: "SEAI-2026-0838", customer: "Siobh\u00e1n N\u00ed Fhaol\u00e1in", county: "Kerry", scheme: "Solar PV", amount: 1800.00, status: "resubmitted", progress: 80, submitted: "2026-02-10", approved: null },
 ];
 
 const INITIAL_DOCUMENTS: GrantDoc[] = [
@@ -52,7 +52,7 @@ const INITIAL_DOCUMENTS: GrantDoc[] = [
 ];
 
 const INITIAL_TIMELINE: TimelineEvent[] = [
-  { time: "09:30", event: "SEAI grant approved \u2014 Mary Walsh (\u20ac1,800)" },
+  { time: "09:30", event: "SEAI grant approved \u2014 Mary Walsh (\u20ac1,800.00)" },
   { time: "10:15", event: "Application submitted \u2014 Anne Doyle (Solar PV)" },
   { time: "11:00", event: "Document request sent \u2014 Pat Smith (MPRN missing)" },
   { time: "13:30", event: "Resubmission received \u2014 Tom Kelly (Battery Storage)" },
@@ -107,7 +107,7 @@ export default function GrantsDashboard() {
   const [applications, setApplications] = useState<GrantApp[]>(INITIAL_APPLICATIONS.map((a) => ({ ...a })));
   const [documents, setDocuments] = useState<GrantDoc[]>(INITIAL_DOCUMENTS.map((d) => ({ ...d })));
   const [timeline, setTimeline] = useState<TimelineEvent[]>(INITIAL_TIMELINE.map((t) => ({ ...t })));
-  const [stats, setStats] = useState({ activeApps: 12, approvedToday: 3, avgProcessing: 14, totalGrantValue: 187.5 });
+  const [stats, setStats] = useState({ activeApps: 12, approvedToday: 3, avgProcessing: 14.00, totalGrantValue: 187.50 });
 
   // Clock
   useEffect(() => {
@@ -137,7 +137,7 @@ export default function GrantsDashboard() {
             app.approved = new Date().toISOString().slice(0, 10);
             approvedDelta++;
             grantValueDelta += app.amount / 1000;
-            newEvents.push({ time: fmtTime(), event: `SEAI grant approved \u2014 ${app.customer} (\u20ac${app.amount.toLocaleString()})` });
+            newEvents.push({ time: fmtTime(), event: `SEAI grant approved \u2014 ${app.customer} (\u20ac${app.amount.toLocaleString('en-IE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})` });
           } else if (app.status === "under-review" && Math.random() > 0.95) {
             app.status = "rejected";
             app.progress = 100;
@@ -156,7 +156,7 @@ export default function GrantsDashboard() {
         if (Math.random() > 0.85 && next.length < 15) {
           const idx = Math.floor(Math.random() * NEW_CUSTOMERS.length);
           const scheme = SCHEMES[Math.floor(Math.random() * SCHEMES.length)];
-          const amount = scheme === "Solar PV" ? 1800 : scheme === "Battery Storage" ? 1200 : 3000;
+          const amount = scheme === "Solar PV" ? 1800.00 : scheme === "Battery Storage" ? 1200.00 : 3000.00;
           next.unshift({
             id: `SEAI-2026-${900 + next.length}`,
             customer: NEW_CUSTOMERS[idx],
@@ -220,10 +220,13 @@ export default function GrantsDashboard() {
       });
 
       // Avg processing days random walk
-      setStats((s) => ({
-        ...s,
-        avgProcessing: Math.max(7, Math.min(21, s.avgProcessing + (Math.random() - 0.5) * 0.5)),
-      }));
+      setStats((s) => {
+        let change = (Math.random() - 0.5) * 0.5;
+        let newValue = s.avgProcessing + change;
+        if (newValue < 7.00) newValue = 7.00;
+        if (newValue > 21.00) newValue = 21.00;
+        return { ...s, avgProcessing: parseFloat(newValue.toFixed(2)) };
+      });
     }, 4000);
     return () => clearInterval(id);
   }, []);
@@ -247,8 +250,8 @@ export default function GrantsDashboard() {
           <div style={S.statsRow}>
             <div style={S.statCard}><div style={S.statNumber}>{stats.activeApps}</div><div style={S.statLabel}>ACTIVE APPLICATIONS</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.approvedToday}</div><div style={S.statLabel}>APPROVED TODAY</div></div>
-            <div style={S.statCard}><div style={S.statNumber}>{Math.round(stats.avgProcessing)}</div><div style={S.statLabel}>AVG PROCESSING (days)</div></div>
-            <div style={S.statCard}><div style={S.statNumber}>{stats.totalGrantValue.toFixed(1)}</div><div style={S.statLabel}>TOTAL GRANT VALUE (\u20ack)</div></div>
+            <div style={S.statCard}><div style={S.statNumber}>{stats.avgProcessing.toFixed(2)}</div><div style={S.statLabel}>AVG PROCESSING (days)</div></div>
+            <div style={S.statCard}><div style={S.statNumber}>{stats.totalGrantValue.toFixed(2)}</div><div style={S.statLabel}>TOTAL GRANT VALUE (\u20ack)</div></div>
           </div>
 
           {/* Two Column: Applications + Documents */}
@@ -266,7 +269,7 @@ export default function GrantsDashboard() {
                       </span>
                     </div>
                     <div style={S.grantCustomer}>\ud83d\udc64 {app.customer} &middot; {app.county}</div>
-                    <div style={S.grantAmount}>\ud83d\udcb0 {app.scheme} &middot; \u20ac{app.amount.toLocaleString()}</div>
+                    <div style={S.grantAmount}>\ud83d\udcb0 {app.scheme} &middot; \u20ac{app.amount.toLocaleString('en-IE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                     <div style={S.grantDate}>\ud83d\udcc5 Submitted: {app.submitted}</div>
                     {app.status !== "approved" && app.status !== "rejected" && (
                       <div style={S.progressBar}><div style={{ ...S.progressFill, width: `${app.progress}%` }} /></div>
@@ -366,6 +369,7 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     fontSize: 14,
+    color: "#FFF",
     cursor: "default",
   },
   clock: {
@@ -398,7 +402,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   statNumber: { color: "#F2CC2E", fontSize: 26, fontWeight: 700 },
   statLabel: {
-    color: "#555",
+    color: "#AAA",
     fontSize: 10,
     textTransform: "uppercase" as const,
     letterSpacing: 0.5,
@@ -470,7 +474,7 @@ const S: Record<string, React.CSSProperties> = {
     fontWeight: 600,
   },
   grantDate: {
-    color: "#444",
+    color: "#888",
     fontSize: 8,
     marginTop: 4,
   },
@@ -484,7 +488,7 @@ const S: Record<string, React.CSSProperties> = {
     borderBottom: "1px solid #1E1E1E",
   },
   docName: {
-    color: "#AAA",
+    color: "#CCC",
     fontSize: 10,
   },
   docStatusLabel: {
@@ -504,7 +508,7 @@ const S: Record<string, React.CSSProperties> = {
     minWidth: 55,
     fontWeight: 600,
   },
-  timelineEvent: { fontSize: 11, color: "#AAA" },
+  timelineEvent: { fontSize: 11, color: "#CCC" },
   grantsFooter: {
     padding: "10px 16px",
     background: "#0A0A0A",
@@ -512,7 +516,7 @@ const S: Record<string, React.CSSProperties> = {
     display: "flex",
     justifyContent: "space-between",
     fontSize: 10,
-    color: "#444",
+    color: "#666",
     flexShrink: 0,
   },
   laptopBottom: {
