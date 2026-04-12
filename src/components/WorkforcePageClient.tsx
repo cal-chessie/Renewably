@@ -9,6 +9,7 @@ import MiniDesktop from "@/components/MiniDesktop";
 import OperationsDashboard from "@/components/OperationsDashboard";
 import SupportDashboard from "@/components/SupportDashboard";
 import GrantsDashboard from "@/components/GrantsDashboard";
+import LogisticsDashboard from "@/components/LogisticsDashboard";
 
 /* ============================================================
    DATA — 8 AI Agents
@@ -48,7 +49,6 @@ const agents = [
     tagline: "Orders equipment. Schedules crews. Manages inventory.",
     body: "The logistics agent runs your supply chain. It tracks inventory levels — panels, inverters, rails, brackets. It places orders before you run out. It schedules crews based on job requirements and availability. It confirms deliveries. It reschedules when weather hits or customers cancel.",
     closing: "No more crews showing up without materials. No more jobs delayed because equipment arrived late.",
-    image: "/agents/agent-logistics.jpg",
   },
   {
     num: "06",
@@ -132,6 +132,13 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           ) : agent.num === "04" ? (
             <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
               <GrantsDashboard />
+              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
+                {agent.num}
+              </div>
+            </div>
+          ) : agent.num === "05" ? (
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+              <LogisticsDashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
