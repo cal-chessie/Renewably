@@ -38,16 +38,16 @@ export default function Header() {
       <header className="fixed top-0 left-0 right-0 z-[100] h-16 md:h-[72px]">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex items-center justify-between h-full">
-            <Link href="/" className="flex items-center gap-2.5 group">
+            <Link href="/" className="flex items-center gap-3 group">
               <Image
                 src="/logo-transparent.png"
                 alt="Renewably"
-                width={34}
-                height={34}
+                width={44}
+                height={44}
                 className="transition-transform duration-300 group-hover:scale-110 brightness-0 invert"
                 priority
               />
-              <span className="text-[17px] font-extrabold tracking-tight text-white hidden sm:inline">
+              <span className="text-[22px] font-extrabold tracking-tight text-white hidden sm:inline">
                 Renewably
               </span>
             </Link>
