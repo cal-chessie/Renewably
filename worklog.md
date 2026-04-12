@@ -106,3 +106,32 @@ Stage Summary:
 - Floating robot button with pulsing yellow ring animation
 - Panel opens with spring animation showing AI Chat and WhatsApp options
 - WhatsApp pre-fills message: "Hi Renewably, I'd like to learn more about your AI workforce."
+
+---
+Task ID: 6
+Agent: Main Agent
+Task: Fix header scroll behaviour - remove jank, flickering, and auto-hide issues
+
+Work Log:
+- Diagnosed root causes: IntersectionObserver flickering between dark/light sections, spring auto-hide causing jarring movement, background overlay out of sync with text color
+- Complete rewrite of Header.tsx:
+  - REMOVED: IntersectionObserver for dark/light section detection (was causing flickering)
+  - REMOVED: Auto-hide on scroll down (spring animation was jarring)
+  - REMOVED: Dark/light header text color switching (header-dark/header-light CSS classes)
+  - REMOVED: All data-theme dependency from header
+  - ADDED: Simple always-white header with bg-white/90 + backdrop-blur
+  - ADDED: Smooth opacity fade-in from 0.85 to 1.0 over first 60px of scroll
+  - ADDED: Shadow fade-in over first 80px of scroll
+  - KEPT: Yellow scroll progress bar
+  - KEPT: Mobile slide-in drawer
+  - KEPT: Active page indicator, hover underline effects
+  - All text/nav colors now always dark (no switching needed)
+- Cleaned up globals.css: removed unused .header-dark/.header-light/.header-text/.header-logo/.header-hamburger CSS classes
+- Lint: zero errors
+
+Stage Summary:
+- Header is now simple, solid, and smooth on every page
+- No more jumping, flickering, or colour switching
+- White frosted glass background that fades in on scroll
+- Bottom shadow that appears on scroll
+- Yellow progress bar at very top

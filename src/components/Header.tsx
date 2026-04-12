@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { useState, useCallback, useEffect } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { usePathname } from "next/navigation";
 
-/* ── Config ── */
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
@@ -15,81 +14,15 @@ const navLinks = [
   { href: "/contact", label: "Contact Us" },
 ];
 
-/* ================================================================
-   HEADER — Buttery smooth. No jumps.
-   - Background: interpolated via motion values (never re-renders)
-   - Text color: CSS transition on class toggle
-   - Auto-hide: spring animation
-   - No height changes (no layout shift)
-   ================================================================ */
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [overDark, setOverDark] = useState(true); // every page starts with dark hero
-  const [hidden, setHidden] = useState(false);
-  const overDarkRef = useRef(true);
-  const lastScrollY = useRef(0);
   const pathname = usePathname();
-
   const { scrollY, scrollYProgress } = useScroll();
 
-  /* ── Interpolated background values (zero re-renders) ── */
-  const bgOpacity = useTransform(scrollY, [0, 80], [0, 0.97]);
-  const blur = useTransform(scrollY, [0, 80], [0, 14]);
-  const shadowOpacity = useTransform(scrollY, [30, 100], [0, 1]);
-
-  /* ── Scroll progress for the bar ── */
+  const bgOpacity = useTransform(scrollY, [0, 60], [0.85, 1]);
+  const shadowOpacity = useTransform(scrollY, [0, 80], [0, 1]);
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
-  /* ── Auto-hide on scroll direction ── */
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    if (latest > 300) {
-      setHidden(latest > lastScrollY.current + 4);
-    } else {
-      setHidden(false);
-    }
-    lastScrollY.current = latest;
-  });
-
-  /* ── IntersectionObserver for dark sections ── */
-  useEffect(() => {
-    overDarkRef.current = true;
-
-    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Check if any dark section is in the header zone
-        const visibleDark = entries.some(
-          (e) => e.isIntersecting && e.target.getAttribute("data-theme") === "dark"
-        );
-
-        // Debounce to prevent rapid toggling
-        if (debounceTimer) clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-          overDarkRef.current = visibleDark;
-          setOverDark(visibleDark);
-        }, 50);
-      },
-      {
-        rootMargin: "-60px 0px 0px 0px",
-        threshold: [0.05, 0.5],
-      }
-    );
-
-    const timer = setTimeout(() => {
-      document.querySelectorAll("[data-theme]").forEach((el) => {
-        observer.observe(el);
-      });
-    }, 80);
-
-    return () => {
-      clearTimeout(timer);
-      if (debounceTimer) clearTimeout(debounceTimer);
-      observer.disconnect();
-    };
-  }, [pathname]);
-
-  /* ── Lock body when mobile open ── */
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -97,76 +30,48 @@ export default function Header() {
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
-  /* ── Computed class ── */
-  const darkClass = overDark ? "header-dark" : "header-light";
-
   return (
     <>
-      {/* ── Scroll Progress Bar ── */}
+      {/* Scroll Progress Bar */}
       <div className="fixed top-0 left-0 right-0 z-[200] h-[2px] pointer-events-none">
-        <motion.div
-          className="h-full bg-[#F3D840]"
-          style={{ width: progressWidth }}
-        />
+        <motion.div className="h-full bg-[#F3D840]" style={{ width: progressWidth }} />
       </div>
 
-      {/* ── Header ── */}
-      <motion.header
-        animate={{ y: hidden ? -80 : 0 }}
-        transition={{ type: "spring", damping: 35, stiffness: 260, mass: 0.8 }}
-        className={`fixed top-0 left-0 right-0 z-[100] h-16 md:h-[72px] ${darkClass}`}
-      >
-        {/* Animated background layer (motion values, zero re-renders) */}
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-[100] h-16 md:h-[72px]">
         <motion.div
-          className="absolute inset-0"
-          style={{
-            backgroundColor: "rgba(255,255,255,1)",
-            backdropFilter: "blur(14px)",
-            WebkitBackdropFilter: "blur(14px)",
-            opacity: bgOpacity,
-          }}
+          className="absolute inset-0 bg-white/90 backdrop-blur-md"
+          style={{ opacity: bgOpacity }}
         />
-
-        {/* Shadow layer */}
         <motion.div
           className="absolute inset-x-0 bottom-0 h-px"
-          style={{
-            boxShadow: "0 1px 6px rgba(0,0,0,0.08)",
-            opacity: shadowOpacity,
-          }}
+          style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)", opacity: shadowOpacity }}
         />
-
-        {/* Content */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex items-center justify-between h-full">
-            {/* ── Logo ── */}
             <Link href="/" className="flex items-center gap-2.5 group">
               <Image
                 src="/logo-transparent.png"
                 alt="Renewably"
                 width={34}
                 height={34}
-                className="header-logo transition-transform duration-300 group-hover:scale-110"
+                className="transition-transform duration-300 group-hover:scale-110"
                 priority
               />
-              <span className="header-text text-[17px] font-extrabold tracking-tight hidden sm:inline">
+              <span className="text-[17px] font-extrabold tracking-tight text-[#1A1A1A] hidden sm:inline">
                 Renewably
               </span>
             </Link>
 
-            {/* ── Desktop Nav ── */}
             <nav className="hidden md:flex items-center gap-0.5">
               {navLinks.map((link) => {
-                const isActive =
-                  link.href === "/"
-                    ? pathname === "/"
-                    : pathname.startsWith(link.href);
+                const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`relative px-3.5 py-2 text-[13px] font-medium rounded-lg group ${
-                      isActive ? "text-[#F3D840]" : "header-text"
+                    className={`relative px-3.5 py-2 text-[13px] font-medium rounded-lg group transition-colors duration-200 ${
+                      isActive ? "text-[#F3D840]" : "text-[#1A1A1A]/70 hover:text-[#1A1A1A]"
                     }`}
                   >
                     {link.label}
@@ -179,7 +84,6 @@ export default function Header() {
               })}
             </nav>
 
-            {/* ── CTA + Mobile ── */}
             <div className="flex items-center gap-2">
               <Link
                 href="/contact"
@@ -191,39 +95,32 @@ export default function Header() {
                 </svg>
               </Link>
 
-              {/* Hamburger */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className="md:hidden p-2 rounded-xl"
                 aria-label="Toggle menu"
               >
                 <div className="w-5 h-[18px] flex flex-col justify-between relative">
-                  <span className="header-hamburger absolute left-0 w-5 h-[1.5px] rounded-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-                    style={{
-                      top: mobileOpen ? "8px" : "0px",
-                      transform: mobileOpen ? "rotate(45deg)" : "rotate(0deg)",
-                    }}
+                  <span
+                    className="absolute left-0 w-5 h-[1.5px] rounded-full bg-[#1A1A1A] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                    style={{ top: mobileOpen ? "8px" : "0px", transform: mobileOpen ? "rotate(45deg)" : "rotate(0deg)" }}
                   />
-                  <span className="header-hamburger absolute left-0 top-[8px] w-5 h-[1.5px] rounded-full transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
-                    style={{
-                      opacity: mobileOpen ? 0 : 1,
-                      transform: mobileOpen ? "scaleX(0)" : "scaleX(1)",
-                    }}
+                  <span
+                    className="absolute left-0 top-[8px] w-5 h-[1.5px] rounded-full bg-[#1A1A1A] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                    style={{ opacity: mobileOpen ? 0 : 1, transform: mobileOpen ? "scaleX(0)" : "scaleX(1)" }}
                   />
-                  <span className="header-hamburger absolute left-0 w-5 h-[1.5px] rounded-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-                    style={{
-                      top: mobileOpen ? "8px" : "16px",
-                      transform: mobileOpen ? "rotate(-45deg)" : "rotate(0deg)",
-                    }}
+                  <span
+                    className="absolute left-0 w-5 h-[1.5px] rounded-full bg-[#1A1A1A] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                    style={{ top: mobileOpen ? "8px" : "16px", transform: mobileOpen ? "rotate(-45deg)" : "rotate(0deg)" }}
                   />
                 </div>
               </button>
             </div>
           </div>
         </div>
-      </motion.header>
+      </header>
 
-      {/* ── Mobile Menu ── */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
           <>
@@ -259,12 +156,7 @@ export default function Header() {
                   {navLinks.map((link, index) => {
                     const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
                     return (
-                      <motion.div
-                        key={link.href}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.05 + index * 0.04, duration: 0.3 }}
-                      >
+                      <motion.div key={link.href} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.05 + index * 0.04, duration: 0.3 }}>
                         <Link
                           href={link.href}
                           onClick={closeMobile}
@@ -280,12 +172,7 @@ export default function Header() {
                   })}
                 </nav>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.25, duration: 0.25 }}
-                  className="px-5 pb-6"
-                >
+                <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.25 }} className="px-5 pb-6">
                   <Link
                     href="/contact"
                     onClick={closeMobile}
