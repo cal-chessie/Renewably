@@ -146,18 +146,12 @@ export default function MiniDesktop() {
     <div style={styles.laptopMockup}>
       {/* Screen */}
       <div style={styles.screen}>
-        {/* Taskbar */}
+        {/* Taskbar — NO LOGO */}
         <div style={styles.taskbar}>
-          <div style={styles.startMenu}>
-            <div style={styles.logo}>
-              <div style={styles.logoIcon}>🌿</div>
-              <div style={styles.logoText}>RENEWABLY</div>
-            </div>
-            <div style={styles.taskbarIcons}>
-              {["⚡", "📄", "🤖", "🔧"].map((icon) => (
-                <div key={icon} style={styles.taskbarIcon}>{icon}</div>
-              ))}
-            </div>
+          <div style={styles.taskbarIcons}>
+            {["⚡", "📄", "🤖", "🔧"].map((icon) => (
+              <div key={icon} style={styles.taskbarIcon}>{icon}</div>
+            ))}
           </div>
           <div style={styles.clock}>{clock}</div>
         </div>
@@ -321,26 +315,11 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#0F0F0F",
     padding: "0.4rem 1rem",
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
     borderBottom: "1px solid #2A2A2A",
   },
-  startMenu: { display: "flex", alignItems: "center", gap: 12 },
-  logo: { display: "flex", alignItems: "center", gap: 8 },
-  logoIcon: {
-    width: 28,
-    height: 28,
-    background: "#F2CC2E",
-    borderRadius: 8,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 16,
-    fontWeight: 700,
-    color: "#0A0A0A",
-  },
-  logoText: { fontSize: 13, fontWeight: 600, color: "#F2CC2E", letterSpacing: -0.3 },
-  taskbarIcons: { display: "flex", gap: 6 },
+  taskbarIcons: { display: "flex", gap: 6, marginRight: "auto" },
   taskbarIcon: {
     width: 26,
     height: 26,

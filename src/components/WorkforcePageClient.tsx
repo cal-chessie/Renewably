@@ -17,7 +17,6 @@ const agents = [
     tagline: "Sets strategy. Assigns work. Manages the team. Reports to you weekly.",
     body: "The CEO agent oversees everything. It sets weekly priorities based on your goals. It assigns tasks to the right agents. It monitors performance across the workforce. It spots problems before you do — a grant stuck for two weeks, a permit that hasn't moved, a customer who hasn't heard anything.",
     closing: "Every Monday, you get a summary. What happened last week. What's planned for this week. Where attention is needed. You review. You approve. You override if you want.",
-    image: "/agents/agent-ceo.jpg",
   },
   {
     num: "02",
