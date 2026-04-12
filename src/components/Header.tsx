@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { usePathname } from "next/navigation";
@@ -38,17 +37,15 @@ export default function Header() {
       <header className="fixed top-0 left-0 right-0 z-[100] h-16 md:h-[72px]">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex items-center justify-between h-full">
-            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-              <Image
+            <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+              <img
                 src="/logo-transparent.png"
                 alt="Renewably"
                 width={44}
                 height={44}
-                className="transition-transform duration-300 group-hover:scale-110"
-                style={{ filter: 'brightness(0) invert(1)' }}
-                priority
+                style={{ filter: 'brightness(0) invert(1)', transition: 'transform 0.3s' }}
               />
-              <span className="text-[20px] font-extrabold tracking-tight text-white hidden sm:inline">
+              <span style={{ fontSize: 20, fontWeight: 800, letterSpacing: '-0.02em', color: '#fff' }}>
                 Renewably
               </span>
             </Link>
@@ -132,9 +129,9 @@ export default function Header() {
             >
               <div className="flex flex-col h-full">
                 <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-                  <Link href="/" onClick={closeMobile} className="flex items-center gap-2">
-                    <Image src="/logo-transparent.png" alt="Renewably" width={28} height={28} style={{ filter: 'brightness(0)' }} />
-                    <span className="text-[15px] font-extrabold tracking-tight text-[#1A1A1A]">Renewably</span>
+                  <Link href="/" onClick={closeMobile} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <img src="/logo-transparent.png" alt="Renewably" width={28} height={28} style={{ filter: 'brightness(0)' }} />
+                    <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: '-0.02em', color: '#1A1A1A' }}>Renewably</span>
                   </Link>
                   <button onClick={closeMobile} className="p-2 -mr-2 rounded-xl hover:bg-gray-100 transition-colors" aria-label="Close menu">
                     <svg className="w-5 h-5 text-[#1A1A1A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
