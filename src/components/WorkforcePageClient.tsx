@@ -251,7 +251,7 @@ function InvestmentSection() {
           <Link
             href="/contact"
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
-            style={{ padding: '14px 32px', fontSize: 16, fontWeight: 700, letterSpacing: '0.02em' }}
+            style={{ padding: '10px 24px', fontSize: 14, fontWeight: 700, letterSpacing: '0.02em' }}
           >
             Book a Call
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -292,7 +292,7 @@ function CTASection() {
           <Link
             href="/contact"
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
-            style={{ padding: '14px 32px', fontSize: 16, fontWeight: 700, letterSpacing: '0.02em' }}
+            style={{ padding: '10px 24px', fontSize: 14, fontWeight: 700, letterSpacing: '0.02em' }}
           >
             Get Started
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
