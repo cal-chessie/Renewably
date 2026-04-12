@@ -692,73 +692,56 @@ function HowItStartsSection() {
   const stepsInView = useInView(stepsRef, { once: true, margin: "-80px" });
 
   return (
-    <section style={{ backgroundColor: '#F3D840', paddingTop: 160, paddingBottom: 160, overflow: 'hidden' }}>
+    <section style={{ backgroundColor: '#F3D840', paddingTop: 80, paddingBottom: 80, overflow: 'hidden' }}>
       <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 24, paddingRight: 24 }}>
         {/* Badge */}
-        <ScrollReveal>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, backgroundColor: 'rgba(26,26,26,0.1)', border: '1px solid rgba(26,26,26,0.15)', marginBottom: 48 }}>
-            <span style={{ color: '#1A1A1A', fontSize: 13, fontWeight: 600, letterSpacing: '0.03em' }}>
-              How it starts.
-            </span>
-          </div>
-        </ScrollReveal>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, backgroundColor: 'rgba(26,26,26,0.1)', border: '1px solid rgba(26,26,26,0.15)', marginBottom: 32 }}>
+          <span style={{ color: '#1A1A1A', fontSize: 13, fontWeight: 600, letterSpacing: '0.03em' }}>
+            How it starts.
+          </span>
+        </div>
 
         {/* Steps */}
-        <div ref={stepsRef} style={{ display: 'flex', flexDirection: 'column', gap: 28, marginBottom: 72 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 40 }}>
           {steps.map((step, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -20 }}
-              animate={stepsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-              transition={{ delay: 0.2 + i * 0.15, duration: 0.4, ease: "easeOut" }}
-              style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 0' }}
-            >
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={stepsInView ? { scale: 1 } : { scale: 0 }}
-                transition={{ delay: 0.2 + i * 0.15, duration: 0.3, type: "spring", stiffness: 300 }}
-                style={{ width: 40, height: 40, minWidth: 40, borderRadius: '50%', backgroundColor: '#1A1A1A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              >
-                <span style={{ color: '#F3D840', fontWeight: 700, fontSize: 14 }}>{i + 1}</span>
-              </motion.div>
-              <p style={{ color: '#1A1A1A', fontSize: 20, fontWeight: 600 }}>{step}</p>
-            </motion.div>
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 32, height: 32, minWidth: 32, borderRadius: '50%', backgroundColor: '#1A1A1A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ color: '#F3D840', fontWeight: 700, fontSize: 13 }}>{i + 1}</span>
+              </div>
+              <p style={{ color: '#1A1A1A', fontSize: 16, fontWeight: 600 }}>{step}</p>
+            </div>
           ))}
         </div>
 
         {/* Closing text */}
-        <ScrollReveal delay={0.5}>
-          <p style={{ color: '#374151', fontSize: 18, lineHeight: 1.7, marginBottom: 24 }}>
-            You don&apos;t install software. You don&apos;t configure APIs. You don&apos;t learn a new system.
-          </p>
-        </ScrollReveal>
+        <p style={{ color: '#374151', fontSize: 15, lineHeight: 1.6, marginBottom: 8 }}>
+          You don&apos;t install software. You don&apos;t configure APIs. You don&apos;t learn a new system.
+        </p>
 
-        <ScrollReveal delay={0.6}>
-          <p style={{ color: '#1A1A1A', fontSize: 24, fontWeight: 800, marginBottom: 48 }}>
-            You just start managing instead of doing.
-          </p>
-        </ScrollReveal>
+        <p style={{ color: '#1A1A1A', fontSize: 20, fontWeight: 800, marginBottom: 40 }}>
+          You just start managing instead of doing.
+        </p>
 
-        {/* CTA — no ScrollReveal, guaranteed visible */}
-        <div style={{ textAlign: 'center', paddingTop: 80 }}>
-          <h2 style={{ color: '#1A1A1A', fontSize: 48, fontWeight: 800, lineHeight: 1.1, marginBottom: 24, textAlign: 'center' }}>
+        {/* CTA */}
+        <div style={{ textAlign: 'center', paddingTop: 40 }}>
+          <h2 style={{ color: '#1A1A1A', fontSize: 36, fontWeight: 800, lineHeight: 1.1, marginBottom: 16, textAlign: 'center' }}>
             Ready to meet your new team?
           </h2>
-          <p style={{ color: '#374151', fontSize: 18, marginBottom: 40, textAlign: 'center' }}>
+          <p style={{ color: '#374151', fontSize: 16, marginBottom: 24, textAlign: 'center' }}>
             <a href="mailto:hello@renewably.com" style={{ textDecoration: 'underline', color: '#374151' }}>
               hello@renewably.com
             </a>
           </p>
-          <div style={{ display: 'block', textAlign: 'center', marginTop: 16 }}>
+          <div style={{ display: 'block', textAlign: 'center', marginTop: 8 }}>
             <a
               href="/contact"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 10,
-                padding: '18px 44px',
-                fontSize: 18,
+                gap: 8,
+                padding: '14px 32px',
+                fontSize: 15,
                 fontWeight: 700,
                 letterSpacing: '0.02em',
                 color: '#F3D840',
@@ -770,7 +753,7 @@ function HowItStartsSection() {
               }}
             >
               Let&apos;s Talk
-              <span style={{ display: 'inline-block', marginLeft: 4 }}>&#8594;</span>
+              <span style={{ display: 'inline-block', marginLeft: 2 }}>&#8594;</span>
             </a>
           </div>
         </div>
