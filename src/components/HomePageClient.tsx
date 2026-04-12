@@ -696,7 +696,7 @@ function HowItStartsSection() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1A1A1A]/10 border border-[#1A1A1A]/15 mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1A1A1A]/10 border border-[#1A1A1A]/15" style={{ marginBottom: 40 }}>
             <span className="text-[#1A1A1A] text-xs sm:text-sm font-semibold tracking-wide">
               How it starts.
             </span>
@@ -704,24 +704,24 @@ function HowItStartsSection() {
         </ScrollReveal>
 
         {/* Steps */}
-        <div ref={stepsRef} className="space-y-4 mb-12">
+        <div ref={stepsRef} style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 48 }}>
           {steps.map((step, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, x: -20 }}
               animate={stepsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
               transition={{ delay: 0.2 + i * 0.15, duration: 0.4, ease: "easeOut" }}
-              className="flex items-center gap-4"
+              className="flex items-center gap-4" style={{ padding: '8px 0' }}
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={stepsInView ? { scale: 1 } : { scale: 0 }}
                 transition={{ delay: 0.2 + i * 0.15, duration: 0.3, type: "spring", stiffness: 300 }}
-                className="w-8 h-8 rounded-full bg-[#1A1A1A] flex items-center justify-center shrink-0"
+                className="w-8 h-8 rounded-full bg-[#1A1A1A] flex items-center justify-center shrink-0" style={{ width: 36, height: 36, minWidth: 36 }}
               >
-                <span className="text-[#F3D840] font-bold text-xs">{i + 1}</span>
+                <span className="text-[#F3D840] font-bold text-xs" style={{ fontSize: 13 }}>{i + 1}</span>
               </motion.div>
-              <p className="text-[#1A1A1A] text-lg sm:text-xl font-semibold">{step}</p>
+              <p className="text-[#1A1A1A] text-lg sm:text-xl font-semibold" style={{ fontSize: 18 }}>{step}</p>
             </motion.div>
           ))}
         </div>
