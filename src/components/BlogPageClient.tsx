@@ -250,67 +250,61 @@ export default function BlogPageClient() {
   return (
     <main>
       {/* ===== HERO ===== */}
-      <section ref={heroRef} style={{ position: "relative", overflow: "hidden", backgroundColor: DARK }}>
+      <section ref={heroRef} data-theme="dark" style={{ position: "relative", overflow: "hidden", backgroundColor: DARK }}>
+        {/* Robot hero background */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+          <Image
+            src="/robot-3.jpg"
+            alt=""
+            fill
+            style={{ objectFit: "cover" }}
+            priority
+          />
+        </div>
+        {/* Dark overlay */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(135deg, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.6) 50%, rgba(10,10,10,0.3) 100%)" }} />
+
         {/* Dot grid */}
         <div style={{
-          position: "absolute", inset: 0, opacity: 0.04,
+          position: "absolute", inset: 0, zIndex: 2, opacity: 0.04,
           backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }} />
 
-        {/* Animated glow orbs */}
-        <motion.div
-          animate={{ x: [0, 50, -30, 0], y: [0, -40, 20, 0], scale: [1, 1.15, 0.9, 1] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          style={{
-            position: "absolute", top: "10%", right: "10%", width: 500, height: 500,
-            borderRadius: "50%", background: "radial-gradient(circle, rgba(243,216,64,0.08) 0%, transparent 70%)",
-            filter: "blur(80px)", pointerEvents: "none",
-          }}
-        />
-
-        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-[1] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div style={{ y: heroY, opacity: heroOpacity, position: "relative", zIndex: 3, maxWidth: 896, width: "100%", padding: "0 16px", margin: "0 auto", textAlign: "center" }}>
           <div style={{ paddingTop: 140, paddingBottom: 80 }}>
-            {/* Stats bar */}
+            {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              style={{
-                display: "flex", gap: 32, marginBottom: 48, flexWrap: "wrap",
-              }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, borderRadius: 9999, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", backdropFilter: "blur(8px)", marginBottom: 32, padding: "6px 16px", fontSize: 13, fontWeight: 600, letterSpacing: "0.03em" }}
             >
-              {[
-                { value: `${posts.length}`, label: "Articles" },
-                { value: `${allCategories.length - 1}`, label: "Topics" },
-                { value: "Solar", label: "Focused" },
-              ].map((stat) => (
-                <div key={stat.label} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ width: 3, height: 28, borderRadius: 2, backgroundColor: YELLOW }} />
-                  <div>
-                    <p style={{ fontSize: 20, fontWeight: 800, color: "#fff", lineHeight: 1.2 }}>{stat.value}</p>
-                    <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.08em" }}>{stat.label}</p>
-                  </div>
-                </div>
-              ))}
+              <motion.span
+                style={{ width: 8, height: 8, borderRadius: "50%", background: YELLOW, boxShadow: "0 0 8px rgba(243,216,64,0.6)" }}
+                animate={{ scale: [1, 1.3, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              <span style={{ color: "rgba(255,255,255,0.85)" }}>Blog</span>
             </motion.div>
 
             {/* Heading */}
             <motion.h1
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              style={{ fontSize: "clamp(36px, 6vw, 64px)", fontWeight: 800, color: "#fff", lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: 20, maxWidth: 700 }}
+              transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              style={{ fontSize: "clamp(40px, 6vw, 72px)", fontWeight: 800, color: "#fff", lineHeight: 1.08, letterSpacing: "-0.02em", marginBottom: 24 }}
             >
-              How solar installers{" "}
-              <span style={{ color: YELLOW }}>stop losing leads</span>
+              How Solar Installers
+              <br />
+              <span style={{ color: YELLOW }}>Stop Losing Leads</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.6 }}
-              style={{ fontSize: 18, lineHeight: 1.7, color: "rgba(255,255,255,0.5)", maxWidth: 540, marginBottom: 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+              style={{ color: "rgba(255,255,255,0.6)", fontSize: "clamp(17px, 2vw, 21px)", lineHeight: 1.6, maxWidth: 640, margin: "0 auto" }}
             >
               Practical guides on AI operations, SEAI grants, ESB permitting, logistics, and customer support. Written for solar companies doing 20+ jobs a month in Ireland.
             </motion.p>
@@ -318,7 +312,7 @@ export default function BlogPageClient() {
         </motion.div>
 
         {/* Bottom fade */}
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 80, background: "linear-gradient(to top, #F9FAFB, transparent)", zIndex: 2, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 80, background: "linear-gradient(to top, #F9FAFB, transparent)", zIndex: 4, pointerEvents: "none" }} />
       </section>
 
       {/* ===== FEATURED POST ===== */}
