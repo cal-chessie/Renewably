@@ -17,10 +17,7 @@ const navLinks = [
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
-  const { scrollY, scrollYProgress } = useScroll();
-
-  const bgOpacity = useTransform(scrollY, [0, 60], [0.85, 1]);
-  const shadowOpacity = useTransform(scrollY, [0, 80], [0, 1]);
+  const { scrollYProgress } = useScroll();
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   useEffect(() => {
@@ -39,14 +36,6 @@ export default function Header() {
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-[100] h-16 md:h-[72px]">
-        <motion.div
-          className="absolute inset-0 bg-white/90 backdrop-blur-md"
-          style={{ opacity: bgOpacity }}
-        />
-        <motion.div
-          className="absolute inset-x-0 bottom-0 h-px"
-          style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)", opacity: shadowOpacity }}
-        />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex items-center justify-between h-full">
             <Link href="/" className="flex items-center gap-2.5 group">
@@ -55,10 +44,10 @@ export default function Header() {
                 alt="Renewably"
                 width={34}
                 height={34}
-                className="transition-transform duration-300 group-hover:scale-110"
+                className="transition-transform duration-300 group-hover:scale-110 brightness-0 invert"
                 priority
               />
-              <span className="text-[17px] font-extrabold tracking-tight text-[#1A1A1A] hidden sm:inline">
+              <span className="text-[17px] font-extrabold tracking-tight text-white hidden sm:inline">
                 Renewably
               </span>
             </Link>
@@ -71,7 +60,7 @@ export default function Header() {
                     key={link.href}
                     href={link.href}
                     className={`relative px-3.5 py-2 text-[13px] font-medium rounded-lg group transition-colors duration-200 ${
-                      isActive ? "text-[#F3D840]" : "text-[#1A1A1A]/70 hover:text-[#1A1A1A]"
+                      isActive ? "text-[#F3D840]" : "text-white/80 hover:text-white"
                     }`}
                   >
                     {link.label}
@@ -87,7 +76,7 @@ export default function Header() {
             <div className="flex items-center gap-2">
               <Link
                 href="/contact"
-                className="hidden md:inline-flex items-center gap-2 px-5 py-2 text-[13px] font-bold rounded-full bg-[#F3D840] text-[#1A1A1A] hover:bg-[#E5C832] transition-all duration-200 hover:shadow-lg hover:shadow-[#F3D840]/20 active:scale-[0.97]"
+                className="hidden md:inline-flex items-center gap-2 px-5 py-2 text-[13px] font-bold rounded-full bg-[#F3D840] text-[#1A1A1A] hover:bg-[#E5C832] transition-all duration-200 hover:shadow-lg hover:shadow-[#F3D840]/30 active:scale-[0.97]"
               >
                 Book a Call
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,15 +91,15 @@ export default function Header() {
               >
                 <div className="w-5 h-[18px] flex flex-col justify-between relative">
                   <span
-                    className="absolute left-0 w-5 h-[1.5px] rounded-full bg-[#1A1A1A] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                    className="absolute left-0 w-5 h-[1.5px] rounded-full bg-white transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
                     style={{ top: mobileOpen ? "8px" : "0px", transform: mobileOpen ? "rotate(45deg)" : "rotate(0deg)" }}
                   />
                   <span
-                    className="absolute left-0 top-[8px] w-5 h-[1.5px] rounded-full bg-[#1A1A1A] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                    className="absolute left-0 top-[8px] w-5 h-[1.5px] rounded-full bg-white transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
                     style={{ opacity: mobileOpen ? 0 : 1, transform: mobileOpen ? "scaleX(0)" : "scaleX(1)" }}
                   />
                   <span
-                    className="absolute left-0 w-5 h-[1.5px] rounded-full bg-[#1A1A1A] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+                    className="absolute left-0 w-5 h-[1.5px] rounded-full bg-white transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
                     style={{ top: mobileOpen ? "8px" : "16px", transform: mobileOpen ? "rotate(-45deg)" : "rotate(0deg)" }}
                   />
                 </div>
