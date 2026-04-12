@@ -1,42 +1,49 @@
 import Link from "next/link";
 import Image from "next/image";
 
-const footerLinks = {
-  services: [
-    { label: "AI Sales Agents", href: "/services" },
-    { label: "Marketing Automation", href: "/services" },
-    { label: "Lead Generation", href: "/services" },
-    { label: "Workflow Automation", href: "/services" },
-    { label: "Revenue Intelligence", href: "/services" },
-  ],
-  company: [
-    { label: "About Us", href: "/about" },
-    { label: "Blog", href: "/blog" },
-    { label: "Contact Us", href: "/contact" },
-    { label: "Admin Portal", href: "/crm/login" },
-    { label: "Privacy Policy", href: "/privacy" },
-    { label: "Terms of Service", href: "/terms" },
-  ],
-};
+const serviceLinks = [
+  { label: "AI Workforce for Solar", href: "/services" },
+  { label: "Grant Automation", href: "/services" },
+  { label: "Permit Tracking", href: "/services" },
+  { label: "Installer Coordination", href: "/services" },
+  { label: "Customer Support AI", href: "/services" },
+  { label: "Site Assessment AI", href: "/services" },
+];
+
+const companyLinks = [
+  { label: "About Us", href: "/about" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact Us", href: "/contact" },
+];
+
+const legalLinks = [
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms of Service", href: "/terms" },
+];
 
 export default function Footer() {
   return (
     <footer className="bg-[#1A1A1A] text-gray-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Column 1: Logo & Description */}
-          <div>
-            <Link href="/" className="flex items-center gap-2 mb-4">
+          <div className="sm:col-span-2">
+            <Link href="/" className="flex items-center gap-2.5 mb-4">
               <Image
                 src="/logo-transparent.png"
                 alt="Renewably"
                 width={40}
                 height={40}
+                className="brightness-0 invert"
               />
+              <span className="text-white text-lg font-extrabold tracking-tight">
+                Renewably
+              </span>
             </Link>
             <p className="text-gray-500 max-w-xs leading-relaxed mb-6 text-sm">
-              Ireland&apos;s leading AI as a Service provider. We deploy AI agents, automations,
-              and intelligent systems that transform how businesses sell, market, and operate.
+              Ireland&apos;s leading AI workforce for solar installers. We deploy
+              AI employees that handle grants, permits, customer support, and
+              logistics — so you can focus on installing.
             </p>
             <div className="flex gap-3">
               <a
@@ -93,8 +100,8 @@ export default function Footer() {
               Services
             </h3>
             <ul className="space-y-3">
-              {footerLinks.services.map((link) => (
-                <li key={link.href}>
+              {serviceLinks.map((link) => (
+                <li key={link.label}>
                   <Link
                     href={link.href}
                     className="text-gray-500 hover:text-[#F3D840] transition-colors text-sm duration-300"
@@ -112,8 +119,24 @@ export default function Footer() {
               Company
             </h3>
             <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
-                <li key={link.href}>
+              {companyLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-500 hover:text-[#F3D840] transition-colors text-sm duration-300"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <h3 className="text-white font-semibold mt-8 mb-5 text-sm uppercase tracking-wider">
+              Legal
+            </h3>
+            <ul className="space-y-3">
+              {legalLinks.map((link) => (
+                <li key={link.label}>
                   <Link
                     href={link.href}
                     className="text-gray-500 hover:text-[#F3D840] transition-colors text-sm duration-300"
@@ -146,7 +169,12 @@ export default function Footer() {
                   />
                 </svg>
                 <div>
-                  <p className="text-gray-500 text-sm">+353 873958424</p>
+                  <a
+                    href="tel:+353873958424"
+                    className="text-gray-500 hover:text-[#F3D840] transition-colors text-sm"
+                  >
+                    +353 873958424
+                  </a>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -164,7 +192,12 @@ export default function Footer() {
                   />
                 </svg>
                 <div>
-                  <p className="text-gray-500 text-sm">cal@renewably.ie</p>
+                  <a
+                    href="mailto:hello@renewably.ie"
+                    className="text-gray-500 hover:text-[#F3D840] transition-colors text-sm"
+                  >
+                    hello@renewably.ie
+                  </a>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -200,7 +233,7 @@ export default function Footer() {
             &copy; 2026 Renewably. All rights reserved.
           </p>
           <p className="text-sm text-[#F3D840] font-medium">
-            Your unfair advantage is us!
+            AI workforce for solar installers.
           </p>
         </div>
       </div>

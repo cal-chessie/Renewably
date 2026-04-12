@@ -30,8 +30,8 @@ const contactInfo = [
       </svg>
     ),
     label: "Email",
-    value: "hello@renewably.com",
-    href: "mailto:hello@renewably.com",
+    value: "hello@renewably.ie",
+    href: "mailto:hello@renewably.ie",
   },
   {
     icon: (
@@ -172,13 +172,13 @@ export default function ContactPageClient() {
                   className="flex flex-col sm:flex-row gap-4"
                 >
                   <a
-                    href="mailto:hello@renewably.com"
+                    href="mailto:hello@renewably.ie"
                     className="inline-flex items-center gap-2 text-white/60 hover:text-[#F3D840] transition-colors text-sm font-medium"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    hello@renewably.com
+                    hello@renewably.ie
                   </a>
                   <a
                     href="tel:+353873958424"
@@ -211,8 +211,8 @@ export default function ContactPageClient() {
                     </h2>
                     <p className="text-[#535353] text-base leading-relaxed">
                       Fill this out and we&apos;ll get back to you within 24 hours. Or skip the form and email us directly at{" "}
-                      <a href="mailto:hello@renewably.com" className="text-[#F3D840] font-semibold hover:underline">
-                        hello@renewably.com
+                      <a href="mailto:hello@renewably.ie" className="text-[#F3D840] font-semibold hover:underline">
+                        hello@renewably.ie
                       </a>.
                     </p>
                   </div>

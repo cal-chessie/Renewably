@@ -350,7 +350,7 @@ function AgentsSection() {
     },
     {
       title: "Grants agent",
-      desc: "Knows every scheme. Fills every form. Chases every application.",
+      desc: "Knows every SEAI scheme. Fills every form. Chases every application.",
     },
     {
       title: "Logistics agent",
@@ -359,6 +359,14 @@ function AgentsSection() {
     {
       title: "Permitting agent",
       desc: "Handles ESB. Tracks submissions. Follows up on delays.",
+    },
+    {
+      title: "QA agent",
+      desc: "Reviews every job before handover. Checks paperwork. Catches mistakes.",
+    },
+    {
+      title: "Reporting agent",
+      desc: "Shows you exactly what's happening. Weekly summaries. Bottlenecks identified.",
     },
   ];
 
@@ -415,28 +423,7 @@ function AgentsSection() {
 }
 
 /* ============================================================
-   SECTION 6: MARQUEE SECTION
-   ============================================================ */
-function MarqueeSection() {
-  const text =
-    "SOLAR AI \u2022 AI EMPLOYEES \u2022 GRANT AUTOMATION \u2022 SITE ASSESSMENT \u2022 INSTALLER COORDINATION \u2022 PERMIT TRACKING \u2022 SOLAR OPERATIONS \u2022 AI WORKFORCE \u2022 ";
-
-  return (
-    <section className="bg-[#F3D840] py-4 overflow-hidden">
-      <div className="animate-marquee whitespace-nowrap flex">
-        <span className="text-[#374151] font-bold text-sm sm:text-base tracking-widest uppercase mx-4">
-          {text}
-        </span>
-        <span className="text-[#374151] font-bold text-sm sm:text-base tracking-widest uppercase mx-4">
-          {text}
-        </span>
-      </div>
-    </section>
-  );
-}
-
-/* ============================================================
-   SECTION 7: VIDEO TOUR SECTION — Dark Background
+   SECTION 6: VIDEO TOUR SECTION — Dark Background
    ============================================================ */
 function VideoTourSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -515,6 +502,8 @@ function PricingSection() {
     { name: "Grants agent", price: "~\u20AC40/month" },
     { name: "Logistics agent", price: "~\u20AC40/month" },
     { name: "Permitting agent", price: "~\u20AC40/month" },
+    { name: "QA agent", price: "~\u20AC35/month" },
+    { name: "Reporting agent", price: "~\u20AC30/month" },
   ];
 
   return (
@@ -560,7 +549,7 @@ function PricingSection() {
             className="bg-[#F3D840] rounded-2xl px-8 py-8 sm:px-12 sm:py-10 text-center mb-6"
           >
             <p className="text-[#1A1A1A] text-3xl sm:text-4xl lg:text-5xl font-extrabold">
-              Total workforce: ~&#8364;270/month
+              Total workforce: ~&#8364;335/month
             </p>
           </motion.div>
         </ScrollReveal>
@@ -761,8 +750,8 @@ function HowItStartsSection() {
               Let&apos;s talk.
             </h2>
             <p className="text-[#374151] text-base sm:text-lg mb-8">
-              <a href="mailto:hello@renewably.com" className="underline hover:text-[#1A1A1A] transition-colors">
-                hello@renewably.com
+              <a href="mailto:hello@renewably.ie" className="underline hover:text-[#1A1A1A] transition-colors">
+                hello@renewably.ie
               </a>
             </p>
             <MagneticButton href="/contact">
@@ -789,7 +778,6 @@ export default function HomePageClient() {
       <SolutionSection />
       <FeaturesSection />
       <AgentsSection />
-      <MarqueeSection />
       <VideoTourSection />
       <PricingSection />
       <BeforeAfterSection />

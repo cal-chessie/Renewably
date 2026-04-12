@@ -387,8 +387,8 @@ function HowItStartsSection() {
               Let&apos;s talk.
             </h2>
             <p className="text-[#374151] text-base sm:text-lg mb-8">
-              <a href="mailto:hello@renewably.com" className="underline hover:text-[#1A1A1A] transition-colors">
-                hello@renewably.com
+              <a href="mailto:hello@renewably.ie" className="underline hover:text-[#1A1A1A] transition-colors">
+                hello@renewably.ie
               </a>
             </p>
             <Link
@@ -420,7 +420,7 @@ export default function ServicesPageClient() {
           {/* Robot image background */}
           <div className="absolute inset-0 z-0">
             <Image
-              src="/robot-hero.jpg"
+              src="/service-hero.jpg"
               alt=""
               fill
               className="object-cover"

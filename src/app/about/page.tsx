@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import AboutPageClient from "@/components/AboutPageClient";
 
 export const metadata: Metadata = {
-  title: "About — AI as a Service for Sales, Marketing & Automation",
-  description: "Learn about Renewably, Ireland's leading AI as a Service provider. We build and operate AI systems that automate sales, marketing, and operations for ambitious businesses.",
+  title: "About — AI Workforce for Solar Installers in Ireland",
+  description:
+    "Renewably deploys AI employees across your solar operations — grants, permits, customer support, logistics, and site assessment. Based in Ireland. Built for solar installers doing 20+ jobs a month.",
   alternates: { canonical: "https://renewably.ie/about" },
 };
 
