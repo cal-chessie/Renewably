@@ -63,14 +63,14 @@ function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm"
-          style={{ marginBottom: 48 }}
+          className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm"
+          style={{ marginBottom: 32, padding: '10px 22px', fontSize: 15, fontWeight: 600, letterSpacing: '0.03em' }}
         >
           <motion.span
             className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
             style={{ boxShadow: "0 0 8px rgba(243,216,64,0.6)" }}
           />
-          <span className="text-white/80 text-sm sm:text-base font-semibold tracking-wide">
+          <span style={{ color: 'rgba(255,255,255,0.85)' }}>
             AI as a Service
           </span>
         </motion.div>
