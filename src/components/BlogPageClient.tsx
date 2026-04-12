@@ -13,31 +13,48 @@ export default function BlogPageClient() {
       <main className="pt-20">
         {/* ── Hero (dark) ── */}
         <section className="relative overflow-hidden bg-[#0A0A0A] py-20 md:py-28">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <ScrollReveal>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 mb-8">
-                <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
-                <span className="text-white text-xs sm:text-sm font-semibold tracking-wide">
-                  Blog
-                </span>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+              {/* Text side */}
+              <div className="flex-1 text-center lg:text-left">
+                <ScrollReveal>
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 mb-8">
+                    <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
+                    <span className="text-white text-xs sm:text-sm font-semibold tracking-wide">
+                      Blog
+                    </span>
+                  </div>
+                </ScrollReveal>
+
+                <ScrollReveal delay={0.1}>
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
+                    How Solar Installers
+                    <br />
+                    <span className="text-[#F3D840]">Stop Losing Leads</span>
+                  </h1>
+                </ScrollReveal>
+
+                <ScrollReveal delay={0.2}>
+                  <p className="text-white/60 text-lg sm:text-xl max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                    Practical guides on AI operations, grants, permitting, logistics,
+                    and customer support. Written for solar companies doing twenty
+                    plus jobs a month.
+                  </p>
+                </ScrollReveal>
               </div>
-            </ScrollReveal>
 
-            <ScrollReveal delay={0.1}>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
-                How Solar Installers
-                <br />
-                <span className="text-[#F3D840]">Stop Losing Leads</span>
-              </h1>
-            </ScrollReveal>
-
-            <ScrollReveal delay={0.2}>
-              <p className="text-white/60 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-                Practical guides on AI operations, grants, permitting, logistics,
-                and customer support. Written for solar companies doing twenty
-                plus jobs a month.
-              </p>
-            </ScrollReveal>
+              {/* Robot image side */}
+              <ScrollReveal delay={0.15} className="flex-shrink-0">
+                <div className="relative">
+                  <div className="absolute -inset-4 bg-[#F3D840]/10 rounded-3xl blur-2xl" />
+                  <img
+                    src="/robot-2.jpg"
+                    alt="AI-powered blog for solar installers"
+                    className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 object-cover rounded-3xl shadow-2xl"
+                  />
+                </div>
+              </ScrollReveal>
+            </div>
           </div>
 
           {/* Subtle gradient */}
