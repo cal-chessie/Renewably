@@ -173,6 +173,41 @@ body {
   animation: marquee 20s linear infinite;
 }
 
+/* ── Header smooth color transitions (CSS-driven, no jank) ── */
+
+/* Logo filter: dark mode = invert to white, light mode = normal */
+.header-dark .header-logo {
+  filter: brightness(0) invert(1);
+}
+.header-light .header-logo {
+  filter: brightness(0) invert(0);
+}
+.header-logo {
+  transition: filter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Text color */
+.header-dark .header-text {
+  color: rgba(255, 255, 255, 0.88);
+}
+.header-light .header-text {
+  color: rgba(26, 26, 26, 0.78);
+}
+.header-text {
+  transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hamburger color */
+.header-dark .header-hamburger {
+  background-color: #fff;
+}
+.header-light .header-hamburger {
+  background-color: #1a1a1a;
+}
+.header-hamburger {
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Pulse animation for CTA buttons */
 @keyframes subtle-pulse {
   0%, 100% {
