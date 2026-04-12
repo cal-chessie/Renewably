@@ -195,13 +195,13 @@ export default function ContactPageClient() {
         </section>
 
         {/* ===== FORM + INFO SECTION ===== */}
-        <section className="bg-white py-20 md:py-28">
+        <section className="bg-white py-20 md:py-28" style={{ paddingTop: 96, paddingBottom: 96 }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
+            <div className="grid lg:grid-cols-5 gap-12 lg:gap-16" style={{ gap: 64 }}>
               {/* Form — 3 columns */}
               <div className="lg:col-span-3">
                 <ScrollReveal>
-                  <div className="mb-8">
+                  <div style={{ marginBottom: 40 }}>
                     <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1A1A1A] mb-3">
                       Tell us about your business
                     </h2>
@@ -240,7 +240,7 @@ export default function ContactPageClient() {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       onSubmit={handleSubmit}
-                      className="space-y-6"
+                      className="space-y-6" style={{ marginTop: 32 }}
                     >
                       {/* Name row */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -336,10 +336,12 @@ export default function ContactPageClient() {
                       </div>
 
                       {/* Submit */}
+                      <div style={{ marginTop: 32 }}>
                       <button
                         type="submit"
                         disabled={formState === "sending"}
                         className="w-full sm:w-auto px-6 py-3 bg-[#F3D840] hover:bg-[#E5C832] text-[#1A1A1A] font-bold rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-[#F3D840]/20 hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        style={{ padding: '12px 32px', fontSize: 15, fontWeight: 700, borderRadius: 9999 }}
                       >
                         {formState === "sending" ? (
                           <>
@@ -358,6 +360,7 @@ export default function ContactPageClient() {
                           </>
                         )}
                       </button>
+                      </div>
                     </motion.form>
                   )}
                 </AnimatePresence>
@@ -366,11 +369,11 @@ export default function ContactPageClient() {
               {/* Sidebar — 2 columns */}
               <div className="lg:col-span-2">
                 <ScrollReveal direction="right" delay={0.2}>
-                  <div className="space-y-8 lg:sticky lg:top-28">
+                  <div className="space-y-8 lg:sticky lg:top-28" style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
                     {/* Contact details */}
-                    <div className="bg-[#FFFDF5] rounded-2xl p-6 sm:p-8 border border-[#F3D840]/10">
-                      <h3 className="text-lg font-bold text-[#1A1A1A] mb-6">Get in touch directly</h3>
-                      <div className="space-y-5">
+                    <div className="bg-[#FFFDF5] rounded-2xl p-6 sm:p-8 border border-[#F3D840]/10" style={{ padding: 32 }}>
+                      <h3 className="text-lg font-bold text-[#1A1A1A] mb-6" style={{ marginBottom: 24 }}>Get in touch directly</h3>
+                      <div className="space-y-5" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                         {contactInfo.map((item) => (
                           <div key={item.label} className="flex items-start gap-4">
                             <div className="w-10 h-10 rounded-xl bg-[#F3D840] flex items-center justify-center text-[#374151] shrink-0">
@@ -392,9 +395,9 @@ export default function ContactPageClient() {
                     </div>
 
                     {/* What happens next card */}
-                    <div className="bg-[#0A0A0A] rounded-2xl p-6 sm:p-8 text-white">
-                      <h3 className="text-lg font-bold mb-4">What happens next?</h3>
-                      <div className="space-y-4">
+                    <div className="bg-[#0A0A0A] rounded-2xl p-6 sm:p-8 text-white" style={{ padding: 32 }}>
+                      <h3 className="text-lg font-bold mb-4" style={{ marginBottom: 20 }}>What happens next?</h3>
+                      <div className="space-y-4" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         {[
                           { step: "1", text: "We reply within 24 hours with a suggested call time." },
                           { step: "2", text: "We jump on a 60-minute call. You show us your operation." },
@@ -411,9 +414,9 @@ export default function ContactPageClient() {
                     </div>
 
                     {/* Quick CTA */}
-                    <div className="bg-[#F3D840] rounded-2xl p-6 sm:p-8 text-center">
-                      <p className="text-[#1A1A1A] font-bold text-lg mb-2">Prefer to talk now?</p>
-                      <p className="text-[#374151] text-sm mb-4">Book a free strategy call and we&apos;ll walk you through everything.</p>
+                    <div className="bg-[#F3D840] rounded-2xl p-6 sm:p-8 text-center" style={{ padding: 32 }}>
+                      <p className="text-[#1A1A1A] font-bold text-lg mb-2" style={{ marginBottom: 8 }}>Prefer to talk now?</p>
+                      <p className="text-[#374151] text-sm mb-4" style={{ marginBottom: 24 }}>Book a free strategy call and we&apos;ll walk you through everything.</p>
                       <MagneticButton href="tel:+353873958424">
                         Call Us
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
