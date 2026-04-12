@@ -155,6 +155,57 @@ export default function RootLayout({
       <head>
         <OrganizationSchema />
         <WebSiteSchema />
+        {/* Critical inline CSS — ensures page is never unstyled even if Tailwind HMR fails */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+              html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+              body { font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #535353; background: #fff; -webkit-font-smoothing: antialiased; line-height: 1.6; }
+              img { max-width: 100%; height: auto; display: block; }
+              a { color: inherit; text-decoration: none; }
+              .min-h-screen { min-height: 100vh; }
+              .flex { display: flex; }
+              .items-center { align-items: center; }
+              .justify-center { justify-content: center; }
+              .text-center { text-align: center; }
+              .relative { position: relative; }
+              .absolute { position: absolute; }
+              .fixed { position: fixed; }
+              .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+              .overflow-hidden { overflow: hidden; }
+              .grid { display: grid; }
+              .gap-4 { gap: 1rem; }
+              .rounded-2xl { border-radius: 1rem; }
+              .bg-\\[\\#0A0A0A\\] { background-color: #0A0A0A; }
+              .bg-white { background-color: #fff; }
+              .bg-\\[\\#F3D840\\] { background-color: #F3D840; }
+              .bg-\\[\\#FFFDF5\\] { background-color: #FFFDF5; }
+              .text-white { color: #fff; }
+              .text-\\[\\#1A1A1A\\] { color: #1A1A1A; }
+              .text-\\[\\#F3D840\\] { color: #F3D840; }
+              .text-\\[\\#535353\\] { color: #535353; }
+              .text-\\[\\#374151\\] { color: #374151; }
+              .font-bold { font-weight: 700; }
+              .font-extrabold { font-weight: 800; }
+              .mx-auto { margin-left: auto; margin-right: auto; }
+              .px-4 { padding-left: 1rem; padding-right: 1rem; }
+              .py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+              .mb-4 { margin-bottom: 1rem; }
+              .mb-6 { margin-bottom: 1.5rem; }
+              .mb-12 { margin-bottom: 3rem; }
+              .mb-16 { margin-bottom: 4rem; }
+              .max-w-4xl { max-width: 56rem; }
+              .max-w-7xl { max-width: 80rem; }
+              .hidden { display: none; }
+              .pointer-events-none { pointer-events: none; }
+              .z-\\[100\\] { z-index: 100; }
+              .z-\\[200\\] { z-index: 200; }
+              @media (min-width: 768px) { .md\\:py-28 { padding-top: 7rem; padding-bottom: 7rem; } .md\\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .md\\:hidden { display: none; } .md\\:flex { display: flex; } .md\\:inline-flex { display: inline-flex; } }
+              @media (min-width: 1024px) { .lg\\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } .lg\\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); } .lg\\:px-8 { padding-left: 2rem; padding-right: 2rem; } .lg\\:text-5xl { font-size: 3rem; } .lg\\:py-8 { padding-top: 2rem; padding-bottom: 2rem; } }
+            `,
+          }}
+        />
       </head>
       <body className={`${poppins.variable} ${poppins.className} min-h-screen`}>
         <LoadingScreen />

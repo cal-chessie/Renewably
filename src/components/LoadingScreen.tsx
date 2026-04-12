@@ -1,58 +1,47 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
 export default function LoadingScreen() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
+      setVisible(false);
+    }, 1000);
     return () => clearTimeout(timer);
   }, []);
 
+  if (!visible) return null;
+
   return (
-    <AnimatePresence>
-      {isLoading && (
-        <motion.div
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#F3D840]"
-        >
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 1.2, opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="flex flex-col items-center gap-4"
-          >
-            <motion.div
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 1.5, repeat: 1, ease: "easeInOut" }}
-            >
-              <Image
-                src="/logo-transparent.png"
-                alt="Renewably"
-                width={80}
-                height={80}
-                className="drop-shadow-lg"
-              />
-            </motion.div>
-            <motion.span
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.4 }}
-              className="text-xl font-bold text-[#1A1A1A]"
-            >
-              Renewably
-            </motion.span>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#F3D840",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.4s ease-out",
+        pointerEvents: visible ? "auto" : "none",
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+        <Image
+          src="/logo-transparent.png"
+          alt="Renewably"
+          width={80}
+          height={80}
+          style={{ filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.15))" }}
+        />
+        <span style={{ fontSize: 20, fontWeight: 700, color: "#1A1A1A" }}>
+          Renewably
+        </span>
+      </div>
+    </div>
   );
 }
