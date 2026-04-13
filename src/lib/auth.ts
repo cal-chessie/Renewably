@@ -3,58 +3,99 @@
 // ============================================================================
 // PBKDF2 password hashing (upgrade from legacy SHA-256).
 // Legacy SHA-256 hashes are verified with fallback and auto-upgraded on login.
-// Secure cookie flags in production. Redis-backed rate limiter for brute-force protection.
+// Secure cookie flags in production. Redis-backed rate limiter with in-memory fallback.
 // ============================================================================
 
-import { redis } from './redis'
 import { createSession, getSession, deleteSession } from './sessions'
 
-// ─── Rate Limiter (Redis, per IP) ───
+// ─── Rate Limiter (Redis first, in-memory fallback, per IP) ───
 // Prevents brute-force attacks on the login endpoint.
-// Key: `crm:ratelimit:{ip}`
-// Uses Redis INCR + EXPIRE atomic pattern.
-// Fails open if Redis is unavailable.
+// Fails open if both Redis and in-memory are unavailable.
 
 const MAX_LOGIN_ATTEMPTS = 10
 const LOGIN_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 const LOCKOUT_DURATION_MS = 15 * 60 * 1000 // 15 minutes lockout after max attempts
 
-export async function checkRateLimit(ip: string): Promise<{ allowed: boolean; retryAfterMs: number }> {
+// In-memory rate limit store: ip → { count, expiresAt }
+const memoryRateLimits = new Map<string, { count: number; expiresAt: number }>()
+
+let redisAvailable: boolean | null = null
+
+async function isRedisReady(): Promise<boolean> {
+  if (redisAvailable !== null) return redisAvailable
   try {
-    const key = `crm:ratelimit:${ip}`
-    const countStr = await redis.incr(key)
-
-    // Set expiry on first increment (15-min window)
-    if (parseInt(countStr, 10) === 1) {
-      await redis.pexpire(key, LOGIN_WINDOW_MS)
-    }
-
-    const count = parseInt(countStr, 10)
-    const ttlMs = await redis.pttl(key)
-
-    if (count >= MAX_LOGIN_ATTEMPTS) {
-      // Extend TTL to lockout duration if this just triggered lockout
-      if (count === MAX_LOGIN_ATTEMPTS) {
-        await redis.pexpire(key, LOCKOUT_DURATION_MS)
-        return { allowed: false, retryAfterMs: LOCKOUT_DURATION_MS }
-      }
-      return { allowed: false, retryAfterMs: Math.max(0, ttlMs) }
-    }
-
-    return { allowed: true, retryAfterMs: 0 }
-  } catch (err) {
-    // Fail open — if Redis is down, allow the request
-    console.error('[auth] Redis rate limit check failed, allowing request:', err)
-    return { allowed: true, retryAfterMs: 0 }
+    const { redis } = await import('./redis')
+    await redis.ping()
+    redisAvailable = true
+    return true
+  } catch {
+    redisAvailable = false
+    return false
   }
+}
+
+export async function checkRateLimit(ip: string): Promise<{ allowed: boolean; retryAfterMs: number }> {
+  // Try Redis first
+  try {
+    if (await isRedisReady()) {
+      const { redis } = await import('./redis')
+      const key = `crm:ratelimit:${ip}`
+      const countStr = await redis.incr(key)
+
+      if (parseInt(countStr, 10) === 1) {
+        await redis.pexpire(key, LOGIN_WINDOW_MS)
+      }
+
+      const count = parseInt(countStr, 10)
+      const ttlMs = await redis.pttl(key)
+
+      if (count >= MAX_LOGIN_ATTEMPTS) {
+        if (count === MAX_LOGIN_ATTEMPTS) {
+          await redis.pexpire(key, LOCKOUT_DURATION_MS)
+          return { allowed: false, retryAfterMs: LOCKOUT_DURATION_MS }
+        }
+        return { allowed: false, retryAfterMs: Math.max(0, ttlMs) }
+      }
+
+      return { allowed: true, retryAfterMs: 0 }
+    }
+  } catch (err) {
+    console.error('[auth] Redis rate limit check failed:', err)
+    redisAvailable = false
+  }
+
+  // In-memory fallback
+  const now = Date.now()
+  let entry = memoryRateLimits.get(ip)
+
+  if (!entry || now > entry.expiresAt) {
+    entry = { count: 0, expiresAt: now + LOGIN_WINDOW_MS }
+    memoryRateLimits.set(ip, entry)
+  }
+
+  entry.count++
+
+  if (entry.count >= MAX_LOGIN_ATTEMPTS) {
+    entry.expiresAt = now + LOCKOUT_DURATION_MS
+    return { allowed: false, retryAfterMs: LOCKOUT_DURATION_MS }
+  }
+
+  return { allowed: true, retryAfterMs: 0 }
 }
 
 export async function clearRateLimit(ip: string): Promise<void> {
   try {
-    await redis.del(`crm:ratelimit:${ip}`)
+    if (await isRedisReady()) {
+      const { redis } = await import('./redis')
+      await redis.del(`crm:ratelimit:${ip}`)
+      return
+    }
   } catch (err) {
     console.error('[auth] Redis rate limit clear failed:', err)
+    redisAvailable = false
   }
+
+  memoryRateLimits.delete(ip)
 }
 
 // ─── Password Hashing ───
