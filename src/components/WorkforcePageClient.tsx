@@ -377,10 +377,7 @@ function CTASection() {
 export default function WorkforcePageClient() {
   return (
     <main>
-      <style>{`
-        .workforce-hero-bg { object-position: 50% 40% !important; }
-        @media (min-width: 768px) { .workforce-hero-bg { object-position: center center !important; } }
-      `}</style>
+      <style>{`.workforce-hero-bg { object-position: 60% 45% !important; } @media (min-width: 768px) { .workforce-hero-bg { object-position: center center !important; } }`}</style>
 
       {/* ===== HERO ===== */}
       <section data-theme="dark" style={{ position: 'relative', minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
