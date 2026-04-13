@@ -119,7 +119,7 @@ export default function PricingPageClient() {
             backgroundSize: "40px 40px",
           }}
         />
-        <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", padding: "80px 24px 96px" }}>
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", padding: "100px 20px 64px" }}>
           <ScrollReveal>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 9999, backgroundColor: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", marginBottom: 32 }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: "#F3D840" }} />
@@ -155,24 +155,24 @@ export default function PricingPageClient() {
               {/* Card Header */}
               <div style={{
                 backgroundColor: "#0A0A0A",
-                padding: "40px 32px 36px",
+                padding: "28px 20px 24px",
                 textAlign: "center",
               }}>
                 <p style={{ color: "#F3D840", fontSize: 13, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12 }}>
                   AI Workforce Plan
                 </p>
                 <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 4 }}>
-                  <span style={{ color: "#FFFFFF", fontSize: 48, fontWeight: 800, lineHeight: 1 }}>&euro;1,000</span>
+                  <span style={{ color: "#FFFFFF", fontSize: "clamp(32px, 10vw, 48px)", fontWeight: 800, lineHeight: 1 }}>&euro;1,000</span>
                   <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 18 }}>&ndash; &euro;1,500</span>
                 </div>
-                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 15, marginTop: 8 }}>per month, depending on team size</p>
-                <div style={{ marginTop: 16, display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 9999, backgroundColor: "rgba(243,216,64,0.15)", border: "1px solid rgba(243,216,64,0.3)" }}>
+                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, marginTop: 8 }}>per month, depending on team size</p>
+                <div style={{ marginTop: 12, display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 9999, backgroundColor: "rgba(243,216,64,0.15)", border: "1px solid rgba(243,216,64,0.3)" }}>
                   <span style={{ color: "#F3D840", fontSize: 13, fontWeight: 600 }}>+ One-time setup fee</span>
                 </div>
               </div>
 
               {/* Card Body */}
-              <div style={{ padding: "32px" }}>
+              <div style={{ padding: "20px" }}>
                 {/* Included */}
                 <div style={{ marginBottom: 32 }}>
                   <p style={{ color: "#1A1A1A", fontSize: 14, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 16 }}>
@@ -184,7 +184,7 @@ export default function PricingPageClient() {
                         <svg style={{ width: 18, height: 18, color: "#F3D840", flexShrink: 0, marginTop: 2 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                         </svg>
-                        <span style={{ color: "#535353", fontSize: 15, lineHeight: 1.5 }}>{item}</span>
+                        <span style={{ color: "#535353", fontSize: 14, lineHeight: 1.5 }}>{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -204,7 +204,7 @@ export default function PricingPageClient() {
                         <svg style={{ width: 18, height: 18, color: "#9CA3AF", flexShrink: 0, marginTop: 2 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span style={{ color: "#535353", fontSize: 15, lineHeight: 1.5 }}>{item}</span>
+                        <span style={{ color: "#535353", fontSize: 14, lineHeight: 1.5 }}>{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -253,7 +253,7 @@ export default function PricingPageClient() {
 
       {/* FAQ Section */}
       <section style={{ backgroundColor: "#FFFDF5" }}>
-        <div style={{ maxWidth: 640, margin: "0 auto", padding: "48px 24px 80px" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", padding: "40px 20px 64px" }}>
           <ScrollReveal>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
               <p style={{ color: "#1A1A1A", fontSize: 14, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
@@ -282,7 +282,7 @@ export default function PricingPageClient() {
 
       {/* CTA — Yellow */}
       <section style={{ backgroundColor: "#F3D840" }}>
-        <div style={{ maxWidth: 640, margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", padding: "64px 20px", textAlign: "center" }}>
           <ScrollReveal>
             <h2 style={{ color: "#0A0A0A", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 800, lineHeight: 1.2, marginBottom: 12 }}>
               Ready to meet your team?

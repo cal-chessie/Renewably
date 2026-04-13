@@ -216,7 +216,7 @@ function HeroSection() {
           textAlign: "center",
         }}
       >
-        <div style={{ paddingTop: 140, paddingBottom: 100 }}>
+        <div style={{ paddingTop: 100, paddingBottom: 80 }}>
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -339,7 +339,7 @@ function StorySection() {
   const [expandedStep, setExpandedStep] = useState<number | null>(0);
 
   return (
-    <section style={{ backgroundColor: "#fff", paddingTop: 96, paddingBottom: 96 }}>
+    <section style={{ backgroundColor: "#fff", paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
         <ScrollReveal>
@@ -431,7 +431,7 @@ function StorySection() {
                     {/* Left: phase + year */}
                     <div
                       style={{
-                        minWidth: 100,
+                        minWidth: 80,
                         display: "flex",
                         flexDirection: "column",
                         gap: 4,
@@ -542,7 +542,7 @@ function ProblemsSection() {
 
   return (
     <section
-      style={{ backgroundColor: "#F9FAFB", paddingTop: 96, paddingBottom: 96 }}
+      style={{ backgroundColor: "#F9FAFB", paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
@@ -609,7 +609,7 @@ function ProblemsSection() {
                 whileTap={{ scale: 0.995 }}
                 style={{
                   cursor: "pointer",
-                  padding: "24px 28px",
+                  padding: "20px 16px",
                   borderRadius: 16,
                   backgroundColor: activeProblem === i ? "#fff" : "transparent",
                   border:
@@ -627,7 +627,7 @@ function ProblemsSection() {
                   style={{
                     display: "flex",
                     alignItems: "flex-start",
-                    gap: 20,
+                    gap: 16,
                   }}
                 >
                   {/* Icon */}
@@ -742,7 +742,7 @@ function ProblemsSection() {
    ============================================================ */
 function ValuesSection() {
   return (
-    <section data-theme="dark" style={{ backgroundColor: DARK, paddingTop: 96, paddingBottom: 96 }}>
+    <section data-theme="dark" style={{ backgroundColor: DARK, paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
       {/* Dot grid */}
       <div
         style={{
@@ -799,7 +799,7 @@ function ValuesSection() {
               lineHeight: 1.1,
               letterSpacing: "-0.02em",
               textAlign: "center",
-              marginBottom: 48,
+              marginBottom: 32,
             }}
           >
             Not an AI company.
@@ -824,7 +824,7 @@ function ValuesSection() {
                   boxShadow: "0 20px 40px rgba(243,216,64,0.08)",
                 }}
                 style={{
-                  padding: "32px 28px",
+                  padding: "24px 20px",
                   borderRadius: 20,
                   backgroundColor: "rgba(255,255,255,0.04)",
                   border: "1px solid rgba(255,255,255,0.08)",
@@ -884,7 +884,7 @@ function ValuesSection() {
 function WorkforceSection() {
   return (
     <section
-      style={{ backgroundColor: "#fff", paddingTop: 96, paddingBottom: 96 }}
+      style={{ backgroundColor: "#fff", paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
@@ -1033,8 +1033,8 @@ function FounderSection() {
       ref={founderRef}
       style={{
         backgroundColor: "#FFFDF5",
-        paddingTop: 96,
-        paddingBottom: 96,
+        paddingTop: 'clamp(48px, 10vw, 96px)',
+        paddingBottom: 'clamp(48px, 10vw, 96px)',
         overflow: "hidden",
       }}
     >

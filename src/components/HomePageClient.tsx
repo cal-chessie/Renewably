@@ -325,9 +325,9 @@ function ProblemSection() {
           animate={calloutInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="bg-[#F3D840] rounded-2xl"
-          style={{ padding: '32px 20px' }}
+          style={{ padding: '24px 16px' }}
         >
-          <p className="text-[#1A1A1A] text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight">
+          <p className="text-[#1A1A1A] text-xl sm:text-2xl lg:text-4xl font-extrabold leading-tight">
             That&apos;s not a business. That&apos;s a hostage situation.
           </p>
         </motion.div>
@@ -345,7 +345,7 @@ function SolutionSection() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Headline */}
         <ScrollReveal>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1A1A1A] leading-tight mb-6">
+          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-[#1A1A1A] leading-tight mb-6">
             What if you could hire a team that never sleeps, never quits, and costs a fraction of what a person costs?
           </h2>
         </ScrollReveal>
@@ -396,7 +396,7 @@ function PlatformTourSection() {
 
         {/* Headline */}
         <ScrollReveal delay={0.1}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white text-center leading-tight mb-6">
+          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-white text-center leading-tight mb-6">
             This is what your Monday looks like now.
           </h2>
         </ScrollReveal>
@@ -674,7 +674,7 @@ function PricingSection() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
-          <p className="text-[#1A1A1A] text-2xl sm:text-3xl font-extrabold mb-8">
+          <p className="text-[#1A1A1A] text-xl sm:text-2xl lg:text-3xl font-extrabold mb-8">
             Less than a junior admin.
           </p>
         </ScrollReveal>
@@ -744,7 +744,7 @@ function BeforeAfterSection() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20" style={{ marginBottom: 40 }}>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20" style={{ marginBottom: 32 }}>
             <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
               What changes.
             </span>
@@ -882,10 +882,10 @@ function HowItStartsSection() {
 
         {/* CTA */}
         <div style={{ textAlign: 'center', paddingTop: 32 }}>
-          <h2 style={{ color: '#1A1A1A', fontSize: 28, fontWeight: 800, lineHeight: 1.15, marginBottom: 12, textAlign: 'center' }}>
+          <h2 style={{ color: '#1A1A1A', fontSize: 'clamp(22px, 5vw, 28px)', fontWeight: 800, lineHeight: 1.15, marginBottom: 12, textAlign: 'center' }}>
             Ready to meet your new team?
           </h2>
-          <p style={{ color: '#374151', fontSize: 16, marginBottom: 24, textAlign: 'center' }}>
+          <p style={{ color: '#374151', fontSize: 15, marginBottom: 24, textAlign: 'center' }}>
             <a href="mailto:hello@renewably.ie" style={{ textDecoration: 'underline', color: '#374151' }}>
               hello@renewably.ie
             </a>

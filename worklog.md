@@ -218,3 +218,66 @@ Stage Summary:
 - Multiple sections fixed for mobile padding/font sizing
 - Lint passes cleanly
 - Files changed: src/components/HomePageClient.tsx, public/robot-mobile-hero.png
+
+---
+Task ID: 10
+Agent: Main Coordinator
+Task: Fix mobile copy/typography across all public website pages
+
+Work Log:
+- Read all 7 public page components: HomePageClient, AboutPageClient, ServicesPageClient, PricingPageClient, ContactPageClient, WorkforcePageClient, BlogPageClient
+- Identified 40+ mobile typography and spacing issues across all pages
+- Dispatched 2 parallel agents to fix all issues
+
+Homepage (HomePageClient.tsx) — 7 changes:
+- SolutionSection headline: text-3xl → text-2xl on mobile
+- ProblemSection callout: text-2xl → text-xl, padding 32px→24px on mobile
+- PlatformTourSection headline: text-3xl → text-2xl on mobile
+- HowItStartsSection closing h2: fixed 28px → clamp(22px, 5vw, 28px)
+- HowItStartsSection email: 16px → 15px
+- PricingSection headline: text-2xl → text-xl on mobile
+- BeforeAfterSection badge margin: 40→32
+
+About Page (AboutPageClient.tsx) — 11 changes:
+- Hero padding: 140/100 → 100/80
+- All sections: fixed 96px padding → clamp(48px, 10vw, 96px)
+- Problem tabs: padding 24px 28px → 20px 16px, gap 20→16
+- Values cards: padding 32px 28px → 24px 20px
+- Timeline: minWidth 100→80
+
+Services Page (ServicesPageClient.tsx) — 2 changes:
+- Pricing callout: text-3xl → text-xl on mobile
+- Callout box: px-8 py-8 → px-6 py-6 on mobile
+
+Pricing Page (PricingPageClient.tsx) — 9 changes:
+- Hero padding reduced
+- Price fontSize: fixed 48px → clamp(32px, 10vw, 48px) (critical overflow fix)
+- Card header/body padding reduced
+- List item font: 15→14px
+- FAQ/CTA padding reduced
+
+Contact Page (ContactPageClient.tsx) — 6 changes:
+- Hero padding: 140/100 → 100/80
+- All sections: fixed padding → clamp()
+- Form card/success/error padding reduced
+
+Workforce Page (WorkforcePageClient.tsx) — 5 changes:
+- All sections: fixed 96px → clamp()
+- Agent card gap: fixed 48px → clamp(24px, 5vw, 48px)
+- Vertical card gap: 120px → clamp(64px, 15vw, 120px)
+- Container padding: 24px → 16px
+
+Blog Page (BlogPageClient.tsx) — 7 changes:
+- Hero padding: 140/80 → 100/64
+- FeaturedCard padding: 48px 40px → 28px 20px
+- Blog grid columns: minmax(340px → 280px)
+- All sections: fixed padding → clamp()
+
+- Lint: zero errors
+
+Stage Summary:
+- 40+ mobile typography fixes applied across all 7 public pages
+- Key fixes: oversized headlines reduced, excessive padding tightened, fixed font sizes made responsive with clamp()
+- Critical fix: Pricing page €1,000 price no longer overflows on small screens
+- All desktop styles untouched
+- Lint passes cleanly

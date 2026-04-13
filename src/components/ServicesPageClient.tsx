@@ -198,9 +198,9 @@ function PricingSection() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={totalInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="bg-[#F3D840] rounded-2xl px-8 py-8 sm:px-12 sm:py-10 text-center mb-4"
+          className="bg-[#F3D840] rounded-2xl px-6 py-6 sm:px-12 sm:py-10 text-center mb-4"
         >
-          <p className="text-[#1A1A1A] text-3xl sm:text-4xl lg:text-5xl font-extrabold">
+          <p className="text-[#1A1A1A] text-xl sm:text-2xl lg:text-4xl font-extrabold">
             €1,000 – €1,500/month for your full AI team
           </p>
         </motion.div>

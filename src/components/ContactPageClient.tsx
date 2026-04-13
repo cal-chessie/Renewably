@@ -374,7 +374,7 @@ export default function ContactPageClient() {
         />
 
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-[1] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" >
-          <div style={{ paddingTop: 140, paddingBottom: 100 }}>
+          <div style={{ paddingTop: 100, paddingBottom: 80 }}>
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
               {/* Left: Copy */}
               <div>
@@ -496,7 +496,7 @@ export default function ContactPageClient() {
       </section>
 
       {/* ===== PAIN POINTS SECTION ===== */}
-      <section style={{ backgroundColor: WHITE, paddingTop: 80, paddingBottom: 80 }}>
+      <section style={{ backgroundColor: WHITE, paddingTop: 'clamp(48px, 10vw, 80px)', paddingBottom: 'clamp(48px, 10vw, 80px)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
@@ -613,7 +613,7 @@ export default function ContactPageClient() {
       </section>
 
       {/* ===== FORM + SIDEBAR ===== */}
-      <section style={{ backgroundColor: "#F9FAFB", paddingTop: 96, paddingBottom: 96 }}>
+      <section style={{ backgroundColor: "#F9FAFB", paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-12 lg:gap-16 items-start" style={{ gap: 64 }}>
             {/* Form — 3 columns */}
@@ -641,7 +641,7 @@ export default function ContactPageClient() {
                   >
                     {/* Success State */}
                     <div style={{
-                      padding: 48,
+                      padding: "32px 20px",
                       borderRadius: 24,
                       backgroundColor: "#FFFDF5",
                       border: "1px solid rgba(243,216,64,0.2)",
@@ -693,7 +693,7 @@ export default function ContactPageClient() {
                     exit={{ opacity: 0 }}
                   >
                     <div style={{
-                      padding: 48,
+                      padding: "32px 20px",
                       borderRadius: 24,
                       backgroundColor: "#FEF2F2",
                       border: "1px solid rgba(239,68,68,0.2)",
@@ -770,7 +770,7 @@ export default function ContactPageClient() {
 
                     {/* Form fields in a card */}
                     <div style={{
-                      padding: 32,
+                      padding: "20px 16px",
                       borderRadius: 20,
                       backgroundColor: WHITE,
                       border: "1px solid rgba(26,26,26,0.06)",

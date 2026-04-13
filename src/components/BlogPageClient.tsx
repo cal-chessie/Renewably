@@ -216,7 +216,7 @@ function HeroSection() {
           textAlign: "center",
         }}
       >
-        <div style={{ paddingTop: 140, paddingBottom: 80 }}>
+        <div style={{ paddingTop: 100, paddingBottom: 64 }}>
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -459,7 +459,7 @@ function FeaturedCard({ post }: { post: (typeof posts)[0] }) {
           {/* Content overlay */}
           <div
             style={{
-              padding: "48px 40px",
+              padding: "28px 20px",
               position: "relative",
               zIndex: 2,
             }}
@@ -567,7 +567,7 @@ function FeaturedCard({ post }: { post: (typeof posts)[0] }) {
               {/* Excerpt */}
               <p
                 style={{
-                  fontSize: 16,
+                  fontSize: "clamp(14px, 2.5vw, 16px)",
                   lineHeight: 1.7,
                   color: "rgba(255,255,255,0.5)",
                   marginBottom: 28,
@@ -798,8 +798,8 @@ function NewsletterSection() {
       data-theme="dark"
       style={{
         backgroundColor: DARK,
-        paddingTop: 96,
-        paddingBottom: 96,
+        paddingTop: 'clamp(48px, 10vw, 96px)',
+        paddingBottom: 'clamp(48px, 10vw, 96px)',
         position: "relative",
         overflow: "hidden",
       }}
@@ -975,8 +975,8 @@ function TopicsSection() {
     <section
       style={{
         backgroundColor: "#fff",
-        paddingTop: 96,
-        paddingBottom: 96,
+        paddingTop: 'clamp(48px, 10vw, 96px)',
+        paddingBottom: 'clamp(48px, 10vw, 96px)',
       }}
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1121,8 +1121,8 @@ function FinalCTA() {
     <section
       style={{
         backgroundColor: YELLOW,
-        paddingTop: 80,
-        paddingBottom: 80,
+        paddingTop: 64,
+        paddingBottom: 64,
       }}
     >
       <div
@@ -1262,7 +1262,7 @@ export default function BlogPageClient() {
         style={{
           backgroundColor: "#F9FAFB",
           paddingTop: 0,
-          paddingBottom: 96,
+          paddingBottom: 'clamp(48px, 10vw, 96px)',
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1310,7 +1310,7 @@ export default function BlogPageClient() {
               transition={{ duration: 0.3 }}
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
                 gap: 20,
               }}
             >

@@ -98,7 +98,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
     <ScrollReveal>
       <div
         className="grid grid-cols-1 lg:grid-cols-2 items-center"
-        style={{ gap: 48, alignItems: 'center' }}
+        style={{ gap: "clamp(24px, 5vw, 48px)", alignItems: 'center' }}
       >
         {/* Image */}
         <motion.div
@@ -215,7 +215,7 @@ function ScenarioSection() {
   const stepsInView = useInView(stepsRef, { once: true, margin: "-60px" });
 
   return (
-    <section className="bg-[#0A0A0A] py-20 md:py-28" style={{ paddingTop: 96, paddingBottom: 96 }}>
+    <section className="bg-[#0A0A0A] py-20 md:py-28" style={{ paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
         <ScrollReveal>
@@ -433,9 +433,9 @@ export default function WorkforcePageClient() {
       </section>
 
       {/* ===== EIGHT AGENTS ===== */}
-      <section style={{ backgroundColor: '#fff', paddingTop: 96, paddingBottom: 96 }}>
-        <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 24, paddingRight: 24 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 120 }}>
+      <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
+        <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 16, paddingRight: 16 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: "clamp(64px, 15vw, 120px)" }}>
             {agents.map((agent, i) => (
               <AgentCard key={agent.num} agent={agent} index={i} />
             ))}
