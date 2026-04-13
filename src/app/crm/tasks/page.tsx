@@ -184,7 +184,7 @@ function SortableTaskCard({
   return (
     <div ref={setNodeRef} style={style} className="group relative">
       <div
-        className="bg-white border border-gray-100 rounded-lg p-3 hover:shadow-sm transition-shadow cursor-pointer"
+        className="rounded-lg p-3 hover:shadow-sm transition-shadow cursor-pointer" style={{ backgroundColor: "#1A1A1A", border: "1px solid #2A2A2A", borderRadius: "12px" }}
         onClick={() => onOpenDetail(task)}
         role="button"
         tabIndex={0}
@@ -206,14 +206,13 @@ function SortableTaskCard({
 
           <div className="flex-1 min-w-0">
             <p
-              className={`text-sm font-medium leading-snug line-clamp-2 ${
-                isCompleted ? 'text-gray-400 line-through' : 'text-gray-900'
-              }`}
+              className="text-sm font-medium leading-snug line-clamp-2"
+              style={{ color: isCompleted ? '#666666' : '#FFFFFF', textDecoration: isCompleted ? 'line-through' : 'none' }}
             >
               {task.title}
             </p>
             {task.description && (
-              <p className="text-xs text-gray-400 mt-1 line-clamp-1">
+              <p className="text-xs mt-1 line-clamp-1" style={{ color: "#A0A0A0" }}>
                 {task.description}
               </p>
             )}
@@ -255,11 +254,7 @@ function SortableTaskCard({
             <PriorityBadge priority={task.priority} />
             {task.dueDate && (
               <span
-                className={`text-xs flex items-center gap-1 ${
-                  isOverdue(task.dueDate, task.status)
-                    ? 'text-red-500 font-medium'
-                    : 'text-gray-400'
-                }`}
+                className="text-xs flex items-center gap-1" style={{ color: isOverdue(task.dueDate, task.status) ? "#EF4444" : "#A0A0A0", fontWeight: isOverdue(task.dueDate, task.status) ? 500 : 400 }}
               >
                 <Clock className="h-3 w-3" />
                 {format(new Date(task.dueDate), 'MMM d')}
@@ -269,7 +264,7 @@ function SortableTaskCard({
 
           {task.assignee && (
             <div
-              className="h-6 w-6 rounded-full bg-[#F3D840] flex items-center justify-center text-[10px] font-bold text-gray-700 shrink-0"
+              className="h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0" style={{ backgroundColor: "#F3D840", color: "#0A0A0A" }}
               title={task.assignee.name}
             >
               {getInitials(task.assignee.name)}
@@ -285,7 +280,7 @@ function SortableTaskCard({
 
 function DragOverlayCard({ task }: { task: Task }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-lg w-72 rotate-2">
+    <div className="rounded-lg p-3 shadow-lg w-72 rotate-2" style={{ backgroundColor: "#1A1A1A", border: "1px solid #2A2A2A", borderRadius: "12px" }}>
       <p className="text-sm font-medium text-gray-900 line-clamp-2">
         {task.title}
       </p>
@@ -329,16 +324,16 @@ function TaskColumn({
       <div className="flex items-center justify-between mb-3 px-1">
         <div className="flex items-center gap-2">
           <div className={`h-2.5 w-2.5 rounded-full ${col.color}`} />
-          <span className="text-sm font-semibold text-gray-700">{col.label}</span>
+          <span className="text-sm font-semibold" style={{ color: "#FFFFFF" }}>{col.label}</span>
         </div>
-        <span className="text-xs font-bold text-gray-500 bg-gray-100 h-5 min-w-5 px-1.5 rounded-full flex items-center justify-center">
+        <span className="h-5 min-w-5 px-1.5 rounded-full flex items-center justify-center" style={{ fontSize: "12px", fontWeight: "bold", color: "#666666", backgroundColor: "#1A1A1A" }}>
           {tasks.length}
         </span>
       </div>
 
       {/* Droppable zone */}
       <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
-        <div className="bg-gray-100/80 rounded-xl p-2 min-h-[200px] max-h-[calc(100vh-240px)] overflow-y-auto space-y-2">
+        <div className="rounded-xl p-2 min-h-[200px] max-h-[calc(100vh-240px)] overflow-y-auto space-y-2" style={{ backgroundColor: "#141414" }}>
           {tasks.map((task, i) => (
             <motion.div
               key={task.id}
@@ -355,7 +350,7 @@ function TaskColumn({
             </motion.div>
           ))}
           {tasks.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12 text-gray-300">
+            <div className="flex flex-col items-center justify-center py-12" style={{ color: "#666666" }}
               <ListTodo className="h-8 w-8 mb-2" />
               <p className="text-xs">No tasks</p>
             </div>
@@ -608,13 +603,13 @@ function TaskDetailDrawer({
             {/* Related info */}
             <div className="space-y-2">
               <Label className="text-xs font-medium text-gray-500">Related</Label>
-              <div className="bg-gray-50 rounded-lg p-3 space-y-2">
+              <div className="rounded-lg p-3 space-y-2" style={{ backgroundColor: "#141414" }}
                 {contactName ? (
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-400 w-16 shrink-0">Contact</span>
                     <a
                       href={`/crm/contacts/${task.contactId}`}
-                      className="text-sm text-gray-900 hover:text-[#F3D840] hover:underline font-medium"
+                      className="text-sm hover:text-[#F3D840] hover:underline font-medium" style={{ color: "#FFFFFF" }}
                     >
                       {contactName}
                     </a>
@@ -625,7 +620,7 @@ function TaskDetailDrawer({
                     <span className="text-xs text-gray-400 w-16 shrink-0">Deal</span>
                     <a
                       href={`/crm/deals/${task.dealId}`}
-                      className="text-sm text-gray-900 hover:text-[#F3D840] hover:underline font-medium"
+                      className="text-sm hover:text-[#F3D840] hover:underline font-medium" style={{ color: "#FFFFFF" }}
                     >
                       {task.deal.title}
                     </a>
@@ -640,7 +635,7 @@ function TaskDetailDrawer({
             {/* Created date */}
             <div className="space-y-1.5">
               <Label className="text-xs font-medium text-gray-500">Created</Label>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm" style={{ color: "#A0A0A0" }}
                 {format(new Date(task.createdAt), 'MMM d, yyyy \'at\' h:mm a')}
               </p>
             </div>
@@ -649,7 +644,7 @@ function TaskDetailDrawer({
             <Button
               onClick={handleSave}
               disabled={updateMutation.isPending}
-              className="w-full bg-[#374151] hover:bg-[#1F2937] text-white"
+              className="w-full" style={{ backgroundColor: "#F3D840", color: "#0A0A0A" }}
             >
               {updateMutation.isPending ? (
                 <span className="flex items-center gap-2">
@@ -784,7 +779,7 @@ function TaskDetailDrawer({
                 Cancel
               </Button>
               <Button
-                className="flex-1 bg-[#374151] hover:bg-[#1F2937] text-white"
+                className="flex-1" style={{ backgroundColor: "#F3D840", color: "#0A0A0A" }}
                 disabled={logActivityMutation.isPending || !activitySubject.trim()}
                 onClick={handleLogActivity}
               >
@@ -1037,7 +1032,7 @@ export default function TasksPage() {
   }, [newTask, createMutation])
 
   return (
-    <div className="p-4 lg:p-6 space-y-5">
+    <div className="p-4 lg:p-6 space-y-5" style={{ backgroundColor: "#0A0A0A", minHeight: "100vh" }}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -1045,8 +1040,8 @@ export default function TasksPage() {
         className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
       >
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Tasks</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <h1 className="text-2xl font-bold" style={{ color: "#FFFFFF" }}>Tasks</h1>
+          <p className="text-sm mt-1" style={{ color: "#A0A0A0" }}>
             {tasks.length} total task{tasks.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -1089,7 +1084,7 @@ export default function TasksPage() {
           {/* New Task button */}
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-[#374151] hover:bg-[#1F2937] text-white font-medium h-9 text-xs">
+              <Button className="font-medium h-9 text-xs" style={{ backgroundColor: "#F3D840", color: "#0A0A0A" }}>
                 <Plus className="h-4 w-4 mr-1.5" />
                 New Task
               </Button>
@@ -1195,7 +1190,7 @@ export default function TasksPage() {
                 <Button
                   onClick={handleCreate}
                   disabled={createMutation.isPending}
-                  className="w-full bg-[#374151] hover:bg-[#1F2937] text-white"
+                  className="w-full" style={{ backgroundColor: "#F3D840", color: "#0A0A0A" }}
                 >
                   {createMutation.isPending ? 'Creating...' : 'Create Task'}
                 </Button>

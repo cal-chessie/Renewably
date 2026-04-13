@@ -3,68 +3,58 @@
 // ============================================================================
 // PBKDF2 password hashing (upgrade from legacy SHA-256).
 // Legacy SHA-256 hashes are verified with fallback and auto-upgraded on login.
-// Secure cookie flags in production. In-memory rate limiter for brute-force protection.
+// Secure cookie flags in production. Redis-backed rate limiter for brute-force protection.
 // ============================================================================
 
+import { redis } from './redis'
 import { createSession, getSession, deleteSession } from './sessions'
 
-// ─── Rate Limiter (in-memory, per IP) ───
+// ─── Rate Limiter (Redis, per IP) ───
 // Prevents brute-force attacks on the login endpoint.
+// Key: `crm:ratelimit:{ip}`
+// Uses Redis INCR + EXPIRE atomic pattern.
+// Fails open if Redis is unavailable.
 
-const loginAttempts = new Map<string, { count: number; firstAttempt: number }>()
 const MAX_LOGIN_ATTEMPTS = 10
 const LOGIN_WINDOW_MS = 15 * 60 * 1000 // 15 minutes
 const LOCKOUT_DURATION_MS = 15 * 60 * 1000 // 15 minutes lockout after max attempts
 
-// Clean up old entries every 10 minutes
-setInterval(() => {
-  const now = Date.now()
-  for (const [key, val] of loginAttempts.entries()) {
-    if (now - val.firstAttempt > LOGIN_WINDOW_MS + LOCKOUT_DURATION_MS) {
-      loginAttempts.delete(key)
+export async function checkRateLimit(ip: string): Promise<{ allowed: boolean; retryAfterMs: number }> {
+  try {
+    const key = `crm:ratelimit:${ip}`
+    const countStr = await redis.incr(key)
+
+    // Set expiry on first increment (15-min window)
+    if (parseInt(countStr, 10) === 1) {
+      await redis.pexpire(key, LOGIN_WINDOW_MS)
     }
-  }
-}, 10 * 60 * 1000)
 
-export function checkRateLimit(ip: string): { allowed: boolean; retryAfterMs: number } {
-  const now = Date.now()
-  const entry = loginAttempts.get(ip)
+    const count = parseInt(countStr, 10)
+    const ttlMs = await redis.pttl(key)
 
-  if (!entry) {
-    loginAttempts.set(ip, { count: 1, firstAttempt: now })
-    return { allowed: true, retryAfterMs: 0 }
-  }
-
-  // If locked out, check if lockout has expired
-  if (entry.count >= MAX_LOGIN_ATTEMPTS) {
-    const lockoutEnd = entry.firstAttempt + LOCKOUT_DURATION_MS
-    if (now < lockoutEnd) {
-      return { allowed: false, retryAfterMs: lockoutEnd - now }
+    if (count >= MAX_LOGIN_ATTEMPTS) {
+      // Extend TTL to lockout duration if this just triggered lockout
+      if (count === MAX_LOGIN_ATTEMPTS) {
+        await redis.pexpire(key, LOCKOUT_DURATION_MS)
+        return { allowed: false, retryAfterMs: LOCKOUT_DURATION_MS }
+      }
+      return { allowed: false, retryAfterMs: Math.max(0, ttlMs) }
     }
-    // Lockout expired, reset
-    loginAttempts.set(ip, { count: 1, firstAttempt: now })
+
+    return { allowed: true, retryAfterMs: 0 }
+  } catch (err) {
+    // Fail open — if Redis is down, allow the request
+    console.error('[auth] Redis rate limit check failed, allowing request:', err)
     return { allowed: true, retryAfterMs: 0 }
   }
-
-  // If window has expired, reset
-  if (now - entry.firstAttempt > LOGIN_WINDOW_MS) {
-    loginAttempts.set(ip, { count: 1, firstAttempt: now })
-    return { allowed: true, retryAfterMs: 0 }
-  }
-
-  // Increment count
-  entry.count++
-
-  if (entry.count >= MAX_LOGIN_ATTEMPTS) {
-    return { allowed: false, retryAfterMs: LOCKOUT_DURATION_MS }
-  }
-
-  const remaining = MAX_LOGIN_ATTEMPTS - entry.count
-  return { allowed: true, retryAfterMs: 0 }
 }
 
-export function clearRateLimit(ip: string): void {
-  loginAttempts.delete(ip)
+export async function clearRateLimit(ip: string): Promise<void> {
+  try {
+    await redis.del(`crm:ratelimit:${ip}`)
+  } catch (err) {
+    console.error('[auth] Redis rate limit clear failed:', err)
+  }
 }
 
 // ─── Password Hashing ───
@@ -142,7 +132,7 @@ export function isLegacyHash(hash: string): boolean {
 
 // ─── Session Management ───
 
-export function getSessionFromRequest(request: Request): SessionData | null {
+export async function getSessionFromRequest(request: Request): Promise<SessionData | null> {
   const cookieHeader = request.headers.get('cookie') || ''
   const cookies = parseCookies(cookieHeader)
   const token = cookies['crm_session']

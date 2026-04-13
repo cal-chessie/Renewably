@@ -98,7 +98,7 @@ export default function ActivitiesPage() {
   })
 
   return (
-    <div className="p-6 lg:p-8 space-y-6">
+    <div className="p-6 lg:p-8 space-y-6" style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -106,15 +106,15 @@ export default function ActivitiesPage() {
         className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
       >
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Activities</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <h1 className="text-2xl font-bold" style={{ color: '#FFFFFF' }}>Activities</h1>
+          <p className="text-sm mt-1" style={{ color: '#A0A0A0' }}>
             {data?.pagination?.total || 0} total activities
           </p>
         </div>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-[#374151] hover:bg-[#1F2937] text-white font-medium">
+            <Button className="font-medium" style={{ backgroundColor: '#F3D840', color: '#0A0A0A' }}>
               <Plus className="h-4 w-4 mr-2" />
               Log Activity
             </Button>
@@ -185,7 +185,8 @@ export default function ActivitiesPage() {
                   createMutation.mutate(newActivity)
                 }}
                 disabled={createMutation.isPending}
-                className="w-full bg-[#374151] hover:bg-[#1F2937] text-white"
+                className="w-full"
+                style={{ backgroundColor: '#F3D840', color: '#0A0A0A' }}
               >
                 {createMutation.isPending ? 'Saving...' : 'Log Activity'}
               </Button>
@@ -236,17 +237,17 @@ export default function ActivitiesPage() {
         {isLoading ? (
           <div className="space-y-4">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-20 bg-gray-100 rounded-xl animate-pulse" />
+              <div key={i} className="h-20 rounded-xl animate-pulse" style={{ backgroundColor: '#1A1A1A' }} />
             ))}
           </div>
         ) : data?.activities?.length === 0 ? (
-          <Card className="border-0 shadow-sm p-12 text-center">
-            <p className="text-gray-400">No activities found</p>
+          <Card className="border-0 shadow-sm p-12 text-center" style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '12px' }}>
+            <p style={{ color: '#666666' }}>No activities found</p>
           </Card>
         ) : (
           <div className="relative">
             {/* Timeline line */}
-            <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gray-200" />
+            <div className="absolute left-5 top-0 bottom-0 w-0.5" style={{ backgroundColor: '#2A2A2A' }} />
 
             <div className="space-y-1">
               {data?.activities?.map((activity: Record<string, unknown>, i: number) => (
@@ -260,21 +261,21 @@ export default function ActivitiesPage() {
                   <div className="relative z-10 mt-1">
                     <ActivityIcon type={activity.type as string} size="sm" />
                   </div>
-                  <Card className="flex-1 border-0 shadow-sm mb-3">
+                  <Card className="flex-1 border-0 shadow-sm mb-3" style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '12px' }}>
                     <div className="p-4">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900">
+                          <p className="text-sm font-medium" style={{ color: '#FFFFFF' }}>
                             {activity.subject as string}
                           </p>
                           {activity.description && (
-                            <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                            <p className="text-sm mt-1 line-clamp-2" style={{ color: '#A0A0A0' }}>
                               {activity.description as string}
                             </p>
                           )}
                         </div>
                         <div className="text-right shrink-0">
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs" style={{ color: '#666666' }}>
                             {timeAgo(activity.createdAt as string)}
                           </p>
                           {activity.status && activity.status !== 'completed' && (
@@ -284,22 +285,22 @@ export default function ActivitiesPage() {
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 mt-2 pt-2 border-t border-gray-50">
-                        <span className="text-xs font-medium text-gray-400 uppercase">
+                      <div className="flex items-center gap-3 mt-2 pt-2" style={{ borderTop: '1px solid #2A2A2A' }}>
+                        <span className="text-xs font-medium uppercase" style={{ color: '#666666' }}>
                           {activity.type as string}
                         </span>
                         {activity.contact && (
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs" style={{ color: '#A0A0A0' }}>
                             with {(activity.contact as Record<string, string>).firstName} {(activity.contact as Record<string, string>).lastName}
                           </span>
                         )}
                         {activity.deal && (
-                          <span className="text-xs text-[#374151]">
+                          <span className="text-xs" style={{ color: '#F3D840' }}>
                             📋 {(activity.deal as Record<string, string>).title}
                           </span>
                         )}
                         {activity.duration && (
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs" style={{ color: '#666666' }}>
                             ⏱ {activity.duration}min
                           </span>
                         )}
@@ -315,7 +316,7 @@ export default function ActivitiesPage() {
         {/* Pagination */}
         {data?.pagination && data.pagination.totalPages > 1 && (
           <div className="flex items-center justify-between mt-6">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm" style={{ color: '#A0A0A0' }}>
               Page {page} of {data.pagination.totalPages}
             </p>
             <div className="flex items-center gap-2">

@@ -23,7 +23,7 @@ import { getSessionFromRequest } from '@/lib/auth'
  *   }
  */
 export async function requireAuth(request: NextRequest) {
-  const session = getSessionFromRequest(request)
+  const session = await getSessionFromRequest(request)
   if (!session) return null
 
   const user = await db.user.findUnique({

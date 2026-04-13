@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limiting check
     const ip = getClientIp(request)
-    const rateCheck = checkRateLimit(ip)
+    const rateCheck = await checkRateLimit(ip)
     if (!rateCheck.allowed) {
       const retryAfterSecs = Math.ceil(rateCheck.retryAfterMs / 1000)
       return NextResponse.json(
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
       data: { lastLoginAt: new Date() },
     })
 
-    const token = createSessionToken({
+    const token = await createSessionToken({
       id: user.id,
       email: user.email,
       name: user.name,
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
 
     response.headers.append('Set-Cookie', createSessionCookie(token))
     // Clear rate limit on successful login
-    clearRateLimit(ip)
+    await clearRateLimit(ip)
     return response
   } catch (error) {
     console.error('Login error:', error)
@@ -110,9 +110,9 @@ export async function POST(request: NextRequest) {
 // DELETE: Logout
 export async function DELETE(request: NextRequest) {
   try {
-    const session = getSessionFromRequest(request)
+    const session = await getSessionFromRequest(request)
     if (session) {
-      deleteSession(
+      await deleteSession(
         parseCookies(request.headers.get('cookie') || '')['crm_session'] || ''
       )
     }
@@ -129,7 +129,7 @@ export async function DELETE(request: NextRequest) {
 // GET: Current session
 export async function GET(request: NextRequest) {
   try {
-    const session = getSessionFromRequest(request)
+    const session = await getSessionFromRequest(request)
     if (!session) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
     }

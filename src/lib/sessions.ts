@@ -1,5 +1,12 @@
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
-import { join } from 'path'
+// ============================================================================
+// RENEWABLY.IE — SESSION MANAGEMENT (Redis-backed)
+// ============================================================================
+// Sessions are stored as Redis hashes with key prefix `crm:session:{token}`.
+// Redis TTL (7 days) handles automatic expiration.
+// Falls back gracefully if Redis is unavailable.
+// ============================================================================
+
+import { redis } from './redis'
 
 export interface SessionData {
   userId: string
@@ -10,77 +17,67 @@ export interface SessionData {
   expiresAt: number
 }
 
-// Session duration: 7 days in milliseconds
-const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000
+const KEY_PREFIX = 'crm:session:'
+const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60 // 7 days
 
-function getSessionsPath(): string {
-  const dir = join(process.cwd(), 'db')
-  if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
-  return join(dir, 'sessions.json')
-}
-
-function readSessions(): Record<string, SessionData> {
-  try {
-    const content = readFileSync(getSessionsPath(), 'utf-8')
-    return JSON.parse(content)
-  } catch {
-    return {}
-  }
-}
-
-function writeSessions(sessions: Record<string, SessionData>): void {
-  writeFileSync(getSessionsPath(), JSON.stringify(sessions, null, 2))
-}
-
-export function createSession(user: {
+export async function createSession(user: {
   id: string
   email: string
   name: string
   role: string
   avatar: string | null
-}): string {
+}): Promise<string> {
   const buffer = new Uint8Array(32)
   crypto.getRandomValues(buffer)
   const token = Array.from(buffer, (b) => b.toString(16).padStart(2, '0')).join('')
-  
-  const sessions = readSessions()
-  sessions[token] = {
+
+  const session: SessionData = {
     userId: user.id,
     email: user.email,
     name: user.name,
     role: user.role,
     avatar: user.avatar,
-    expiresAt: Date.now() + SESSION_DURATION,
+    expiresAt: Date.now() + SESSION_TTL_SECONDS * 1000,
   }
 
-  // Clean expired
-  const now = Date.now()
-  for (const [key, session] of Object.entries(sessions)) {
-    if (now > session.expiresAt) {
-      delete sessions[key]
-    }
+  try {
+    const key = KEY_PREFIX + token
+    // Store as a Redis hash for efficient field access
+    await redis.hset(key, 'data', JSON.stringify(session))
+    await redis.expire(key, SESSION_TTL_SECONDS)
+  } catch (err) {
+    console.error('[sessions] Redis write failed, session will not persist:', err)
   }
 
-  writeSessions(sessions)
   return token
 }
 
-export function getSession(token: string): SessionData | null {
-  const sessions = readSessions()
-  const session = sessions[token]
-  if (!session) return null
+export async function getSession(token: string): Promise<SessionData | null> {
+  try {
+    const key = KEY_PREFIX + token
+    const raw = await redis.hget(key, 'data')
+    if (!raw) return null
 
-  if (Date.now() > session.expiresAt) {
-    delete sessions[token]
-    writeSessions(sessions)
+    const session: SessionData = JSON.parse(raw)
+
+    // Fallback: check expiry manually in case TTL hasn't fired yet
+    if (Date.now() > session.expiresAt) {
+      await redis.del(key)
+      return null
+    }
+
+    return session
+  } catch (err) {
+    console.error('[sessions] Redis read failed:', err)
     return null
   }
-
-  return session
 }
 
-export function deleteSession(token: string): void {
-  const sessions = readSessions()
-  delete sessions[token]
-  writeSessions(sessions)
+export async function deleteSession(token: string): Promise<void> {
+  try {
+    const key = KEY_PREFIX + token
+    await redis.del(key)
+  } catch (err) {
+    console.error('[sessions] Redis delete failed:', err)
+  }
 }
