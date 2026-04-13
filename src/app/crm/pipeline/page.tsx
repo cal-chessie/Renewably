@@ -823,7 +823,7 @@ export default function PipelinePage() {
 
       {/* Kanban Board */}
       {isLoading ? (
-        <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
+        <div className="crm-pipeline-skeleton" style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
           {[...Array(6)].map((_, i) => (
             <div key={i} className="rounded-xl animate-pulse h-96" style={{ backgroundColor: '#1A1A1A' }} />
           ))}
@@ -916,6 +916,14 @@ export default function PipelinePage() {
           />
         )}
       </AnimatePresence>
+
+      <style>{`
+        @media (max-width: 767px) {
+          .crm-pipeline-skeleton {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

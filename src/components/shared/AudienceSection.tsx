@@ -12,13 +12,19 @@ export default function AudienceSection({ badgeText = "Who is this for?", paddin
   const paddingBottom = padding?.bottom ?? 'clamp(48px, 6vw, 112px)';
 
   return (
-    <section data-theme="dark" style={{ backgroundColor: '#0A0A0A', paddingTop, paddingBottom, overflow: 'hidden' }}>
-      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
+    <section data-theme="dark" className="bg-[#0A0A0A] overflow-hidden" style={{ paddingTop, paddingBottom }}>
+      <div className="max-w-[896px] mx-auto text-center" style={{ paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', marginBottom: 'clamp(28px, 5vw, 48px)' }}>
+          <div
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15"
+            style={{ marginBottom: 'clamp(28px, 5vw, 48px)' }}
+          >
             <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
-            <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
+            <span
+              className="text-white font-semibold tracking-[0.04em]"
+              style={{ fontSize: 'clamp(11px, 1.3vw, 14px)' }}
+            >
               {badgeText}
             </span>
           </div>
@@ -26,21 +32,30 @@ export default function AudienceSection({ badgeText = "Who is this for?", paddin
 
         {/* Headline */}
         <ScrollReveal delay={0.1}>
-          <h2 style={{ fontSize: 'clamp(24px, 5vw, 48px)', fontWeight: 800, color: '#fff', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 32px)' }}>
+          <h2
+            className="font-extrabold text-white leading-[1.15] tracking-[-0.02em]"
+            style={{ fontSize: 'clamp(24px, 5vw, 48px)', marginBottom: 'clamp(16px, 3vw, 32px)' }}
+          >
             Solar installers doing 20+ jobs a month.
           </h2>
         </ScrollReveal>
 
         {/* Body */}
         <ScrollReveal delay={0.2}>
-          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(15px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)' }}>
+          <p
+            className="text-white/70 leading-[1.7]"
+            style={{ fontSize: 'clamp(15px, 2vw, 20px)', marginBottom: 'clamp(12px, 2vw, 24px)' }}
+          >
             You have more work than time. You&apos;re turning down leads because you can&apos;t handle the admin. You&apos;re burning out your best people.
           </p>
         </ScrollReveal>
 
         {/* Closing */}
         <ScrollReveal delay={0.3}>
-          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(14px, 1.8vw, 18px)', lineHeight: 1.7, maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
+          <p
+            className="text-white/50 leading-[1.7] max-w-[640px] mx-auto"
+            style={{ fontSize: 'clamp(14px, 1.8vw, 18px)' }}
+          >
             Not for one-person shows. Not for hobbyists. For actual solar companies that want to scale without hiring ten more humans.
           </p>
         </ScrollReveal>

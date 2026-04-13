@@ -18,31 +18,47 @@ export default function BeforeAfterSection({ comparisons, padding }: BeforeAfter
   const paddingBottom = padding?.bottom ?? 'clamp(64px, 10vw, 128px)';
 
   return (
-    <section style={{ backgroundColor: '#fff', paddingTop, paddingBottom, overflow: 'hidden' }}>
-      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
+    <section className="bg-white overflow-hidden" style={{ paddingTop, paddingBottom }}>
+      <div className="max-w-[896px] mx-auto" style={{ paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(20px, 4vw, 32px)' }}>
-            <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
+          <div
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(243,216,64,0.1)] border border-[rgba(243,216,64,0.2)]"
+            style={{ marginBottom: 'clamp(20px, 4vw, 32px)' }}
+          >
+            <span
+              className="text-[#374151] font-semibold tracking-[0.04em]"
+              style={{ fontSize: 'clamp(11px, 1.3vw, 14px)' }}
+            >
               What changes.
             </span>
           </div>
         </ScrollReveal>
 
         {/* Comparison cards */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(20px, 4vw, 32px)' }}>
+        <div className="flex flex-col" style={{ gap: 'clamp(20px, 4vw, 32px)' }}>
           {comparisons.map((item, i) => (
             <ScrollReveal key={i} delay={i * 0.12}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'clamp(12px, 2vw, 24px)' }} className="md:grid-cols-2">
+              <div
+                className="grid grid-cols-1 md:grid-cols-2"
+                style={{ gap: 'clamp(12px, 2vw, 24px)' }}
+              >
                 {/* Before */}
                 <motion.div
                   whileHover={{ y: -2 }}
-                  style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)', borderRadius: 16, backgroundColor: '#FFFDF5', borderLeft: '4px solid rgba(239,68,68,0.4)', border: '1px solid rgba(239,68,68,0.15)', borderLeftWidth: 4, borderLeftStyle: 'solid', borderLeftColor: 'rgba(239,68,68,0.4)' }}
+                  className="rounded-2xl bg-[#FFFDF5] border border-[rgba(239,68,68,0.15)] border-l-4 border-l-[rgba(239,68,68,0.4)]"
+                  style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)' }}
                 >
-                  <span style={{ display: 'block', color: 'rgba(239,68,68,0.7)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'clamp(8px, 1.5vw, 12px)' }}>
+                  <span
+                    className="block text-[rgba(239,68,68,0.7)] text-[11px] font-bold uppercase tracking-[0.08em]"
+                    style={{ marginBottom: 'clamp(8px, 1.5vw, 12px)' }}
+                  >
                     Before
                   </span>
-                  <p style={{ color: '#535353', fontSize: 'clamp(14px, 1.8vw, 16px)', lineHeight: 1.7 }}>
+                  <p
+                    className="text-[#535353] leading-[1.7]"
+                    style={{ fontSize: 'clamp(14px, 1.8vw, 16px)' }}
+                  >
                     {item.before}
                   </p>
                 </motion.div>
@@ -50,12 +66,19 @@ export default function BeforeAfterSection({ comparisons, padding }: BeforeAfter
                 {/* After */}
                 <motion.div
                   whileHover={{ y: -2 }}
-                  style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)', borderRadius: 16, backgroundColor: '#FFFDF5', borderLeftWidth: 4, borderLeftStyle: 'solid', borderLeftColor: '#F3D840', border: '1px solid rgba(243,216,64,0.15)' }}
+                  className="rounded-2xl bg-[#FFFDF5] border border-[rgba(243,216,64,0.15)] border-l-4 border-l-[#F3D840]"
+                  style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)' }}
                 >
-                  <span style={{ display: 'block', color: '#B89A10', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'clamp(8px, 1.5vw, 12px)' }}>
+                  <span
+                    className="block text-[#B89A10] text-[11px] font-bold uppercase tracking-[0.08em]"
+                    style={{ marginBottom: 'clamp(8px, 1.5vw, 12px)' }}
+                  >
                     After
                   </span>
-                  <p style={{ color: '#1A1A1A', fontSize: 'clamp(14px, 1.8vw, 16px)', lineHeight: 1.7, fontWeight: 600 }}>
+                  <p
+                    className="text-[#1A1A1A] font-semibold leading-[1.7]"
+                    style={{ fontSize: 'clamp(14px, 1.8vw, 16px)' }}
+                  >
                     {item.after}
                   </p>
                 </motion.div>

@@ -1,8 +1,13 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { CRMProvider, useCRM } from '@/components/crm/CRMProvider'
-import { AIAssistant } from '@/components/crm/AIAssistant'
 import { usePathname } from 'next/navigation'
+
+const AIAssistant = dynamic(
+  () => import('@/components/crm/AIAssistant').then(mod => ({ default: mod.AIAssistant })),
+  { ssr: false }
+)
 import {
   LayoutDashboard,
   Users,
@@ -257,6 +262,20 @@ function CRMShell({ children }: { children: React.ReactNode }) {
 
       {/* AI Assistant floating chat widget */}
       <AIAssistant />
+
+      {/* Responsive media queries for CRM sidebar */}
+      <style>{`
+        @media (max-width: 767px) {
+          .crm-sidebar-desktop {
+            display: none !important;
+          }
+        }
+        @media (min-width: 768px) {
+          .crm-mobile-toggle {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

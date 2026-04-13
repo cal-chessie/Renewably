@@ -94,7 +94,7 @@ export default function Footer() {
           </h3>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {quickLinks.map((link) => (
-              <li key={link.href} style={{ marginBottom: "0.5rem" }}>
+              <li key={link.href} className="footer-link-item" style={{ marginBottom: "0.5rem" }}>
                 <Link
                   href={link.href}
                   style={{
@@ -165,6 +165,7 @@ export default function Footer() {
             <li style={{ marginBottom: "0.5rem" }}>
               <a
                 href="mailto:hello@renewably.ie"
+                className="footer-contact-link"
                 style={{
                   fontSize: "clamp(0.8rem, 1.4vw, 0.95rem)",
                   color: LIGHT_TEXT,
@@ -184,6 +185,7 @@ export default function Footer() {
             <li style={{ marginBottom: "0.5rem" }}>
               <a
                 href="tel:+353873958424"
+                className="footer-contact-link"
                 style={{
                   fontSize: "clamp(0.8rem, 1.4vw, 0.95rem)",
                   color: LIGHT_TEXT,
@@ -208,6 +210,54 @@ export default function Footer() {
               }}
             >
               Mon–Fri 9am–6pm GMT
+            </li>
+            <li className="footer-social-row" style={{ display: "flex", gap: 12, marginTop: "0.75rem" }}>
+              {/* LinkedIn */}
+              <a
+                href="#"
+                aria-label="LinkedIn"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(255,255,255,0.08)",
+                  transition: "background-color 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "rgba(243,216,64,0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)";
+                }}
+              >
+                <svg width="18" height="18" fill={FAINT_TEXT} viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065 2.063 0 01-2.063 2.065zm11.318 13.019H5.337V9h11.318v11.452z"/></svg>
+              </a>
+              {/* Twitter/X */}
+              <a
+                href="#"
+                aria-label="X (Twitter)"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 36,
+                  height: 36,
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(255,255,255,0.08)",
+                  transition: "background-color 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "rgba(243,216,64,0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)";
+                }}
+              >
+                <svg width="16" height="16" fill={FAINT_TEXT} viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
             </li>
           </ul>
         </div>
@@ -306,6 +356,30 @@ export default function Footer() {
             flex-direction: row !important;
             justify-content: space-between !important;
             text-align: left !important;
+          }
+        }
+        /* Very small screens: prevent awkward text wrapping in bottom bar */
+        @media (max-width: 374px) {
+          .footer-bottom > div {
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+          }
+        }
+        /* Mobile: 44px minimum tap targets for accessibility */
+        @media (max-width: 767px) {
+          .footer-social-row a {
+            width: 44px !important;
+            height: 44px !important;
+          }
+          .footer-link-item a {
+            display: block !important;
+            padding: 10px 0 !important;
+            font-size: 15px !important;
+          }
+          .footer-contact-link {
+            display: block !important;
+            padding: 10px 0 !important;
+            font-size: 15px !important;
           }
         }
       `}</style>

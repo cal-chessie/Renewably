@@ -292,9 +292,11 @@ export default function PricingPageClient() {
             </p>
             <Link
               href="/contact"
+              className="pricing-bottom-cta"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
+                justifyContent: "center",
                 gap: 8,
                 padding: "14px 28px",
                 backgroundColor: "#0A0A0A",
@@ -320,6 +322,14 @@ export default function PricingPageClient() {
               </svg>
             </Link>
           </ScrollReveal>
+          <style>{`
+            @media (max-width: 767px) {
+              .pricing-bottom-cta {
+                width: 100% !important;
+                box-sizing: border-box;
+              }
+            }
+          `}</style>
         </div>
       </section>
     </main>

@@ -261,19 +261,19 @@ function CalendarView({
       </CardHeader>
       <CardContent>
         {/* Day names */}
-        <div className="grid grid-cols-7 gap-px border border-[#2A2A2A] rounded-t-lg overflow-hidden">
+        <div className="crm-calendar-day-names grid grid-cols-7 gap-px border border-[#2A2A2A] rounded-t-lg overflow-hidden">
           {dayNames.map((name) => (
-            <div key={name} style={{ color: "#A0A0A0", backgroundColor: "#141414" }} className="py-2 text-center text-xs font-semibold uppercase">
+            <div key={name} style={{ color: "#A0A0A0", backgroundColor: "#141414" }} className="py-2 text-center text-xs font-semibold uppercase crm-calendar-day-name">
               {name}
             </div>
           ))}
         </div>
 
         {/* Calendar grid */}
-        <div className="grid grid-cols-7 gap-px bg-[#222222] border-x border-b border-[#2A2A2A] rounded-b-lg overflow-hidden">
+        <div className="crm-calendar-grid grid grid-cols-7 gap-px bg-[#222222] border-x border-b border-[#2A2A2A] rounded-b-lg overflow-hidden">
           {days.map((date, idx) => {
             if (!date) {
-              return <div key={`empty-${idx}`} style={{ backgroundColor: "#1A1A1A" }} className="min-h-[100px] md:min-h-[120px]" />
+              return <div key={`empty-${idx}`} style={{ backgroundColor: "#1A1A1A" }} className="min-h-[60px] md:min-h-[120px]" />
             }
 
             const isToday = isSameDay(date, today)
@@ -284,12 +284,12 @@ function CalendarView({
               <button
                 key={date.toISOString()}
                 onClick={() => onSelectDate(date)}
-                className={`min-h-[100px] md:min-h-[120px] p-1.5 text-left transition-colors hover:bg-[#F3D840]/10 focus:outline-none relative ${
+                className="crm-calendar-day min-h-[60px] md:min-h-[120px] p-1 md:p-1.5 text-left transition-colors hover:bg-[#F3D840]/10 focus:outline-none relative ${
                   isSelected ? 'bg-[#F3D840]/10 ring-2 ring-inset ring-[#F3D840]' : ''
                 }`}
               >
                 <span
-                  className={`inline-flex items-center justify-center h-7 w-7 rounded-full text-sm font-medium transition-colors ${
+                  className={`crm-calendar-date inline-flex items-center justify-center h-6 w-6 md:h-7 md:w-7 rounded-full text-xs md:text-sm font-medium transition-colors ${
                     isToday
                       ? 'bg-[#F3D840] text-[#374151] font-bold'
                       : 'text-[#E0E0E0]'
@@ -298,7 +298,7 @@ function CalendarView({
                   {date.getDate()}
                 </span>
 
-                <div className="mt-0.5 space-y-0.5 overflow-hidden max-h-[70px]">
+                <div className="mt-0.5 space-y-0.5 overflow-hidden max-h-[40px] md:max-h-[70px]">
                   {dayMeetings.slice(0, 3).map((meeting) => {
                     const typeConfig = MEETING_TYPE_CONFIG[meeting.meetingType]
                     return (
@@ -310,7 +310,7 @@ function CalendarView({
                           e.stopPropagation()
                           onSelectMeeting(meeting)
                         }}
-                        className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] md:text-xs font-medium truncate cursor-pointer border ${typeConfig.bg} ${typeConfig.color}`}
+                        className={`flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] md:text-[10px] md:px-1.5 font-medium truncate cursor-pointer border ${typeConfig.bg} ${typeConfig.color}`}
                         title={`${meeting.title} at ${formatTime(meeting.date)}`}
                       >
                         <span className="shrink-0">{typeConfig.icon}</span>

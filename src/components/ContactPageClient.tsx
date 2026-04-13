@@ -572,7 +572,7 @@ export default function ContactPageClient() {
                 transition={{ duration: 0.4 }}
                 style={{ marginTop: 32 }}
               >
-                <div style={{
+                <div className="contact-pain-bar" style={{
                   display: "flex",
                   alignItems: "center",
                   gap: 12,
@@ -615,7 +615,7 @@ export default function ContactPageClient() {
       {/* ===== FORM + SIDEBAR ===== */}
       <section style={{ backgroundColor: "#F9FAFB", paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-5 gap-12 lg:gap-16 items-start" style={{ gap: 64 }}>
+          <div className="grid lg:grid-cols-5 gap-12 lg:gap-16 items-start contact-form-grid">
             {/* Form — 3 columns */}
             <div className="lg:col-span-3">
               <ScrollReveal>
@@ -903,7 +903,7 @@ export default function ContactPageClient() {
                       </div>
 
                       {/* Submit */}
-                      <div style={{ marginTop: 28, display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+                      <div className="contact-submit-row" style={{ marginTop: 28, display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
                         <motion.button
                           type="submit"
                           disabled={formState === "sending"}
@@ -948,7 +948,21 @@ export default function ContactPageClient() {
                     </div>
 
                     {/* Inline spin animation */}
-                    <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+                    <style>{`@keyframes spin { to { transform: rotate(360deg) } }
+                    .contact-submit-row > button {
+                      width: 100% !important;
+                    }
+                    @media (max-width: 767px) {
+                      .contact-pain-bar {
+                        flex-direction: column !important;
+                        text-align: center !important;
+                        padding: 16px !important;
+                      }
+                      .contact-pain-bar > a {
+                        margin-left: 0 !important;
+                      }
+                    }
+                  `}</style>
                   </motion.form>
                 )}
               </AnimatePresence>

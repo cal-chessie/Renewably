@@ -125,7 +125,7 @@ export function AIAssistant() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="fixed bottom-24 right-6 z-50 flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl"
+            className="fixed bottom-24 right-6 z-50 flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl crm-ai-chat"
             style={{ width: '380px', height: '500px' }}
           >
             {/* Header */}
@@ -268,6 +268,18 @@ export function AIAssistant() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Responsive overrides for AI chat widget */}
+      <style>{`
+        @media (max-width: 479px) {
+          .crm-ai-chat {
+            width: calc(100vw - 48px) !important;
+            height: 400px !important;
+            right: 12px !important;
+            bottom: 84px !important;
+          }
+        }
+      `}</style>
     </>
   )
 }

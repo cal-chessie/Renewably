@@ -739,6 +739,7 @@ function FAQSection() {
                     aria-expanded={isOpen}
                     aria-controls={`faq-answer-${i}`}
                     id={`faq-question-${i}`}
+                    className="home-faq-btn"
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -777,6 +778,19 @@ function FAQSection() {
                       +
                     </motion.span>
                   </button>
+
+                  {/* Mobile FAQ button tap target and pricing CTA tweaks */}
+                  <style>{`
+                    .home-faq-btn {
+                      min-height: 44px !important;
+                    }
+                    .home-faq-btn > span:last-child {
+                      width: 44px !important;
+                      height: 44px !important;
+                      minWidth: 44px !important;
+                      font-size: 18px !important;
+                    }
+                  `}</style>
 
                   <motion.div
                     id={`faq-answer-${i}`}
@@ -817,7 +831,7 @@ function FAQSection() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 8,
-                padding: 'clamp(10px, 1.5vw, 12px) 24px',
+                padding: 'clamp(12px, 1.5vw, 12px) 28px',
                 backgroundColor: '#1A1A1A',
                 color: '#fff',
                 fontWeight: 700,
@@ -825,6 +839,7 @@ function FAQSection() {
                 borderRadius: 9999,
                 textDecoration: 'none',
                 letterSpacing: '0.02em',
+                minWidth: 180,
               }}
             >
               Ask us anything
@@ -883,7 +898,8 @@ function PricingSection() {
           <div style={{ marginTop: 'clamp(24px, 3vw, 48px)' }}>
             <Link
               href="/contact"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 12, borderRadius: 9999, fontWeight: 700, textDecoration: 'none', padding: 'clamp(10px, 1.5vw, 12px) 24px', fontSize: 14, letterSpacing: '0.02em', backgroundColor: '#1A1A1A', color: '#fff', transition: 'box-shadow 0.3s ease' }}
+              className="home-pricing-cta"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 12, borderRadius: 9999, fontWeight: 700, textDecoration: 'none', padding: 'clamp(12px, 1.5vw, 14px) 28px', fontSize: 14, letterSpacing: '0.02em', backgroundColor: '#1A1A1A', color: '#fff', transition: 'box-shadow 0.3s ease', minWidth: 180 }}
             >
               Book a Call
               <svg style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">

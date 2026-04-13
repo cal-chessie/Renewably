@@ -1,5 +1,5 @@
 // ============================================================================
-// RENEWABLY.IE — MIDDLEWARE
+// RENEWABLY.IE — PROXY (AUTH GUARD)
 // ============================================================================
 // Server-side route protection for CRM pages and API routes.
 // Checks for the crm_session cookie existence.
@@ -13,7 +13,7 @@ const CRM_PAGE_ROUTES = ['/crm']
 const CRM_API_ROUTES = ['/api/crm/']
 const PUBLIC_CRM_ROUTES = ['/crm/login', '/api/crm/auth']
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Skip non-CRM routes entirely

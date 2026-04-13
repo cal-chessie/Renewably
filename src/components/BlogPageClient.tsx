@@ -1179,11 +1179,13 @@ function FinalCTA() {
           >
             <motion.a
               href="/contact"
+              className="blog-final-cta"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
+                justifyContent: "center",
                 gap: 10,
                 padding: "16px 36px",
                 fontSize: 'clamp(14px, 1.8vw, 16px)',
@@ -1199,11 +1201,13 @@ function FinalCTA() {
             </motion.a>
             <motion.a
               href="/workforce"
+              className="blog-final-cta"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
+                justifyContent: "center",
                 gap: 10,
                 padding: "16px 36px",
                 fontSize: 'clamp(14px, 1.8vw, 16px)',
@@ -1218,6 +1222,14 @@ function FinalCTA() {
               Meet the AI Team <ArrowIcon />
             </motion.a>
           </div>
+          <style>{`
+            @media (max-width: 767px) {
+              .blog-final-cta {
+                width: 100% !important;
+                box-sizing: border-box;
+              }
+            }
+          `}</style>
         </ScrollReveal>
       </div>
     </section>
