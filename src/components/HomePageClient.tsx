@@ -719,7 +719,7 @@ function BeforeAfterSection() {
   ];
 
   return (
-    <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(40px, 6vw, 80px)', paddingBottom: 'clamp(40px, 6vw, 112px)', overflow: 'hidden' }}>
+    <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(40px, 6vw, 80px)', paddingBottom: 'clamp(64px, 10vw, 128px)', overflow: 'hidden' }}>
       <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
@@ -778,7 +778,7 @@ function AudienceSection() {
       <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', marginBottom: 'clamp(20px, 4vw, 40px)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', marginBottom: 'clamp(28px, 5vw, 48px)' }}>
             <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
             <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
               Who is this for?
