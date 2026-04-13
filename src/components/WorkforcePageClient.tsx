@@ -109,56 +109,56 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
         >
           {agent.num === "01" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
               <MiniDesktop />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
             </div>
           ) : agent.num === "02" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
               <OperationsDashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
             </div>
           ) : agent.num === "03" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
               <SupportDashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
             </div>
           ) : agent.num === "04" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
               <GrantsDashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
             </div>
           ) : agent.num === "05" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
               <LogisticsDashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
             </div>
           ) : agent.num === "06" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
               <PermittingDashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
             </div>
           ) : agent.num === "07" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
               <QADashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>
             </div>
           ) : agent.num === "08" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
               <ReportingDashboard />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
@@ -377,7 +377,7 @@ export default function WorkforcePageClient() {
   return (
     <main>
       {/* ===== HERO ===== */}
-      <section data-theme="dark" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+      <section data-theme="dark" style={{ position: 'relative', minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
         {/* Robot image background */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
           <Image

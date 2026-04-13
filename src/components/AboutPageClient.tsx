@@ -165,7 +165,7 @@ function HeroSection() {
     <section
       ref={heroRef}
       data-theme="dark"
-      style={{ position: "relative", overflow: "hidden", backgroundColor: DARK }}
+      style={{ position: "relative", minHeight: '100dvh', display: 'flex', alignItems: 'center', overflow: "hidden", backgroundColor: DARK }}
     >
       {/* Robot hero background */}
       <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
@@ -216,7 +216,7 @@ function HeroSection() {
           textAlign: "center",
         }}
       >
-        <div style={{ paddingTop: 100, paddingBottom: 80 }}>
+        <div style={{ padding: 'clamp(60px, 10vh, 100px) 16px' }}>
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

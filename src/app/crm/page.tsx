@@ -81,7 +81,7 @@ export default function DashboardPage() {
 
   if (isLoading || !data || data.error) {
     return (
-      <div style={{ padding: '24px 32px', backgroundColor: '#0A0A0A', minHeight: '100vh' }}>
+      <div style={{ padding: '24px 16px', backgroundColor: '#0A0A0A', minHeight: '100vh' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           {/* Header skeleton */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -162,8 +162,8 @@ export default function DashboardPage() {
       animate="visible"
     >
       {/* Header */}
-      <motion.div variants={fadeUp} className="flex items-center justify-between">
-        <div>
+      <motion.div variants={fadeUp} className="flex items-center justify-between" style={{ flexWrap: 'wrap', gap: 12 }}>
+        <div style={{ minWidth: 0, flex: '1 1 auto' }}>
           <h1 className="text-2xl font-bold tracking-tight" style={{ color: '#FFFFFF' }}>Dashboard</h1>
           <p className="text-sm mt-1" style={{ color: '#A0A0A0' }}>
             {(() => {
@@ -184,6 +184,7 @@ export default function DashboardPage() {
           border: '1px solid #2A2A2A',
           fontSize: 13,
           color: '#A0A0A0',
+          flexShrink: 0,
         }}>
           <span style={{
             width: 8,

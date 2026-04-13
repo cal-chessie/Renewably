@@ -119,7 +119,7 @@ export default function PricingPageClient() {
             backgroundSize: "40px 40px",
           }}
         />
-        <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", padding: "100px 20px 64px" }}>
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", padding: "clamp(60px, 12vh, 100px) 20px 64px" }}>
           <ScrollReveal>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 9999, backgroundColor: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", marginBottom: 32 }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: "#F3D840" }} />

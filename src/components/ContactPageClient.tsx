@@ -340,7 +340,7 @@ export default function ContactPageClient() {
   return (
     <main>
       {/* ===== HERO SECTION ===== */}
-      <section ref={heroRef} style={{ position: "relative", overflow: "hidden", backgroundColor: DARK }}>
+      <section ref={heroRef} style={{ position: "relative", minHeight: '100dvh', display: 'flex', alignItems: 'center', overflow: "hidden", backgroundColor: DARK }}>
         {/* Animated dot grid */}
         <div
           style={{
@@ -374,7 +374,7 @@ export default function ContactPageClient() {
         />
 
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-[1] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" >
-          <div style={{ paddingTop: 100, paddingBottom: 80 }}>
+          <div style={{ padding: 'clamp(60px, 10vh, 100px) 0' }}>
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
               {/* Left: Copy */}
               <div>

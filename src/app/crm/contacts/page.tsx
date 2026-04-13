@@ -504,9 +504,10 @@ function CreateProposalDialog({ contact, dealOptions, open, onOpenChange }: { co
               <Label>Line Items</Label>
               <Button variant="ghost" size="sm" onClick={addLineItem}><Plus className="h-3 w-3 mr-1" /> Add</Button>
             </div>
-            <div className="space-y-2">
+            <div style={{ overflowX: 'auto' }}>
+              <div className="space-y-2" style={{ minWidth: 320 }}>
               {lineItems.map((li, i) => (
-                <div key={i} className="grid grid-cols-[1fr_60px_80px_80px_28px] gap-2 items-end">
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 48px 64px 72px 28px', gap: 6, alignItems: 'end' }}>
                   <Input value={li.name} onChange={e => updateLineItem(i, 'name', e.target.value)} placeholder="Item name" className="h-9 text-sm" />
                   <Input type="number" value={li.quantity} onChange={e => updateLineItem(i, 'quantity', parseInt(e.target.value) || 0)} className="h-9 text-sm" min={1} />
                   <Input type="number" value={li.unitPrice} onChange={e => updateLineItem(i, 'unitPrice', parseFloat(e.target.value) || 0)} className="h-9 text-sm" />
@@ -514,6 +515,7 @@ function CreateProposalDialog({ contact, dealOptions, open, onOpenChange }: { co
                   <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-red-500" style={{ color: '#666666' }} onClick={() => removeLineItem(i)}><Trash2 className="h-3.5 w-3.5" /></Button>
                 </div>
               ))}
+              </div>
             </div>
             <div className="flex justify-end pt-2" style={{ borderTop: '1px solid #2A2A2A' }}>
               <span style={{ color: '#FFFFFF' }} className="text-sm font-bold">Total: {formatCurrency(totalAmount)}</span>

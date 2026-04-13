@@ -407,7 +407,7 @@ export default function ServicesPageClient() {
   return (
     <main>
         {/* ===== HERO — Full-Width Robot Banner ===== */}
-        <section data-theme="dark" className="relative overflow-hidden">
+        <section data-theme="dark" className="relative overflow-hidden" style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center' }}>
           {/* Robot image background */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -422,7 +422,7 @@ export default function ServicesPageClient() {
           <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#0A0A0A]/85 via-[#0A0A0A]/70 to-[#0A0A0A]/50" />
 
           {/* Content */}
-          <div className="relative z-[2] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-40">
+          <div className="relative z-[2] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ padding: 'clamp(80px, 15vh, 160px) 16px' }}>
             <div className="max-w-3xl">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

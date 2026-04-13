@@ -309,9 +309,10 @@ function CreateProposalFromDealDialog({ dealId, dealTitle, contactId, open, onOp
           <div className="space-y-2"><Label>Title *</Label><Input value={title} onChange={e => setTitle(e.target.value)} /></div>
           <div className="space-y-2">
             <div className="flex items-center justify-between"><Label>Line Items</Label><Button variant="ghost" size="sm" onClick={addLineItem}><Plus className="h-3 w-3 mr-1" /> Add</Button></div>
-            <div className="space-y-2">
+            <div style={{ overflowX: 'auto' }}>
+              <div className="space-y-2" style={{ minWidth: 320 }}>
               {lineItems.map((li, i) => (
-                <div key={i} className="grid grid-cols-[1fr_60px_80px_80px_28px] gap-2 items-end">
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 48px 64px 72px 28px', gap: 6, alignItems: 'end' }}>
                   <Input value={li.name} onChange={e => updateLineItem(i, 'name', e.target.value)} placeholder="Item name" className="h-9 text-sm" />
                   <Input type="number" value={li.quantity} onChange={e => updateLineItem(i, 'quantity', parseInt(e.target.value) || 0)} className="h-9 text-sm" min={1} />
                   <Input type="number" value={li.unitPrice} onChange={e => updateLineItem(i, 'unitPrice', parseFloat(e.target.value) || 0)} className="h-9 text-sm" />
@@ -319,6 +320,7 @@ function CreateProposalFromDealDialog({ dealId, dealTitle, contactId, open, onOp
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-red-500" onClick={() => removeLineItem(i)}><Trash2 className="h-3.5 w-3.5" /></Button>
                 </div>
               ))}
+              </div>
             </div>
             <div className="flex justify-end pt-2" style={{ borderTop: '1px solid #2A2A2A' }}><span className="text-sm font-bold" style={{ color: '#FFFFFF' }}>Total: {formatCurrency(totalAmount)}</span></div>
           </div>
@@ -821,7 +823,7 @@ export default function PipelinePage() {
 
       {/* Kanban Board */}
       {isLoading ? (
-        <div className="flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
           {[...Array(6)].map((_, i) => (
             <div key={i} className="rounded-xl animate-pulse h-96" style={{ backgroundColor: '#1A1A1A' }} />
           ))}
@@ -833,7 +835,7 @@ export default function PipelinePage() {
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <div className="flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 overflow-x-auto pb-4">
+          <div style={{ flex: 1, display: 'flex', gap: 16, overflowX: 'auto', paddingBottom: 16 }}>
             {stages.map((stage: Stage, index: number) => (
               <motion.div
                 key={stage.id}
@@ -842,7 +844,7 @@ export default function PipelinePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 className="flex flex-col rounded-xl min-h-[200px]"
-                style={{ backgroundColor: '#141414' }}
+                style={{ backgroundColor: '#141414', minWidth: 280, flex: '0 0 280px' }}
               >
                 {/* Stage Header */}
                 <div
