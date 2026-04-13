@@ -3,13 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 // ===== CRM USER =====
 model User {
-  id            String   @id @default(uuid()) @db.Uuid
+  id            String   @id @default(uuid())
   email         String   @unique
   name          String
   password      String
@@ -33,7 +33,7 @@ model User {
 
 // ===== COMPANY =====
 model Company {
-  id           String    @id @default(uuid()) @db.Uuid
+  id           String    @id @default(uuid())
   name         String
   website      String?
   industry     String?
@@ -43,7 +43,7 @@ model Company {
   city         String?
   country      String?
   phone        String?
-  description  String?   @db.Text
+  description  String?  
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
@@ -59,7 +59,7 @@ model Company {
 
 // ===== CONTACT =====
 model Contact {
-  id           String    @id @default(uuid()) @db.Uuid
+  id           String    @id @default(uuid())
   firstName    String
   lastName     String
   email        String?
@@ -72,12 +72,12 @@ model Contact {
   city         String?
   country      String?
   avatar       String?
-  description  String?   @db.Text
+  description  String?  
   lastContactAt DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  companyId    String?   @db.Uuid
+  companyId    String?  
   company      Company?  @relation(fields: [companyId], references: [id], onDelete: SetNull)
 
   deals        Deal[]
@@ -93,7 +93,7 @@ model Contact {
 
 // ===== PIPELINE STAGE =====
 model PipelineStage {
-  id          String @id @default(uuid()) @db.Uuid
+  id          String @id @default(uuid())
   name        String
   order       Int
   color       String @default("#F3D840")
@@ -106,30 +106,30 @@ model PipelineStage {
 
 // ===== DEAL =====
 model Deal {
-  id              String         @id @default(uuid()) @db.Uuid
+  id              String         @id @default(uuid())
   title           String
   value           Float          @default(0)
   currency        String         @default("EUR")
   probability     Int            @default(50)
   closeDate       DateTime?
-  lostReason      String?        @db.Text
-  description     String?        @db.Text
+  lostReason      String?       
+  description     String?       
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
-  stageId         String         @db.Uuid
+  stageId         String        
   stage           PipelineStage  @relation(fields: [stageId], references: [id])
 
-  contactId       String?        @db.Uuid
+  contactId       String?       
   contact         Contact?       @relation(fields: [contactId], references: [id], onDelete: SetNull)
 
-  companyId       String?        @db.Uuid
+  companyId       String?       
   company         Company?       @relation(fields: [companyId], references: [id], onDelete: SetNull)
 
-  assigneeId      String?        @db.Uuid
+  assigneeId      String?       
   assignee        User?          @relation("DealAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
 
-  creatorId       String?        @db.Uuid
+  creatorId       String?       
   creator         User?          @relation("DealCreator", fields: [creatorId], references: [id], onDelete: SetNull)
 
   activities      Activity[]
@@ -143,43 +143,43 @@ model Deal {
 
 // ===== ACTIVITY =====
 model Activity {
-  id          String   @id @default(uuid()) @db.Uuid
+  id          String   @id @default(uuid())
   type        String   // call, email, meeting, note, task, deal_update, system
   subject     String
-  description String?  @db.Text
+  description String? 
   duration    Int?     // minutes
   status      String?  // completed, scheduled, cancelled, in_progress
   scheduledAt DateTime?
   completedAt DateTime?
   createdAt   DateTime @default(now())
 
-  contactId   String?  @db.Uuid
+  contactId   String? 
   contact     Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
 
-  dealId      String?  @db.Uuid
+  dealId      String? 
   deal        Deal?    @relation(fields: [dealId], references: [id], onDelete: SetNull)
 
-  companyId   String?  @db.Uuid
+  companyId   String? 
   company     Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
 
-  userId      String?  @db.Uuid
+  userId      String? 
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
 
-  proposalId  String?  @db.Uuid
+  proposalId  String? 
   proposal    Proposal? @relation(fields: [proposalId], references: [id], onDelete: SetNull)
 
-  meetingId   String?  @db.Uuid
+  meetingId   String? 
   meeting     Meeting?  @relation(fields: [meetingId], references: [id], onDelete: SetNull)
 
-  invoiceId   String?  @db.Uuid
+  invoiceId   String? 
   invoice     Invoice?  @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
 }
 
 // ===== TASK =====
 model Task {
-  id          String   @id @default(uuid()) @db.Uuid
+  id          String   @id @default(uuid())
   title       String
-  description String?  @db.Text
+  description String? 
   priority    String   @default("medium") // low, medium, high, urgent
   status      String   @default("todo") // todo, in_progress, completed, cancelled
   dueDate     DateTime?
@@ -187,13 +187,13 @@ model Task {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  contactId   String?  @db.Uuid
+  contactId   String? 
   contact     Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
 
-  dealId      String?  @db.Uuid
+  dealId      String? 
   deal        Deal?    @relation(fields: [dealId], references: [id], onDelete: SetNull)
 
-  assigneeId  String?  @db.Uuid
+  assigneeId  String? 
   assignee    User?    @relation(fields: [assigneeId], references: [id], onDelete: SetNull)
 
   notes           Note[]
@@ -202,30 +202,30 @@ model Task {
 
 // ===== NOTE =====
 model Note {
-  id          String   @id @default(uuid()) @db.Uuid
-  content     String   @db.Text
+  id          String   @id @default(uuid())
+  content     String  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  contactId   String?  @db.Uuid
+  contactId   String? 
   contact     Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
 
-  dealId      String?  @db.Uuid
+  dealId      String? 
   deal        Deal?    @relation(fields: [dealId], references: [id], onDelete: SetNull)
 
-  companyId   String?  @db.Uuid
+  companyId   String? 
   company     Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
 
-  userId      String?  @db.Uuid
+  userId      String? 
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
 
-  taskId      String?  @db.Uuid
+  taskId      String? 
   task        Task?    @relation(fields: [taskId], references: [id], onDelete: SetNull)
 }
 
 // ===== TAG =====
 model Tag {
-  id          String   @id @default(uuid()) @db.Uuid
+  id          String   @id @default(uuid())
   name        String   @unique
   color       String   @default("#F3D840")
   createdAt   DateTime @default(now())
@@ -236,11 +236,11 @@ model Tag {
 
 // ===== PROPOSAL =====
 model Proposal {
-  id          String   @id @default(uuid()) @db.Uuid
+  id          String   @id @default(uuid())
   title       String
-  dealId      String?  @db.Uuid
-  contactId   String?  @db.Uuid
-  companyId   String?  @db.Uuid
+  dealId      String? 
+  contactId   String? 
+  companyId   String? 
   status      String   @default("draft")  // draft, sent, viewed, accepted, rejected, expired
   totalAmount Float
   validUntil  DateTime?
@@ -248,8 +248,8 @@ model Proposal {
   viewedAt    DateTime?
   acceptedAt  DateTime?
   rejectedAt  DateTime?
-  notes       String?  @db.Text
-  templateId  String?  @db.Uuid
+  notes       String? 
+  templateId  String? 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -264,12 +264,12 @@ model Proposal {
 
 // ===== INVOICE =====
 model Invoice {
-  id            String    @id @default(uuid()) @db.Uuid
+  id            String    @id @default(uuid())
   invoiceNumber String    @unique
-  proposalId    String?   @db.Uuid
-  contactId     String?   @db.Uuid
-  companyId     String?   @db.Uuid
-  dealId        String?   @db.Uuid
+  proposalId    String?  
+  contactId     String?  
+  companyId     String?  
+  dealId        String?  
   status        String    @default("draft")
   subtotal      Float
   taxRate       Float     @default(0)
@@ -278,7 +278,7 @@ model Invoice {
   dueDate       DateTime?
   sentAt        DateTime?
   paidAt        DateTime?
-  notes         String?   @db.Text
+  notes         String?  
   branding      String    @default("renewably")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -294,10 +294,10 @@ model Invoice {
 
 // ===== INVOICE LINE ITEM =====
 model InvoiceLineItem {
-  id          String   @id @default(uuid()) @db.Uuid
-  invoiceId   String   @db.Uuid
+  id          String   @id @default(uuid())
+  invoiceId   String  
   name        String
-  description String?  @db.Text
+  description String? 
   quantity    Int
   unitPrice   Float
   total       Float
@@ -308,13 +308,13 @@ model InvoiceLineItem {
 
 // ===== PAYMENT =====
 model Payment {
-  id            String   @id @default(uuid()) @db.Uuid
-  invoiceId     String   @db.Uuid
+  id            String   @id @default(uuid())
+  invoiceId     String  
   amount        Float
   method        String
   status        String   @default("completed")
   reference     String?
-  notes         String?  @db.Text
+  notes         String? 
   paidAt        DateTime @default(now())
   createdAt     DateTime @default(now())
 
@@ -323,10 +323,10 @@ model Payment {
 
 // ===== PROPOSAL LINE ITEM =====
 model ProposalLineItem {
-  id          String   @id @default(uuid()) @db.Uuid
-  proposalId  String   @db.Uuid
+  id          String   @id @default(uuid())
+  proposalId  String  
   name        String
-  description String?  @db.Text
+  description String? 
   quantity    Int
   unitPrice   Float
   total       Float
@@ -337,10 +337,10 @@ model ProposalLineItem {
 
 // ===== PROPOSAL TEMPLATE =====
 model ProposalTemplate {
-  id          String   @id @default(uuid()) @db.Uuid
+  id          String   @id @default(uuid())
   name        String
-  description String?  @db.Text
-  lineItems   String   @default("[]") @db.Text
+  description String? 
+  lineItems   String   @default("[]")
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -350,9 +350,9 @@ model ProposalTemplate {
 
 // ===== CONTACT TAG (Junction) =====
 model ContactTag {
-  contactId   String   @db.Uuid
+  contactId   String  
   contact     Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  tagId       String   @db.Uuid
+  tagId       String  
   tag         Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([contactId, tagId])
@@ -360,9 +360,9 @@ model ContactTag {
 
 // ===== DEAL TAG (Junction) =====
 model DealTag {
-  dealId      String   @db.Uuid
+  dealId      String  
   deal        Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
-  tagId       String   @db.Uuid
+  tagId       String  
   tag         Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([dealId, tagId])
@@ -370,20 +370,20 @@ model DealTag {
 
 // ===== MEETING =====
 model Meeting {
-  id              String    @id @default(uuid()) @db.Uuid
+  id              String    @id @default(uuid())
   title           String
-  description     String?   @db.Text
+  description     String?  
   date            DateTime
   endDate         DateTime
   location        String?
   meetingType     String    @default("call")  // call, video, in_person
   status          String    @default("scheduled")  // scheduled, completed, cancelled, no_show
-  contactId       String?   @db.Uuid
-  dealId          String?   @db.Uuid
-  companyId       String?   @db.Uuid
-  assignedTo      String?   @db.Uuid
-  notes           String?   @db.Text
-  followUpTaskId  String?   @db.Uuid
+  contactId       String?  
+  dealId          String?  
+  companyId       String?  
+  assignedTo      String?  
+  notes           String?  
+  followUpTaskId  String?  
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
@@ -397,13 +397,13 @@ model Meeting {
 
 // ===== WORKFLOW RULE =====
 model WorkflowRule {
-  id              String              @id @default(uuid()) @db.Uuid
+  id              String              @id @default(uuid())
   name            String
-  description     String?             @db.Text
+  description     String?            
   isActive        Boolean             @default(true)
   triggerType     String              // deal_stage_change, new_contact, task_overdue, proposal_status_change, contact_inactive
-  triggerConfig   String              @db.Text // JSON string: { "stage": "qualified", "days": 7 } etc
-  actions         String              @db.Text // JSON string: [{ "type": "assign_task", "config": {...} }, ...]
+  triggerConfig   String              // JSON string: { "stage": "qualified", "days": 7 } etc
+  actions         String              // JSON string: [{ "type": "assign_task", "config": {...} }, ...]
   executionCount  Int                 @default(0)
   lastExecutedAt  DateTime?
   createdAt       DateTime            @default(now())
@@ -414,16 +414,16 @@ model WorkflowRule {
 
 // ===== WORKFLOW EXECUTION =====
 model WorkflowExecution {
-  id            String       @id @default(uuid()) @db.Uuid
-  ruleId        String       @db.Uuid
+  id            String       @id @default(uuid())
+  ruleId        String      
   rule          WorkflowRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
   triggerType   String
   entityType    String       // deal, contact, task, proposal
-  entityId      String       @db.Uuid
+  entityId      String      
   actionType    String       // assign_task, send_email, update_field, notify, move_stage
-  actionConfig  String       @db.Text // JSON string
+  actionConfig  String       // JSON string
   status        String       @default("success")  // success, failed, skipped
-  result        String?      @db.Text
+  result        String?     
   executedAt    DateTime     @default(now())
 
   @@index([ruleId])
@@ -432,10 +432,10 @@ model WorkflowExecution {
 
 // ===== GOOGLE CALENDAR CONNECTION =====
 model GoogleCalendarConnection {
-  id            String   @id @default(uuid()) @db.Uuid
-  userId        String   @unique @db.Uuid
-  accessToken   String   @db.Text
-  refreshToken  String   @db.Text
+  id            String   @id @default(uuid())
+  userId        String   @unique
+  accessToken   String  
+  refreshToken  String  
   expiresAt     DateTime
   calendarId    String?
   email         String?
@@ -449,11 +449,11 @@ model GoogleCalendarConnection {
 
 // ===== REPORT =====
 model Report {
-  id          String   @id @default(uuid()) @db.Uuid
+  id          String   @id @default(uuid())
   name        String
-  description String?  @db.Text
+  description String? 
   type        String   // pipeline, revenue, activity, forecast, custom
-  config      String   @default("{}") @db.Text // JSON string: report configuration (filters, metrics, date range)
+  config      String   @default("{}") // JSON string: report configuration (filters, metrics, date range)
   isScheduled Boolean  @default(false)
   schedule    String?  // daily, weekly, monthly
   lastRunAt   DateTime?
@@ -465,42 +465,42 @@ model Report {
 
 // ===== REPORT SNAPSHOT =====
 model ReportSnapshot {
-  id          String   @id @default(uuid()) @db.Uuid
-  reportId    String   @db.Uuid
+  id          String   @id @default(uuid())
+  reportId    String  
   report      Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
-  data        String   @default("{}") @db.Text // JSON string: snapshot of report data
+  data        String   @default("{}") // JSON string: snapshot of report data
   generatedAt DateTime @default(now())
 }
 
 // ===== Installer Profile (onboarding data) =====
 model InstallerProfile {
-  id                    String   @id @default(uuid()) @db.Uuid
-  userId                String   @unique @db.Uuid
+  id                    String   @id @default(uuid())
+  userId                String   @unique
   user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  contactId             String   @unique @db.Uuid
+  contactId             String   @unique
   contact               Contact  @relation(fields: [contactId], references: [id])
-  companyId             String   @unique @db.Uuid
+  companyId             String   @unique
   company               Company  @relation(fields: [companyId], references: [id])
 
   companyName           String
   contactName           String
   phone                 String?
   vatNumber             String?
-  businessAddress       String?  @db.Text
+  businessAddress       String? 
 
-  serviceCounties       String   @default("[]") @db.Text
+  serviceCounties       String   @default("[]")
 
   planId                String   @default("pro")
   billingCycle          String   @default("monthly")
   billingEmail          String?
-  billingAddress        String?  @db.Text
+  billingAddress        String? 
   billingCity           String?
   billingCounty         String?
   billingEircode        String?
   stripeCustomerId      String?
 
-  integrations          String   @default("[]") @db.Text
-  securityFeatures      String   @default("[]") @db.Text
+  integrations          String   @default("[]")
+  securityFeatures      String   @default("[]")
 
   yearsInBusiness       Int?
   publicLiability       Float?
@@ -547,13 +547,13 @@ model InstallerProfile {
 
 // ===== INSTALLER EQUIPMENT =====
 model InstallerEquipment {
-  id          String   @id @default(uuid()) @db.Uuid
-  installerId String   @db.Uuid
+  id          String   @id @default(uuid())
+  installerId String  
   installer   InstallerProfile @relation(fields: [installerId], references: [id], onDelete: Cascade)
   category    String
-  brandId     String   @db.Uuid
+  brandId     String  
   brandName   String
-  meta        String   @default("{}") @db.Text
+  meta        String   @default("{}")
   isPreferred Boolean  @default(true)
   createdAt   DateTime @default(now())
 
@@ -562,8 +562,8 @@ model InstallerEquipment {
 
 // ===== INSTALLER DOCUMENT =====
 model InstallerDocument {
-  id          String   @id @default(uuid()) @db.Uuid
-  installerId String   @db.Uuid
+  id          String   @id @default(uuid())
+  installerId String  
   installer   InstallerProfile @relation(fields: [installerId], references: [id], onDelete: Cascade)
   docType     String
   docName     String
@@ -576,8 +576,8 @@ model InstallerDocument {
 
 // ===== SUBSCRIPTION =====
 model Subscription {
-  id                  String   @id @default(uuid()) @db.Uuid
-  installerId         String   @unique @db.Uuid
+  id                  String   @id @default(uuid())
+  installerId         String   @unique
   installer           InstallerProfile @relation(fields: [installerId], references: [id], onDelete: Cascade)
   planId              String   @default("pro")
   status              String   @default("trialing")
