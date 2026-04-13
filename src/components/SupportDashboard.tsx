@@ -139,7 +139,8 @@ export default function SupportDashboard() {
   }, [ticketCounter]);
 
   return (
-    <div style={S.laptopMockup}>
+    <div className="sup-dash" style={S.laptopMockup}>
+      <style>{`@media(max-width:767px){.sup-dash .sr{grid-template-columns:repeat(2,1fr)!important;gap:8px!important;margin-bottom:12px!important}.sup-dash .tc{grid-template-columns:1fr!important;gap:8px!important;margin-bottom:12px!important}.sup-dash .ft{flex-direction:column!important;gap:2px!important;text-align:center}.sup-dash .screen{aspect-ratio:auto!important;min-height:500px}}`}</style>
       <div style={S.screen}>
         {/* Taskbar */}
         <div style={S.taskbar}>
@@ -154,7 +155,7 @@ export default function SupportDashboard() {
         {/* Main */}
         <div style={S.main}>
           {/* Stats */}
-          <div style={S.statsRow}>
+          <div className="sr" style={S.statsRow}>
             <div style={S.statCard}><div style={S.statNumber}>{openTickets}</div><div style={S.statLabel}>OPEN TICKETS</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{resolvedToday}</div><div style={S.statLabel}>RESOLVED TODAY</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{avgResponse.toFixed(1)}</div><div style={S.statLabel}>AVG RESPONSE (min)</div></div>
@@ -162,7 +163,7 @@ export default function SupportDashboard() {
           </div>
 
           {/* Two Col */}
-          <div style={S.twoCol}>
+          <div className="tc" style={S.twoCol}>
             {/* Tickets */}
             <div style={S.panel}>
               <div style={S.panelHeader}>🎫 OPEN TICKETS</div>
@@ -222,7 +223,7 @@ export default function SupportDashboard() {
         </div>
 
         {/* Footer */}
-        <div style={S.footer}>
+        <div className="ft" style={S.footer}>
           <span>💬 AI-powered customer support · 24/7 · Zero wait</span>
           <span>🔄 Auto-refresh every 4 seconds</span>
         </div>

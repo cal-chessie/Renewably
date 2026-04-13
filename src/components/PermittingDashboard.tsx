@@ -241,7 +241,7 @@ export default function PermittingDashboard() {
   }, []);
 
   return (
-    <div style={S.laptopMockup}>
+    <div className="prmt-dash" style={S.laptopMockup}><style>{`@media(max-width:767px){.prmt-dash .sr{grid-template-columns:repeat(2,1fr)!important;gap:8px!important;margin-bottom:12px!important}.prmt-dash .tc{grid-template-columns:1fr!important;gap:8px!important;margin-bottom:12px!important}.prmt-dash .ft{flex-direction:column!important;gap:2px!important;text-align:center}.prmt-dash .screen{aspect-ratio:auto!important;min-height:500px}}`}</style>
       <div style={S.screen}>
         {/* Taskbar */}
         <div style={S.taskbar}>
@@ -256,7 +256,7 @@ export default function PermittingDashboard() {
         {/* Permitting Main */}
         <div style={S.permittingMain}>
           {/* Stats Row */}
-          <div style={S.statsRow}>
+          <div className="sr" style={S.statsRow}>
             <div style={S.statCard}><div style={S.statNumber}>{stats.activePermits}</div><div style={S.statLabel}>ACTIVE PERMITS</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.approvedToday}</div><div style={S.statLabel}>APPROVED TODAY</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.avgProcessing.toFixed(2)}</div><div style={S.statLabel}>AVG PROCESSING (days)</div></div>
@@ -264,7 +264,7 @@ export default function PermittingDashboard() {
           </div>
 
           {/* Two Column: Permits + Follow-ups */}
-          <div style={S.twoCol}>
+          <div className="tc" style={S.twoCol}>
             {/* Active Permits */}
             <div style={S.panel}>
               <div style={S.panelHeader}>ACTIVE PERMITS</div>
@@ -325,7 +325,7 @@ export default function PermittingDashboard() {
         </div>
 
         {/* Footer */}
-        <div style={S.permittingFooter}>
+        <div className="ft" style={S.permittingFooter}>
           <span>AI-powered permitting &middot; ESB Networks &middot; NC6/NC7 &middot; Auto-follow-up</span>
           <span>Auto-refresh every 4 seconds</span>
         </div>

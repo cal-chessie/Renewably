@@ -143,7 +143,8 @@ export default function MiniDesktop() {
   ];
 
   return (
-    <div style={styles.laptopMockup}>
+    <div className="md-dash" style={styles.laptopMockup}>
+      <style>{`@media (max-width:767px){.md-dash .wg{grid-template-columns:1fr!important;height:auto!important}.md-dash .screen{aspect-ratio:auto!important;min-height:600px}}`}</style>
       {/* Screen */}
       <div style={styles.screen}>
         {/* Taskbar — NO LOGO */}
@@ -157,7 +158,7 @@ export default function MiniDesktop() {
         </div>
 
         {/* 2x2 Window Grid */}
-        <div style={styles.windowGrid}>
+        <div className="wg" style={styles.windowGrid}>
           {/* Window 1: Command Centre */}
           <div style={styles.window}>
             <div style={styles.windowHeader}>

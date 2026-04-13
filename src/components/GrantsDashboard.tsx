@@ -236,7 +236,8 @@ export default function GrantsDashboard() {
   }, []);
 
   return (
-    <div style={S.laptopMockup}>
+    <div className="grt-dash" style={S.laptopMockup}>
+      <style>{`@media(max-width:767px){.grt-dash .sr{grid-template-columns:repeat(2,1fr)!important;gap:8px!important;margin-bottom:12px!important}.grt-dash .tc{grid-template-columns:1fr!important;gap:8px!important;margin-bottom:12px!important}.grt-dash .ft{flex-direction:column!important;gap:2px!important;text-align:center}.grt-dash .screen{aspect-ratio:auto!important;min-height:500px}}`}</style>
       <div style={S.screen}>
         {/* Taskbar */}
         <div style={S.taskbar}>
@@ -251,7 +252,7 @@ export default function GrantsDashboard() {
         {/* Grants Main */}
         <div style={S.grantsMain}>
           {/* Stats Row */}
-          <div style={S.statsRow}>
+          <div className="sr" style={S.statsRow}>
             <div style={S.statCard}><div style={S.statNumber}>{stats.activeApps}</div><div style={S.statLabel}>ACTIVE APPLICATIONS</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.approvedToday}</div><div style={S.statLabel}>APPROVED TODAY</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.avgProcessing.toFixed(2)}</div><div style={S.statLabel}>AVG PROCESSING (days)</div></div>
@@ -259,7 +260,7 @@ export default function GrantsDashboard() {
           </div>
 
           {/* Two Column: Applications + Documents */}
-          <div style={S.twoCol}>
+          <div className="tc" style={S.twoCol}>
             {/* Active Applications */}
             <div style={S.panel}>
               <div style={S.panelHeader}>ACTIVE APPLICATIONS</div>
@@ -317,7 +318,7 @@ export default function GrantsDashboard() {
         </div>
 
         {/* Footer */}
-        <div style={S.grantsFooter}>
+        <div className="ft" style={S.grantsFooter}>
           <span>AI-powered grant management &middot; SEAI &middot; Auto-submit &middot; 92% approval rate</span>
           <span>Auto-refresh every 4 seconds</span>
         </div>

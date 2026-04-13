@@ -204,7 +204,7 @@ export default function QADashboard() {
   }, []);
 
   return (
-    <div style={S.laptopMockup}>
+    <div className="qa-dash" style={S.laptopMockup}><style>{`@media(max-width:767px){.qa-dash .sr{grid-template-columns:repeat(2,1fr)!important;gap:8px!important;margin-bottom:12px!important}.qa-dash .tc{grid-template-columns:1fr!important;gap:8px!important;margin-bottom:12px!important}.qa-dash .ft{flex-direction:column!important;gap:2px!important;text-align:center}.qa-dash .screen{aspect-ratio:auto!important;min-height:500px}}`}</style>
       <div style={S.screen}>
         {/* Taskbar */}
         <div style={S.taskbar}>
@@ -219,7 +219,7 @@ export default function QADashboard() {
         {/* QA Main */}
         <div style={S.qaMain}>
           {/* Stats Row */}
-          <div style={S.statsRow}>
+          <div className="sr" style={S.statsRow}>
             <div style={S.statCard}><div style={S.statNumber}>{stats.pendingReviews}</div><div style={S.statLabel}>PENDING REVIEWS</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.approvedToday}</div><div style={S.statLabel}>APPROVED TODAY</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.errorsCaught}</div><div style={S.statLabel}>ERRORS CAUGHT</div></div>
@@ -227,7 +227,7 @@ export default function QADashboard() {
           </div>
 
           {/* Two Column: Reviews + Issues */}
-          <div style={S.twoCol}>
+          <div className="tc" style={S.twoCol}>
             {/* Pending QA Reviews */}
             <div style={S.panel}>
               <div style={S.panelHeader}>PENDING QA REVIEWS</div>
@@ -304,7 +304,7 @@ export default function QADashboard() {
         </div>
 
         {/* Footer */}
-        <div style={S.qaFooter}>
+        <div className="ft" style={S.qaFooter}>
           <span>AI-powered quality assurance &middot; Zero customer-facing mistakes &middot; Pre-handover audit</span>
           <span>Auto-refresh every 4 seconds</span>
         </div>

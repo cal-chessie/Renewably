@@ -233,7 +233,7 @@ export default function LogisticsDashboard() {
   }, []);
 
   return (
-    <div style={S.laptopMockup}>
+    <div className="log-dash" style={S.laptopMockup}><style>{`@media(max-width:767px){.log-dash .sr{grid-template-columns:repeat(2,1fr)!important;gap:8px!important;margin-bottom:12px!important}.log-dash .tc{grid-template-columns:1fr!important;gap:8px!important;margin-bottom:12px!important}.log-dash .ft{flex-direction:column!important;gap:2px!important;text-align:center}.log-dash .screen{aspect-ratio:auto!important;min-height:500px}}`}</style>
       <div style={S.screen}>
         {/* Taskbar */}
         <div style={S.taskbar}>
@@ -248,7 +248,7 @@ export default function LogisticsDashboard() {
         {/* Logistics Main */}
         <div style={S.logisticsMain}>
           {/* Stats Row */}
-          <div style={S.statsRow}>
+          <div className="sr" style={S.statsRow}>
             <div style={S.statCard}><div style={S.statNumber}>{stats.activeOrders}</div><div style={S.statLabel}>ACTIVE ORDERS</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.deliveredToday}</div><div style={S.statLabel}>DELIVERED TODAY</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.onTimeRate.toFixed(2)}</div><div style={S.statLabel}>ON-TIME RATE (%)</div></div>
@@ -256,7 +256,7 @@ export default function LogisticsDashboard() {
           </div>
 
           {/* Two Column: Orders + Inventory */}
-          <div style={S.twoCol}>
+          <div className="tc" style={S.twoCol}>
             {/* Active Orders */}
             <div style={S.panel}>
               <div style={S.panelHeader}>ACTIVE ORDERS</div>
@@ -317,7 +317,7 @@ export default function LogisticsDashboard() {
         </div>
 
         {/* Footer */}
-        <div style={S.logisticsFooter}>
+        <div className="ft" style={S.logisticsFooter}>
           <span>AI-powered logistics &middot; Automated ordering &middot; Real-time tracking</span>
           <span>Auto-refresh every 4 seconds</span>
         </div>

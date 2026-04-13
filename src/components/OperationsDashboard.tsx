@@ -173,7 +173,8 @@ export default function OperationsDashboard() {
   }, []);
 
   return (
-    <div style={S.laptopMockup}>
+    <div className="ops-dash" style={S.laptopMockup}>
+      <style>{`@media(max-width:767px){.ops-dash .sr{grid-template-columns:repeat(2,1fr)!important;gap:8px!important;margin-bottom:12px!important}.ops-dash .tc{grid-template-columns:1fr!important;gap:8px!important;margin-bottom:12px!important}.ops-dash .ft{flex-direction:column!important;gap:2px!important;text-align:center}.ops-dash .screen{aspect-ratio:auto!important;min-height:500px}}`}</style>
       <div style={S.screen}>
         {/* Taskbar */}
         <div style={S.taskbar}>
@@ -188,7 +189,7 @@ export default function OperationsDashboard() {
         {/* Operations Main */}
         <div style={S.opsMain}>
           {/* Stats Row */}
-          <div style={S.statsRow}>
+          <div className="sr" style={S.statsRow}>
             <div style={S.statCard}><div style={S.statNumber}>{stats.activeJobs}</div><div style={S.statLabel}>ACTIVE JOBS</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.crewsActive}</div><div style={S.statLabel}>CREWS ON DUTY</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.assessments}</div><div style={S.statLabel}>TODAY&apos;S ASSESSMENTS</div></div>
@@ -196,7 +197,7 @@ export default function OperationsDashboard() {
           </div>
 
           {/* Two Column */}
-          <div style={S.twoCol}>
+          <div className="tc" style={S.twoCol}>
             {/* Job Pipeline */}
             <div style={S.panel}>
               <div style={S.panelHeader}>📋 JOB PIPELINE</div>
@@ -256,7 +257,7 @@ export default function OperationsDashboard() {
         </div>
 
         {/* Footer */}
-        <div style={S.opsFooter}>
+        <div className="ft" style={S.opsFooter}>
           <span>⚡ AI-coordinated · Zero manual dispatch</span>
           <span>🔄 Auto-refresh every 4 seconds</span>
         </div>

@@ -226,7 +226,7 @@ export default function ReportingDashboard() {
   }, []);
 
   return (
-    <div style={S.laptopMockup}>
+    <div className="rpt-dash" style={S.laptopMockup}><style>{`@media(max-width:767px){.rpt-dash .sr{grid-template-columns:repeat(2,1fr)!important;gap:8px!important;margin-bottom:12px!important}.rpt-dash .tc{grid-template-columns:1fr!important;gap:8px!important;margin-bottom:12px!important}.rpt-dash .ft{flex-direction:column!important;gap:2px!important;text-align:center}.rpt-dash .screen{aspect-ratio:auto!important;min-height:500px}}`}</style>
       <div style={S.screen}>
         {/* Taskbar */}
         <div style={S.taskbar}>
@@ -241,7 +241,7 @@ export default function ReportingDashboard() {
         {/* Reporting Main */}
         <div style={S.reportingMain}>
           {/* Stats Row */}
-          <div style={S.statsRow}>
+          <div className="sr" style={S.statsRow}>
             <div style={S.statCard}>
               <div style={S.statNumber}>{fmt2(jobsInProgress)}</div>
               <div style={S.statLabel}>JOBS IN PROGRESS</div>
@@ -261,7 +261,7 @@ export default function ReportingDashboard() {
           </div>
 
           {/* Two Column: Key Metrics + Bottlenecks */}
-          <div style={S.twoCol}>
+          <div className="tc" style={S.twoCol}>
             {/* KEY METRICS */}
             <div style={S.panel}>
               <div style={S.panelHeader}>KEY METRICS</div>
@@ -301,7 +301,7 @@ export default function ReportingDashboard() {
           </div>
 
           {/* Two Column: Agent Performance + Timeline */}
-          <div style={S.twoCol}>
+          <div className="tc" style={S.twoCol}>
             {/* AGENT PERFORMANCE */}
             <div style={S.panel}>
               <div style={S.panelHeader}>AGENT PERFORMANCE</div>
@@ -338,7 +338,7 @@ export default function ReportingDashboard() {
         </div>
 
         {/* Footer */}
-        <div style={S.reportingFooter}>
+        <div className="ft" style={S.reportingFooter}>
           <span>AI-powered business intelligence / No guesswork / Just the truth</span>
           <span>Auto-refresh every 4 seconds</span>
         </div>
