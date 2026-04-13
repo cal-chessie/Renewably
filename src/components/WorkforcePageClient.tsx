@@ -15,7 +15,7 @@ import QADashboard from "@/components/QADashboard";
 import ReportingDashboard from "@/components/ReportingDashboard";
 
 /* ============================================================
-   DATA — 8 AI Agents
+   DATA — 8 AI Agents (+ 1 Coming Soon)
    ============================================================ */
 const agents = [
   {
@@ -377,7 +377,7 @@ function CTASection() {
 export default function WorkforcePageClient() {
   return (
     <main>
-      <style>{`.workforce-hero-bg { object-position: 60% 45% !important; } @media (min-width: 768px) { .workforce-hero-bg { object-position: center center !important; } }`}</style>
+      <style>{`.workforce-hero-bg { object-position: 60% 45% !important; } @media (min-width: 768px) { .workforce-hero-bg { object-position: center center !important; } } @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }`}</style>
 
       {/* ===== HERO ===== */}
       <section data-theme="dark" style={{ position: 'relative', minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
@@ -428,7 +428,7 @@ export default function WorkforcePageClient() {
             transition={{ delay: 0.8, duration: 0.6 }}
             style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(1.1rem, 2vw, 1.35rem)', lineHeight: 1.6, maxWidth: 640, margin: '0 auto' }}
           >
-            Eight AI employees. One team. Your solar company, automated.
+            Eight AI employees. One team. Your solar company, automated. (Ninth coming soon.)
           </motion.p>
         </div>
 
@@ -436,13 +436,39 @@ export default function WorkforcePageClient() {
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 120, background: 'linear-gradient(to top, #F3D840, transparent)', zIndex: 3, pointerEvents: 'none' }} />
       </section>
 
-      {/* ===== EIGHT AGENTS ===== */}
+      {/* ===== NINE AGENTS ===== */}
       <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
         <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: "clamp(64px, 15vw, 120px)" }}>
             {agents.map((agent, i) => (
               <AgentCard key={agent.num} agent={agent} index={i} />
             ))}
+
+          {/* ===== MARKETING AGENT — Coming Soon ===== */}
+          <ScrollReveal>
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto', opacity: 0.5, filter: 'grayscale(0.5)' }}>
+              <div style={{ background: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)', borderRadius: 12, padding: 'clamp(24px, 5vw, 48px)', textAlign: 'center', minHeight: 300, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(243,216,64,0.15)', border: '1px solid rgba(243,216,64,0.3)', marginBottom: 16 }}>
+                  <span style={{ color: '#F3D840', fontSize: 'clamp(10px, 1.3vw, 13px)', fontWeight: 600, letterSpacing: '0.04em' }}>
+                    COMING SOON
+                  </span>
+                </div>
+                <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 800, color: '#F3D840', lineHeight: 1.15, marginBottom: 12 }}>
+                  Marketing Agent
+                </h2>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', fontWeight: 700, marginBottom: 20, lineHeight: 1.5 }}>
+                  Runs campaigns. Generates leads. Writes copy. Manages socials.
+                </p>
+                <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 'clamp(0.875rem, 1.3vw, 1rem)', lineHeight: 1.7, maxWidth: 480 }}>
+                  The ninth member of your AI workforce. Fills your pipeline while you sleep. Runs Google Ads, Meta campaigns, SEO content, email sequences, and social media — all optimised for Irish solar customers.
+                </p>
+                <div style={{ marginTop: 20, display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 20px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.25)', color: '#F3D840', fontSize: 'clamp(12px, 1.3vw, 14px)', fontWeight: 600 }}>
+                  <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#F3D840', animation: 'pulse 2s infinite' }} />
+                  In development
+                </div>
+              </div>
+            </div>
+          </ScrollReveal>
           </div>
         </div>
       </section>

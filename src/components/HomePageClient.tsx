@@ -547,7 +547,8 @@ function AgentsSection() {
     },
     {
       title: "Marketing agent",
-      desc: "Runs campaigns. Generates leads. Writes copy. Manages socials. Fills your pipeline while you sleep.",
+      desc: "Coming soon. Runs campaigns. Generates leads. Writes copy. Manages socials.",
+      comingSoon: true,
     },
   ];
 
@@ -588,15 +589,16 @@ function AgentsSection() {
             <ScrollReveal key={agent.title} delay={i * 0.08}>
               <motion.div
                 whileHover={{ y: -4, boxShadow: "0 12px 30px rgba(243,216,64,0.1)" }}
-                className="p-5 lg:p-6 rounded-2xl bg-white border-2 border-[#F3D840]/30 hover:border-[#F3D840]/60 transition-all duration-300 cursor-pointer group h-full"
+                className={`p-5 lg:p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer group h-full ${'comingSoon' in agent ? 'bg-[#0A0A0A] border-[#F3D840]/30 opacity-50' : 'bg-white border-[#F3D840]/30 hover:border-[#F3D840]/60'}`}
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-3 h-3 rounded-full bg-[#F3D840] group-hover:scale-125 transition-transform duration-300" />
-                  <h3 className="text-lg font-bold text-[#1A1A1A]">
+                  <div className={`w-3 h-3 rounded-full group-hover:scale-125 transition-transform duration-300 ${'comingSoon' in agent ? 'bg-[#F3D840]/40' : 'bg-[#F3D840]'}`} />
+                  <h3 className={`text-lg font-bold ${'comingSoon' in agent ? 'text-[#F3D840]/70' : 'text-[#1A1A1A]'}`}>
                     {agent.title}
+                    {'comingSoon' in agent && <span className="ml-2 text-xs font-semibold text-[#F3D840]/50 uppercase tracking-wider">Coming soon</span>}
                   </h3>
                 </div>
-                <p className="text-[#535353] text-sm leading-relaxed">
+                <p className={`text-sm leading-relaxed ${'comingSoon' in agent ? 'text-white/40' : 'text-[#535353]'}`}>
                   {agent.desc}
                 </p>
               </motion.div>

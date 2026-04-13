@@ -5,7 +5,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
 
 const includedItems = [
-  "All 8 AI agents (CEO, Operations, Support, Grants, Logistics, Permitting, QA, Reporting)",
+  "All 8 AI agents (CEO, Operations, Support, Grants, Logistics, Permitting, QA, Reporting) + Marketing Agent coming soon",
   "Full CRM dashboard",
   "Calendar integration",
   "Email integration",

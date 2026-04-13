@@ -175,7 +175,7 @@ export default function MiniDesktop() {
                 <div style={styles.kpiCard}><div style={styles.kpiValue}>{tasks}</div><div style={styles.kpiLabel}>TASKS TODAY</div></div>
                 <div style={styles.kpiCard}><div style={styles.kpiValue}>{completion}%</div><div style={styles.kpiLabel}>COMPLETION</div></div>
                 <div style={styles.kpiCard}><div style={styles.kpiValue}>{(energy / 1000).toFixed(1)}k</div><div style={styles.kpiLabel}>ENERGY (kWh)</div></div>
-                <div style={styles.kpiCard}><div style={styles.kpiValue}>8/8</div><div style={styles.kpiLabel}>AGENTS ACTIVE</div></div>
+                <div style={styles.kpiCard}><div style={styles.kpiValue}>8+1</div><div style={styles.kpiLabel}>AGENTS (9TH SOON)</div></div>
               </div>
               <div style={styles.sectionTitle}>📋 RECENT ACTIVITY</div>
               {activityItems.map((item, i) => (
