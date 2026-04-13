@@ -138,7 +138,7 @@ export default function Header() {
               {/* Mobile Hamburger */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden relative z-[110] p-2 rounded-xl"
+                className="md:hidden relative z-[110] p-3 rounded-xl"
                 aria-label="Toggle menu"
               >
                 <div className="w-6 h-[20px] flex flex-col justify-between relative">
@@ -213,7 +213,7 @@ export default function Header() {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: '16px 20px',
-                  paddingTop: 72,
+                  paddingTop: 68,
                 }}
               >
                 <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>

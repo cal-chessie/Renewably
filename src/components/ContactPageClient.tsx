@@ -574,6 +574,7 @@ export default function ContactPageClient() {
               >
                 <div className="contact-pain-bar" style={{
                   display: "flex",
+                  flexWrap: "wrap",
                   alignItems: "center",
                   gap: 12,
                   padding: "16px 24px",
@@ -592,6 +593,7 @@ export default function ContactPageClient() {
                     href="tel:+353873958424"
                     style={{
                       marginLeft: "auto",
+                      width: "100%",
                       padding: "8px 20px",
                       borderRadius: 9999,
                       backgroundColor: YELLOW,
@@ -601,6 +603,7 @@ export default function ContactPageClient() {
                       textDecoration: "none",
                       whiteSpace: "nowrap",
                       flexShrink: 0,
+                      textAlign: "center",
                     }}
                   >
                     Call Now

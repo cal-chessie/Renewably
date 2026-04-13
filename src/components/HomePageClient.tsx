@@ -86,7 +86,7 @@ function HeroSection() {
           paddingLeft: 16,
           paddingRight: 16,
           paddingTop: 80,
-          paddingBottom: 100,
+          paddingBottom: 'clamp(60px, 12vw, 100px)',
           textAlign: 'center',
         }}
       >
@@ -718,6 +718,19 @@ function FAQSection() {
           </h2>
         </ScrollReveal>
 
+        {/* FAQ button tap target styles — rendered once outside loop */}
+        <style>{`
+          .home-faq-btn {
+            min-height: 44px !important;
+          }
+          .home-faq-btn > span:last-child {
+            width: 44px !important;
+            height: 44px !important;
+            minWidth: 44px !important;
+            font-size: 18px !important;
+          }
+        `}</style>
+
         {/* Accordion */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 1.5vw, 12px)' }} role="region" aria-label="Frequently asked questions">
           {faqs.map((faq, i) => {
@@ -778,19 +791,6 @@ function FAQSection() {
                       +
                     </motion.span>
                   </button>
-
-                  {/* Mobile FAQ button tap target and pricing CTA tweaks */}
-                  <style>{`
-                    .home-faq-btn {
-                      min-height: 44px !important;
-                    }
-                    .home-faq-btn > span:last-child {
-                      width: 44px !important;
-                      height: 44px !important;
-                      minWidth: 44px !important;
-                      font-size: 18px !important;
-                    }
-                  `}</style>
 
                   <motion.div
                     id={`faq-answer-${i}`}

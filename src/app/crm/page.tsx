@@ -193,7 +193,7 @@ export default function DashboardPage() {
             background: '#10B981',
             display: 'inline-block',
           }} />
-          {format(new Date(), 'EEEE, MMMM d, yyyy')}
+          {format(new Date(), 'EEE, MMM d, yyyy')}
         </div>
       </motion.div>
 

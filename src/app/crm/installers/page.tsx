@@ -471,7 +471,7 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
           {/* Quick Actions */}
           <div className="p-5 border-b border-[#2A2A2A]">
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Quick Actions</h3>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {quickActions.map(action => (
                 <button
                   key={action.key}

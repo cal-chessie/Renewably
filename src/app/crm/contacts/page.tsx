@@ -572,7 +572,7 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
   return (
     <>
       {/* Backdrop */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/30 z-40 md:block hidden" onClick={onClose} />
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
 
       {/* Panel */}
       <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 30, stiffness: 300 }} className="fixed inset-y-0 right-0 w-full md:w-[480px] shadow-xl z-50 flex flex-col" style={{ backgroundColor: '#1A1A1A' }}>
@@ -652,7 +652,7 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
           {/* Quick Actions */}
           <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
             <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Quick Actions</h3>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {quickActions.map(action => (
                 <button key={action.key} onClick={() => setActiveDialog(action.key)} className="flex flex-col items-center gap-1.5 p-3 rounded-lg transition-all" style={{ border: '1px solid #2A2A2A', backgroundColor: 'transparent' }}>
                   <action.icon className="h-5 w-5 text-[#374151]" />
@@ -903,30 +903,30 @@ function ContactsView({ onContactClick, companyFilter }: { onContactClick: (id: 
           <table className="w-full">
             <thead>
               <tr style={{ borderBottom: '1px solid #2A2A2A' }}>
-                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3">Name</th>
-                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden md:table-cell">Email</th>
-                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden lg:table-cell">Company</th>
-                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3">Status</th>
-                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden lg:table-cell">Source</th>
-                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden xl:table-cell">Last Contact</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-3 sm:px-6 py-3">Name</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-3 sm:px-6 py-3 hidden md:table-cell">Email</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-3 sm:px-6 py-3 hidden lg:table-cell">Company</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-3 sm:px-6 py-3">Status</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-3 sm:px-6 py-3 hidden lg:table-cell">Source</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-3 sm:px-6 py-3 hidden xl:table-cell">Last Contact</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 [...Array(5)].map((_, i) => (
                   <tr key={i} style={{ borderBottom: '1px solid #222222' }}>
-                    <td className="px-6 py-4"><div className="h-4 w-32 rounded animate-pulse" style={{ backgroundColor: '#222222' }} /></td>
-                    <td className="px-6 py-4 hidden md:table-cell"><div className="h-4 w-40 rounded animate-pulse" style={{ backgroundColor: '#222222' }} /></td>
-                    <td className="px-6 py-4 hidden lg:table-cell"><div className="h-4 w-24 rounded animate-pulse" style={{ backgroundColor: '#222222' }} /></td>
-                    <td className="px-6 py-4"><div className="h-5 w-16 rounded animate-pulse" style={{ backgroundColor: '#222222' }} /></td>
+                    <td className="px-3 sm:px-6 py-4"><div className="h-4 w-32 rounded animate-pulse" style={{ backgroundColor: '#222222' }} /></td>
+                    <td className="px-3 sm:px-6 py-4 hidden md:table-cell"><div className="h-4 w-40 rounded animate-pulse" style={{ backgroundColor: '#222222' }} /></td>
+                    <td className="px-3 sm:px-6 py-4 hidden lg:table-cell"><div className="h-4 w-24 rounded animate-pulse" style={{ backgroundColor: '#222222' }} /></td>
+                    <td className="px-3 sm:px-6 py-4"><div className="h-5 w-16 rounded animate-pulse" style={{ backgroundColor: '#222222' }} /></td>
                   </tr>
                 ))
               ) : data?.contacts?.length === 0 ? (
-                <tr><td colSpan={6} className="px-6 py-12 text-center" style={{ color: '#666666' }}>No contacts found</td></tr>
+                <tr><td colSpan={6} className="px-3 sm:px-6 py-12 text-center" style={{ color: '#666666' }}>No contacts found</td></tr>
               ) : (
                 data?.contacts?.map((contact: ContactRow) => (
                   <tr key={contact.id} className="hover:bg-white/5 cursor-pointer transition-colors" style={{ borderBottom: '1px solid #222222' }} onClick={() => onContactClick(contact.id)}>
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="h-9 w-9 rounded-full bg-[#F3D840]/20 flex items-center justify-center shrink-0">
                           <span className="text-[#374151] text-xs font-bold">{contact.firstName[0]}{contact.lastName[0]}</span>
@@ -937,11 +937,11 @@ function ContactsView({ onContactClick, companyFilter }: { onContactClick: (id: 
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 hidden md:table-cell"><span style={{ color: '#A0A0A0' }} className="text-sm">{contact.email || '—'}</span></td>
-                    <td className="px-6 py-4 hidden lg:table-cell"><span style={{ color: '#A0A0A0' }} className="text-sm">{contact.company?.name || '—'}</span></td>
-                    <td className="px-6 py-4"><StatusBadge status={contact.status} /></td>
-                    <td className="px-6 py-4 hidden lg:table-cell"><Badge variant="secondary" className="capitalize text-xs">{contact.source}</Badge></td>
-                    <td className="px-6 py-4 hidden xl:table-cell">
+                    <td className="px-3 sm:px-6 py-4 hidden md:table-cell"><span style={{ color: '#A0A0A0' }} className="text-sm">{contact.email || '—'}</span></td>
+                    <td className="px-3 sm:px-6 py-4 hidden lg:table-cell"><span style={{ color: '#A0A0A0' }} className="text-sm">{contact.company?.name || '—'}</span></td>
+                    <td className="px-3 sm:px-6 py-4"><StatusBadge status={contact.status} /></td>
+                    <td className="px-3 sm:px-6 py-4 hidden lg:table-cell"><Badge variant="secondary" className="capitalize text-xs">{contact.source}</Badge></td>
+                    <td className="px-3 sm:px-6 py-4 hidden xl:table-cell">
                       <span style={{ color: '#666666' }} className="text-sm">{contact.lastContactAt ? format(new Date(contact.lastContactAt), 'MMM d, yyyy') : 'Never'}</span>
                     </td>
                   </tr>
@@ -953,7 +953,7 @@ function ContactsView({ onContactClick, companyFilter }: { onContactClick: (id: 
 
         {/* Pagination */}
         {data?.pagination && data.pagination.totalPages > 1 && (
-          <div className="flex items-center justify-between px-6 py-3" style={{ borderTop: '1px solid #2A2A2A' }}>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 px-6 py-3" style={{ borderTop: '1px solid #2A2A2A' }}>
             <p style={{ color: '#A0A0A0' }} className="text-sm">Showing {(page - 1) * 15 + 1} to {Math.min(page * 15, data.pagination.total)} of {data.pagination.total}</p>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}><ChevronLeft className="h-4 w-4" /></Button>

@@ -309,7 +309,7 @@ function InvoiceForm({
         </div>
 
         {/* Contact, Company, Deal */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="space-y-2">
             <Label>Contact</Label>
             <Select value={form.contactId} onValueChange={v => setForm(f => ({ ...f, contactId: v }))}>
@@ -360,7 +360,7 @@ function InvoiceForm({
             </Button>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 overflow-x-auto">
             {lineItems.map((item, index) => (
               <motion.div key={item.id} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="rounded-lg p-3 space-y-2">
                 <div className="flex items-center gap-2">

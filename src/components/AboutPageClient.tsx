@@ -1006,7 +1006,7 @@ function WorkforceSection() {
         <ScrollReveal delay={0.3}>
           <div
             style={{
-              padding: "28px 32px",
+              padding: 'clamp(20px, 4vw, 28px) clamp(16px, 4vw, 32px)',
               borderRadius: 16,
               backgroundColor: DARK,
               border: "2px solid rgba(243,216,64,0.2)",

@@ -28,20 +28,20 @@ export function StatCard({ title, value, subtitle, icon: Icon, trend, delay = 0 
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-sm font-medium text-gray-500">{title}</p>
-              <p className="text-2xl font-bold text-gray-900">{value}</p>
+              <p className="text-sm font-medium text-gray-500" style={{ color: '#9CA3AF' }}>{title}</p>
+              <p className="text-2xl font-bold text-gray-900" style={{ color: '#fff' }}>{value}</p>
               {subtitle && (
                 <p className="text-xs text-gray-400">{subtitle}</p>
               )}
               {trend && (
-                <p className={`text-xs font-medium ${trend.positive ? 'text-green-600' : 'text-red-600'}`}>
+                <p className={`text-xs font-medium ${trend.positive ? 'text-green-600' : 'text-red-600'}`} style={{ color: trend.positive ? '#4ADE80' : '#F87171' }}>
                   {trend.positive ? '↑' : '↓'} {Math.abs(trend.value)}%
                   <span className="text-gray-400 ml-1">vs last month</span>
                 </p>
               )}
             </div>
-            <div className="h-12 w-12 rounded-xl bg-amber-50 flex items-center justify-center">
-              <Icon className="h-6 w-6 text-[#374151]" />
+            <div className="h-12 w-12 rounded-xl bg-amber-50 flex items-center justify-center" style={{ backgroundColor: 'rgba(243,216,64,0.12)' }}>
+              <Icon className="h-6 w-6" style={{ color: '#F3D840' }} />
             </div>
           </div>
         </CardContent>

@@ -35,6 +35,8 @@ export default function BeforeAfterSection({ comparisons, padding }: BeforeAfter
           </div>
         </ScrollReveal>
 
+        <h2 style={{ fontSize: 'clamp(24px, 4vw, 48px)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}>What changes when you hire AI.</h2>
+
         {/* Comparison cards */}
         <div className="flex flex-col" style={{ gap: 'clamp(20px, 4vw, 32px)' }}>
           {comparisons.map((item, i) => (

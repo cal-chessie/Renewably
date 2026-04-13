@@ -427,7 +427,7 @@ function DealDetailPanel({ dealId, stages, contacts, onClose }: {
   return (
     <>
       {/* Backdrop */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/30 z-40 md:block hidden" onClick={onClose} />
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/30 z-40" onClick={onClose} />
 
       {/* Panel */}
       <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 30, stiffness: 300 }} className="fixed inset-y-0 right-0 w-full md:w-[480px] shadow-xl z-50 flex flex-col" style={{ backgroundColor: '#1A1A1A' }}>
@@ -844,7 +844,7 @@ export default function PipelinePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 className="flex flex-col rounded-xl min-h-[200px]"
-                style={{ backgroundColor: '#141414', minWidth: 280, flex: '0 0 280px', scrollSnapAlign: 'start' }}
+                style={{ backgroundColor: '#141414', minWidth: 260, flex: '0 0 260px', scrollSnapAlign: 'start' }}
               >
                 {/* Stage Header */}
                 <div
