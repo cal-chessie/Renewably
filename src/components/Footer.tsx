@@ -233,7 +233,7 @@ export default function Footer() {
             textAlign: "center",
           }}
         >
-          © 2025 Renewably. All rights reserved.
+          © 2026 Renewably. All rights reserved.
         </span>
         <span
           style={{
