@@ -308,14 +308,32 @@ function SolutionSection() {
    ============================================================ */
 function PlatformTourSection() {
   return (
-    <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28 overflow-hidden">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      data-theme="dark"
+      style={{
+        backgroundColor: '#0A0A0A',
+        paddingTop: 'clamp(80px, 10vw, 112px)',
+        paddingBottom: 'clamp(60px, 8vw, 112px)',
+        overflow: 'hidden',
+      }}
+    >
+      <div style={{ maxWidth: 1024, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15">
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(28px, 4vw, 40px)' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '6px 14px',
+                borderRadius: 9999,
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                border: '1px solid rgba(255,255,255,0.15)',
+              }}
+            >
               <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
-              <span className="text-white text-xs sm:text-sm font-semibold tracking-wide">
+              <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
                 See it in action.
               </span>
             </div>
@@ -324,14 +342,14 @@ function PlatformTourSection() {
 
         {/* Headline */}
         <ScrollReveal delay={0.1}>
-          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-white text-center leading-tight mb-6">
+          <h2 style={{ fontSize: 'clamp(24px, 5vw, 48px)', fontWeight: 800, color: '#fff', textAlign: 'center', lineHeight: 1.15, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
             This is what your Monday looks like now.
           </h2>
         </ScrollReveal>
 
         {/* Sub-text */}
         <ScrollReveal delay={0.2}>
-          <p className="text-white/60 text-lg sm:text-xl text-center leading-relaxed mb-12 max-w-2xl mx-auto">
+          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 2.2vw, 20px)', textAlign: 'center', lineHeight: 1.7, marginBottom: 'clamp(32px, 5vw, 48px)', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
             No more chasing. No more spreadsheeting. No more &quot;I&apos;ll get to that tomorrow.&quot;
             Open the dashboard. Your team is already working.
           </p>
@@ -358,7 +376,7 @@ function PlatformTourSection() {
 
         {/* Bottom line */}
         <ScrollReveal delay={0.4}>
-          <p className="text-center text-white/40 text-sm mt-8">
+          <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 'clamp(12px, 1.4vw, 14px)', marginTop: 'clamp(24px, 3vw, 32px)' }}>
             That is the platform. That is your workforce.
           </p>
         </ScrollReveal>
