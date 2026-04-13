@@ -66,3 +66,23 @@ Stage Summary:
 - LoadingScreen and CustomCursor removed (simpler, faster, ADHD-friendly)
 - CRM fully rebranded as "Renewably" (SolarPilot is now just a feature, not the brand)
 - All changes verified and passing
+
+---
+Task ID: 4
+Agent: Main Coordinator
+Task: Simplify sidebar nav + delete dead files
+
+Work Log:
+- Reduced CRM sidebar from 11 items to 6 clean items:
+  - Dashboard, Installers, Pipeline, People, Tasks, Calendar
+  - Removed: Activities, Proposals, Automations, Reports, Invoices (still accessible at URLs for power users)
+- Removed 6 unused lucide-react imports (Activity, FileText, Zap, BarChart3, Receipt)
+- Deleted 3 dead component files: Footer.tsx, LoadingScreen.tsx, CustomCursor.tsx
+- ESLint: zero errors
+- Homepage and CRM login both return HTTP 200
+
+Stage Summary:
+- Sidebar now has 6 clear items — ADHD-friendly, self-explanatory
+- Pages like Activities, Proposals, Workflows, Reports, Invoices still exist and work, just not in the main nav
+- Zero dead files remaining
+- Clean build confirmed

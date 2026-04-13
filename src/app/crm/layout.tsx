@@ -7,15 +7,10 @@ import {
   LayoutDashboard,
   Users,
   Kanban,
-  Activity,
   CheckSquare,
-  FileText,
-  Zap,
   LogOut,
   Menu,
   Calendar as CalendarIcon,
-  BarChart3,
-  Receipt,
   Sun,
 } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
@@ -34,15 +29,10 @@ const YELLOW_MUTED = '#C79828'
 const navItems = [
   { href: '/crm', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/crm/installers', label: 'Installers', icon: Sun },
-  { href: '/crm/contacts', label: 'People', icon: Users },
   { href: '/crm/pipeline', label: 'Pipeline', icon: Kanban },
-  { href: '/crm/activities', label: 'Activities', icon: Activity },
+  { href: '/crm/contacts', label: 'People', icon: Users },
   { href: '/crm/tasks', label: 'Tasks', icon: CheckSquare },
-  { href: '/crm/proposals', label: 'Proposals', icon: FileText },
   { href: '/crm/meetings', label: 'Calendar', icon: CalendarIcon },
-  { href: '/crm/workflows', label: 'Automations', icon: Zap },
-  { href: '/crm/reports', label: 'Reports', icon: BarChart3 },
-  { href: '/crm/invoices', label: 'Invoices', icon: Receipt },
 ]
 
 // ============================================================================
