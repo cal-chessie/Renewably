@@ -215,17 +215,17 @@ function ScenarioSection() {
   const stepsInView = useInView(stepsRef, { once: true, margin: "-60px" });
 
   return (
-    <section className="bg-[#0A0A0A] py-20 md:py-28" style={{ paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section style={{ backgroundColor: '#0A0A0A', paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
+      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15" style={{ marginBottom: 32 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', padding: '6px 16px', borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', marginBottom: 'clamp(20px, 4vw, 32px)' }}>
             <motion.span
-              className="w-2 h-2 rounded-full bg-[#F3D840]"
+              style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840' }}
               animate={{ scale: [1, 1.3, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
-            <span className="text-white text-xs sm:text-sm font-semibold tracking-wide">
+            <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.5vw, 14px)', fontWeight: 600, letterSpacing: '0.03em' }}>
               How it works together.
             </span>
           </div>
@@ -233,31 +233,31 @@ function ScenarioSection() {
 
         {/* Intro */}
         <ScrollReveal delay={0.1}>
-          <p className="text-white/70 text-lg sm:text-xl leading-relaxed" style={{ marginBottom: 32 }}>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(16px, 2.2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(20px, 4vw, 32px)' }}>
             A customer submits a web form at 10pm.
           </p>
         </ScrollReveal>
 
         {/* Steps */}
-        <div ref={stepsRef} className="space-y-3" style={{ marginBottom: 40 }}>
+        <div ref={stepsRef} style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 1.5vw, 12px)', marginBottom: 'clamp(24px, 5vw, 40px)' }}>
           {scenarioSteps.map((step, i) => (
             <motion.div
               key={step.agent}
               initial={{ opacity: 0, x: -20 }}
               animate={stepsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
               transition={{ delay: 0.15 + i * 0.08, duration: 0.45, ease: "easeOut" }}
-              className="flex items-start gap-4" style={{ marginBottom: 8, paddingBottom: 8 }}
+              style={{ display: 'flex', alignItems: 'flex-start', gap: 'clamp(12px, 2vw, 16px)' }}
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={stepsInView ? { scale: 1 } : { scale: 0 }}
                 transition={{ delay: 0.15 + i * 0.08, duration: 0.3, type: "spring", stiffness: 300 }}
-                className="w-7 h-7 rounded-full bg-[#F3D840] flex items-center justify-center shrink-0 mt-0.5" style={{ width: 28, height: 28, minWidth: 28 }}
+                style={{ width: 28, height: 28, minWidth: 28, borderRadius: '50%', background: '#F3D840', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 2 }}
               >
-                <span className="text-[#1A1A1A] font-extrabold text-[11px]">{i + 1}</span>
+                <span style={{ color: '#1A1A1A', fontWeight: 800, fontSize: 11 }}>{i + 1}</span>
               </motion.div>
-              <p className="text-white/90 text-base sm:text-lg leading-relaxed">
-                <span className="text-[#F3D840] font-bold">{step.agent}</span>{" "}
+              <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(14px, 2vw, 18px)', lineHeight: 1.7 }}>
+                <span style={{ color: '#F3D840', fontWeight: 700 }}>{step.agent}</span>{" "}
                 {step.action}
               </p>
             </motion.div>
@@ -266,11 +266,11 @@ function ScenarioSection() {
 
         {/* Closing */}
         <ScrollReveal delay={0.3}>
-          <div className="border-t border-white/10" style={{ paddingTop: 32 }}>
-            <p className="text-white/60 text-base sm:text-lg leading-relaxed" style={{ marginBottom: 16 }}>
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 'clamp(20px, 4vw, 32px)' }}>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(14px, 2vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 16px)' }}>
               You review the weekly summary. You approve the strategy. You intervene only when you want to.
             </p>
-            <p className="text-[#F3D840] text-xl sm:text-2xl font-extrabold" style={{ fontSize: 24 }}>
+            <p style={{ color: '#F3D840', fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 800 }}>
               That&apos;s the workforce.
             </p>
           </div>
@@ -285,38 +285,38 @@ function ScenarioSection() {
    ============================================================ */
 function InvestmentSection() {
   return (
-    <section className="bg-[#FFFDF5] py-20 md:py-28">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section style={{ backgroundColor: '#FFFDF5', paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
+      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-8">
-            <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', padding: '6px 16px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(20px, 4vw, 32px)' }}>
+            <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.5vw, 14px)', fontWeight: 600, letterSpacing: '0.03em' }}>
               Investment
             </span>
           </div>
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
-          <p className="text-[#535353] text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto mb-6">
+          <p style={{ color: '#535353', fontSize: 'clamp(16px, 2.2vw, 20px)', lineHeight: 1.7, maxWidth: 672, marginLeft: 'auto', marginRight: 'auto', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
             Most solar installers pay €1,000 – €1,500 per month plus a one-time setup fee. You bring your own AI keys. You pay the models directly. No markup from us.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.2}>
-          <p className="text-[#1A1A1A] text-lg sm:text-xl font-semibold mb-10">
+          <p style={{ color: '#1A1A1A', fontSize: 'clamp(16px, 2.2vw, 20px)', fontWeight: 600, marginBottom: 'clamp(24px, 5vw, 40px)' }}>
             We&apos;ll give you an exact quote after a 30 minute call.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.3}>
-          <div style={{ marginTop: 32 }}>
+          <div style={{ marginTop: 'clamp(16px, 3vw, 32px)' }}>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
-            style={{ padding: '10px 24px', fontSize: 14, fontWeight: 700, letterSpacing: '0.02em' }}
+            className="hover:bg-[#374151] transition-all duration-300 shadow-md hover:shadow-lg"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', padding: '10px 24px', backgroundColor: '#1A1A1A', color: '#fff', fontWeight: 700, fontSize: 'clamp(13px, 1.5vw, 14px)', letterSpacing: '0.02em', borderRadius: 9999, textDecoration: 'none' }}
           >
             Book a Call
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
@@ -332,19 +332,20 @@ function InvestmentSection() {
    ============================================================ */
 function CTASection() {
   return (
-    <section className="bg-[#F3D840] py-20 md:py-28">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section style={{ backgroundColor: '#F3D840', paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
+      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
         <ScrollReveal>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1A1A1A] leading-tight mb-6">
+          <h2 style={{ fontSize: 'clamp(1.875rem, 5vw, 3rem)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.1, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
             Let&apos;s build yours.
           </h2>
         </ScrollReveal>
 
         <ScrollReveal delay={0.15}>
-          <p className="text-[#374151] text-lg sm:text-xl mb-10">
+          <p style={{ color: '#374151', fontSize: 'clamp(16px, 2.2vw, 20px)', marginBottom: 'clamp(24px, 5vw, 40px)' }}>
             <a
               href="mailto:hello@renewably.ie"
-              className="underline hover:text-[#1A1A1A] transition-colors font-semibold"
+              className="hover:text-[#1A1A1A] transition-colors"
+              style={{ textDecoration: 'underline', fontWeight: 600 }}
             >
               hello@renewably.ie
             </a>
@@ -352,14 +353,14 @@ function CTASection() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.25}>
-          <div style={{ marginTop: 32 }}>
+          <div style={{ marginTop: 'clamp(16px, 3vw, 32px)' }}>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
-            style={{ padding: '10px 24px', fontSize: 14, fontWeight: 700, letterSpacing: '0.02em' }}
+            className="hover:bg-[#374151] transition-all duration-300 shadow-md hover:shadow-lg"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', padding: '10px 24px', backgroundColor: '#1A1A1A', color: '#fff', fontWeight: 700, fontSize: 'clamp(13px, 1.5vw, 14px)', letterSpacing: '0.02em', borderRadius: 9999, textDecoration: 'none' }}
           >
             Get Started
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
@@ -376,6 +377,11 @@ function CTASection() {
 export default function WorkforcePageClient() {
   return (
     <main>
+      <style>{`
+        .workforce-hero-bg { object-position: 60% center !important; }
+        @media (min-width: 768px) { .workforce-hero-bg { object-position: center !important; } }
+      `}</style>
+
       {/* ===== HERO ===== */}
       <section data-theme="dark" style={{ position: 'relative', minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
         {/* Robot image background */}
@@ -384,6 +390,7 @@ export default function WorkforcePageClient() {
             src="/robot-2.jpg"
             alt=""
             fill
+            className="workforce-hero-bg"
             style={{ objectFit: 'cover' }}
             priority
           />
@@ -392,12 +399,12 @@ export default function WorkforcePageClient() {
         <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(135deg, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.6) 50%, rgba(10,10,10,0.3) 100%)' }} />
 
         {/* Content */}
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: 896, width: '100%', padding: '0 16px', textAlign: 'center' }}>
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: 896, width: '100%', padding: '0 clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', marginBottom: 32, padding: '6px 16px', fontSize: 13, fontWeight: 600, letterSpacing: '0.03em' }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', marginBottom: 'clamp(20px, 4vw, 32px)', padding: '6px 16px', fontSize: 'clamp(12px, 1.5vw, 13px)', fontWeight: 600, letterSpacing: '0.03em' }}
           >
             <motion.span
               style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840', boxShadow: '0 0 8px rgba(243,216,64,0.6)' }}
@@ -413,7 +420,7 @@ export default function WorkforcePageClient() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, color: '#F3D840', lineHeight: 1.08, letterSpacing: '-0.02em', marginBottom: 24 }}
+            style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, color: '#F3D840', lineHeight: 1.08, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}
           >
             The AI Workforce
           </motion.h1>
@@ -434,7 +441,7 @@ export default function WorkforcePageClient() {
 
       {/* ===== EIGHT AGENTS ===== */}
       <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
-        <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 16, paddingRight: 16 }}>
+        <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: "clamp(64px, 15vw, 120px)" }}>
             {agents.map((agent, i) => (
               <AgentCard key={agent.num} agent={agent} index={i} />

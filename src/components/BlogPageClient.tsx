@@ -173,9 +173,14 @@ function HeroSection() {
           src="/robot-4.jpg"
           alt=""
           fill
+          className="blog-hero-bg"
           style={{ objectFit: "cover" }}
           priority
         />
+        <style>{`
+          .blog-hero-bg { object-position: 65% center !important; }
+          @media (min-width: 768px) { .blog-hero-bg { object-position: center !important; } }
+        `}</style>
       </div>
 
       {/* Dark overlay */}
@@ -216,7 +221,7 @@ function HeroSection() {
           textAlign: "center",
         }}
       >
-        <div style={{ paddingTop: 100, paddingBottom: 64 }}>
+        <div style={{ paddingTop: 'clamp(100px, 14vh, 120px)', paddingBottom: 'clamp(40px, 8vh, 64px)' }}>
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -867,7 +872,7 @@ function NewsletterSection() {
         <ScrollReveal delay={0.2}>
           <p
             style={{
-              fontSize: 17,
+              fontSize: 'clamp(15px, 2vw, 17px)',
               lineHeight: 1.7,
               color: "rgba(255,255,255,0.5)",
               maxWidth: 480,
@@ -1046,7 +1051,7 @@ function TopicsSection() {
           style={{
             display: "flex",
             flexWrap: "wrap",
-            gap: 12,
+            gap: "clamp(6px, 1.2vw, 12px)",
           }}
         >
           {topics.map((topic, i) => (
@@ -1060,9 +1065,9 @@ function TopicsSection() {
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: 10,
-                  padding: "12px 22px",
-                  borderRadius: 14,
+                  gap: "clamp(4px, 0.8vw, 10px)",
+                  padding: "clamp(7px, 1.2vw, 12px) clamp(10px, 2vw, 22px)",
+                  borderRadius: "clamp(8px, 1.5vw, 14px)",
                   backgroundColor:
                     hoveredTopic === topic.label
                       ? DARK
@@ -1075,7 +1080,7 @@ function TopicsSection() {
                     hoveredTopic === topic.label
                       ? YELLOW
                       : "#374151",
-                  fontSize: 14,
+                  fontSize: "clamp(11px, 1.4vw, 14px)",
                   fontWeight: 600,
                   cursor: "pointer",
                   transition: "all 0.25s ease",
@@ -1083,14 +1088,15 @@ function TopicsSection() {
                     hoveredTopic === topic.label
                       ? "0 8px 24px rgba(243,216,64,0.12)"
                       : "none",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {topic.label}
                 <span
                   style={{
-                    fontSize: 11,
+                    fontSize: "clamp(9px, 1.2vw, 11px)",
                     fontWeight: 700,
-                    padding: "2px 8px",
+                    padding: "clamp(1px, 0.3vw, 2px) clamp(4px, 0.8vw, 8px)",
                     borderRadius: 9999,
                     backgroundColor:
                       hoveredTopic === topic.label
@@ -1100,6 +1106,7 @@ function TopicsSection() {
                       hoveredTopic === topic.label
                         ? YELLOW
                         : "#9CA3AF",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   {topic.count}
@@ -1121,8 +1128,8 @@ function FinalCTA() {
     <section
       style={{
         backgroundColor: YELLOW,
-        paddingTop: 64,
-        paddingBottom: 64,
+        paddingTop: 'clamp(48px, 8vw, 64px)',
+        paddingBottom: 'clamp(48px, 8vw, 64px)',
       }}
     >
       <div
@@ -1147,7 +1154,7 @@ function FinalCTA() {
         <ScrollReveal delay={0.1}>
           <p
             style={{
-              fontSize: 17,
+              fontSize: 'clamp(15px, 2vw, 17px)',
               color: "#374151",
               lineHeight: 1.7,
               marginBottom: 36,
@@ -1179,7 +1186,7 @@ function FinalCTA() {
                 alignItems: "center",
                 gap: 10,
                 padding: "16px 36px",
-                fontSize: 16,
+                fontSize: 'clamp(14px, 1.8vw, 16px)',
                 fontWeight: 700,
                 borderRadius: 9999,
                 backgroundColor: "#1A1A1A",
@@ -1199,7 +1206,7 @@ function FinalCTA() {
                 alignItems: "center",
                 gap: 10,
                 padding: "16px 36px",
-                fontSize: 16,
+                fontSize: 'clamp(14px, 1.8vw, 16px)',
                 fontWeight: 700,
                 borderRadius: 9999,
                 backgroundColor: "transparent",
@@ -1240,7 +1247,7 @@ export default function BlogPageClient() {
       <section
         style={{
           backgroundColor: "#F9FAFB",
-          paddingTop: 64,
+          paddingTop: 'clamp(48px, 8vw, 64px)',
           paddingBottom: 0,
         }}
       >

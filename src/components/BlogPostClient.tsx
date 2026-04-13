@@ -96,7 +96,7 @@ function TableOfContents({ blocks }: { blocks: string[] }) {
   return (
     <ScrollReveal>
       <div style={{
-        padding: 24, borderRadius: 16, backgroundColor: "#F9FAFB",
+        padding: 'clamp(16px, 3vw, 24px)', borderRadius: 16, backgroundColor: "#F9FAFB",
         border: "1px solid rgba(26,26,26,0.06)", marginBottom: 48,
       }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
@@ -175,7 +175,7 @@ function RenderedBlock({ text, index }: { text: string; index: number }) {
           id={`section-${headingIndex}`}
           style={{
             fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 800, color: "#1A1A1A",
-            lineHeight: 1.2, marginTop: 48, marginBottom: 20, paddingTop: 20,
+            lineHeight: 1.2, marginTop: 'clamp(32px, 6vw, 48px)', marginBottom: 'clamp(16px, 3vw, 20px)', paddingTop: 'clamp(12px, 2vw, 20px)',
             scrollMarginTop: 100,
           }}
         >
@@ -323,7 +323,7 @@ export default function BlogPostClient() {
             }}
           />
 
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-[1]" style={{ paddingTop: 120, paddingBottom: 64 }}>
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-[1]" style={{ paddingTop: 'clamp(100px, 14vh, 120px)', paddingBottom: 'clamp(40px, 8vh, 64px)' }}>
             {/* Back link */}
             <ScrollReveal>
               <Link
@@ -427,7 +427,7 @@ export default function BlogPostClient() {
         </section>
 
         {/* ===== ARTICLE CONTENT ===== */}
-        <section style={{ backgroundColor: "#fff", paddingTop: 64, paddingBottom: 64 }}>
+        <section style={{ backgroundColor: "#fff", paddingTop: 'clamp(40px, 8vw, 64px)', paddingBottom: 'clamp(40px, 8vw, 64px)' }}>
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Table of Contents */}
             <TableOfContents blocks={blocks} />
@@ -475,7 +475,7 @@ export default function BlogPostClient() {
       </article>
 
       {/* ===== CTA ===== */}
-      <section style={{ backgroundColor: YELLOW, paddingTop: 72, paddingBottom: 72 }}>
+      <section style={{ backgroundColor: YELLOW, paddingTop: 'clamp(48px, 8vw, 72px)', paddingBottom: 'clamp(48px, 8vw, 72px)' }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8" style={{ textAlign: "center" }}>
           <ScrollReveal>
             <h2 style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 800, color: "#1A1A1A", lineHeight: 1.1, marginBottom: 16 }}>
@@ -493,7 +493,7 @@ export default function BlogPostClient() {
 
       {/* ===== RELATED ARTICLES ===== */}
       {related.length > 0 && (
-        <section style={{ backgroundColor: "#fff", paddingTop: 64, paddingBottom: 64 }}>
+        <section style={{ backgroundColor: "#fff", paddingTop: 'clamp(40px, 8vw, 64px)', paddingBottom: 'clamp(40px, 8vw, 64px)' }}>
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal>
               <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1A1A1A", marginBottom: 24 }}>
@@ -512,7 +512,7 @@ export default function BlogPostClient() {
       {/* ===== NEXT ARTICLE ===== */}
       {nextPost && (
         <section style={{ backgroundColor: DARK }}>
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8" style={{ paddingTop: 64, paddingBottom: 64 }}>
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8" style={{ paddingTop: 'clamp(40px, 8vw, 64px)', paddingBottom: 'clamp(40px, 8vw, 64px)' }}>
             <ScrollReveal>
               <p style={{ fontSize: 12, fontWeight: 700, color: YELLOW, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16 }}>
                 Up next
@@ -545,7 +545,7 @@ export default function BlogPostClient() {
       )}
 
       {/* ===== BACK TO BLOG ===== */}
-      <section style={{ backgroundColor: "#F9FAFB", paddingTop: 48, paddingBottom: 48 }}>
+      <section style={{ backgroundColor: "#F9FAFB", paddingTop: 'clamp(32px, 6vw, 48px)', paddingBottom: 'clamp(32px, 6vw, 48px)' }}>
         <div style={{ textAlign: "center" }}>
           <MagneticButton href="/blog">
             <ArrowLeftIcon /> All Articles
