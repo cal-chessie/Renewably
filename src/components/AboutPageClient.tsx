@@ -332,7 +332,7 @@ function HeroSection() {
 
       {/* Mobile: shift focus to robot, Desktop: centre */}
       <style>{`
-        .about-hero-bg { object-position: 65% center !important; }
+        .about-hero-bg { object-position: 70% center !important; }
         @media (min-width: 768px) { .about-hero-bg { object-position: center !important; } }
       `}</style>
     </section>
@@ -359,7 +359,7 @@ function StorySection() {
               borderRadius: 9999,
               backgroundColor: "rgba(243,216,64,0.1)",
               border: "1px solid rgba(243,216,64,0.2)",
-              marginBottom: 32,
+              marginBottom: 'clamp(20px, 4vw, 32px)',
             }}
           >
             <span
@@ -384,7 +384,7 @@ function StorySection() {
               color: "#1A1A1A",
               lineHeight: 1.1,
               letterSpacing: "-0.02em",
-              marginBottom: 16,
+              marginBottom: 'clamp(10px, 2vw, 16px)',
               maxWidth: 600,
             }}
           >
@@ -397,11 +397,11 @@ function StorySection() {
         <ScrollReveal delay={0.2}>
           <p
             style={{
-              fontSize: 17,
+              fontSize: 'clamp(15px, 2vw, 17px)',
               lineHeight: 1.7,
               color: "#535353",
               maxWidth: 560,
-              marginBottom: 48,
+              marginBottom: 'clamp(24px, 5vw, 48px)',
             }}
           >
             Click each phase to see how we got here. The story starts where every
@@ -427,9 +427,9 @@ function StorySection() {
                   <div
                     style={{
                       display: "flex",
-                      gap: 24,
-                      paddingTop: 24,
-                      paddingBottom: 24,
+                      gap: 'clamp(12px, 3vw, 24px)',
+                      paddingTop: 'clamp(16px, 3vw, 24px)',
+                      paddingBottom: 'clamp(16px, 3vw, 24px)',
                       borderBottom: isLast
                         ? "none"
                         : "1px solid rgba(0,0,0,0.06)",
@@ -438,15 +438,15 @@ function StorySection() {
                     {/* Left: phase + year */}
                     <div
                       style={{
-                        minWidth: 80,
+                        minWidth: 'clamp(64px, 12vw, 80px)',
                         display: "flex",
                         flexDirection: "column",
-                        gap: 4,
+                        gap: 2,
                       }}
                     >
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: 'clamp(10px, 1.5vw, 11px)',
                           fontWeight: 700,
                           color: YELLOW,
                           textTransform: "uppercase",
@@ -457,7 +457,7 @@ function StorySection() {
                       </span>
                       <span
                         style={{
-                          fontSize: 14,
+                          fontSize: 'clamp(12px, 1.8vw, 14px)',
                           fontWeight: 700,
                           color: "#1A1A1A",
                         }}
@@ -479,7 +479,7 @@ function StorySection() {
                           exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                           style={{
-                            fontSize: 15,
+                            fontSize: 'clamp(14px, 2vw, 15px)',
                             lineHeight: 1.7,
                             color: isExpanded ? "#374151" : "#535353",
                             overflow: "hidden",
@@ -494,8 +494,8 @@ function StorySection() {
                       <span
                         style={{
                           display: "inline-block",
-                          marginTop: 8,
-                          fontSize: 12,
+                          marginTop: 4,
+                          fontSize: 11,
                           fontWeight: 600,
                           color: YELLOW,
                           letterSpacing: "0.02em",
@@ -563,7 +563,7 @@ function ProblemsSection() {
               borderRadius: 9999,
               backgroundColor: "rgba(59,130,246,0.08)",
               border: "1px solid rgba(59,130,246,0.15)",
-              marginBottom: 32,
+              marginBottom: 'clamp(20px, 4vw, 32px)',
             }}
           >
             <span
@@ -596,7 +596,7 @@ function ProblemsSection() {
               color: "#1A1A1A",
               lineHeight: 1.1,
               letterSpacing: "-0.02em",
-              marginBottom: 48,
+              marginBottom: 'clamp(24px, 5vw, 48px)',
               maxWidth: 600,
             }}
           >
@@ -616,7 +616,7 @@ function ProblemsSection() {
                 whileTap={{ scale: 0.995 }}
                 style={{
                   cursor: "pointer",
-                  padding: "20px 16px",
+                  padding: 'clamp(14px, 2vw, 20px) 16px',
                   borderRadius: 16,
                   backgroundColor: activeProblem === i ? "#fff" : "transparent",
                   border:
@@ -640,9 +640,9 @@ function ProblemsSection() {
                   {/* Icon */}
                   <div
                     style={{
-                      width: 48,
-                      height: 48,
-                      minWidth: 48,
+                      width: 'clamp(40px, 6vw, 48px)',
+                      height: 'clamp(40px, 6vw, 48px)',
+                      minWidth: 'clamp(40px, 6vw, 48px)',
                       borderRadius: 14,
                       backgroundColor:
                         activeProblem === i
@@ -665,12 +665,14 @@ function ProblemsSection() {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        marginBottom: activeProblem === i ? 12 : 0,
+                        flexWrap: "wrap",
+                        gap: 8,
+                        marginBottom: activeProblem === i ? 10 : 0,
                       }}
                     >
                       <h3
                         style={{
-                          fontSize: 18,
+                          fontSize: 'clamp(16px, 2.5vw, 18px)',
                           fontWeight: 700,
                           color: "#1A1A1A",
                         }}
@@ -693,7 +695,7 @@ function ProblemsSection() {
                       >
                         <span
                           style={{
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: 800,
                             color: "#3B82F6",
                           }}
@@ -702,7 +704,7 @@ function ProblemsSection() {
                         </span>
                         <span
                           style={{
-                            fontSize: 12,
+                            fontSize: 11,
                             color: "#6B7280",
                             fontWeight: 500,
                           }}
@@ -723,7 +725,7 @@ function ProblemsSection() {
                             ease: [0.22, 1, 0.36, 1],
                           }}
                           style={{
-                            fontSize: 15,
+                            fontSize: 'clamp(14px, 2vw, 15px)',
                             lineHeight: 1.7,
                             color: "#535353",
                             overflow: "hidden",
