@@ -269,32 +269,32 @@ function ProblemSection() {
    ============================================================ */
 function SolutionSection() {
   return (
-    <section className="bg-white py-20 md:py-28 overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(48px, 6vw, 80px)', paddingBottom: 'clamp(48px, 6vw, 112px)', overflow: 'hidden' }}>
+      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Headline */}
         <ScrollReveal>
-          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-[#1A1A1A] leading-tight mb-6">
+          <h2 style={{ fontSize: 'clamp(24px, 4vw, 48px)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
             What if you could hire a team that never sleeps, never quits, and costs a fraction of what a person costs?
           </h2>
         </ScrollReveal>
 
         {/* Sub-text */}
         <ScrollReveal delay={0.15}>
-          <p className="text-[#374151] text-lg sm:text-xl leading-relaxed mb-6">
+          <p style={{ color: '#374151', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
             Not robots. Not chatbots. Actual employees. With roles. With responsibilities. With a boss.
           </p>
         </ScrollReveal>
 
         {/* Body */}
         <ScrollReveal delay={0.25}>
-          <p className="text-[#535353] text-base sm:text-lg leading-relaxed mb-6">
+          <p style={{ color: '#535353', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
             They assess roofs. They fill out grant applications. They call customers back. They coordinate installers. They order equipment. They flag problems before you know they exist.
           </p>
         </ScrollReveal>
 
         {/* Closing */}
         <ScrollReveal delay={0.35}>
-          <p className="text-[#1A1A1A] text-lg sm:text-xl font-bold leading-relaxed">
+          <p style={{ color: '#1A1A1A', fontSize: 'clamp(16px, 2vw, 20px)', fontWeight: 700, lineHeight: 1.7 }}>
             You manage them like a real team. They work like a real team.
           </p>
         </ScrollReveal>
@@ -623,11 +623,11 @@ function AgentsSection() {
 
         {/* Callout + closing */}
         <ScrollReveal delay={0.3}>
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="text-[#535353] text-lg leading-relaxed mb-6">
+          <div style={{ maxWidth: 768, marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}>
+            <p style={{ color: '#535353', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)' }}>
               You approve every hire. You set every budget. You review every strategy.
             </p>
-            <p className="text-[#1A1A1A] text-xl sm:text-2xl font-extrabold">
+            <p style={{ color: '#1A1A1A', fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 800 }}>
               You&apos;re the board. They&apos;re the workforce.
             </p>
           </div>
@@ -642,53 +642,52 @@ function AgentsSection() {
    ============================================================ */
 function PricingSection() {
   return (
-    <section className="bg-[#FFFDF5] py-20 md:py-28 overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section style={{ backgroundColor: '#FFFDF5', paddingTop: 'clamp(48px, 6vw, 80px)', paddingBottom: 'clamp(48px, 6vw, 112px)', overflow: 'hidden' }}>
+      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-10">
-            <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(20px, 4vw, 40px)' }}>
+            <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
               What it costs.
             </span>
           </div>
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
-          <p className="text-[#1A1A1A] text-xl sm:text-2xl lg:text-3xl font-extrabold mb-8">
+          <p style={{ color: '#1A1A1A', fontSize: 'clamp(20px, 4vw, 30px)', fontWeight: 800, marginBottom: 'clamp(16px, 3vw, 32px)' }}>
             Less than a junior admin.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.2}>
-          <p className="text-[#535353] text-lg sm:text-xl leading-relaxed mb-6 max-w-2xl mx-auto">
+          <p style={{ color: '#535353', fontSize: 'clamp(15px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
             Most solar installers pay €1,000 – €1,500 per month plus a one-time setup fee.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.3}>
-          <p className="text-[#535353] text-lg sm:text-xl leading-relaxed mb-6 max-w-2xl mx-auto">
+          <p style={{ color: '#535353', fontSize: 'clamp(15px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
             You bring your own AI keys. You pay the models directly. No markup from us.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.4}>
-          <p className="text-[#1A1A1A] text-lg sm:text-xl font-semibold mb-10">
+          <p style={{ color: '#1A1A1A', fontSize: 'clamp(15px, 2vw, 20px)', fontWeight: 600, marginBottom: 'clamp(20px, 4vw, 40px)' }}>
             We&apos;ll give you an exact quote after a 30 minute call.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.5}>
-          <div style={{ marginTop: 48 }}>
+          <div style={{ marginTop: 'clamp(24px, 3vw, 48px)' }}>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-3 rounded-full font-bold transition-all duration-300 shadow-md hover:shadow-lg"
-              style={{ padding: "10px 24px", fontSize: 14, letterSpacing: "0.02em", backgroundColor: "#1A1A1A", color: "#fff" }}
-          >
-            Book a Call
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 12, borderRadius: 9999, fontWeight: 700, textDecoration: 'none', padding: 'clamp(10px, 1.5vw, 12px) 24px', fontSize: 14, letterSpacing: '0.02em', backgroundColor: '#1A1A1A', color: '#fff', transition: 'box-shadow 0.3s ease' }}
+            >
+              Book a Call
+              <svg style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
           </div>
         </ScrollReveal>
       </div>
@@ -720,32 +719,31 @@ function BeforeAfterSection() {
   ];
 
   return (
-    <section className="bg-white py-12 md:py-20 lg:py-28 overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(40px, 6vw, 80px)', paddingBottom: 'clamp(40px, 6vw, 112px)', overflow: 'hidden' }}>
+      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20" style={{ marginBottom: 32 }}>
-            <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(20px, 4vw, 32px)' }}>
+            <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
               What changes.
             </span>
           </div>
         </ScrollReveal>
 
         {/* Comparison cards */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(20px, 4vw, 32px)' }}>
           {comparisons.map((item, i) => (
             <ScrollReveal key={i} delay={i * 0.12}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6" style={{ gap: 24 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'clamp(12px, 2vw, 24px)' }} className="md:grid-cols-2">
                 {/* Before */}
                 <motion.div
                   whileHover={{ y: -2 }}
-                  className="p-6 rounded-xl bg-[#FFFDF5] border-l-4 border-l-[#EF4444]/40 border border-[#EF4444]/15"
-                  style={{ padding: '28px 24px' }}
+                  style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)', borderRadius: 16, backgroundColor: '#FFFDF5', borderLeft: '4px solid rgba(239,68,68,0.4)', border: '1px solid rgba(239,68,68,0.15)', borderLeftWidth: 4, borderLeftStyle: 'solid', borderLeftColor: 'rgba(239,68,68,0.4)' }}
                 >
-                  <span className="inline-block text-[#EF4444]/70 text-xs font-bold uppercase tracking-wider" style={{ marginBottom: 12, display: 'block' }}>
+                  <span style={{ display: 'block', color: 'rgba(239,68,68,0.7)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'clamp(8px, 1.5vw, 12px)' }}>
                     Before
                   </span>
-                  <p className="text-[#535353] text-sm sm:text-base leading-relaxed" style={{ fontSize: 16, lineHeight: 1.7 }}>
+                  <p style={{ color: '#535353', fontSize: 'clamp(14px, 1.8vw, 16px)', lineHeight: 1.7 }}>
                     {item.before}
                   </p>
                 </motion.div>
@@ -753,13 +751,12 @@ function BeforeAfterSection() {
                 {/* After */}
                 <motion.div
                   whileHover={{ y: -2 }}
-                  className="p-6 rounded-xl bg-[#FFFDF5] border-l-4 border-l-[#F3D840] border border-[#F3D840]/15"
-                  style={{ padding: '28px 24px' }}
+                  style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)', borderRadius: 16, backgroundColor: '#FFFDF5', borderLeftWidth: 4, borderLeftStyle: 'solid', borderLeftColor: '#F3D840', border: '1px solid rgba(243,216,64,0.15)' }}
                 >
-                  <span className="inline-block text-[#F3D840] text-xs font-bold uppercase tracking-wider" style={{ marginBottom: 12, display: 'block' }}>
+                  <span style={{ display: 'block', color: '#F3D840', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'clamp(8px, 1.5vw, 12px)' }}>
                     After
                   </span>
-                  <p className="text-[#1A1A1A] text-sm sm:text-base leading-relaxed font-semibold" style={{ fontSize: 16, lineHeight: 1.7 }}>
+                  <p style={{ color: '#1A1A1A', fontSize: 'clamp(14px, 1.8vw, 16px)', lineHeight: 1.7, fontWeight: 600 }}>
                     {item.after}
                   </p>
                 </motion.div>
@@ -777,13 +774,13 @@ function BeforeAfterSection() {
    ============================================================ */
 function AudienceSection() {
   return (
-    <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28 overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section data-theme="dark" style={{ backgroundColor: '#0A0A0A', paddingTop: 'clamp(48px, 6vw, 80px)', paddingBottom: 'clamp(48px, 6vw, 112px)', overflow: 'hidden' }}>
+      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 mb-10">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', marginBottom: 'clamp(20px, 4vw, 40px)' }}>
             <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
-            <span className="text-white text-xs sm:text-sm font-semibold tracking-wide">
+            <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
               Who is this for?
             </span>
           </div>
@@ -791,21 +788,21 @@ function AudienceSection() {
 
         {/* Headline */}
         <ScrollReveal delay={0.1}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-8">
+          <h2 style={{ fontSize: 'clamp(24px, 5vw, 48px)', fontWeight: 800, color: '#fff', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 32px)' }}>
             Solar installers doing 20+ jobs a month.
           </h2>
         </ScrollReveal>
 
         {/* Body */}
         <ScrollReveal delay={0.2}>
-          <p className="text-white/70 text-lg sm:text-xl leading-relaxed mb-6">
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(15px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)' }}>
             You have more work than time. You&apos;re turning down leads because you can&apos;t handle the admin. You&apos;re burning out your best people.
           </p>
         </ScrollReveal>
 
         {/* Closing */}
         <ScrollReveal delay={0.3}>
-          <p className="text-white/50 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(14px, 1.8vw, 18px)', lineHeight: 1.7, maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
             Not for one-person shows. Not for hobbyists. For actual solar companies that want to scale without hiring ten more humans.
           </p>
         </ScrollReveal>
@@ -830,42 +827,42 @@ function HowItStartsSection() {
   const stepsInView = useInView(stepsRef, { once: true, margin: "-80px" });
 
   return (
-    <section style={{ backgroundColor: '#F3D840', paddingTop: 64, paddingBottom: 64, overflow: 'hidden' }}>
-      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 16, paddingRight: 16 }}>
+    <section style={{ backgroundColor: '#F3D840', paddingTop: 'clamp(40px, 6vw, 64px)', paddingBottom: 'clamp(40px, 6vw, 64px)', overflow: 'hidden' }}>
+      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, backgroundColor: 'rgba(26,26,26,0.1)', border: '1px solid rgba(26,26,26,0.15)', marginBottom: 32 }}>
-          <span style={{ color: '#1A1A1A', fontSize: 13, fontWeight: 600, letterSpacing: '0.03em' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, backgroundColor: 'rgba(26,26,26,0.1)', border: '1px solid rgba(26,26,26,0.15)', marginBottom: 'clamp(20px, 4vw, 32px)' }}>
+          <span style={{ color: '#1A1A1A', fontSize: 'clamp(11px, 1.3vw, 13px)', fontWeight: 600, letterSpacing: '0.03em' }}>
             How it starts.
           </span>
         </div>
 
         {/* Steps */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 40 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px, 2vw, 16px)', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
           {steps.map((step, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 32, height: 32, minWidth: 32, borderRadius: '50%', backgroundColor: '#1A1A1A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ color: '#F3D840', fontWeight: 700, fontSize: 13 }}>{i + 1}</span>
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'clamp(10px, 2vw, 14px)' }}>
+              <div style={{ width: 'clamp(28px, 4vw, 32px)', height: 'clamp(28px, 4vw, 32px)', minWidth: 'clamp(28px, 4vw, 32px)', borderRadius: '50%', backgroundColor: '#1A1A1A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ color: '#F3D840', fontWeight: 700, fontSize: 'clamp(11px, 1.5vw, 13px)' }}>{i + 1}</span>
               </div>
-              <p style={{ color: '#1A1A1A', fontSize: 16, fontWeight: 600 }}>{step}</p>
+              <p style={{ color: '#1A1A1A', fontSize: 'clamp(14px, 1.8vw, 16px)', fontWeight: 600 }}>{step}</p>
             </div>
           ))}
         </div>
 
         {/* Closing text */}
-        <p style={{ color: '#374151', fontSize: 14, lineHeight: 1.6, marginBottom: 8 }}>
+        <p style={{ color: '#374151', fontSize: 'clamp(13px, 1.6vw, 14px)', lineHeight: 1.6, marginBottom: 8 }}>
           You don&apos;t install software. You don&apos;t configure APIs. You don&apos;t learn a new system.
         </p>
 
-        <p style={{ color: '#1A1A1A', fontSize: 18, fontWeight: 800, marginBottom: 32 }}>
+        <p style={{ color: '#1A1A1A', fontSize: 'clamp(16px, 2.5vw, 18px)', fontWeight: 800, marginBottom: 'clamp(20px, 4vw, 32px)' }}>
           You just start managing instead of doing.
         </p>
 
         {/* CTA */}
-        <div style={{ textAlign: 'center', paddingTop: 32 }}>
+        <div style={{ textAlign: 'center', paddingTop: 'clamp(20px, 3vw, 32px)' }}>
           <h2 style={{ color: '#1A1A1A', fontSize: 'clamp(22px, 5vw, 28px)', fontWeight: 800, lineHeight: 1.15, marginBottom: 12, textAlign: 'center' }}>
             Ready to meet your new team?
           </h2>
-          <p style={{ color: '#374151', fontSize: 15, marginBottom: 24, textAlign: 'center' }}>
+          <p style={{ color: '#374151', fontSize: 'clamp(13px, 1.6vw, 15px)', marginBottom: 'clamp(16px, 3vw, 24px)', textAlign: 'center' }}>
             <a href="mailto:hello@renewably.ie" style={{ textDecoration: 'underline', color: '#374151' }}>
               hello@renewably.ie
             </a>
@@ -878,7 +875,7 @@ function HowItStartsSection() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 8,
-                padding: '14px 32px',
+                padding: 'clamp(12px, 2vw, 14px) clamp(20px, 3vw, 32px)',
                 fontSize: 15,
                 fontWeight: 700,
                 letterSpacing: '0.02em',
