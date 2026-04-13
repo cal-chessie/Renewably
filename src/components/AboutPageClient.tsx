@@ -751,7 +751,7 @@ function ProblemsSection() {
    ============================================================ */
 function ValuesSection() {
   return (
-    <section data-theme="dark" style={{ backgroundColor: DARK, paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
+    <section data-theme="dark" style={{ backgroundColor: DARK, paddingTop: 'clamp(32px, 8vw, 96px)', paddingBottom: 'clamp(32px, 8vw, 96px)' }}>
       {/* Dot grid */}
       <div
         style={{
