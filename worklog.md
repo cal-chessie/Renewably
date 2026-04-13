@@ -86,3 +86,29 @@ Stage Summary:
 - SEO: All stale schema content replaced with accurate solar-focused positioning
 - Accessibility: Skip-to-content link, proper contrast on cookie banner
 - Files: Footer.tsx, ChatWidget.tsx, CookieBanner.tsx, layout.tsx, page.tsx, services/page.tsx, robots.ts
+
+---
+Task ID: 5
+Agent: Main Agent + Subagents
+Task: Round 2 audit backlog — code deduplication, refactoring, FAQ, accessibility
+
+Work Log:
+- Created shared components for duplicated sections between HomePage and ServicesPage:
+  - /home/z/my-project/src/components/shared/BeforeAfterSection.tsx (accepts comparisons as props)
+  - /home/z/my-project/src/components/shared/AudienceSection.tsx (accepts badge text as prop)
+  - /home/z/my-project/src/components/shared/HowItStartsSection.tsx (accepts CTA customisation props)
+- Refactored HomePageClient.tsx to import shared components, removed ~190 lines of duplicated section definitions
+- Refactored ServicesPageClient.tsx to import shared components, removed ~180 lines of duplicated section definitions
+- Refactored WorkforcePageClient AgentCard: replaced 70-line nested ternary if-else chain with a dashboardMap lookup table (~50 lines removed)
+- Added visible FAQ accordion section to homepage (6 questions, accessible, keyboard-navigable)
+- FAQ uses proper ARIA: aria-expanded, aria-controls, aria-labelledby, role="region"
+- Added aria-label to ChatWidget send button, CookieBanner analytics/marketing toggle buttons
+- Verified all Next.js Image components already have proper loading/fill/priority props
+
+Stage Summary:
+- Code deduplication: ~370 lines of duplicated section code extracted into 3 shared components
+- WorkforcePageClient: Cleaner AgentCard with dashboard map instead of if-else chain
+- SEO: Visible FAQ section added to homepage (matches existing FAQPage schema in page.tsx)
+- Accessibility: 3 icon-only buttons now have proper aria-labels
+- Lint: Clean pass across all changes
+- Files: src/components/shared/*.tsx, src/components/HomePageClient.tsx, src/components/ServicesPageClient.tsx, src/components/WorkforcePageClient.tsx, src/components/ChatWidget.tsx, src/components/CookieBanner.tsx

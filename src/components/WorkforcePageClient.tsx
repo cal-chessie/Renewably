@@ -117,11 +117,24 @@ const scenarioSteps = [
   { agent: "Reporting Agent", action: "tracks everything." },
 ];
 
+/* Lookup map: agent.num → dashboard component */
+const dashboardMap: Record<string, React.ComponentType> = {
+  "01": MiniDesktop,
+  "02": OperationsDashboard,
+  "03": SupportDashboard,
+  "04": GrantsDashboard,
+  "05": LogisticsDashboard,
+  "06": PermittingDashboard,
+  "07": QADashboard,
+  "08": ReportingDashboard,
+};
+
 /* ============================================================
    AGENT DETAIL CARD (alternating image/copy)
    ============================================================ */
 function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number }) {
   const isReversed = index % 2 === 1;
+  const DashboardComponent = dashboardMap[agent.num];
 
   return (
     <ScrollReveal>
@@ -137,58 +150,9 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
         >
-          {agent.num === "01" ? (
+          {DashboardComponent ? (
             <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
-              <MiniDesktop />
-              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
-                {agent.num}
-              </div>
-            </div>
-          ) : agent.num === "02" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
-              <OperationsDashboard />
-              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
-                {agent.num}
-              </div>
-            </div>
-          ) : agent.num === "03" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
-              <SupportDashboard />
-              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
-                {agent.num}
-              </div>
-            </div>
-          ) : agent.num === "04" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
-              <GrantsDashboard />
-              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
-                {agent.num}
-              </div>
-            </div>
-          ) : agent.num === "05" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
-              <LogisticsDashboard />
-              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
-                {agent.num}
-              </div>
-            </div>
-          ) : agent.num === "06" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
-              <PermittingDashboard />
-              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
-                {agent.num}
-              </div>
-            </div>
-          ) : agent.num === "07" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
-              <QADashboard />
-              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
-                {agent.num}
-              </div>
-            </div>
-          ) : agent.num === "08" ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
-              <ReportingDashboard />
+              <DashboardComponent />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
               </div>

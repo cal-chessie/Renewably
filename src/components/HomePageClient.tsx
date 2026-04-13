@@ -6,6 +6,9 @@ import Image from "next/image";
 import Link from "next/link";
 import MagneticButton from "@/components/MagneticButton";
 import ScrollReveal from "@/components/ScrollReveal";
+import BeforeAfterSection from "@/components/shared/BeforeAfterSection";
+import AudienceSection from "@/components/shared/AudienceSection";
+import HowItStartsSection from "@/components/shared/HowItStartsSection";
 
 /* ============================================================
    SECTION 1: HERO — Full-bleed cinematic background, responsive
@@ -661,6 +664,182 @@ function AgentsSection() {
 }
 
 /* ============================================================
+   SECTION 7: FAQ SECTION — Off-White Background
+   ============================================================ */
+function FAQSection() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const faqs = useMemo(() => [
+    {
+      q: "What does Renewably do?",
+      a: "Renewably deploys 8 specialised AI agents that automate every part of a solar PV installation business in Ireland. Our AI handles SEAI grant applications, ESB permit tracking, customer support, logistics coordination, quality assurance, operations management, and reporting — so you can focus on installing panels instead of drowning in admin.",
+    },
+    {
+      q: "How does the AI workforce work?",
+      a: "Each AI agent specialises in a specific area of your solar business. The CEO Agent orchestrates the team, the Operations Agent coordinates installs, the Grants Agent handles SEAI applications, and so on. They work 24/7, integrate with your existing tools, and report directly to you through a single dashboard. You manage them like a real team.",
+    },
+    {
+      q: "How much does it cost?",
+      a: "Most solar installers pay €1,000 – €1,500 per month plus a one-time setup fee. You bring your own AI API keys and pay model providers directly — we do not mark up AI usage costs. Typical AI model costs are €50–200/month depending on your volume. No hidden fees.",
+    },
+    {
+      q: "What makes Renewably different from other AI tools?",
+      a: "Renewably is purpose-built for Irish solar PV installers — not a generic chatbot or CRM plugin. Every agent knows SEAI schemes, ESB Networks processes, Irish building regulations, and the local solar market. You get 8 specialised AI employees working as a coordinated team, not a single general-purpose tool.",
+    },
+    {
+      q: "Is my data secure?",
+      a: "Absolutely. Your data is encrypted at rest and in transit, stored in EU-based data centres, and never shared with third parties. We comply with GDPR and Irish data protection regulations. Your customer data, business information, and conversation histories are yours alone — we do not use them to train AI models.",
+    },
+    {
+      q: "How do I get started?",
+      a: "Book a 15-minute call through our website or ring us on +353 873 958 424. We will walk you through the platform, discuss your specific needs, and provide a tailored quote. Once you sign up, our team handles the entire setup — typically within one to two weeks. No technical expertise required.",
+    },
+  ], []);
+
+  const toggle = (i: number) => setOpenIndex(openIndex === i ? null : i);
+
+  return (
+    <section style={{ backgroundColor: '#FFFDF5', paddingTop: 'clamp(48px, 6vw, 80px)', paddingBottom: 'clamp(48px, 6vw, 112px)', overflow: 'hidden' }}>
+      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
+        {/* Badge */}
+        <ScrollReveal>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 3vw, 40px)' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)' }}>
+              <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
+                Common questions.
+              </span>
+            </div>
+          </div>
+        </ScrollReveal>
+
+        {/* Headline */}
+        <ScrollReveal delay={0.1}>
+          <h2 style={{ fontSize: 'clamp(24px, 4vw, 40px)', fontWeight: 800, color: '#1A1A1A', textAlign: 'center', lineHeight: 1.15, marginBottom: 'clamp(32px, 4vw, 48px)' }}>
+            Still have questions?
+          </h2>
+        </ScrollReveal>
+
+        {/* Accordion */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 1.5vw, 12px)' }} role="region" aria-label="Frequently asked questions">
+          {faqs.map((faq, i) => {
+            const isOpen = openIndex === i;
+            return (
+              <ScrollReveal key={i} delay={i * 0.06}>
+                <div
+                  style={{
+                    borderRadius: 12,
+                    backgroundColor: '#fff',
+                    border: isOpen ? '1px solid rgba(243,216,64,0.4)' : '1px solid rgba(0,0,0,0.06)',
+                    boxShadow: isOpen ? '0 4px 20px rgba(243,216,64,0.08)' : 'none',
+                    transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <button
+                    onClick={() => toggle(i)}
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-answer-${i}`}
+                    id={`faq-question-${i}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      padding: 'clamp(16px, 2.5vw, 20px) clamp(16px, 3vw, 24px)',
+                      backgroundColor: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      gap: 16,
+                    }}
+                  >
+                    <span style={{ color: '#1A1A1A', fontSize: 'clamp(0.95rem, 1.5vw, 1.05rem)', fontWeight: 600, lineHeight: 1.5 }}>
+                      {faq.q}
+                    </span>
+                    <motion.span
+                      animate={{ rotate: isOpen ? 45 : 0 }}
+                      transition={{ duration: 0.2 }}
+                      aria-hidden="true"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: 24,
+                        height: 24,
+                        minWidth: 24,
+                        borderRadius: '50%',
+                        backgroundColor: isOpen ? '#F3D840' : 'rgba(0,0,0,0.05)',
+                        transition: 'background-color 0.3s ease',
+                        color: isOpen ? '#1A1A1A' : '#535353',
+                        fontSize: 16,
+                        fontWeight: 700,
+                      }}
+                    >
+                      +
+                    </motion.span>
+                  </button>
+
+                  <motion.div
+                    id={`faq-answer-${i}`}
+                    role="region"
+                    aria-labelledby={`faq-question-${i}`}
+                    initial={false}
+                    animate={{
+                      height: isOpen ? 'auto' : 0,
+                      opacity: isOpen ? 1 : 0,
+                    }}
+                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ overflow: 'hidden' }}
+                  >
+                    <p style={{
+                      color: '#535353',
+                      fontSize: 'clamp(0.9rem, 1.4vw, 0.95rem)',
+                      lineHeight: 1.7,
+                      padding: '0 clamp(16px, 3vw, 24px) clamp(16px, 2.5vw, 20px)',
+                    }}>
+                      {faq.a}
+                    </p>
+                  </motion.div>
+                </div>
+              </ScrollReveal>
+            );
+          })}
+        </div>
+
+        {/* Bottom CTA */}
+        <ScrollReveal delay={0.4}>
+          <p style={{ textAlign: 'center', color: '#535353', fontSize: 'clamp(14px, 1.8vw, 16px)', lineHeight: 1.7, marginTop: 'clamp(32px, 4vw, 48px)', marginBottom: 'clamp(12px, 2vw, 16px)' }}>
+            Can&apos;t find what you&apos;re looking for?
+          </p>
+          <div style={{ textAlign: 'center' }}>
+            <Link
+              href="/contact"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: 'clamp(10px, 1.5vw, 12px) 24px',
+                backgroundColor: '#1A1A1A',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: 14,
+                borderRadius: 9999,
+                textDecoration: 'none',
+                letterSpacing: '0.02em',
+              }}
+            >
+              Ask us anything
+              <svg style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
    SECTION 8: PRICING SECTION — Off-White Background
    ============================================================ */
 function PricingSection() {
@@ -718,207 +897,11 @@ function PricingSection() {
   );
 }
 
-/* ============================================================
-   SECTION 9: BEFORE/AFTER SECTION — White Background
-   ============================================================ */
-function BeforeAfterSection() {
-  const comparisons = [
-    {
-      before: "You answer every customer email yourself. You lose leads at 6pm. On weekends. When you're on a roof.",
-      after: "Support agent handles it. You review the summary. Customers get answers instantly.",
-    },
-    {
-      before: "You spend 10 hours a week on grant paperwork. You miss deadlines. You make mistakes.",
-      after: "Grants agent handles it. Your approval rate doubles. You do zero hours.",
-    },
-    {
-      before: "You have no idea where every job is. You chase your team. You find out about delays too late.",
-      after: "Ops agent tracks everything. You open the dashboard. You know instantly.",
-    },
-    {
-      before: "You lose money on admin. You lose sleep on coordination. You lose customers on follow-up.",
-      after: "You run a solar company. Not a chaos factory.",
-    },
-  ];
 
-  return (
-    <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(40px, 6vw, 80px)', paddingBottom: 'clamp(64px, 10vw, 128px)', overflow: 'hidden' }}>
-      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
-        {/* Badge */}
-        <ScrollReveal>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(20px, 4vw, 32px)' }}>
-            <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
-              What changes.
-            </span>
-          </div>
-        </ScrollReveal>
 
-        {/* Comparison cards */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(20px, 4vw, 32px)' }}>
-          {comparisons.map((item, i) => (
-            <ScrollReveal key={i} delay={i * 0.12}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'clamp(12px, 2vw, 24px)' }} className="md:grid-cols-2">
-                {/* Before */}
-                <motion.div
-                  whileHover={{ y: -2 }}
-                  style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)', borderRadius: 16, backgroundColor: '#FFFDF5', borderLeft: '4px solid rgba(239,68,68,0.4)', border: '1px solid rgba(239,68,68,0.15)', borderLeftWidth: 4, borderLeftStyle: 'solid', borderLeftColor: 'rgba(239,68,68,0.4)' }}
-                >
-                  <span style={{ display: 'block', color: 'rgba(239,68,68,0.7)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'clamp(8px, 1.5vw, 12px)' }}>
-                    Before
-                  </span>
-                  <p style={{ color: '#535353', fontSize: 'clamp(14px, 1.8vw, 16px)', lineHeight: 1.7 }}>
-                    {item.before}
-                  </p>
-                </motion.div>
 
-                {/* After */}
-                <motion.div
-                  whileHover={{ y: -2 }}
-                  style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)', borderRadius: 16, backgroundColor: '#FFFDF5', borderLeftWidth: 4, borderLeftStyle: 'solid', borderLeftColor: '#F3D840', border: '1px solid rgba(243,216,64,0.15)' }}
-                >
-                  <span style={{ display: 'block', color: '#B89A10', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'clamp(8px, 1.5vw, 12px)' }}>
-                    After
-                  </span>
-                  <p style={{ color: '#1A1A1A', fontSize: 'clamp(14px, 1.8vw, 16px)', lineHeight: 1.7, fontWeight: 600 }}>
-                    {item.after}
-                  </p>
-                </motion.div>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
-/* ============================================================
-   SECTION 10: AUDIENCE SECTION — Dark Background
-   ============================================================ */
-function AudienceSection() {
-  return (
-    <section data-theme="dark" style={{ backgroundColor: '#0A0A0A', paddingTop: 'clamp(48px, 6vw, 80px)', paddingBottom: 'clamp(48px, 6vw, 112px)', overflow: 'hidden' }}>
-      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
-        {/* Badge */}
-        <ScrollReveal>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', marginBottom: 'clamp(28px, 5vw, 48px)' }}>
-            <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
-            <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
-              Who is this for?
-            </span>
-          </div>
-        </ScrollReveal>
 
-        {/* Headline */}
-        <ScrollReveal delay={0.1}>
-          <h2 style={{ fontSize: 'clamp(24px, 5vw, 48px)', fontWeight: 800, color: '#fff', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 32px)' }}>
-            Solar installers doing 20+ jobs a month.
-          </h2>
-        </ScrollReveal>
-
-        {/* Body */}
-        <ScrollReveal delay={0.2}>
-          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(15px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)' }}>
-            You have more work than time. You&apos;re turning down leads because you can&apos;t handle the admin. You&apos;re burning out your best people.
-          </p>
-        </ScrollReveal>
-
-        {/* Closing */}
-        <ScrollReveal delay={0.3}>
-          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(14px, 1.8vw, 18px)', lineHeight: 1.7, maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
-            Not for one-person shows. Not for hobbyists. For actual solar companies that want to scale without hiring ten more humans.
-          </p>
-        </ScrollReveal>
-      </div>
-    </section>
-  );
-}
-
-/* ============================================================
-   SECTION 11: HOW IT STARTS + CTA — Yellow Background
-   ============================================================ */
-function HowItStartsSection() {
-  const steps = [
-    "We talk for an hour.",
-    "You show us how you work today.",
-    "We build your team.",
-    "You approve the hires.",
-    "We turn it on.",
-  ];
-
-  const stepsRef = useRef<HTMLDivElement>(null);
-  const stepsInView = useInView(stepsRef, { once: true, margin: "-80px" });
-
-  return (
-    <section style={{ backgroundColor: '#F3D840', paddingTop: 'clamp(40px, 6vw, 64px)', paddingBottom: 'clamp(40px, 6vw, 64px)', overflow: 'hidden' }}>
-      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
-        {/* Badge */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, backgroundColor: 'rgba(26,26,26,0.1)', border: '1px solid rgba(26,26,26,0.15)', marginBottom: 'clamp(20px, 4vw, 32px)' }}>
-          <span style={{ color: '#1A1A1A', fontSize: 'clamp(11px, 1.3vw, 13px)', fontWeight: 600, letterSpacing: '0.03em' }}>
-            How it starts.
-          </span>
-        </div>
-
-        {/* Steps */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px, 2vw, 16px)', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
-          {steps.map((step, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 'clamp(10px, 2vw, 14px)' }}>
-              <div style={{ width: 'clamp(28px, 4vw, 32px)', height: 'clamp(28px, 4vw, 32px)', minWidth: 'clamp(28px, 4vw, 32px)', borderRadius: '50%', backgroundColor: '#1A1A1A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ color: '#F3D840', fontWeight: 700, fontSize: 'clamp(11px, 1.5vw, 13px)' }}>{i + 1}</span>
-              </div>
-              <p style={{ color: '#1A1A1A', fontSize: 'clamp(14px, 1.8vw, 16px)', fontWeight: 600 }}>{step}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Closing text */}
-        <p style={{ color: '#374151', fontSize: 'clamp(13px, 1.6vw, 14px)', lineHeight: 1.6, marginBottom: 8 }}>
-          You don&apos;t install software. You don&apos;t configure APIs. You don&apos;t learn a new system.
-        </p>
-
-        <p style={{ color: '#1A1A1A', fontSize: 'clamp(16px, 2.5vw, 18px)', fontWeight: 800, marginBottom: 'clamp(20px, 4vw, 32px)' }}>
-          You just start managing instead of doing.
-        </p>
-
-        {/* CTA */}
-        <div style={{ textAlign: 'center', paddingTop: 'clamp(20px, 3vw, 32px)' }}>
-          <h2 style={{ color: '#1A1A1A', fontSize: 'clamp(22px, 5vw, 28px)', fontWeight: 800, lineHeight: 1.15, marginBottom: 12, textAlign: 'center' }}>
-            Ready to meet your new team?
-          </h2>
-          <p style={{ color: '#374151', fontSize: 'clamp(13px, 1.6vw, 15px)', marginBottom: 'clamp(16px, 3vw, 24px)', textAlign: 'center' }}>
-            <a href="mailto:hello@renewably.ie" style={{ textDecoration: 'underline', color: '#374151' }}>
-              hello@renewably.ie
-            </a>
-          </p>
-          <div style={{ display: 'block', textAlign: 'center', marginTop: 8 }}>
-            <a
-              href="/contact"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-                padding: 'clamp(12px, 2vw, 14px) clamp(20px, 3vw, 32px)',
-                fontSize: 15,
-                fontWeight: 700,
-                letterSpacing: '0.02em',
-                color: '#F3D840',
-                backgroundColor: '#0A0A0A',
-                borderRadius: 9999,
-                textDecoration: 'none',
-                border: 'none',
-                lineHeight: 1,
-              }}
-            >
-              Let&apos;s Talk
-              <span style={{ display: 'inline-block', marginLeft: 2 }}>&#8594;</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* ============================================================
    DEFAULT EXPORT — Page Assembly
@@ -933,9 +916,33 @@ export default function HomePageClient() {
       <FeaturesSection />
       <AgentsSection />
       <PricingSection />
-      <BeforeAfterSection />
+      <BeforeAfterSection
+        comparisons={[
+          {
+            before: "You answer every customer email yourself. You lose leads at 6pm. On weekends. When you're on a roof.",
+            after: "Support agent handles it. You review the summary. Customers get answers instantly.",
+          },
+          {
+            before: "You spend 10 hours a week on grant paperwork. You miss deadlines. You make mistakes.",
+            after: "Grants agent handles it. Your approval rate doubles. You do zero hours.",
+          },
+          {
+            before: "You have no idea where every job is. You chase your team. You find out about delays too late.",
+            after: "Ops agent tracks everything. You open the dashboard. You know instantly.",
+          },
+          {
+            before: "You lose money on admin. You lose sleep on coordination. You lose customers on follow-up.",
+            after: "You run a solar company. Not a chaos factory.",
+          },
+        ]}
+      />
       <AudienceSection />
-      <HowItStartsSection />
+      <FAQSection />
+      <HowItStartsSection
+        ctaTitle="Ready to meet your new team?"
+        ctaButtonLabel="Let's Talk"
+        ctaButtonColor="#F3D840"
+      />
     </>
   );
 }

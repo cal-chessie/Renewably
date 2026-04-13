@@ -169,6 +169,7 @@ export default function CookieBanner() {
                     }}
                     role="checkbox"
                     aria-checked={prefs.analytics}
+                    aria-label="Analytics cookies"
                   >
                     {prefs.analytics && (
                       <svg width="12" height="12" fill="none" stroke="#1A1A1A" viewBox="0 0 24 24">
@@ -205,6 +206,7 @@ export default function CookieBanner() {
                     }}
                     role="checkbox"
                     aria-checked={prefs.marketing}
+                    aria-label="Marketing cookies"
                   >
                     {prefs.marketing && (
                       <svg width="12" height="12" fill="none" stroke="#1A1A1A" viewBox="0 0 24 24">
