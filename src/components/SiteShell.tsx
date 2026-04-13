@@ -3,6 +3,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
+import CookieBanner from "@/components/CookieBanner";
+import ExitIntentPopup from "@/components/ExitIntentPopup";
 
 /**
  * Wraps every page with the shared Header + ChatWidget.
@@ -15,6 +17,8 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
       {children}
       <Footer />
       <ChatWidget />
+      <CookieBanner />
+      <ExitIntentPopup />
     </>
   );
 }

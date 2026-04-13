@@ -6,14 +6,42 @@ import dynamic from "next/dynamic";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
 import Image from "next/image";
-const MiniDesktop = dynamic(() => import("@/components/MiniDesktop"), { ssr: false });
-const OperationsDashboard = dynamic(() => import("@/components/OperationsDashboard"), { ssr: false });
-const SupportDashboard = dynamic(() => import("@/components/SupportDashboard"), { ssr: false });
-const GrantsDashboard = dynamic(() => import("@/components/GrantsDashboard"), { ssr: false });
-const LogisticsDashboard = dynamic(() => import("@/components/LogisticsDashboard"), { ssr: false });
-const PermittingDashboard = dynamic(() => import("@/components/PermittingDashboard"), { ssr: false });
-const QADashboard = dynamic(() => import("@/components/QADashboard"), { ssr: false });
-const ReportingDashboard = dynamic(() => import("@/components/ReportingDashboard"), { ssr: false });
+/* Skeleton loader for lazy-loaded dashboards */
+function DashboardSkeleton() {
+  return (
+    <div style={{ background: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%)', borderRadius: 12, aspectRatio: '16/10', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Top bar skeleton */}
+      <div style={{ padding: '12px 16px', display: 'flex', gap: 12, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ width: 120, height: 12, borderRadius: 4, background: 'rgba(255,255,255,0.06)' }} />
+        <div style={{ flex: 1 }} />
+        <div style={{ width: 60, height: 12, borderRadius: 4, background: 'rgba(243,216,64,0.15)' }} />
+      </div>
+      {/* Stats row skeleton */}
+      <div style={{ padding: '12px 16px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+        {[0,1,2,3].map(i => (
+          <div key={i} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '10px 12px' }}>
+            <div style={{ width: 40, height: 8, borderRadius: 4, background: 'rgba(255,255,255,0.06)', marginBottom: 8 }} />
+            <div style={{ width: 56, height: 14, borderRadius: 4, background: 'rgba(255,255,255,0.08)' }} />
+          </div>
+        ))}
+      </div>
+      {/* Content skeleton */}
+      <div style={{ flex: 1, padding: '12px 16px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        {[0,1,2,3].map(i => (
+          <div key={i} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 8, height: 80 }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+const MiniDesktop = dynamic(() => import("@/components/MiniDesktop"), { ssr: false, loading: () => <DashboardSkeleton /> });
+const OperationsDashboard = dynamic(() => import("@/components/OperationsDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
+const SupportDashboard = dynamic(() => import("@/components/SupportDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
+const GrantsDashboard = dynamic(() => import("@/components/GrantsDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
+const LogisticsDashboard = dynamic(() => import("@/components/LogisticsDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
+const PermittingDashboard = dynamic(() => import("@/components/PermittingDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
+const QADashboard = dynamic(() => import("@/components/QADashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
+const ReportingDashboard = dynamic(() => import("@/components/ReportingDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
 
 /* ============================================================
    DATA — 8 AI Agents (+ 1 Coming Soon)

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -304,9 +304,13 @@ function SolutionSection() {
 }
 
 /* ============================================================
-   SECTION 4: PLATFORM TOUR — Dark Background
+   SECTION 4: PLATFORM TOUR — Dark Background (Lazy Video)
    ============================================================ */
 function PlatformTourSection() {
+  const videoRef = useRef<HTMLDivElement>(null);
+  const videoInView = useInView(videoRef, { once: true, margin: "200px" });
+  const [videoLoaded, setVideoLoaded] = useState(false);
+
   return (
     <section
       data-theme="dark"
@@ -355,22 +359,39 @@ function PlatformTourSection() {
           </p>
         </ScrollReveal>
 
-        {/* Video container */}
+        {/* Video container — lazy loaded when scrolled into view */}
         <ScrollReveal delay={0.3}>
-          <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50">
+          <div ref={videoRef} className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50" style={{ background: '#0A0A0A' }}>
             {/* Yellow glow accent */}
             <div className="absolute -inset-px rounded-2xl bg-gradient-to-b from-[#F3D840]/20 via-transparent to-transparent pointer-events-none z-10" />
 
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full aspect-video object-cover"
-              poster=""
-            >
-              <source src="/full-tour.webm" type="video/webm" />
-            </video>
+            {/* Skeleton placeholder until video loads */}
+            {!videoLoaded && (
+              <div className="w-full aspect-video flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%)' }}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+                    <svg width="20" height="20" fill="none" stroke="#F3D840" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" /></svg>
+                  </div>
+                  <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 13, fontWeight: 500 }}>Loading platform tour...</span>
+                </div>
+              </div>
+            )}
+
+            {/* Video — only rendered when in viewport */}
+            {videoInView && (
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full aspect-video object-cover"
+                poster=""
+                onCanPlay={() => setVideoLoaded(true)}
+                style={videoLoaded ? {} : { position: 'absolute', inset: 0, opacity: 0 }}
+              >
+                <source src="/full-tour.webm" type="video/webm" />
+              </video>
+            )}
           </div>
         </ScrollReveal>
 
