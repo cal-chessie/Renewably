@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    optimizeCss: true,
+    // optimizeCss: true, // Disabled in dev to reduce memory usage — re-enable for prod build
   },
   images: {
     formats: ["image/avif", "image/webp"],
