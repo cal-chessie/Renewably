@@ -30,7 +30,8 @@ function HeroSection() {
           src="/robot-hero.jpg"
           alt=""
           fill
-          style={{ objectFit: 'cover', objectPosition: 'center' }}
+          className="hero-bg-img"
+          style={{ objectFit: 'cover', objectPosition: '65% center' }}
           priority
         />
       </div>
@@ -161,6 +162,17 @@ function HeroSection() {
           </MagneticButton>
         </motion.div>
       </div>
+      {/* Responsive objectPosition — desktop centres, mobile shifts right to show the robot */}
+      <style>{`
+        .hero-bg-img {
+          object-position: 65% center !important;
+        }
+        @media (min-width: 768px) {
+          .hero-bg-img {
+            object-position: center !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
@@ -173,40 +185,62 @@ function ProblemSection() {
   const calloutInView = useInView(calloutRef, { once: true, margin: "-80px" });
 
   return (
-    <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28 overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      data-theme="dark"
+      style={{
+        backgroundColor: '#0A0A0A',
+        paddingTop: 'clamp(80px, 10vw, 112px)',
+        paddingBottom: 'clamp(60px, 8vw, 112px)',
+        overflow: 'hidden',
+      }}
+    >
+      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 mb-10">
-            <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
-            <span className="text-white text-xs sm:text-sm font-semibold tracking-wide">
-              You know the problem.
-            </span>
+          <div style={{ marginBottom: 'clamp(32px, 5vw, 40px)' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '6px 14px',
+                borderRadius: 9999,
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                border: '1px solid rgba(255,255,255,0.15)',
+              }}
+            >
+              <span
+                className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
+              />
+              <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
+                You know the problem.
+              </span>
+            </div>
           </div>
         </ScrollReveal>
 
         {/* Body paragraphs */}
-        <div className="space-y-6 mb-12">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(20px, 3vw, 24px)', marginBottom: 'clamp(40px, 6vw, 48px)' }}>
           <ScrollReveal delay={0.1}>
-            <p className="text-white/80 text-lg sm:text-xl leading-relaxed">
+            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(17px, 2.5vw, 20px)', lineHeight: 1.7 }}>
               You have work. Lots of it. More quotes than you can price. More sites than you can assess. More customers than you can call back.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-white/80 text-lg sm:text-xl leading-relaxed">
+            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(17px, 2.5vw, 20px)', lineHeight: 1.7 }}>
               But you can&apos;t find the people.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.3}>
-            <p className="text-white/60 text-base sm:text-lg leading-relaxed">
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7 }}>
               Electricians are booked out. Admin staff are impossible to keep. Project managers are burning out. And every time you lose someone, you lose three months of knowledge.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.4}>
-            <p className="text-white/60 text-base sm:text-lg leading-relaxed">
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7 }}>
               So you do it yourself. You&apos;re answering emails at 10pm. You&apos;re chasing permits on a Saturday. You&apos;re quoting roofs on your phone between site visits.
             </p>
           </ScrollReveal>
@@ -219,9 +253,9 @@ function ProblemSection() {
           animate={calloutInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="bg-[#F3D840] rounded-2xl"
-          style={{ padding: '24px 16px' }}
+          style={{ padding: 'clamp(20px, 4vw, 32px) clamp(16px, 3vw, 32px)' }}
         >
-          <p className="text-[#1A1A1A] text-xl sm:text-2xl lg:text-4xl font-extrabold leading-tight">
+          <p style={{ color: '#1A1A1A', fontSize: 'clamp(20px, 4vw, 36px)', fontWeight: 800, lineHeight: 1.2 }}>
             That&apos;s not a business. That&apos;s a hostage situation.
           </p>
         </motion.div>
