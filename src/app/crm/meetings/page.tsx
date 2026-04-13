@@ -1362,7 +1362,7 @@ export default function MeetingsPage() {
   const listMeetings = viewMode === 'list' ? allMeetings : meetings
 
   return (
-    <div style={{ backgroundColor: "#0A0A0A", minHeight: "100vh" }} className="p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto">
+    <div style={{ backgroundColor: "#0A0A0A", minHeight: "100vh" }} className="px-4 pt-2 pb-6 sm:p-6 lg:p-8 max-w-[1600px] mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>

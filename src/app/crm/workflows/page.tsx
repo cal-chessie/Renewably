@@ -1437,7 +1437,7 @@ export default function WorkflowsPage() {
   const totalExecutions = rules.reduce((sum, r) => sum + r.executionCount, 0)
 
   return (
-    <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }} className="p-4 lg:p-6 space-y-5">
+    <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }} className="px-4 pt-2 pb-6 sm:p-6 lg:p-8 space-y-5">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}

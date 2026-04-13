@@ -378,8 +378,8 @@ export default function WorkforcePageClient() {
   return (
     <main>
       <style>{`
-        .workforce-hero-bg { object-position: 60% center !important; }
-        @media (min-width: 768px) { .workforce-hero-bg { object-position: center !important; } }
+        .workforce-hero-bg { object-position: 50% 40% !important; }
+        @media (min-width: 768px) { .workforce-hero-bg { object-position: center center !important; } }
       `}</style>
 
       {/* ===== HERO ===== */}

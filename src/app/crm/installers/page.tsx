@@ -957,7 +957,7 @@ export default function InstallersPage() {
   }, [])
 
   return (
-    <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }} className="p-4 sm:p-6 lg:p-8 space-y-6">
+    <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }} className="px-4 pt-2 pb-6 sm:p-6 lg:p-8 space-y-6">
       {/* Header */}
       <motion.div {...fadeUp} initial="initial" animate="animate" transition={{ duration: 0.3 }} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

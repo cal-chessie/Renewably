@@ -87,7 +87,7 @@ export default function CompaniesPage() {
     : []
 
   return (
-    <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }} className="p-6 lg:p-8 space-y-6">
+    <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }} className="px-4 pt-2 pb-6 sm:p-6 lg:p-8 space-y-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -229,19 +229,19 @@ export default function CompaniesPage() {
             <table className="w-full">
               <thead>
                 <tr style={{ borderBottom: '1px solid #2A2A2A' }}>
-                  <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3">
+                  <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-3 sm:px-6 py-3">
                     Company
                   </th>
-                  <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden md:table-cell">
+                  <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-3 sm:px-6 py-3 hidden md:table-cell">
                     Industry
                   </th>
-                  <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden lg:table-cell">
+                  <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-3 sm:px-6 py-3 hidden lg:table-cell">
                     Employees
                   </th>
-                  <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden lg:table-cell">
+                  <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-3 sm:px-6 py-3 hidden lg:table-cell">
                     Location
                   </th>
-                  <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3">
+                  <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-3 sm:px-6 py-3">
                     Contacts
                   </th>
                 </tr>
@@ -250,10 +250,10 @@ export default function CompaniesPage() {
                 {isLoading ? (
                   [...Array(5)].map((_, i) => (
                     <tr key={i} style={{ borderBottom: '1px solid #222222' }}>
-                      <td className="px-6 py-4">
+                      <td className="px-3 sm:px-6 py-4">
                         <div className="h-4 w-40 rounded animate-pulse" style={{ backgroundColor: '#222222' }} />
                       </td>
-                      <td className="px-6 py-4 hidden md:table-cell">
+                      <td className="px-3 sm:px-6 py-4 hidden md:table-cell">
                         <div className="h-4 w-24 rounded animate-pulse" style={{ backgroundColor: '#222222' }} />
                       </td>
                     </tr>
@@ -270,7 +270,7 @@ export default function CompaniesPage() {
                       key={company.id as string}
                       className="hover:bg-white/5 transition-colors"
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-3 sm:px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="h-10 w-10 rounded-xl bg-[#374151]/10 flex items-center justify-center shrink-0">
                             <Building2 className="h-5 w-5 text-[#374151]" />
@@ -285,22 +285,22 @@ export default function CompaniesPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 hidden md:table-cell">
+                      <td className="px-3 sm:px-6 py-4 hidden md:table-cell">
                         <span style={{ color: '#A0A0A0' }} className="text-sm">
                           {company.industry as string || '—'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 hidden lg:table-cell">
+                      <td className="px-3 sm:px-6 py-4 hidden lg:table-cell">
                         <span style={{ color: '#A0A0A0' }} className="text-sm">
                           {company.employees ? `${company.employees}` : '—'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 hidden lg:table-cell">
+                      <td className="px-3 sm:px-6 py-4 hidden lg:table-cell">
                         <span style={{ color: '#A0A0A0' }} className="text-sm">
                           {[company.city, company.country].filter(Boolean).join(', ') || '—'}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-3 sm:px-6 py-4">
                         <span className="inline-flex items-center justify-center h-6 min-w-6 px-2 rounded-full bg-[#F3D840]/20 text-[#374151] text-xs font-bold">
                           {(company._count as Record<string, number>)?.contacts || 0}
                         </span>

@@ -103,7 +103,7 @@ export default function DashboardPage() {
             ))}
           </div>
           {/* Charts skeleton */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
             {[...Array(2)].map((_, i) => (
               <div key={i} style={{
                 height: 320,
@@ -155,7 +155,7 @@ export default function DashboardPage() {
 
   return (
     <motion.div
-      className="p-6 lg:p-8 space-y-6"
+      className="px-4 pt-2 pb-6 sm:p-6 lg:p-8 space-y-6"
       style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }}
       variants={staggerContainer}
       initial="hidden"

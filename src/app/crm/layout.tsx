@@ -218,7 +218,7 @@ function CRMShell({ children }: { children: React.ReactNode }) {
 
       {/* Mobile Sidebar Toggle */}
       <div className="crm-mobile-toggle"
-        style={{ position: 'fixed', top: 8, left: 8, zIndex: 50, padding: 8 }}
+        style={{ position: 'fixed', top: 12, left: 12, zIndex: 50 }}
       >
         <Sheet>
           <SheetTrigger asChild>
@@ -250,7 +250,9 @@ function CRMShell({ children }: { children: React.ReactNode }) {
 
       {/* Main Content */}
       <main style={{ flex: 1, overflow: 'auto' }}>
-        <div style={{ minHeight: '100%' }}>{children}</div>
+        {/* Spacer for mobile toggle button */}
+        <div className="crm-mobile-toggle" style={{ height: 56, flexShrink: 0 }} />
+        <div style={{ minHeight: 'calc(100% - 56px)' }}>{children}</div>
       </main>
 
       {/* AI Assistant floating chat widget */}

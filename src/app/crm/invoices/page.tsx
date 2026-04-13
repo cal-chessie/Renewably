@@ -923,7 +923,7 @@ export default function InvoicesPage() {
   }, [])
 
   return (
-    <div style={{ backgroundColor: "#0A0A0A", minHeight: "100vh" }} className="min-h-full p-4 md:p-6 space-y-6">
+    <div style={{ backgroundColor: "#0A0A0A", minHeight: "100vh" }} className="min-h-full px-4 pt-2 pb-6 sm:p-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

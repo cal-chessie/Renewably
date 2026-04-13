@@ -381,7 +381,7 @@ export default function ReportsPage() {
     <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }}>
       {/* Header */}
       <div className="bg-[#141414] border-b border-[#2A2A2A] sticky top-0 z-30">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-2 sm:pt-4 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="bg-[#F3D840]/10 p-2 rounded-xl">

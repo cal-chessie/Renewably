@@ -98,7 +98,7 @@ export default function ActivitiesPage() {
   })
 
   return (
-    <div className="p-6 lg:p-8 space-y-6" style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }}>
+    <div className="px-4 pt-2 pb-6 sm:p-6 lg:p-8 space-y-6" style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}

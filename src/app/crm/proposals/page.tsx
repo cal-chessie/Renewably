@@ -1133,7 +1133,7 @@ export default function ProposalsPage() {
   }, [])
 
   return (
-    <div style={{ backgroundColor: "#0A0A0A", minHeight: "100vh" }} className="p-6 lg:p-8 space-y-6 h-full flex flex-col">
+    <div style={{ backgroundColor: "#0A0A0A", minHeight: "100vh" }} className="px-4 pt-2 pb-6 sm:p-6 lg:p-8 space-y-6 h-full flex flex-col">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}

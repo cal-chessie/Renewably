@@ -709,7 +709,7 @@ export default function PipelinePage() {
   const contacts = contactsData?.contacts || []
 
   return (
-    <div className="p-6 lg:p-8 space-y-6 h-full flex flex-col" style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }}>
+    <div className="px-4 pt-2 pb-6 sm:p-6 lg:p-8 space-y-6 h-full flex flex-col" style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -835,7 +835,7 @@ export default function PipelinePage() {
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <div style={{ flex: 1, display: 'flex', gap: 16, overflowX: 'auto', paddingBottom: 16 }}>
+          <div style={{ flex: 1, display: 'flex', gap: 16, overflowX: 'auto', paddingBottom: 16, WebkitOverflowScrolling: 'touch', scrollSnapType: 'x mandatory' }}>
             {stages.map((stage: Stage, index: number) => (
               <motion.div
                 key={stage.id}
@@ -844,7 +844,7 @@ export default function PipelinePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 className="flex flex-col rounded-xl min-h-[200px]"
-                style={{ backgroundColor: '#141414', minWidth: 280, flex: '0 0 280px' }}
+                style={{ backgroundColor: '#141414', minWidth: 280, flex: '0 0 280px', scrollSnapAlign: 'start' }}
               >
                 {/* Stage Header */}
                 <div
