@@ -110,6 +110,19 @@ export default function Header() {
             </nav>
 
             <div className="flex items-center gap-2">
+              {/* Admin Portal — subtle link */}
+              <Link
+                href="/crm/login"
+                className="hidden md:inline-flex items-center gap-1.5 rounded-lg font-medium transition-all duration-200 active:scale-[0.97] shrink-0"
+                style={{ padding: "6px 12px", fontSize: 12, letterSpacing: "0.02em", color: "rgba(255,255,255,0.4)" }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.7)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
+              >
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+                Portal
+              </Link>
               {/* Desktop CTA */}
               <Link
                 href="/contact"
@@ -354,6 +367,64 @@ export default function Header() {
                       </motion.div>
                     );
                   })}
+
+                  {/* Admin Portal link in mobile menu */}
+                  <motion.div
+                    initial={{ x: 30, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: 30, opacity: 0 }}
+                    transition={{
+                      delay: 0.08 + navLinks.length * 0.04,
+                      duration: 0.35,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    style={{ position: 'relative', marginTop: 8 }}
+                  >
+                    <TapLink
+                      href="/crm/login"
+                      onClick={closeMobile}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 14,
+                        padding: '14px 0',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <span style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        fontFamily: 'monospace',
+                        color: 'rgba(255,255,255,0.25)',
+                        minWidth: 20,
+                        textAlign: 'right',
+                      }}>
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5} style={{ display: 'block', margin: '0 auto' }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                        </svg>
+                      </span>
+                      <span style={{
+                        fontSize: 22,
+                        fontWeight: 800,
+                        letterSpacing: '-0.02em',
+                        lineHeight: 1.3,
+                        color: 'rgba(255,255,255,0.35)',
+                      }}>
+                        Admin Portal
+                      </span>
+                      <motion.svg
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="rgba(255,255,255,0.2)"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2.5}
+                        style={{ flexShrink: 0, marginLeft: 'auto' }}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+                      </motion.svg>
+                    </TapLink>
+                  </motion.div>
                 </div>
               </nav>
 

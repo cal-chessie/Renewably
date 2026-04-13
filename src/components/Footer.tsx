@@ -14,6 +14,7 @@ const quickLinks = [
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
   { label: "Pricing", href: "/pricing" },
+  { label: "Admin Portal", href: "/crm/login" },
 ];
 
 const services = [
@@ -99,7 +100,7 @@ export default function Footer() {
                   href={link.href}
                   style={{
                     fontSize: "clamp(0.8rem, 1.4vw, 0.95rem)",
-                    color: LIGHT_TEXT,
+                    color: link.href.startsWith("/crm") ? "rgba(255, 255, 255, 0.35)" : LIGHT_TEXT,
                     textDecoration: "none",
                     transition: "color 0.2s ease",
                   }}
@@ -107,7 +108,7 @@ export default function Footer() {
                     e.currentTarget.style.color = BRAND_YELLOW;
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = LIGHT_TEXT;
+                    e.currentTarget.style.color = link.href.startsWith("/crm") ? "rgba(255, 255, 255, 0.35)" : LIGHT_TEXT;
                   }}
                 >
                   {link.label}
