@@ -62,5 +62,13 @@
     "role": "admin",
     "avatar": null,
     "expiresAt": 1776546990613
+  },
+  "be90ff8d6d271b096ecf0fa2606e84320cbf29ebd6d5ac67cb0112d8e43fdeca": {
+    "userId": "cmnwe7fx70000nrghfaa5ffpi",
+    "email": "admin@renewably.ie",
+    "name": "Sarah O'Brien",
+    "role": "admin",
+    "avatar": null,
+    "expiresAt": 1776643213261
   }
 }

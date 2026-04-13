@@ -81,23 +81,36 @@ export default function DashboardPage() {
 
   if (isLoading || !data || data.error) {
     return (
-      <div className="p-6 lg:p-8">
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <div className="h-7 w-40 bg-gray-200 rounded-lg animate-pulse" />
-              <div className="h-4 w-56 bg-gray-100 rounded animate-pulse" />
+      <div style={{ padding: '24px 32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          {/* Header skeleton */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ height: 28, width: 200, borderRadius: 8, background: '#F3F4F6' }} />
+              <div style={{ height: 16, width: 280, borderRadius: 6, background: '#F9FAFB', marginTop: 8 }} />
             </div>
-            <div className="h-4 w-44 bg-gray-100 rounded animate-pulse" />
+            <div style={{ height: 16, width: 180, borderRadius: 6, background: '#F9FAFB' }} />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {/* KPI cards skeleton */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-32 bg-gray-100 rounded-xl animate-pulse" />
+              <div key={i} style={{
+                height: 128,
+                borderRadius: 12,
+                background: '#F9FAFB',
+                border: '1px solid #F3F4F6',
+              }} />
             ))}
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Charts skeleton */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 24 }}>
             {[...Array(2)].map((_, i) => (
-              <div key={i} className="h-80 bg-gray-100 rounded-xl animate-pulse" />
+              <div key={i} style={{
+                height: 320,
+                borderRadius: 12,
+                background: '#F9FAFB',
+                border: '1px solid #F3F4F6',
+              }} />
             ))}
           </div>
         </div>
@@ -151,9 +164,33 @@ export default function DashboardPage() {
       <motion.div variants={fadeUp} className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">SolarPilot Dashboard</h1>
-          <p className="text-gray-500 text-sm mt-1">Installer management &amp; pipeline overview.</p>
+          <p className="text-gray-500 text-sm mt-1">
+            {(() => {
+              const hour = new Date().getHours()
+              if (hour < 12) return 'Good morning — here\'s your solar business overview.'
+              if (hour < 17) return 'Good afternoon — here\'s your solar business overview.'
+              return 'Good evening — here\'s your solar business overview.'
+            })()}
+          </p>
         </div>
-        <div className="text-sm text-gray-400 hidden sm:block">
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          padding: '6px 14px',
+          borderRadius: 8,
+          background: '#F9FAFB',
+          border: '1px solid #F3F4F6',
+          fontSize: 13,
+          color: '#6B7280',
+        }}>
+          <span style={{
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            background: '#10B981',
+            display: 'inline-block',
+          }} />
           {format(new Date(), 'EEEE, MMMM d, yyyy')}
         </div>
       </motion.div>

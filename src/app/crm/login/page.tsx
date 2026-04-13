@@ -3,12 +3,17 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Eye, EyeOff, Sun } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
+
+// ============================================================================
+// BRAND CONSTANTS
+// ============================================================================
+const DARK = '#0A0A0A'
+const DARK2 = '#1A1A1A'
+const YELLOW = '#F3D840'
+const YELLOW_DARK = '#E5C832'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -47,106 +52,317 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div style={{
+      minHeight: '100vh',
+      background: `linear-gradient(135deg, ${DARK} 0%, ${DARK2} 50%, #111827 100%)`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 24,
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* Ambient background elements */}
+      <div style={{
+        position: 'absolute',
+        top: '-20%',
+        right: '-10%',
+        width: 600,
+        height: 600,
+        borderRadius: '50%',
+        background: `radial-gradient(circle, ${YELLOW}08 0%, transparent 70%)`,
+        pointerEvents: 'none',
+      }} />
+      <div style={{
+        position: 'absolute',
+        bottom: '-15%',
+        left: '-10%',
+        width: 500,
+        height: 500,
+        borderRadius: '50%',
+        background: `radial-gradient(circle, ${YELLOW}05 0%, transparent 70%)`,
+        pointerEvents: 'none',
+      }} />
+
+      {/* Floating grid dots */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        opacity: 0.03,
+        backgroundImage: `radial-gradient(circle, #FFF 1px, transparent 1px)`,
+        backgroundSize: '32px 32px',
+        pointerEvents: 'none',
+      }} />
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        style={{ width: '100%', maxWidth: 420, position: 'relative', zIndex: 1 }}
       >
-        {/* Header */}
-        <div className="text-center mb-8">
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex mb-4"
-          >
+        {/* Brand Header */}
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          style={{ textAlign: 'center', marginBottom: 40 }}
+        >
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 64,
+            height: 64,
+            borderRadius: 16,
+            background: `${YELLOW}15`,
+            border: `1px solid ${YELLOW}25`,
+            marginBottom: 20,
+          }}>
             <Image
               src="/logo-transparent.png"
               alt="Renewably"
-              width={64}
-              height={64}
-              className="rounded-2xl"
+              width={36}
+              height={36}
+              style={{ filter: 'brightness(0) invert(1)' }}
             />
-          </motion.div>
-          <h1 className="text-2xl font-bold text-gray-900">Welcome to CRM</h1>
-          <p className="text-gray-500 mt-1">Sign in to your Renewably account</p>
-        </div>
+          </div>
+          <h1 style={{
+            color: '#FFF',
+            fontSize: 26,
+            fontWeight: 700,
+            letterSpacing: '-0.02em',
+            margin: '0 0 8px',
+          }}>
+            Welcome to SolarPilot
+          </h1>
+          <p style={{
+            color: 'rgba(255,255,255,0.45)',
+            fontSize: 14,
+            margin: 0,
+          }}>
+            Sign in to your Renewably command centre
+          </p>
+        </motion.div>
 
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-          <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Login Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          style={{
+            background: 'rgba(255,255,255,0.04)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderRadius: 20,
+            border: '1px solid rgba(255,255,255,0.08)',
+            padding: '32px 28px',
+          }}
+        >
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {error && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
-                className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg p-3"
+                style={{
+                  background: 'rgba(239,68,68,0.1)',
+                  border: '1px solid rgba(239,68,68,0.2)',
+                  color: '#FCA5A5',
+                  fontSize: 13,
+                  borderRadius: 10,
+                  padding: '12px 16px',
+                }}
               >
                 {error}
               </motion.div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+            {/* Email Field */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label htmlFor="email" style={{
+                color: 'rgba(255,255,255,0.6)',
+                fontSize: 13,
+                fontWeight: 500,
+              }}>
                 Email
-              </Label>
-              <Input
+              </label>
+              <input
                 id="email"
                 type="email"
                 placeholder="admin@renewably.ie"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="h-11 border-gray-200 focus:border-[#374151] focus:ring-[#374151]/20"
+                style={{
+                  width: '100%',
+                  height: 46,
+                  borderRadius: 10,
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  background: 'rgba(255,255,255,0.05)',
+                  color: '#FFF',
+                  fontSize: 14,
+                  padding: '0 14px',
+                  outline: 'none',
+                  fontFamily: 'inherit',
+                  transition: 'border-color 0.2s, box-shadow 0.2s',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = `${YELLOW}60`
+                  e.currentTarget.style.boxShadow = `0 0 0 3px ${YELLOW}15`
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+            {/* Password Field */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label htmlFor="password" style={{
+                color: 'rgba(255,255,255,0.6)',
+                fontSize: 13,
+                fontWeight: 500,
+              }}>
                 Password
-              </Label>
-              <div className="relative">
-                <Input
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-11 border-gray-200 focus:border-[#374151] focus:ring-[#374151]/20 pr-10"
+                  style={{
+                    width: '100%',
+                    height: 46,
+                    borderRadius: 10,
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    background: 'rgba(255,255,255,0.05)',
+                    color: '#FFF',
+                    fontSize: 14,
+                    padding: '0 42px 0 14px',
+                    outline: 'none',
+                    fontFamily: 'inherit',
+                    transition: 'border-color 0.2s, box-shadow 0.2s',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = `${YELLOW}60`
+                    e.currentTarget.style.boxShadow = `0 0 0 3px ${YELLOW}15`
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  style={{
+                    position: 'absolute',
+                    right: 12,
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    color: 'rgba(255,255,255,0.3)',
+                    cursor: 'pointer',
+                    padding: 4,
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
 
-            <Button
+            {/* Submit Button */}
+            <motion.button
               type="submit"
               disabled={loading}
-              className="w-full h-11 bg-[#F3D840] hover:bg-[#E5C832] text-[#1A1A1A] font-bold rounded-lg transition-colors"
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              style={{
+                width: '100%',
+                height: 46,
+                borderRadius: 10,
+                border: 'none',
+                background: loading ? YELLOW_DARK : YELLOW,
+                color: DARK,
+                fontSize: 15,
+                fontWeight: 700,
+                cursor: loading ? 'not-allowed' : 'pointer',
+                fontFamily: 'inherit',
+                letterSpacing: '-0.01em',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                transition: 'background 0.2s',
+                marginTop: 4,
+              }}
             >
               {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <>
+                  <div style={{
+                    width: 16,
+                    height: 16,
+                    border: `2px solid ${DARK}33`,
+                    borderTopColor: DARK,
+                    borderRadius: '50%',
+                    animation: 'spin 0.6s linear infinite',
+                  }} />
                   Signing in...
-                </div>
+                </>
               ) : (
                 'Sign In'
               )}
-            </Button>
+            </motion.button>
           </form>
-        </div>
+        </motion.div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
-          © 2026 Renewably. All rights reserved.
-        </p>
+        {/* Footer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          style={{
+            textAlign: 'center',
+            marginTop: 32,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 12,
+          }}
+        >
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            color: 'rgba(255,255,255,0.2)',
+            fontSize: 12,
+          }}>
+            <Sun size={12} />
+            <span>Powering Ireland&apos;s solar revolution</span>
+          </div>
+          <p style={{
+            color: 'rgba(255,255,255,0.15)',
+            fontSize: 11,
+            margin: 0,
+          }}>
+            &copy; 2026 Renewably. All rights reserved.
+          </p>
+        </motion.div>
       </motion.div>
+
+      {/* Inline keyframe for spinner */}
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   )
 }
