@@ -2,17 +2,18 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import dynamic from "next/dynamic";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
 import Image from "next/image";
-import MiniDesktop from "@/components/MiniDesktop";
-import OperationsDashboard from "@/components/OperationsDashboard";
-import SupportDashboard from "@/components/SupportDashboard";
-import GrantsDashboard from "@/components/GrantsDashboard";
-import LogisticsDashboard from "@/components/LogisticsDashboard";
-import PermittingDashboard from "@/components/PermittingDashboard";
-import QADashboard from "@/components/QADashboard";
-import ReportingDashboard from "@/components/ReportingDashboard";
+const MiniDesktop = dynamic(() => import("@/components/MiniDesktop"), { ssr: false });
+const OperationsDashboard = dynamic(() => import("@/components/OperationsDashboard"), { ssr: false });
+const SupportDashboard = dynamic(() => import("@/components/SupportDashboard"), { ssr: false });
+const GrantsDashboard = dynamic(() => import("@/components/GrantsDashboard"), { ssr: false });
+const LogisticsDashboard = dynamic(() => import("@/components/LogisticsDashboard"), { ssr: false });
+const PermittingDashboard = dynamic(() => import("@/components/PermittingDashboard"), { ssr: false });
+const QADashboard = dynamic(() => import("@/components/QADashboard"), { ssr: false });
+const ReportingDashboard = dynamic(() => import("@/components/ReportingDashboard"), { ssr: false });
 
 /* ============================================================
    DATA — 8 AI Agents (+ 1 Coming Soon)
