@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { usePathname } from "next/navigation";
 
@@ -28,13 +28,22 @@ function TapLink({ children, ...props }: React.ComponentProps<typeof Link>) {
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const [hidden, setHidden] = useState(false);
   const pathname = usePathname();
-  const { scrollYProgress, scrollY } = useScroll();
+  const { scrollYProgress } = useScroll();
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-  const [scrolled, setScrolled] = useState(false);
+  const lastScrollY = useRef(0);
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setScrolled(latest > 20);
+  useMotionValueEvent(scrollYProgress, "change", () => {
+    const current = window.scrollY;
+    const diff = current - lastScrollY.current;
+    // Hide on scroll down past 60px, show on scroll up
+    if (diff > 5 && current > 60) {
+      setHidden(true);
+    } else if (diff < -5) {
+      setHidden(false);
+    }
+    lastScrollY.current = current;
   });
 
   useEffect(() => {
@@ -52,7 +61,9 @@ export default function Header() {
       </div>
 
       {/* Header */}
-      <header
+      <motion.header
+        animate={{ y: hidden ? -100 : 0 }}
+        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
         style={{
           position: 'fixed',
           top: 0,
@@ -60,11 +71,7 @@ export default function Header() {
           right: 0,
           zIndex: 100,
           height: 64,
-          backgroundColor: scrolled ? 'rgba(10,10,10,0.92)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(12px)' : 'none',
-          WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
-          transition: 'background-color 0.3s ease, backdrop-filter 0.3s ease, border-color 0.3s ease',
+          backgroundColor: 'transparent',
         }}
         className="md:!h-[72px]"
       >
@@ -154,7 +161,7 @@ export default function Header() {
             </div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
       {/* ═══════════════════════════════════════════════════════
          MOBILE MENU — Slide-in panel from right
