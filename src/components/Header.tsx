@@ -1,23 +1,37 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useCallback, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About Us" },
-  { href: "/workforce", label: "Workforce" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact Us" },
+  { href: "/", label: "Home", num: "01" },
+  { href: "/about", label: "About Us", num: "02" },
+  { href: "/workforce", label: "Workforce", num: "03" },
+  { href: "/blog", label: "Blog", num: "04" },
+  { href: "/contact", label: "Contact Us", num: "05" },
 ];
+
+/* ─── Spring config ─── */
+const menuSpring = { type: "spring" as const, damping: 30, stiffness: 200, mass: 0.8 };
+
+/* ─── Tap-scale wrapper for mobile ─── */
+function TapLink({ children, ...props }: React.ComponentProps<typeof Link>) {
+  return (
+    <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
+      <Link {...props}>{children}</Link>
+    </motion.div>
+  );
+}
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const pathname = usePathname();
   const { scrollYProgress } = useScroll();
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -25,6 +39,18 @@ export default function Header() {
   }, [mobileOpen]);
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
+
+  /* Track mouse position inside the menu for the glow effect */
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { stiffness: 150, damping: 25 });
+  const springY = useSpring(mouseY, { stiffness: 150, damping: 25 });
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  }, [mouseX, mouseY]);
 
   return (
     <>
@@ -50,6 +76,7 @@ export default function Header() {
               </span>
             </Link>
 
+            {/* Desktop Nav */}
             <nav className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => {
                 const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
@@ -72,6 +99,7 @@ export default function Header() {
             </nav>
 
             <div className="flex items-center gap-2">
+              {/* Desktop CTA */}
               <Link
                 href="/contact"
                 className="hidden md:inline-flex items-center gap-2.5 rounded-full font-bold transition-all duration-200 active:scale-[0.97] shrink-0"
@@ -83,23 +111,36 @@ export default function Header() {
                 </svg>
               </Link>
 
+              {/* Mobile Hamburger */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden p-2 rounded-xl"
+                className="md:hidden relative z-[110] p-2 rounded-xl"
                 aria-label="Toggle menu"
               >
-                <div className="w-5 h-[18px] flex flex-col justify-between relative">
-                  <span
-                    className="absolute left-0 w-5 h-[1.5px] rounded-full bg-white transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-                    style={{ top: mobileOpen ? "8px" : "0px", transform: mobileOpen ? "rotate(45deg)" : "rotate(0deg)" }}
+                <div className="w-6 h-[20px] flex flex-col justify-between relative">
+                  <motion.span
+                    className="absolute left-0 w-full h-[2px] rounded-full bg-white"
+                    animate={{
+                      top: mobileOpen ? 9 : 0,
+                      rotate: mobileOpen ? 45 : 0,
+                    }}
+                    transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
                   />
-                  <span
-                    className="absolute left-0 top-[8px] w-5 h-[1.5px] rounded-full bg-white transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
-                    style={{ opacity: mobileOpen ? 0 : 1, transform: mobileOpen ? "scaleX(0)" : "scaleX(1)" }}
+                  <motion.span
+                    className="absolute left-0 top-[9px] w-full h-[2px] rounded-full bg-white"
+                    animate={{
+                      opacity: mobileOpen ? 0 : 1,
+                      scaleX: mobileOpen ? 0 : 1,
+                    }}
+                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
                   />
-                  <span
-                    className="absolute left-0 w-5 h-[1.5px] rounded-full bg-white transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-                    style={{ top: mobileOpen ? "8px" : "16px", transform: mobileOpen ? "rotate(-45deg)" : "rotate(0deg)" }}
+                  <motion.span
+                    className="absolute left-0 w-full h-[2px] rounded-full bg-white"
+                    animate={{
+                      top: mobileOpen ? 9 : 18,
+                      rotate: mobileOpen ? -45 : 0,
+                    }}
+                    transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
                   />
                 </div>
               </button>
@@ -108,70 +149,324 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Mobile Menu */}
+      {/* ═══════════════════════════════════════════════════════
+         MOBILE MENU — Full-screen immersive overlay
+         ═══════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {mobileOpen && (
           <>
+            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[90] md:hidden"
-              onClick={closeMobile}
-            />
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 32, stiffness: 280, mass: 0.85 }}
-              className="fixed top-0 right-0 bottom-0 w-[280px] bg-white z-[95] md:hidden"
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-[100] md:hidden"
+              style={{ backgroundColor: '#0A0A0A' }}
             >
-              <div className="flex flex-col h-full">
-                <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-                  <Link href="/" onClick={closeMobile} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <img src="/logo-transparent.png" alt="Renewably" width={28} height={28} style={{ filter: 'brightness(0)' }} />
-                    <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: '-0.02em', color: '#1A1A1A' }}>Renewably</span>
-                  </Link>
-                  <button onClick={closeMobile} className="p-2 -mr-2 rounded-xl hover:bg-gray-100 transition-colors" aria-label="Close menu">
-                    <svg className="w-5 h-5 text-[#1A1A1A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
+              {/* Subtle grain texture */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  opacity: 0.03,
+                  backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1px)',
+                  backgroundSize: '32px 32px',
+                  pointerEvents: 'none',
+                }}
+              />
 
-                <nav className="flex-1 py-3">
-                  {navLinks.map((link, index) => {
-                    const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
-                    return (
-                      <motion.div key={link.href} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.05 + index * 0.04, duration: 0.3 }}>
-                        <Link
-                          href={link.href}
-                          onClick={closeMobile}
-                          className={`flex items-center gap-3 px-5 py-3.5 text-[15px] font-medium transition-colors duration-200 rounded-xl mx-2 ${
-                            isActive ? "text-[#1A1A1A] bg-[#F3D840]/10 font-semibold" : "text-[#1A1A1A]/60 hover:text-[#1A1A1A] hover:bg-gray-50"
-                          }`}
+              {/* Mouse-following glow */}
+              <motion.div
+                style={{
+                  position: 'absolute',
+                  width: 300,
+                  height: 300,
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, rgba(243,216,64,0.07) 0%, transparent 70%)',
+                  pointerEvents: 'none',
+                  x: springX,
+                  y: springY,
+                  translateX: -150,
+                  translateY: -150,
+                }}
+              />
+
+              {/* Content container */}
+              <div
+                ref={menuRef}
+                onMouseMove={handleMouseMove}
+                className="relative flex flex-col h-full"
+              >
+                {/* ── Top bar ── */}
+                <motion.div
+                  initial={{ y: -20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -20, opacity: 0 }}
+                  transition={{ delay: 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '16px 20px',
+                    paddingTop: 56,
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <img
+                      src="/robot-mobile-hero.png"
+                      alt=""
+                      width={28}
+                      height={28}
+                      style={{ borderRadius: '50%', objectFit: 'cover' }}
+                    />
+                    <span style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.04em' }}>
+                      Menu
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      padding: '6px 14px',
+                      borderRadius: 9999,
+                      border: '1px solid rgba(243,216,64,0.2)',
+                      backgroundColor: 'rgba(243,216,64,0.08)',
+                    }}
+                  >
+                    <span style={{ fontSize: 11, fontWeight: 600, color: '#F3D840', letterSpacing: '0.06em' }}>
+                      hello@renewably.ie
+                    </span>
+                  </div>
+                </motion.div>
+
+                {/* ── Nav Links ── */}
+                <nav
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    padding: '0 20px',
+                  }}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                    {navLinks.map((link, index) => {
+                      const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+                      const isHovered = hoveredLink === link.href;
+
+                      return (
+                        <motion.div
+                          key={link.href}
+                          initial={{ x: -40, opacity: 0 }}
+                          animate={{ x: 0, opacity: 1 }}
+                          exit={{ x: -40, opacity: 0 }}
+                          transition={{
+                            delay: 0.15 + index * 0.06,
+                            duration: 0.5,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                          onMouseEnter={() => setHoveredLink(link.href)}
+                          onMouseLeave={() => setHoveredLink(null)}
+                          style={{ position: 'relative' }}
                         >
-                          {link.label}
-                          {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#F3D840] ml-auto" />}
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
+                          <TapLink
+                            href={link.href}
+                            onClick={closeMobile}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 16,
+                              padding: '18px 0',
+                              textDecoration: 'none',
+                              position: 'relative',
+                            }}
+                          >
+                            {/* Number */}
+                            <motion.span
+                              animate={{
+                                opacity: isHovered || isActive ? 1 : 0.3,
+                                x: isHovered ? 0 : -4,
+                              }}
+                              transition={{ duration: 0.3 }}
+                              style={{
+                                fontSize: 12,
+                                fontWeight: 700,
+                                fontFamily: 'monospace',
+                                color: '#F3D840',
+                                minWidth: 24,
+                                textAlign: 'right',
+                              }}
+                            >
+                              {link.num}
+                            </motion.span>
+
+                            {/* Label */}
+                            <motion.span
+                              animate={{
+                                x: isHovered ? 8 : 0,
+                                color: isActive
+                                  ? '#F3D840'
+                                  : isHovered
+                                    ? '#fff'
+                                    : 'rgba(255,255,255,0.6)',
+                              }}
+                              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                              style={{
+                                fontSize: 32,
+                                fontWeight: 800,
+                                letterSpacing: '-0.03em',
+                                lineHeight: 1.2,
+                                position: 'relative',
+                              }}
+                            >
+                              {link.label}
+                              {/* Underline effect */}
+                              <motion.span
+                                animate={{
+                                  scaleX: isHovered || isActive ? 1 : 0,
+                                  originX: 0,
+                                }}
+                                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                                style={{
+                                  position: 'absolute',
+                                  bottom: -2,
+                                  left: 0,
+                                  right: 0,
+                                  height: 3,
+                                  borderRadius: 2,
+                                  background: 'linear-gradient(90deg, #F3D840, #E5C832)',
+                                  transformOrigin: 'left',
+                                }}
+                              />
+                            </motion.span>
+
+                            {/* Arrow */}
+                            <motion.svg
+                              animate={{
+                                opacity: isHovered ? 1 : 0,
+                                x: isHovered ? 0 : -8,
+                              }}
+                              transition={{ duration: 0.3 }}
+                              width="20"
+                              height="20"
+                              fill="none"
+                              stroke="#F3D840"
+                              viewBox="0 0 24 24"
+                              strokeWidth={2.5}
+                              style={{ flexShrink: 0, marginLeft: 'auto' }}
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+                            </motion.svg>
+                          </TapLink>
+
+                          {/* Divider */}
+                          {index < navLinks.length - 1 && (
+                            <motion.div
+                              initial={{ scaleX: 0 }}
+                              animate={{ scaleX: 1 }}
+                              transition={{ delay: 0.3 + index * 0.06, duration: 0.5 }}
+                              style={{
+                                height: 1,
+                                background: 'linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%)',
+                                marginLeft: 40,
+                              }}
+                            />
+                          )}
+                        </motion.div>
+                      );
+                    })}
+                  </div>
                 </nav>
 
-                <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.25 }} className="px-5 pb-6">
-                  <Link
+                {/* ── Bottom Section ── */}
+                <motion.div
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 30, opacity: 0 }}
+                  transition={{ delay: 0.5, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ padding: '0 20px 40px' }}
+                >
+                  {/* CTA Button */}
+                  <motion.a
                     href="/contact"
                     onClick={closeMobile}
-                    className="flex items-center justify-center gap-2.5 w-full rounded-full font-bold transition-all duration-200 active:scale-[0.98]"
-                    style={{ padding: "10px 18px", fontSize: 14, letterSpacing: "0.02em", backgroundColor: "#F3D840", color: "#1A1A1A" }}
+                    whileTap={{ scale: 0.97 }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 10,
+                      width: '100%',
+                      padding: '16px 24px',
+                      borderRadius: 16,
+                      background: 'linear-gradient(135deg, #F3D840 0%, #E5C832 100%)',
+                      boxShadow: '0 8px 32px rgba(243,216,64,0.25), 0 0 0 1px rgba(243,216,64,0.3)',
+                      textDecoration: 'none',
+                      marginBottom: 20,
+                    }}
                   >
-                    Book a Call
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    <span style={{ fontSize: 16, fontWeight: 800, color: '#1A1A1A', letterSpacing: '-0.01em' }}>
+                      Book a Call
+                    </span>
+                    <svg width="18" height="18" fill="none" stroke="#1A1A1A" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
                     </svg>
-                  </Link>
+                  </motion.a>
+
+                  {/* Contact row */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 24,
+                  }}>
+                    <a
+                      href="tel:+353873958424"
+                      onClick={closeMobile}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        textDecoration: 'none',
+                        color: 'rgba(255,255,255,0.35)',
+                        fontSize: 13,
+                        fontWeight: 500,
+                        transition: 'color 0.2s',
+                      }}
+                    >
+                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+                      </svg>
+                      Call
+                    </a>
+                    <div style={{ width: 1, height: 14, backgroundColor: 'rgba(255,255,255,0.1)' }} />
+                    <a
+                      href="mailto:hello@renewably.ie"
+                      onClick={closeMobile}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        textDecoration: 'none',
+                        color: 'rgba(255,255,255,0.35)',
+                        fontSize: 13,
+                        fontWeight: 500,
+                        transition: 'color 0.2s',
+                      }}
+                    >
+                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                      </svg>
+                      Email
+                    </a>
+                    <div style={{ width: 1, height: 14, backgroundColor: 'rgba(255,255,255,0.1)' }} />
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,0.35)', fontSize: 13, fontWeight: 500 }}>
+                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Mon-Fri 9-6
+                    </span>
+                  </div>
                 </motion.div>
               </div>
             </motion.div>
