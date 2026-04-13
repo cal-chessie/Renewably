@@ -350,7 +350,7 @@ function TaskColumn({
             </motion.div>
           ))}
           {tasks.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12" style={{ color: "#666666" }}
+            <div className="flex flex-col items-center justify-center py-12" style={{ color: "#666666" }}>
               <ListTodo className="h-8 w-8 mb-2" />
               <p className="text-xs">No tasks</p>
             </div>
@@ -603,7 +603,7 @@ function TaskDetailDrawer({
             {/* Related info */}
             <div className="space-y-2">
               <Label className="text-xs font-medium text-gray-500">Related</Label>
-              <div className="rounded-lg p-3 space-y-2" style={{ backgroundColor: "#141414" }}
+              <div className="rounded-lg p-3 space-y-2" style={{ backgroundColor: "#141414" }}>
                 {contactName ? (
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-400 w-16 shrink-0">Contact</span>
@@ -635,7 +635,7 @@ function TaskDetailDrawer({
             {/* Created date */}
             <div className="space-y-1.5">
               <Label className="text-xs font-medium text-gray-500">Created</Label>
-              <p className="text-sm" style={{ color: "#A0A0A0" }}
+              <p className="text-sm" style={{ color: "#A0A0A0" }}>
                 {format(new Date(task.createdAt), 'MMM d, yyyy \'at\' h:mm a')}
               </p>
             </div>

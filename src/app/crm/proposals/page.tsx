@@ -95,7 +95,7 @@ function formatDateTime(date: string | Date | null | undefined) {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bgColor: string; icon: React.ElementType }> = {
-  draft: { label: 'Draft', color: 'text-gray-600', bgColor: 'bg-gray-100', icon: FileText },
+  draft: { label: 'Draft', color: 'text-[#A0A0A0]', bgColor: 'bg-[#1A1A1A]', icon: FileText },
   sent: { label: 'Sent', color: 'text-blue-600', bgColor: 'bg-blue-50', icon: Send },
   viewed: { label: 'Viewed', color: 'text-amber-600', bgColor: 'bg-amber-50', icon: Eye },
   accepted: { label: 'Accepted', color: 'text-green-600', bgColor: 'bg-green-50', icon: CheckCircle2 },
@@ -167,49 +167,49 @@ function ProposalCard({
       exit={{ opacity: 0, y: -10, scale: 0.95 }}
       whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
       onClick={() => onClick(proposal)}
-      className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-pointer transition-all group"
+      className="rounded-lg p-4 shadow-sm border border-[#2A2A2A] cursor-pointer transition-all group"
     >
       <div className="flex items-start justify-between gap-2 mb-3">
-        <h4 className="text-sm font-semibold text-gray-900 leading-tight line-clamp-2 group-hover:text-[#374151]">
+        <h4 style={{ color: '#FFFFFF' }} className="text-sm font-semibold leading-tight line-clamp-2 group-hover:text-[#374151]">
           {proposal.title}
         </h4>
         <ProposalStatusBadge status={proposal.status} />
       </div>
 
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-sm font-bold text-gray-900">
+        <div className="flex items-center gap-2 text-sm font-bold" style={{ color: "#FFFFFF" }}>
           <DollarSign className="h-4 w-4 text-[#374151]" />
           {formatCurrency(proposal.totalAmount)}
         </div>
 
         {proposal.contact && (
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
+          <div className="flex items-center gap-1.5 text-xs text-[#A0A0A0]">
             <User className="h-3 w-3" />
             {proposal.contact.firstName} {proposal.contact.lastName}
           </div>
         )}
 
         {proposal.company && (
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
+          <div className="flex items-center gap-1.5 text-xs text-[#A0A0A0]">
             <Building2 className="h-3 w-3" />
             {proposal.company.name}
           </div>
         )}
 
         {proposal.deal && (
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
+          <div className="flex items-center gap-1.5 text-xs text-[#A0A0A0]">
             <FileText className="h-3 w-3" />
             {proposal.deal.title}
           </div>
         )}
       </div>
 
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
-        <span className="text-[11px] text-gray-400">
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#2A2A2A]">
+        <span className="text-[11px] text-[#666666]">
           {formatDate(proposal.createdAt)}
         </span>
         {proposal._count && (
-          <span className="text-[11px] text-gray-400">
+          <span className="text-[11px] text-[#666666]">
             {proposal._count.lineItems} item{proposal._count.lineItems !== 1 ? 's' : ''}
           </span>
         )}
@@ -242,25 +242,25 @@ function StatusTimeline({ proposal }: { proposal: Proposal }) {
               className={`h-6 w-6 rounded-full flex items-center justify-center shrink-0 ${
                 step.done
                   ? 'bg-[#F3D840] text-[#374151]'
-                  : 'bg-gray-100 text-gray-400'
+                  : 'bg-[#1A1A1A] text-[#666666]'
               }`}
             >
               {step.done ? (
                 <CheckCircle2 className="h-3.5 w-3.5" />
               ) : (
-                <div className="h-2 w-2 rounded-full bg-gray-300" />
+                <div className="h-2 w-2 rounded-full bg-[#2A2A2A]" />
               )}
             </div>
             {i < steps.length - 1 && (
-              <div className={`w-0.5 h-8 ${step.done ? 'bg-[#F3D840]/40' : 'bg-gray-200'}`} />
+              <div className={`w-0.5 h-8 ${step.done ? 'bg-[#F3D840]/40' : 'bg-[#222222]'}`} />
             )}
           </div>
           <div className="pb-6">
-            <p className={`text-sm font-medium ${step.done ? 'text-gray-900' : 'text-gray-400'}`}>
+            <p className={`text-sm font-medium ${step.done ? '' : 'text-[#666666]'}`} style={step.done ? { color: '#FFFFFF' } : undefined}>
               {step.label}
             </p>
             {step.date && (
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-xs text-[#666666] mt-0.5">
                 {formatDateTime(step.date)}
               </p>
             )}
@@ -600,10 +600,10 @@ function ProposalForm({
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="bg-gray-50 rounded-lg p-3 space-y-2"
+                  className="rounded-lg p-3 space-y-2"
                 >
                   <div className="flex items-center gap-2">
-                    <GripVertical className="h-4 w-4 text-gray-300 shrink-0" />
+                    <GripVertical className="h-4 w-4 text-[#666666] shrink-0" />
                     <Input
                       value={item.name}
                       onChange={(e) => updateLineItem(index, 'name', e.target.value)}
@@ -614,7 +614,7 @@ function ProposalForm({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 text-gray-400 hover:text-red-500"
+                      className="h-7 w-7 text-[#666666] hover:text-red-500"
                       onClick={() => removeLineItem(index)}
                       disabled={lineItems.length <= 1}
                     >
@@ -631,7 +631,7 @@ function ProposalForm({
                   </div>
                   <div className="grid grid-cols-3 gap-2 pl-6">
                     <div className="space-y-1">
-                      <span className="text-[10px] uppercase text-gray-400 font-medium">Qty</span>
+                      <span className="text-[10px] uppercase text-[#666666] font-medium">Qty</span>
                       <Input
                         type="number"
                         min={1}
@@ -641,7 +641,7 @@ function ProposalForm({
                       />
                     </div>
                     <div className="space-y-1">
-                      <span className="text-[10px] uppercase text-gray-400 font-medium">Unit Price</span>
+                      <span className="text-[10px] uppercase text-[#666666] font-medium">Unit Price</span>
                       <Input
                         type="number"
                         min={0}
@@ -652,8 +652,8 @@ function ProposalForm({
                       />
                     </div>
                     <div className="space-y-1">
-                      <span className="text-[10px] uppercase text-gray-400 font-medium">Total</span>
-                      <div className="h-8 flex items-center px-3 bg-white rounded-md border text-sm font-medium text-gray-900">
+                      <span className="text-[10px] uppercase text-[#666666] font-medium">Total</span>
+                      <div className="h-8 flex items-center px-3 rounded-md border text-sm font-medium" style={{ color: '#FFFFFF' }}>
                         {formatCurrency(item.total)}
                       </div>
                     </div>
@@ -664,7 +664,7 @@ function ProposalForm({
 
             {/* Total */}
             <div className="bg-[#F3D840]/10 border border-[#F3D840]/30 rounded-lg p-4 flex items-center justify-between">
-              <span className="font-semibold text-gray-700">Total Amount</span>
+              <span className="font-semibold text-[#A0A0A0]">Total Amount</span>
               <span className="text-2xl font-bold text-[#374151]">{formatCurrency(total)}</span>
             </div>
           </div>
@@ -683,8 +683,8 @@ function ProposalForm({
       </div>
 
       {/* Footer Actions */}
-      <div className="border-t bg-white p-4 flex items-center justify-between gap-3">
-        <Button variant="outline" onClick={onClose} className="text-gray-600">
+      <div className="border-t p-4 flex items-center justify-between gap-3">
+        <Button variant="outline" onClick={onClose} className="text-[#A0A0A0]">
           Cancel
         </Button>
         <div className="flex items-center gap-2">
@@ -807,34 +807,34 @@ function ProposalDetail({
             {/* Quick Info */}
             <div className="grid grid-cols-2 gap-4">
               {proposal.contact && (
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <span className="text-[11px] uppercase text-gray-400 font-medium">Contact</span>
-                  <p className="text-sm font-medium text-gray-900 mt-0.5">
+                <div className="rounded-lg p-3">
+                  <span className="text-[11px] uppercase text-[#666666] font-medium">Contact</span>
+                  <p style={{ color: '#FFFFFF' }} className="text-sm font-medium mt-0.5">
                     {proposal.contact.firstName} {proposal.contact.lastName}
                   </p>
-                  <p className="text-xs text-gray-500">{proposal.contact.email}</p>
+                  <p className="text-xs text-[#A0A0A0]">{proposal.contact.email}</p>
                 </div>
               )}
               {proposal.company && (
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <span className="text-[11px] uppercase text-gray-400 font-medium">Company</span>
-                  <p className="text-sm font-medium text-gray-900 mt-0.5">
+                <div className="rounded-lg p-3">
+                  <span className="text-[11px] uppercase text-[#666666] font-medium">Company</span>
+                  <p style={{ color: '#FFFFFF' }} className="text-sm font-medium mt-0.5">
                     {proposal.company.name}
                   </p>
                 </div>
               )}
               {proposal.deal && (
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <span className="text-[11px] uppercase text-gray-400 font-medium">Deal</span>
-                  <p className="text-sm font-medium text-gray-900 mt-0.5">
+                <div className="rounded-lg p-3">
+                  <span className="text-[11px] uppercase text-[#666666] font-medium">Deal</span>
+                  <p style={{ color: '#FFFFFF' }} className="text-sm font-medium mt-0.5">
                     {proposal.deal.title}
                   </p>
                 </div>
               )}
               {proposal.validUntil && (
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <span className="text-[11px] uppercase text-gray-400 font-medium">Valid Until</span>
-                  <p className="text-sm font-medium text-gray-900 mt-0.5 flex items-center gap-1.5">
+                <div className="rounded-lg p-3">
+                  <span className="text-[11px] uppercase text-[#666666] font-medium">Valid Until</span>
+                  <p style={{ color: '#FFFFFF' }} className="text-sm font-medium mt-0.5 flex items-center gap-1.5">
                     <Calendar className="h-3.5 w-3.5" />
                     {formatDate(proposal.validUntil)}
                   </p>
@@ -844,42 +844,42 @@ function ProposalDetail({
 
             {/* Status Timeline */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-4">Status Timeline</h3>
+              <h3 className="text-sm font-semibold mb-4" style={{ color: "#FFFFFF" }}>Status Timeline</h3>
               <StatusTimeline proposal={proposal} />
             </div>
 
             {/* Line Items */}
             {proposal.lineItems && proposal.lineItems.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">Line Items</h3>
+                <h3 className="text-sm font-semibold mb-3" style={{ color: "#FFFFFF" }}>Line Items</h3>
                 <div className="border rounded-lg overflow-hidden">
                   <table className="w-full">
                     <thead>
-                      <tr className="bg-gray-50">
-                        <th className="text-left text-[11px] uppercase text-gray-400 font-medium px-3 py-2">Item</th>
-                        <th className="text-right text-[11px] uppercase text-gray-400 font-medium px-3 py-2 w-16">Qty</th>
-                        <th className="text-right text-[11px] uppercase text-gray-400 font-medium px-3 py-2 w-24">Unit Price</th>
-                        <th className="text-right text-[11px] uppercase text-gray-400 font-medium px-3 py-2 w-24">Total</th>
+                      <tr className="bg-[#141414]">
+                        <th className="text-left text-[11px] uppercase text-[#666666] font-medium px-3 py-2">Item</th>
+                        <th className="text-right text-[11px] uppercase text-[#666666] font-medium px-3 py-2 w-16">Qty</th>
+                        <th className="text-right text-[11px] uppercase text-[#666666] font-medium px-3 py-2 w-24">Unit Price</th>
+                        <th className="text-right text-[11px] uppercase text-[#666666] font-medium px-3 py-2 w-24">Total</th>
                       </tr>
                     </thead>
                     <tbody>
                       {proposal.lineItems.map((item) => (
-                        <tr key={item.id} className="border-t border-gray-50">
+                        <tr key={item.id} className="border-t border-[#2A2A2A]">
                           <td className="px-3 py-2.5">
-                            <p className="text-sm font-medium text-gray-900">{item.name}</p>
+                            <p style={{ color: '#FFFFFF' }} className="text-sm font-medium">{item.name}</p>
                             {item.description && (
-                              <p className="text-xs text-gray-400 mt-0.5">{item.description}</p>
+                              <p className="text-xs text-[#666666] mt-0.5">{item.description}</p>
                             )}
                           </td>
-                          <td className="px-3 py-2.5 text-right text-sm text-gray-600">{item.quantity}</td>
-                          <td className="px-3 py-2.5 text-right text-sm text-gray-600">{formatCurrency(item.unitPrice)}</td>
-                          <td className="px-3 py-2.5 text-right text-sm font-medium text-gray-900">{formatCurrency(item.total)}</td>
+                          <td className="px-3 py-2.5 text-right text-sm text-[#A0A0A0]">{item.quantity}</td>
+                          <td className="px-3 py-2.5 text-right text-sm text-[#A0A0A0]">{formatCurrency(item.unitPrice)}</td>
+                          <td className="px-3 py-2.5 text-right text-sm font-medium" style={{ color: '#FFFFFF' }}>{formatCurrency(item.total)}</td>
                         </tr>
                       ))}
                     </tbody>
                     <tfoot>
                       <tr className="bg-[#F3D840]/10 border-t border-[#F3D840]/30">
-                        <td colSpan={3} className="px-3 py-3 text-sm font-semibold text-gray-700 text-right">
+                        <td colSpan={3} className="px-3 py-3 text-sm font-semibold text-[#A0A0A0] text-right">
                           Total
                         </td>
                         <td className="px-3 py-3 text-right text-base font-bold text-[#374151]">
@@ -895,8 +895,8 @@ function ProposalDetail({
             {/* Notes */}
             {proposal.notes && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">Notes</h3>
-                <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-600 whitespace-pre-wrap">
+                <h3 className="text-sm font-semibold mb-2" style={{ color: "#FFFFFF" }}>Notes</h3>
+                <div className="rounded-lg p-3 text-sm text-[#A0A0A0] whitespace-pre-wrap">
                   {proposal.notes}
                 </div>
               </div>
@@ -905,7 +905,7 @@ function ProposalDetail({
         </div>
 
         {/* Actions */}
-        <div className="border-t bg-white p-4 space-y-3 shrink-0">
+        <div className="border-t p-4 space-y-3 shrink-0">
           {/* Status Actions */}
           <div className="flex items-center gap-2 flex-wrap">
             {proposal.status === 'draft' && (
@@ -925,7 +925,7 @@ function ProposalDetail({
                 variant="outline"
                 onClick={() => statusMutation.mutate('viewed')}
                 disabled={statusMutation.isPending}
-                className="border-amber-400 text-amber-600 hover:bg-amber-50"
+                className="border-amber-400 text-amber-600 hover:bg-amber-500/10"
               >
                 <Eye className="h-3.5 w-3.5 mr-1.5" />
                 Mark as Viewed
@@ -938,7 +938,7 @@ function ProposalDetail({
                   variant="outline"
                   onClick={() => statusMutation.mutate('accepted')}
                   disabled={statusMutation.isPending}
-                  className="border-green-400 text-green-600 hover:bg-green-50"
+                  className="border-green-400 text-green-600 hover:bg-green-500/10"
                 >
                   <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
                   Accept
@@ -948,7 +948,7 @@ function ProposalDetail({
                   variant="outline"
                   onClick={() => statusMutation.mutate('rejected')}
                   disabled={statusMutation.isPending}
-                  className="border-red-400 text-red-600 hover:bg-red-50"
+                  className="border-red-400 text-red-600 hover:bg-red-500/10"
                 >
                   <XCircle className="h-3.5 w-3.5 mr-1.5" />
                   Reject
@@ -959,7 +959,7 @@ function ProposalDetail({
 
           {/* Other Actions */}
           <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" onClick={() => onEdit(proposal)} className="text-gray-600">
+            <Button size="sm" variant="outline" onClick={() => onEdit(proposal)} className="text-[#A0A0A0]">
               <Edit3 className="h-3.5 w-3.5 mr-1.5" />
               Edit
             </Button>
@@ -970,7 +970,7 @@ function ProposalDetail({
                 setTemplateName(`${proposal.title} - Template`)
                 setSaveTemplateOpen(true)
               }}
-              className="text-gray-600"
+              className="text-[#A0A0A0]"
             >
               <Copy className="h-3.5 w-3.5 mr-1.5" />
               Save as Template
@@ -979,7 +979,7 @@ function ProposalDetail({
               size="sm"
               variant="outline"
               onClick={() => setDeleteOpen(true)}
-              className="text-red-500 border-red-200 hover:bg-red-50"
+              className="text-red-500 border-red-200 hover:bg-red-500/10"
             >
               <Trash2 className="h-3.5 w-3.5 mr-1.5" />
               Delete
@@ -1133,7 +1133,7 @@ export default function ProposalsPage() {
   }, [])
 
   return (
-    <div className="p-6 lg:p-8 space-y-6 h-full flex flex-col">
+    <div style={{ backgroundColor: "#0A0A0A", minHeight: "100vh" }} className="p-6 lg:p-8 space-y-6 h-full flex flex-col">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -1141,8 +1141,8 @@ export default function ProposalsPage() {
         className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0"
       >
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Proposals</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <h1 style={{ color: '#FFFFFF' }} className="text-2xl font-bold">Proposals</h1>
+          <p className="text-[#A0A0A0] text-sm mt-1">
             Create, send, and track your proposals
           </p>
         </div>
@@ -1163,16 +1163,16 @@ export default function ProposalsPage() {
         className="flex flex-col sm:flex-row gap-3 shrink-0"
       >
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666666]" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search proposals..."
-            className="pl-9 bg-white"
+            className="pl-9"
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full sm:w-44 bg-white">
+          <SelectTrigger className="w-full sm:w-44">
             <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
@@ -1193,24 +1193,24 @@ export default function ProposalsPage() {
         transition={{ delay: 0.1 }}
         className="grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0"
       >
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-          <p className="text-xs text-gray-400 uppercase font-medium">Total Proposals</p>
-          <p className="text-xl font-bold text-gray-900 mt-1">{proposals.length}</p>
+        <div className="rounded-lg p-4 shadow-sm border border-[#2A2A2A]">
+          <p className="text-xs text-[#666666] uppercase font-medium">Total Proposals</p>
+          <p style={{ color: '#FFFFFF' }} className="text-xl font-bold mt-1">{proposals.length}</p>
         </div>
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-          <p className="text-xs text-gray-400 uppercase font-medium">Total Value</p>
+        <div className="rounded-lg p-4 shadow-sm border border-[#2A2A2A]">
+          <p className="text-xs text-[#666666] uppercase font-medium">Total Value</p>
           <p className="text-xl font-bold text-[#374151] mt-1">
             {formatCurrency(proposals.reduce((s, p) => s + p.totalAmount, 0))}
           </p>
         </div>
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-          <p className="text-xs text-gray-400 uppercase font-medium">Accepted</p>
+        <div className="rounded-lg p-4 shadow-sm border border-[#2A2A2A]">
+          <p className="text-xs text-[#666666] uppercase font-medium">Accepted</p>
           <p className="text-xl font-bold text-green-600 mt-1">
             {proposals.filter((p) => p.status === 'accepted').length}
           </p>
         </div>
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-          <p className="text-xs text-gray-400 uppercase font-medium">Acceptance Rate</p>
+        <div className="rounded-lg p-4 shadow-sm border border-[#2A2A2A]">
+          <p className="text-xs text-[#666666] uppercase font-medium">Acceptance Rate</p>
           <p className="text-xl font-bold text-[#374151] mt-1">
             {proposals.filter((p) => ['accepted', 'rejected'].includes(p.status)).length > 0
               ? `${Math.round(
@@ -1227,7 +1227,7 @@ export default function ProposalsPage() {
       {isLoading ? (
         <div className="flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {KANBAN_COLUMNS.map((_, i) => (
-            <div key={i} className="bg-gray-100 rounded-xl animate-pulse h-96" />
+            <div key={i} className="bg-[#1A1A1A] rounded-xl animate-pulse h-96" />
           ))}
         </div>
       ) : (
@@ -1243,7 +1243,7 @@ export default function ProposalsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: colIndex * 0.06 }}
-                className="flex flex-col bg-gray-100/80 rounded-xl min-h-[200px]"
+                className="flex flex-col bg-[#1A1A1A]/80 rounded-xl min-h-[200px]"
               >
                 {/* Column Header */}
                 <div
@@ -1253,15 +1253,15 @@ export default function ProposalsPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <StatusIcon className="h-3.5 w-3.5" style={{ color: cfg.color.replace('text-', '').includes('gray') ? '#6B7280' : undefined }} />
-                      <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                      <h3 className="text-xs font-semibold text-[#A0A0A0] uppercase tracking-wide">
                         {cfg.label}
                       </h3>
                     </div>
-                    <span className="text-xs font-bold text-gray-400 bg-white/60 rounded-full px-1.5 py-0.5">
+                    <span className="text-xs font-bold text-[#666666] bg-[#2A2A2A]/60 rounded-full px-1.5 py-0.5">
                       {items.length}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-400 mt-1 font-medium">
+                  <p className="text-xs text-[#666666] mt-1 font-medium">
                     {formatCurrency(columnTotals[status])}
                   </p>
                 </div>
@@ -1278,7 +1278,7 @@ export default function ProposalsPage() {
                     ))}
                   </AnimatePresence>
                   {items.length === 0 && (
-                    <div className="flex items-center justify-center h-20 text-xs text-gray-400">
+                    <div className="flex items-center justify-center h-20 text-xs text-[#666666]">
                       No proposals
                     </div>
                   )}
@@ -1291,8 +1291,8 @@ export default function ProposalsPage() {
 
       {/* Create Proposal Sheet */}
       <Sheet open={isCreating} onOpenChange={setIsCreating}>
-        <SheetContent side="right" className="sm:max-w-xl p-0 w-full">
-          <SheetHeader className="p-6 pb-0 border-b bg-gray-50">
+        <SheetContent side="right" style={{ backgroundColor: "#1A1A1A" }} className="sm:max-w-xl p-0 w-full">
+          <SheetHeader className="p-6 pb-0 border-b" style={{ backgroundColor: '#141414' }}>
             <SheetTitle className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-lg bg-[#F3D840] flex items-center justify-center">
                 <FileText className="h-4 w-4 text-[#374151]" />
@@ -1313,7 +1313,7 @@ export default function ProposalsPage() {
 
       {/* Proposal Detail Sheet */}
       <Sheet open={detailOpen} onOpenChange={setDetailOpen}>
-        <SheetContent side="right" className="sm:max-w-lg p-0 w-full">
+        <SheetContent side="right" style={{ backgroundColor: "#1A1A1A" }} className="sm:max-w-lg p-0 w-full">
           {detailLoading ? (
             <div className="flex items-center justify-center h-full">
               <div className="animate-spin h-8 w-8 border-2 border-[#F3D840] border-t-transparent rounded-full" />
@@ -1333,8 +1333,8 @@ export default function ProposalsPage() {
 
       {/* Edit Proposal Sheet */}
       <Sheet open={editOpen} onOpenChange={setEditOpen}>
-        <SheetContent side="right" className="sm:max-w-xl p-0 w-full">
-          <SheetHeader className="p-6 pb-0 border-b bg-gray-50">
+        <SheetContent side="right" style={{ backgroundColor: "#1A1A1A" }} className="sm:max-w-xl p-0 w-full">
+          <SheetHeader className="p-6 pb-0 border-b" style={{ backgroundColor: '#141414' }}>
             <SheetTitle className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-lg bg-[#374151] flex items-center justify-center">
                 <Edit3 className="h-4 w-4 text-white" />

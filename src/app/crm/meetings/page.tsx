@@ -154,7 +154,7 @@ const MEETING_TYPE_CONFIG: Record<string, { label: string; icon: React.ReactNode
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   scheduled: { label: 'Scheduled', color: 'text-blue-700', bg: 'bg-blue-100' },
   completed: { label: 'Completed', color: 'text-emerald-700', bg: 'bg-emerald-100' },
-  cancelled: { label: 'Cancelled', color: 'text-gray-600', bg: 'bg-gray-100' },
+  cancelled: { label: 'Cancelled', color: 'text-[#A0A0A0]', bg: 'bg-[#1A1A1A]' },
   no_show: { label: 'No Show', color: 'text-red-700', bg: 'bg-red-100' },
 }
 
@@ -239,12 +239,12 @@ function CalendarView({
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
   return (
-    <Card className="border-0 shadow-sm">
+    <Card style={{ backgroundColor: "#1A1A1A", border: "1px solid #2A2A2A" }} className="border-0 shadow-sm">
       {/* Calendar Header */}
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-gray-900">{monthName}</h2>
+            <h2 style={{ color: "#FFFFFF" }} className="text-xl font-bold">{monthName}</h2>
             <Button variant="outline" size="sm" onClick={onToday} className="text-xs">
               Today
             </Button>
@@ -261,19 +261,19 @@ function CalendarView({
       </CardHeader>
       <CardContent>
         {/* Day names */}
-        <div className="grid grid-cols-7 gap-px bg-gray-200 border border-gray-200 rounded-t-lg overflow-hidden">
+        <div className="grid grid-cols-7 gap-px border border-[#2A2A2A] rounded-t-lg overflow-hidden">
           {dayNames.map((name) => (
-            <div key={name} className="bg-gray-50 py-2 text-center text-xs font-semibold text-gray-500 uppercase">
+            <div key={name} style={{ color: "#A0A0A0", backgroundColor: "#141414" }} className="py-2 text-center text-xs font-semibold uppercase">
               {name}
             </div>
           ))}
         </div>
 
         {/* Calendar grid */}
-        <div className="grid grid-cols-7 gap-px bg-gray-200 border-x border-b border-gray-200 rounded-b-lg overflow-hidden">
+        <div className="grid grid-cols-7 gap-px bg-[#222222] border-x border-b border-[#2A2A2A] rounded-b-lg overflow-hidden">
           {days.map((date, idx) => {
             if (!date) {
-              return <div key={`empty-${idx}`} className="bg-white min-h-[100px] md:min-h-[120px]" />
+              return <div key={`empty-${idx}`} style={{ backgroundColor: "#1A1A1A" }} className="min-h-[100px] md:min-h-[120px]" />
             }
 
             const isToday = isSameDay(date, today)
@@ -284,7 +284,7 @@ function CalendarView({
               <button
                 key={date.toISOString()}
                 onClick={() => onSelectDate(date)}
-                className={`bg-white min-h-[100px] md:min-h-[120px] p-1.5 text-left transition-colors hover:bg-yellow-50/50 focus:outline-none relative ${
+                className={`min-h-[100px] md:min-h-[120px] p-1.5 text-left transition-colors hover:bg-[#F3D840]/10 focus:outline-none relative ${
                   isSelected ? 'bg-[#F3D840]/10 ring-2 ring-inset ring-[#F3D840]' : ''
                 }`}
               >
@@ -292,7 +292,7 @@ function CalendarView({
                   className={`inline-flex items-center justify-center h-7 w-7 rounded-full text-sm font-medium transition-colors ${
                     isToday
                       ? 'bg-[#F3D840] text-[#374151] font-bold'
-                      : 'text-gray-700'
+                      : 'text-[#E0E0E0]'
                   }`}
                 >
                   {date.getDate()}
@@ -319,7 +319,7 @@ function CalendarView({
                     )
                   })}
                   {dayMeetings.length > 3 && (
-                    <div className="text-[10px] text-gray-500 pl-1 font-medium">
+                    <div className="text-[10px] text-[#A0A0A0] pl-1 font-medium">
                       +{dayMeetings.length - 3} more
                     </div>
                   )}
@@ -333,7 +333,7 @@ function CalendarView({
                     onCreateMeeting(date)
                   }}
                 >
-                  <Plus className="h-4 w-4 text-[#F3D840] bg-white rounded-full shadow-sm p-0.5" />
+                  <Plus className="h-4 w-4 text-[#F3D840] bg-[#1A1A1A] rounded-full shadow-sm p-0.5" />
                 </div>
               </button>
             )
@@ -390,11 +390,11 @@ function ListView({
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <Card className="border-0 shadow-sm">
+      <Card style={{ backgroundColor: "#1A1A1A", border: "1px solid #2A2A2A" }} className="border-0 shadow-sm">
         <CardContent className="p-4">
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666666]" />
               <Input
                 placeholder="Search meetings..."
                 value={searchQuery}
@@ -445,8 +445,8 @@ function ListView({
       {/* Meeting Cards */}
       <div className="space-y-2">
         {filtered.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            <CalendarLucide className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+          <div className="text-center py-12 text-[#A0A0A0]">
+            <CalendarLucide className="h-12 w-12 mx-auto mb-3 text-[#666666]" />
             <p className="text-lg font-medium">No meetings found</p>
             <p className="text-sm">Try adjusting your filters or create a new meeting.</p>
           </div>
@@ -466,8 +466,7 @@ function ListView({
                 transition={{ delay: idx * 0.03 }}
               >
                 <Card
-                  className="border-0 shadow-sm hover:shadow-md transition-all cursor-pointer border-l-4"
-                  style={{ borderLeftColor: meeting.status === 'completed' ? '#4ADE80' : meeting.status === 'cancelled' ? '#9CA3AF' : '#F3D840' }}
+                  style={{ backgroundColor: "#1A1A1A", border: "1px solid #2A2A2A", borderLeftColor: meeting.status === 'completed' ? '#4ADE80' : meeting.status === 'cancelled' ? '#9CA3AF' : '#F3D840' }}
                   onClick={() => onSelectMeeting(meeting)}
                 >
                   <CardContent className="p-4">
@@ -478,12 +477,12 @@ function ListView({
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-semibold text-gray-900 truncate">{meeting.title}</h3>
+                            <h3 style={{ color: "#FFFFFF" }} className="font-semibold truncate">{meeting.title}</h3>
                             <Badge variant="secondary" className={`text-[10px] px-2 py-0 ${statusConfig.bg} ${statusConfig.color}`}>
                               {statusConfig.label}
                             </Badge>
                           </div>
-                          <div className="flex items-center gap-4 mt-1 text-sm text-gray-500 flex-wrap">
+                          <div className="flex items-center gap-4 mt-1 text-sm text-[#A0A0A0] flex-wrap">
                             <span className="flex items-center gap-1">
                               <CalendarLucide className="h-3.5 w-3.5" />
                               {formatDate(meeting.date)}
@@ -500,7 +499,7 @@ function ListView({
                             )}
                           </div>
                           {meeting.contact && (
-                            <p className="text-sm text-gray-500 mt-1">
+                            <p className="text-sm text-[#A0A0A0] mt-1">
                               with {meeting.contact.firstName} {meeting.contact.lastName}
                             </p>
                           )}
@@ -508,7 +507,7 @@ function ListView({
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         {meeting.deal && (
-                          <Badge variant="outline" className="text-xs text-gray-500">
+                          <Badge variant="outline" className="text-xs text-[#A0A0A0]">
                             <FileText className="h-3 w-3 mr-1" />
                             {meeting.deal.title}
                           </Badge>
@@ -559,7 +558,7 @@ function MeetingDetail({
       transition={{ duration: 0.2 }}
       className="w-full lg:w-[420px] shrink-0"
     >
-      <Card className="border-0 shadow-sm h-full">
+      <Card style={{ backgroundColor: "#1A1A1A", border: "1px solid #2A2A2A" }} className="border-0 shadow-sm h-full">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-start gap-3 min-w-0">
@@ -567,7 +566,7 @@ function MeetingDetail({
                 {typeConfig.icon}
               </div>
               <div className="min-w-0">
-                <CardTitle className="text-lg leading-tight">{meeting.title}</CardTitle>
+                <CardTitle className="text-lg leading-tight" style={{ color: "#FFFFFF" }}>{meeting.title}</CardTitle>
                 <Badge variant="secondary" className={`mt-1 text-xs ${statusConfig.bg} ${statusConfig.color}`}>
                   {statusConfig.label}
                 </Badge>
@@ -581,10 +580,10 @@ function MeetingDetail({
         <CardContent className="space-y-4">
           {/* Date/Time */}
           <div className="flex items-center gap-3 text-sm">
-            <CalendarLucide className="h-4 w-4 text-gray-400 shrink-0" />
+            <CalendarLucide className="h-4 w-4 text-[#666666] shrink-0" />
             <div>
-              <p className="font-medium text-gray-900">{formatFullDate(meeting.date)}</p>
-              <p className="text-gray-500">{formatTime(meeting.date)} — {formatTime(meeting.endDate)}</p>
+              <p style={{ color: "#FFFFFF" }} className="font-medium">{formatFullDate(meeting.date)}</p>
+              <p className="text-[#A0A0A0]">{formatTime(meeting.date)} — {formatTime(meeting.endDate)}</p>
             </div>
           </div>
 
@@ -599,18 +598,18 @@ function MeetingDetail({
           {/* Location */}
           {meeting.location && (
             <div className="flex items-center gap-3 text-sm">
-              <MapPin className="h-4 w-4 text-gray-400 shrink-0" />
-              <span className="text-gray-700">{meeting.location}</span>
+              <MapPin className="h-4 w-4 text-[#666666] shrink-0" />
+              <span className="text-[#A0A0A0]">{meeting.location}</span>
             </div>
           )}
 
           {/* Contact */}
           {meeting.contact && (
             <div className="flex items-center gap-3 text-sm">
-              <UserIcon className="h-4 w-4 text-gray-400 shrink-0" />
+              <UserIcon className="h-4 w-4 text-[#666666] shrink-0" />
               <div>
-                <p className="font-medium text-gray-900">{meeting.contact.firstName} {meeting.contact.lastName}</p>
-                {meeting.contact.email && <p className="text-gray-500">{meeting.contact.email}</p>}
+                <p style={{ color: "#FFFFFF" }} className="font-medium">{meeting.contact.firstName} {meeting.contact.lastName}</p>
+                {meeting.contact.email && <p className="text-[#A0A0A0]">{meeting.contact.email}</p>}
               </div>
             </div>
           )}
@@ -618,18 +617,18 @@ function MeetingDetail({
           {/* Company */}
           {meeting.company && (
             <div className="flex items-center gap-3 text-sm">
-              <Building2 className="h-4 w-4 text-gray-400 shrink-0" />
-              <span className="text-gray-700">{meeting.company.name}</span>
+              <Building2 className="h-4 w-4 text-[#666666] shrink-0" />
+              <span className="text-[#A0A0A0]">{meeting.company.name}</span>
             </div>
           )}
 
           {/* Deal */}
           {meeting.deal && (
             <div className="flex items-center gap-3 text-sm">
-              <FileText className="h-4 w-4 text-gray-400 shrink-0" />
+              <FileText className="h-4 w-4 text-[#666666] shrink-0" />
               <div>
-                <p className="font-medium text-gray-900">{meeting.deal.title}</p>
-                <p className="text-gray-500">{meeting.deal.currency} {meeting.deal.value.toLocaleString()}</p>
+                <p style={{ color: "#FFFFFF" }} className="font-medium">{meeting.deal.title}</p>
+                <p className="text-[#A0A0A0]">{meeting.deal.currency} {meeting.deal.value.toLocaleString()}</p>
               </div>
             </div>
           )}
@@ -637,34 +636,34 @@ function MeetingDetail({
           {/* Assigned To */}
           {meeting.assignee && (
             <div className="flex items-center gap-3 text-sm">
-              <Users className="h-4 w-4 text-gray-400 shrink-0" />
-              <span className="text-gray-700">Assigned to {meeting.assignee.name}</span>
+              <Users className="h-4 w-4 text-[#666666] shrink-0" />
+              <span className="text-[#A0A0A0]">Assigned to {meeting.assignee.name}</span>
             </div>
           )}
 
           {/* Description */}
           {meeting.description && (
             <div className="text-sm">
-              <p className="font-medium text-gray-700 mb-1">Description</p>
-              <p className="text-gray-600 whitespace-pre-wrap">{meeting.description}</p>
+              <p className="font-medium text-[#A0A0A0] mb-1">Description</p>
+              <p className="text-[#A0A0A0] whitespace-pre-wrap">{meeting.description}</p>
             </div>
           )}
 
           {/* Notes */}
           {meeting.notes && (
             <div className="text-sm">
-              <p className="font-medium text-gray-700 mb-1">Notes</p>
-              <p className="text-gray-600 whitespace-pre-wrap">{meeting.notes}</p>
+              <p className="font-medium text-[#A0A0A0] mb-1">Notes</p>
+              <p className="text-[#A0A0A0] whitespace-pre-wrap">{meeting.notes}</p>
             </div>
           )}
 
           {/* Follow-up Task */}
           {meeting.followUpTask && (
-            <div className="bg-gray-50 rounded-lg p-3 text-sm">
-              <p className="font-medium text-gray-700 mb-1">Follow-up Task</p>
+            <div className="rounded-lg p-3 text-sm">
+              <p className="font-medium text-[#A0A0A0] mb-1">Follow-up Task</p>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">{meeting.followUpTask.title}</span>
-                <Badge variant="secondary" className={`text-xs ${STATUS_CONFIG[meeting.followUpTask.status as keyof typeof STATUS_CONFIG]?.bg || 'bg-gray-100'} ${STATUS_CONFIG[meeting.followUpTask.status as keyof typeof STATUS_CONFIG]?.color || 'text-gray-600'}`}>
+                <span className="text-[#A0A0A0]">{meeting.followUpTask.title}</span>
+                <Badge variant="secondary" className={`text-xs ${STATUS_CONFIG[meeting.followUpTask.status as keyof typeof STATUS_CONFIG]?.bg || 'bg-[#1A1A1A]'} ${STATUS_CONFIG[meeting.followUpTask.status as keyof typeof STATUS_CONFIG]?.color || 'text-[#A0A0A0]'}`}>
                   {meeting.followUpTask.status}
                 </Badge>
               </div>
@@ -699,7 +698,7 @@ function MeetingDetail({
                 <Edit3 className="h-4 w-4 mr-2" />
                 Edit
               </Button>
-              <Button variant="outline" onClick={onDelete} disabled={isDeleting} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+              <Button variant="outline" onClick={onDelete} disabled={isDeleting} className="text-red-600 hover:text-red-700 hover:bg-red-500/10">
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
@@ -830,7 +829,7 @@ function MeetingFormDialog({
                   className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg border-2 text-sm font-medium transition-all ${
                     meetingType === key
                       ? `${config.bg} ${config.color} border-current`
-                      : 'border-gray-200 text-gray-500 hover:bg-gray-50'
+                      : 'border-[#2A2A2A] text-[#A0A0A0] hover:bg-white/5'
                   }`}
                 >
                   {config.icon}
@@ -938,7 +937,7 @@ function MeetingFormDialog({
             <div className="flex items-center justify-between py-2">
               <div>
                 <Label className="text-sm font-medium">Create Follow-up Task</Label>
-                <p className="text-xs text-gray-500">Auto-create a task after meeting ends</p>
+                <p className="text-xs text-[#A0A0A0]">Auto-create a task after meeting ends</p>
               </div>
               <Switch checked={createFollowUp} onCheckedChange={setCreateFollowUp} />
             </div>
@@ -946,13 +945,13 @@ function MeetingFormDialog({
 
           {/* Sync to Google Calendar */}
           {googleConnected && (
-            <div className="flex items-center justify-between py-2 rounded-lg border border-dashed border-blue-200 bg-blue-50/50 px-3">
+            <div className="flex items-center justify-between py-2 rounded-lg border border-dashed border-blue-500/30 bg-blue-500/10 px-3">
               <div>
                 <Label className="text-sm font-medium flex items-center gap-1.5">
                   <CalendarDays className="h-3.5 w-3.5 text-blue-500" />
                   Sync to Google Calendar
                 </Label>
-                <p className="text-xs text-gray-500">Also create this event in your Google Calendar</p>
+                <p className="text-xs text-[#A0A0A0]">Also create this event in your Google Calendar</p>
               </div>
               <Switch checked={syncToGoogle} onCheckedChange={setSyncToGoogle} className="data-[state=checked]:bg-blue-500" />
             </div>
@@ -980,16 +979,16 @@ function MeetingFormDialog({
 // ===== Upcoming Meetings Sidebar =====
 function UpcomingSidebar({ meetings, onSelect }: { meetings: Meeting[]; onSelect: (m: Meeting) => void }) {
   return (
-    <Card className="border-0 shadow-sm">
+    <Card style={{ backgroundColor: "#1A1A1A", border: "1px solid #2A2A2A" }} className="border-0 shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+        <CardTitle style={{ color: "#A0A0A0" }} className="text-sm font-semibold flex items-center gap-2">
           <Clock className="h-4 w-4 text-[#F3D840]" />
           Upcoming Meetings
         </CardTitle>
       </CardHeader>
       <CardContent className="p-3 space-y-2 max-h-[400px] overflow-y-auto">
         {meetings.length === 0 ? (
-          <p className="text-xs text-gray-400 text-center py-4">No upcoming meetings</p>
+          <p className="text-xs text-[#666666] text-center py-4">No upcoming meetings</p>
         ) : (
           meetings.slice(0, 5).map((meeting) => {
             const typeConfig = MEETING_TYPE_CONFIG[meeting.meetingType]
@@ -998,19 +997,19 @@ function UpcomingSidebar({ meetings, onSelect }: { meetings: Meeting[]; onSelect
                 key={meeting.id}
                 whileHover={{ x: 2 }}
                 onClick={() => onSelect(meeting)}
-                className="w-full text-left p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                className="w-full text-left p-2.5 rounded-lg hover:bg-white/5 transition-colors"
               >
                 <div className="flex items-center gap-2">
                   <div className={`flex items-center justify-center h-7 w-7 rounded-md border ${typeConfig.bg} ${typeConfig.color}`}>
                     {typeConfig.icon}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-gray-900 truncate">{meeting.title}</p>
-                    <p className="text-xs text-gray-500">
+                    <p style={{ color: "#FFFFFF" }} className="text-sm font-medium truncate">{meeting.title}</p>
+                    <p className="text-xs text-[#A0A0A0]">
                       {formatDate(meeting.date)} · {formatTime(meeting.date)}
                     </p>
                     {meeting.contact && (
-                      <p className="text-xs text-gray-400 mt-0.5">
+                      <p className="text-xs text-[#666666] mt-0.5">
                         {meeting.contact.firstName} {meeting.contact.lastName}
                       </p>
                     )}
@@ -1045,10 +1044,10 @@ function DayDetailPanel({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
     >
-      <Card className="border-0 shadow-sm">
+      <Card style={{ backgroundColor: "#1A1A1A", border: "1px solid #2A2A2A" }} className="border-0 shadow-sm">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base">{formatFullDate(date.toISOString())}</CardTitle>
+            <CardTitle className="text-base" style={{ color: "#FFFFFF" }}>{formatFullDate(date.toISOString())}</CardTitle>
             <div className="flex items-center gap-1">
               <Button variant="ghost" size="sm" onClick={onCreateMeeting} className="h-7 text-xs text-[#F3D840] hover:text-[#E5C832]">
                 <Plus className="h-3.5 w-3.5 mr-1" />
@@ -1062,7 +1061,7 @@ function DayDetailPanel({
         </CardHeader>
         <CardContent className="p-3 pt-0 space-y-2">
           {meetings.length === 0 ? (
-            <p className="text-xs text-gray-400 text-center py-6">No meetings on this day</p>
+            <p className="text-xs text-[#666666] text-center py-6">No meetings on this day</p>
           ) : (
             meetings
               .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -1073,27 +1072,27 @@ function DayDetailPanel({
                     key={meeting.id}
                     whileHover={{ x: 2 }}
                     onClick={() => onSelectMeeting(meeting)}
-                    className="w-full text-left p-2.5 rounded-lg border hover:shadow-sm transition-all"
+                    style={{ color: "#FFFFFF" }} className="w-full text-left p-2.5 rounded-lg border hover:shadow-sm transition-all"
                   >
                     <div className="flex items-start gap-2.5">
                       <div className={`flex items-center justify-center h-8 w-8 rounded-lg border ${typeConfig.bg} ${typeConfig.color} shrink-0 mt-0.5`}>
                         {typeConfig.icon}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="font-medium text-sm text-gray-900">{meeting.title}</p>
-                        <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
+                        <p style={{ color: "#FFFFFF" }} className="font-medium text-sm">{meeting.title}</p>
+                        <div className="flex items-center gap-3 mt-1 text-xs text-[#A0A0A0]">
                           <span>{formatTime(meeting.date)} - {formatTime(meeting.endDate)}</span>
                           <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${STATUS_CONFIG[meeting.status]?.bg} ${STATUS_CONFIG[meeting.status]?.color}`}>
                             {STATUS_CONFIG[meeting.status]?.label}
                           </span>
                         </div>
                         {meeting.contact && (
-                          <p className="text-xs text-gray-400 mt-0.5">
+                          <p className="text-xs text-[#666666] mt-0.5">
                             with {meeting.contact.firstName} {meeting.contact.lastName}
                           </p>
                         )}
                         {meeting.location && (
-                          <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
+                          <p className="text-xs text-[#666666] mt-0.5 flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
                             {meeting.location}
                           </p>
@@ -1363,22 +1362,22 @@ export default function MeetingsPage() {
   const listMeetings = viewMode === 'list' ? allMeetings : meetings
 
   return (
-    <div className="p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto">
+    <div style={{ backgroundColor: "#0A0A0A", minHeight: "100vh" }} className="p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Calendar</h1>
-          <p className="text-sm text-gray-500 mt-1">Schedule and manage your meetings</p>
+          <h1 style={{ color: '#FFFFFF' }} className="text-2xl font-bold">Calendar</h1>
+          <p className="text-sm text-[#A0A0A0] mt-1">Schedule and manage your meetings</p>
         </div>
         <div className="flex items-center gap-2">
           {/* View Toggle */}
-          <div className="flex items-center bg-gray-100 rounded-lg p-1">
+          <div className="flex items-center bg-[#1A1A1A] rounded-lg p-1">
             <button
               onClick={() => setViewMode('calendar')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                 viewMode === 'calendar'
-                  ? 'bg-white shadow-sm text-gray-900'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'bg-[#F3D840] text-[#374151] shadow-sm'
+                  : 'text-[#A0A0A0] hover:text-[#A0A0A0]'
               }`}
             >
               <CalendarDays className="h-4 w-4" />
@@ -1388,8 +1387,8 @@ export default function MeetingsPage() {
               onClick={() => setViewMode('list')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                 viewMode === 'list'
-                  ? 'bg-white shadow-sm text-gray-900'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'bg-[#F3D840] text-[#374151] shadow-sm'
+                  : 'text-[#A0A0A0] hover:text-[#A0A0A0]'
               }`}
             >
               <List className="h-4 w-4" />
@@ -1411,7 +1410,7 @@ export default function MeetingsPage() {
       {isLoading ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <Card className="border-0 shadow-sm p-12 text-center text-gray-400">
+            <Card className="border-0 shadow-sm p-12 text-center text-[#666666]">
               Loading meetings...
             </Card>
           </div>
@@ -1470,9 +1469,9 @@ export default function MeetingsPage() {
             </AnimatePresence>
 
             {/* Google Calendar Events in sidebar */}
-            <Card className="border-0 shadow-sm">
+            <Card style={{ backgroundColor: "#1A1A1A", border: "1px solid #2A2A2A" }} className="border-0 shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                <CardTitle style={{ color: "#A0A0A0" }} className="text-sm font-semibold flex items-center gap-2">
                   <CalendarDays className="h-4 w-4 text-blue-500" />
                   Google Calendar
                 </CardTitle>
@@ -1483,10 +1482,10 @@ export default function MeetingsPage() {
                     <div className="flex items-center gap-2 text-xs text-emerald-600 mb-1">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       <span className="font-medium">Connected</span>
-                      {googleEmail && <span className="text-gray-400">({googleEmail})</span>}
+                      {googleEmail && <span className="text-[#666666]">({googleEmail})</span>}
                     </div>
                     {googleLastSynced && (
-                      <p className="text-[10px] text-gray-400">Last synced: {new Date(googleLastSynced).toLocaleString()}</p>
+                      <p className="text-[10px] text-[#666666]">Last synced: {new Date(googleLastSynced).toLocaleString()}</p>
                     )}
                     <Button
                       variant="outline"
@@ -1500,14 +1499,14 @@ export default function MeetingsPage() {
                     </Button>
                     <div className="max-h-[200px] overflow-y-auto space-y-1">
                       {googleEvents.length === 0 ? (
-                        <p className="text-xs text-gray-400 text-center py-2">No upcoming Google events</p>
+                        <p className="text-xs text-[#666666] text-center py-2">No upcoming Google events</p>
                       ) : (
                         googleEvents.slice(0, 5).map((ev) => (
-                          <div key={ev.id} className="flex items-start gap-2 p-1.5 rounded border border-dashed border-blue-200 bg-blue-50/30">
+                          <div key={ev.id} className="flex items-start gap-2 p-1.5 rounded border border-dashed border-blue-500/30 bg-blue-50/30">
                             <CalendarDays className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />
                             <div className="min-w-0 flex-1">
-                              <p className="text-xs font-medium text-gray-700 truncate">{ev.title}</p>
-                              <p className="text-[10px] text-gray-400">
+                              <p className="text-xs font-medium text-[#A0A0A0] truncate">{ev.title}</p>
+                              <p className="text-[10px] text-[#666666]">
                                 {new Date(ev.startDate).toLocaleDateString('en-IE', { month: 'short', day: 'numeric' })} · {new Date(ev.startDate).toLocaleTimeString('en-IE', { hour: '2-digit', minute: '2-digit', hour12: false })}
                               </p>
                             </div>
@@ -1518,7 +1517,7 @@ export default function MeetingsPage() {
                   </>
                 ) : (
                   <div className="text-center py-3">
-                    <p className="text-xs text-gray-500 mb-2">Connect your Google Calendar to sync events</p>
+                    <p className="text-xs text-[#A0A0A0] mb-2">Connect your Google Calendar to sync events</p>
                     <Button
                       size="sm"
                       className="bg-[#F3D840] hover:bg-[#E5C832] text-[#374151] text-xs h-7 w-full"
@@ -1533,9 +1532,9 @@ export default function MeetingsPage() {
             </Card>
 
             {/* Meeting Types Legend */}
-            <Card className="border-0 shadow-sm">
+            <Card style={{ backgroundColor: "#1A1A1A", border: "1px solid #2A2A2A" }} className="border-0 shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-semibold text-gray-700">Meeting Types</CardTitle>
+                <CardTitle className="text-sm font-semibold text-[#A0A0A0]">Meeting Types</CardTitle>
               </CardHeader>
               <CardContent className="p-3 space-y-2">
                 {Object.entries(MEETING_TYPE_CONFIG).map(([key, config]) => (
@@ -1543,7 +1542,7 @@ export default function MeetingsPage() {
                     <div className={`flex items-center justify-center h-6 w-6 rounded border ${config.bg} ${config.color}`}>
                       {config.icon}
                     </div>
-                    <span className="text-gray-600">{config.label}</span>
+                    <span className="text-[#A0A0A0]">{config.label}</span>
                   </div>
                 ))}
               </CardContent>
@@ -1573,7 +1572,7 @@ export default function MeetingsPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-center py-2">
-                <div className="w-12 h-1 rounded-full bg-gray-300" />
+                <div className="w-12 h-1 rounded-full bg-[#2A2A2A]" />
               </div>
               <div className="px-4 pb-6">
                 <MeetingDetail
@@ -1591,7 +1590,7 @@ export default function MeetingsPage() {
             </motion.div>
 
             {/* Desktop panel - shows inline */}
-            <div className="hidden lg:block fixed top-0 right-0 h-full z-40 overflow-y-auto bg-gray-50/80 backdrop-blur-sm pt-20 px-4 pb-4">
+            <div className="hidden lg:block fixed top-0 right-0 h-full z-40 overflow-y-auto 80 backdrop-blur-sm pt-20 px-4 pb-4">
               <MeetingDetail
                 meeting={selectedMeeting}
                 onClose={() => setSelectedMeeting(null)}

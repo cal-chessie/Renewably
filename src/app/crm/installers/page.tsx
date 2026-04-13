@@ -63,7 +63,7 @@ const SPECIALIZATION_LABELS: Record<string, string> = {
 }
 
 const PLAN_COLORS: Record<string, string> = {
-  starter: 'bg-gray-100 text-gray-700 border-gray-200',
+  starter: 'bg-[#222222] text-[#A0A0A0] border-[#2A2A2A]',
   pro: 'bg-[#F3D840]/15 text-[#8a7500] border-[#F3D840]/40',
   enterprise: 'bg-purple-100 text-purple-700 border-purple-200',
 }
@@ -186,7 +186,7 @@ function SubscriptionBadge({ status }: { status: string }) {
 
 function CertificationBadge({ label, registered }: { label: string; registered: boolean }) {
   return (
-    <Badge variant="outline" className={`text-[10px] font-medium ${registered ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-500 border-gray-200'}`}>
+    <Badge variant="outline" className={`text-[10px] font-medium ${registered ? 'bg-green-50 text-green-700 border-green-200' : 'bg-[#1A1A1A] text-[#A0A0A0] border-[#2A2A2A]'}`}>
       {registered ? <CheckCircle2 className="h-3 w-3 mr-1" /> : <AlertTriangle className="h-3 w-3 mr-1" />}
       {label}
     </Badge>
@@ -198,8 +198,8 @@ function EquipmentIcon({ category }: { category: string }) {
   if (!config) return null
   const Icon = config.icon
   return (
-    <div className="h-7 w-7 rounded-md bg-gray-100 flex items-center justify-center" title={config.label}>
-      <Icon className="h-3.5 w-3.5 text-gray-600" />
+    <div className="h-7 w-7 rounded-md bg-[#222222] flex items-center justify-center" title={config.label}>
+      <Icon className="h-3.5 w-3.5 text-[#A0A0A0]" />
     </div>
   )
 }
@@ -288,8 +288,8 @@ function CreateInstallerDialog({ open, onOpenChange }: { open: boolean; onOpenCh
     <Dialog open={open} onOpenChange={(v) => { if (v) resetForm(); onOpenChange(v) }}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-gray-900">New Installer</DialogTitle>
-          <p className="text-sm text-gray-500">Create a new solar installer profile</p>
+          <DialogTitle className="text-lg font-bold text-white">New Installer</DialogTitle>
+          <p className="text-sm text-[#A0A0A0]">Create a new solar installer profile</p>
         </DialogHeader>
 
         <div className="grid gap-5 py-4">
@@ -360,7 +360,7 @@ function CreateInstallerDialog({ open, onOpenChange }: { open: boolean; onOpenCh
                   className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs cursor-pointer transition-colors ${
                     selectedCounties.includes(county)
                       ? 'bg-[#F3D840]/15 text-[#8a7500] font-medium'
-                      : 'hover:bg-gray-50 text-gray-600'
+                      : 'hover:bg-[#141414]/5 text-[#A0A0A0]'
                   }`}
                 >
                   <Checkbox
@@ -408,7 +408,7 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
       <motion.div
         initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className="fixed inset-y-0 right-0 w-full md:w-[560px] bg-white shadow-xl z-50 flex items-center justify-center"
+        className="fixed inset-y-0 right-0 w-full md:w-[560px] bg-[#141414] shadow-xl z-50 flex items-center justify-center"
       >
         <div className="animate-pulse text-gray-400">Loading installer profile...</div>
       </motion.div>
@@ -437,13 +437,13 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
       <motion.div
         initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className="fixed inset-y-0 right-0 w-full md:w-[560px] bg-white shadow-xl z-50 flex flex-col"
+        className="fixed inset-y-0 right-0 w-full md:w-[560px] bg-[#141414] shadow-xl z-50 flex flex-col"
       >
         {/* Header */}
-        <div className="p-5 border-b border-gray-100 shrink-0">
+        <div className="p-5 border-b border-[#2A2A2A] shrink-0">
           <div className="flex items-start justify-between mb-4">
-            <button onClick={onClose} className="p-1 rounded-lg hover:bg-gray-100 transition-colors">
-              <X className="h-5 w-5 text-gray-500" />
+            <button onClick={onClose} className="p-1 rounded-lg hover:bg-[#141414]/5 transition-colors">
+              <X className="h-5 w-5 text-[#A0A0A0]" />
             </button>
           </div>
           <div className="flex items-start gap-3">
@@ -451,8 +451,8 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
               <Building2 className="h-6 w-6 text-[#8a7500]" />
             </div>
             <div className="min-w-0 flex-1">
-              <h2 className="text-lg font-bold text-gray-900 truncate">{installer.companyName}</h2>
-              <p className="text-sm text-gray-500">{installer.contactName}</p>
+              <h2 className="text-lg font-bold text-white truncate">{installer.companyName}</h2>
+              <p className="text-sm text-[#A0A0A0]">{installer.contactName}</p>
               <div className="flex items-center gap-2 mt-2 flex-wrap">
                 <PlanBadge plan={installer.plan} />
                 {installer.subscription && <SubscriptionBadge status={installer.subscription.status} />}
@@ -469,33 +469,33 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
 
         <ScrollArea className="flex-1">
           {/* Quick Actions */}
-          <div className="p-5 border-b border-gray-100">
+          <div className="p-5 border-b border-[#2A2A2A]">
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Quick Actions</h3>
             <div className="grid grid-cols-4 gap-2">
               {quickActions.map(action => (
                 <button
                   key={action.key}
                   onClick={() => setActiveAction(action.key)}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-lg border border-gray-100 hover:border-[#F3D840]/50 hover:bg-[#F3D840]/5 transition-all"
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-lg border border-[#2A2A2A] hover:border-[#F3D840]/50 hover:bg-[#F3D840]/5 transition-all"
                 >
                   <action.icon className="h-5 w-5 text-[#374151]" />
-                  <span className="text-[10px] font-medium text-gray-600 text-center leading-tight">{action.label}</span>
+                  <span className="text-[10px] font-medium text-[#A0A0A0] text-center leading-tight">{action.label}</span>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Company Info */}
-          <div className="p-5 border-b border-gray-100 space-y-3">
+          <div className="p-5 border-b border-[#2A2A2A] space-y-3">
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Company Info</h3>
             {installer.description && (
-              <p className="text-sm text-gray-600 leading-relaxed">{installer.description}</p>
+              <p className="text-sm text-[#A0A0A0] leading-relaxed">{installer.description}</p>
             )}
             {installer.website && (
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-lg bg-blue-50 flex items-center justify-center"><Globe className="h-4 w-4 text-blue-600" /></div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 truncate">{installer.website}</p>
+                  <p className="text-sm text-white truncate">{installer.website}</p>
                   <p className="text-[10px] text-gray-400">Website</p>
                 </div>
               </div>
@@ -504,7 +504,7 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-lg bg-orange-50 flex items-center justify-center"><MapPin className="h-4 w-4 text-orange-600" /></div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 truncate">{[installer.address, installer.city, installer.eircode].filter(Boolean).join(', ')}</p>
+                  <p className="text-sm text-white truncate">{[installer.address, installer.city, installer.eircode].filter(Boolean).join(', ')}</p>
                   <p className="text-[10px] text-gray-400">Address</p>
                 </div>
               </div>
@@ -512,12 +512,12 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
           </div>
 
           {/* Contact Info */}
-          <div className="p-5 border-b border-gray-100 space-y-3">
+          <div className="p-5 border-b border-[#2A2A2A] space-y-3">
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Contact Info</h3>
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center"><Users className="h-4 w-4 text-gray-600" /></div>
+              <div className="h-8 w-8 rounded-lg bg-[#222222] flex items-center justify-center"><Users className="h-4 w-4 text-[#A0A0A0]" /></div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-900 truncate">{installer.contactName}</p>
+                <p className="text-sm text-white truncate">{installer.contactName}</p>
                 <p className="text-[10px] text-gray-400">Primary Contact</p>
               </div>
             </div>
@@ -525,7 +525,7 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-lg bg-blue-50 flex items-center justify-center"><Mail className="h-4 w-4 text-blue-600" /></div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 truncate">{installer.contactEmail}</p>
+                  <p className="text-sm text-white truncate">{installer.contactEmail}</p>
                   <p className="text-[10px] text-gray-400">Email</p>
                 </div>
               </div>
@@ -534,7 +534,7 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-lg bg-green-50 flex items-center justify-center"><Phone className="h-4 w-4 text-green-600" /></div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 truncate">{installer.contactPhone}</p>
+                  <p className="text-sm text-white truncate">{installer.contactPhone}</p>
                   <p className="text-[10px] text-gray-400">Phone</p>
                 </div>
               </div>
@@ -547,7 +547,7 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
 
           {/* Territory & Coverage */}
           {installer.counties && installer.counties.length > 0 && (
-            <div className="p-5 border-b border-gray-100">
+            <div className="p-5 border-b border-[#2A2A2A]">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
                 Territory & Coverage ({installer.counties.length} counties)
               </h3>
@@ -564,20 +564,20 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
 
           {/* Equipment */}
           {installer.equipment && installer.equipment.length > 0 && (
-            <div className="p-5 border-b border-gray-100">
+            <div className="p-5 border-b border-[#2A2A2A]">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Equipment</h3>
               <div className="space-y-2">
                 {installer.equipment.map(eq => {
                   const config = EQUIPMENT_ICONS[eq.category]
                   const Icon = config?.icon || Zap
                   return (
-                    <div key={eq.id} className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50">
-                      <div className="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center">
-                        <Icon className="h-4 w-4 text-gray-600" />
+                    <div key={eq.id} className="flex items-center gap-3 p-2.5 rounded-lg bg-[#1A1A1A]">
+                      <div className="h-8 w-8 rounded-lg bg-[#222222] flex items-center justify-center">
+                        <Icon className="h-4 w-4 text-[#A0A0A0]" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900">{config?.label || eq.category}</p>
-                        <p className="text-[11px] text-gray-500">{eq.brand}{eq.model ? ` — ${eq.model}` : ''}</p>
+                        <p className="text-sm font-medium text-white">{config?.label || eq.category}</p>
+                        <p className="text-[11px] text-[#A0A0A0]">{eq.brand}{eq.model ? ` — ${eq.model}` : ''}</p>
                       </div>
                     </div>
                   )
@@ -587,19 +587,19 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
           )}
 
           {/* Legal Documents */}
-          <div className="p-5 border-b border-gray-100">
+          <div className="p-5 border-b border-[#2A2A2A]">
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Legal Documents</h3>
             <div className="grid grid-cols-2 gap-2">
               {DOCUMENT_TYPES.map(doc => {
                 const docData = installer.documents?.find(d => d.type === doc.key)
                 const signed = docData?.signed ?? false
                 return (
-                  <div key={doc.key} className="flex items-center gap-2.5 p-2.5 rounded-lg border border-gray-100">
-                    <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${signed ? 'bg-green-50' : 'bg-gray-50'}`}>
+                  <div key={doc.key} className="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#2A2A2A]">
+                    <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${signed ? 'bg-green-50' : 'bg-[#1A1A1A]'}`}>
                       <FileText className={`h-4 w-4 ${signed ? 'text-green-600' : 'text-gray-400'}`} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-gray-900">{doc.short}</p>
+                      <p className="text-xs font-medium text-white">{doc.short}</p>
                       <p className={`text-[10px] ${signed ? 'text-green-600' : 'text-gray-400'}`}>
                         {signed ? (docData?.signedAt ? `Signed ${format(new Date(docData.signedAt), 'MMM d, yyyy')}` : 'Signed') : 'Unsigned'}
                       </p>
@@ -612,24 +612,24 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
 
           {/* Subscription */}
           {installer.subscription && (
-            <div className="p-5 border-b border-gray-100">
+            <div className="p-5 border-b border-[#2A2A2A]">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Subscription</h3>
-              <div className="p-4 rounded-xl bg-gray-50 space-y-3">
+              <div className="p-4 rounded-xl bg-[#1A1A1A] space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2">
                       <PlanBadge plan={installer.subscription.plan} />
                       <SubscriptionBadge status={installer.subscription.status} />
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">{formatCurrency(PLAN_PRICING[installer.subscription.plan] || 0)}/mo · Billed {installer.subscription.billingCycle}</p>
+                    <p className="text-xs text-[#A0A0A0] mt-1">{formatCurrency(PLAN_PRICING[installer.subscription.plan] || 0)}/mo · Billed {installer.subscription.billingCycle}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-bold text-gray-900">{formatCurrency(installer.subscription.mrr)}</p>
+                    <p className="text-lg font-bold text-white">{formatCurrency(installer.subscription.mrr)}</p>
                     <p className="text-[10px] text-gray-400">MRR</p>
                   </div>
                 </div>
                 {installer.subscription.currentPeriodStart && installer.subscription.currentPeriodEnd && (
-                  <div className="flex items-center gap-2 text-[11px] text-gray-500">
+                  <div className="flex items-center gap-2 text-[11px] text-[#A0A0A0]">
                     <Calendar className="h-3 w-3" />
                     {format(new Date(installer.subscription.currentPeriodStart), 'MMM d, yyyy')} — {format(new Date(installer.subscription.currentPeriodEnd), 'MMM d, yyyy')}
                   </div>
@@ -639,36 +639,36 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
           )}
 
           {/* Business Capacity */}
-          <div className="p-5 border-b border-gray-100">
+          <div className="p-5 border-b border-[#2A2A2A]">
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Business Capacity</h3>
             <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 rounded-lg bg-gray-50">
+              <div className="p-3 rounded-lg bg-[#1A1A1A]">
                 <div className="flex items-center gap-2 mb-1">
                   <Clock className="h-3.5 w-3.5 text-gray-400" />
-                  <span className="text-[10px] text-gray-500">Years in Business</span>
+                  <span className="text-[10px] text-[#A0A0A0]">Years in Business</span>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{installer.yearsInBusiness ?? '—'}</p>
+                <p className="text-lg font-bold text-white">{installer.yearsInBusiness ?? '—'}</p>
               </div>
-              <div className="p-3 rounded-lg bg-gray-50">
+              <div className="p-3 rounded-lg bg-[#1A1A1A]">
                 <div className="flex items-center gap-2 mb-1">
                   <Users className="h-3.5 w-3.5 text-gray-400" />
-                  <span className="text-[10px] text-gray-500">Team Size</span>
+                  <span className="text-[10px] text-[#A0A0A0]">Team Size</span>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{installer.teamSize ?? '—'}</p>
+                <p className="text-lg font-bold text-white">{installer.teamSize ?? '—'}</p>
               </div>
-              <div className="p-3 rounded-lg bg-gray-50">
+              <div className="p-3 rounded-lg bg-[#1A1A1A]">
                 <div className="flex items-center gap-2 mb-1">
                   <Shield className="h-3.5 w-3.5 text-gray-400" />
-                  <span className="text-[10px] text-gray-500">Electricians</span>
+                  <span className="text-[10px] text-[#A0A0A0]">Electricians</span>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{installer.electricians ?? '—'}</p>
+                <p className="text-lg font-bold text-white">{installer.electricians ?? '—'}</p>
               </div>
-              <div className="p-3 rounded-lg bg-gray-50">
+              <div className="p-3 rounded-lg bg-[#1A1A1A]">
                 <div className="flex items-center gap-2 mb-1">
                   <Truck className="h-3.5 w-3.5 text-gray-400" />
-                  <span className="text-[10px] text-gray-500">Vans</span>
+                  <span className="text-[10px] text-[#A0A0A0]">Vans</span>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{installer.vans ?? '—'}</p>
+                <p className="text-lg font-bold text-white">{installer.vans ?? '—'}</p>
               </div>
             </div>
             {installer.specializations && installer.specializations.length > 0 && (
@@ -685,28 +685,28 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
 
           {/* Lead Preferences */}
           {installer.leadPreferences && (
-            <div className="p-5 border-b border-gray-100">
+            <div className="p-5 border-b border-[#2A2A2A]">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Lead Preferences</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-center gap-2 text-sm">
                   <Hash className="h-3.5 w-3.5 text-gray-400" />
-                  <span className="text-gray-500">Max leads/mo:</span>
-                  <span className="font-medium text-gray-900">{installer.leadPreferences.maxLeadsPerMonth ?? '—'}</span>
+                  <span className="text-[#A0A0A0]">Max leads/mo:</span>
+                  <span className="font-medium text-white">{installer.leadPreferences.maxLeadsPerMonth ?? '—'}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <DollarSign className="h-3.5 w-3.5 text-gray-400" />
-                  <span className="text-gray-500">Min value:</span>
-                  <span className="font-medium text-gray-900">{installer.leadPreferences.minValue ? formatCurrency(installer.leadPreferences.minValue) : '—'}</span>
+                  <span className="text-[#A0A0A0]">Min value:</span>
+                  <span className="font-medium text-white">{installer.leadPreferences.minValue ? formatCurrency(installer.leadPreferences.minValue) : '—'}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Clock className="h-3.5 w-3.5 text-gray-400" />
-                  <span className="text-gray-500">Response time:</span>
-                  <span className="font-medium text-gray-900">{installer.leadPreferences.responseTimeHours ? `${installer.leadPreferences.responseTimeHours}h` : '—'}</span>
+                  <span className="text-[#A0A0A0]">Response time:</span>
+                  <span className="font-medium text-white">{installer.leadPreferences.responseTimeHours ? `${installer.leadPreferences.responseTimeHours}h` : '—'}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <MapPin className="h-3.5 w-3.5 text-gray-400" />
-                  <span className="text-gray-500">Travel radius:</span>
-                  <span className="font-medium text-gray-900">{installer.leadPreferences.travelRadiusKm ? `${installer.leadPreferences.travelRadiusKm}km` : '—'}</span>
+                  <span className="text-[#A0A0A0]">Travel radius:</span>
+                  <span className="font-medium text-white">{installer.leadPreferences.travelRadiusKm ? `${installer.leadPreferences.travelRadiusKm}km` : '—'}</span>
                 </div>
               </div>
             </div>
@@ -718,17 +718,17 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Integrations</h3>
               <div className="space-y-2">
                 {installer.integrations.map(int => (
-                  <div key={int.provider} className="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50">
-                    <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${int.connected ? 'bg-green-50' : 'bg-gray-100'}`}>
+                  <div key={int.provider} className="flex items-center gap-3 p-2.5 rounded-lg bg-[#1A1A1A]">
+                    <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${int.connected ? 'bg-green-50' : 'bg-[#222222]'}`}>
                       <Link2 className={`h-4 w-4 ${int.connected ? 'text-green-600' : 'text-gray-400'}`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 capitalize">{int.provider.replace(/_/g, ' ')}</p>
+                      <p className="text-sm font-medium text-white capitalize">{int.provider.replace(/_/g, ' ')}</p>
                       {int.connectedAt && (
                         <p className="text-[10px] text-gray-400">Connected {format(new Date(int.connectedAt), 'MMM d, yyyy')}</p>
                       )}
                     </div>
-                    <Badge variant="outline" className={`text-[10px] ${int.connected ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-500 border-gray-200'}`}>
+                    <Badge variant="outline" className={`text-[10px] ${int.connected ? 'bg-green-50 text-green-700 border-green-200' : 'bg-[#1A1A1A] text-[#A0A0A0] border-[#2A2A2A]'}`}>
                       {int.connected ? 'Connected' : 'Disconnected'}
                     </Badge>
                   </div>
@@ -760,8 +760,8 @@ function InstallerCard({ installer, index, onView }: { installer: InstallerRow; 
           {/* Top row */}
           <div className="flex items-start justify-between mb-3">
             <div className="min-w-0 flex-1">
-              <h3 className="text-sm font-bold text-gray-900 truncate">{installer.companyName}</h3>
-              <p className="text-xs text-gray-500 mt-0.5">{installer.contactName}</p>
+              <h3 className="text-sm font-bold text-white truncate">{installer.companyName}</h3>
+              <p className="text-xs text-[#A0A0A0] mt-0.5">{installer.contactName}</p>
             </div>
             <PlanBadge plan={installer.plan} />
           </div>
@@ -781,9 +781,9 @@ function InstallerCard({ installer, index, onView }: { installer: InstallerRow; 
           <div className="mb-3">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[10px] text-gray-400">Onboarding Progress</span>
-              <span className="text-[10px] font-medium text-gray-600">{progressPercent}%</span>
+              <span className="text-[10px] font-medium text-[#A0A0A0]">{progressPercent}%</span>
             </div>
-            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-1.5 w-full bg-[#222222] rounded-full overflow-hidden">
               <motion.div
                 className={`h-full rounded-full ${installer.onboardingComplete ? 'bg-green-500' : 'bg-[#F3D840]'}`}
                 initial={{ width: 0 }}
@@ -802,10 +802,10 @@ function InstallerCard({ installer, index, onView }: { installer: InstallerRow; 
               </div>
               <div className="flex flex-wrap gap-1">
                 {installer.counties.slice(0, 4).map(c => (
-                  <span key={c} className="text-[10px] px-1.5 py-0.5 bg-gray-50 rounded text-gray-600">{c}</span>
+                  <span key={c} className="text-[10px] px-1.5 py-0.5 bg-[#1A1A1A] rounded text-[#A0A0A0]">{c}</span>
                 ))}
                 {installer.counties.length > 4 && (
-                  <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 rounded text-gray-500">+{installer.counties.length - 4}</span>
+                  <span className="text-[10px] px-1.5 py-0.5 bg-[#222222] rounded text-[#A0A0A0]">+{installer.counties.length - 4}</span>
                 )}
               </div>
             </div>
@@ -833,17 +833,17 @@ function InstallerCard({ installer, index, onView }: { installer: InstallerRow; 
           </div>
 
           {/* Bottom metrics */}
-          <div className="mt-auto pt-3 border-t border-gray-50">
+          <div className="mt-auto pt-3 border-t border-[#2A2A2A]">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {installer.teamSize != null && (
-                  <div className="flex items-center gap-1 text-[11px] text-gray-500">
+                  <div className="flex items-center gap-1 text-[11px] text-[#A0A0A0]">
                     <Users className="h-3 w-3" />
                     <span>{installer.teamSize} team</span>
                   </div>
                 )}
                 {installer.avgProjectValue != null && (
-                  <div className="flex items-center gap-1 text-[11px] text-gray-500">
+                  <div className="flex items-center gap-1 text-[11px] text-[#A0A0A0]">
                     <DollarSign className="h-3 w-3" />
                     <span>{formatCurrency(installer.avgProjectValue)} avg</span>
                   </div>
@@ -870,11 +870,11 @@ function StatSkeleton() {
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
-            <div className="h-4 w-24 bg-gray-100 rounded animate-pulse" />
-            <div className="h-7 w-16 bg-gray-100 rounded animate-pulse" />
-            <div className="h-3 w-20 bg-gray-100 rounded animate-pulse" />
+            <div className="h-4 w-24 bg-[#222222] rounded animate-pulse" />
+            <div className="h-7 w-16 bg-[#222222] rounded animate-pulse" />
+            <div className="h-3 w-20 bg-[#222222] rounded animate-pulse" />
           </div>
-          <div className="h-12 w-12 bg-gray-100 rounded-xl animate-pulse" />
+          <div className="h-12 w-12 bg-[#222222] rounded-xl animate-pulse" />
         </div>
       </CardContent>
     </Card>
@@ -887,20 +887,20 @@ function CardSkeleton() {
       <CardContent className="p-5 space-y-4">
         <div className="flex justify-between">
           <div className="space-y-1.5">
-            <div className="h-4 w-36 bg-gray-100 rounded animate-pulse" />
-            <div className="h-3 w-24 bg-gray-100 rounded animate-pulse" />
+            <div className="h-4 w-36 bg-[#222222] rounded animate-pulse" />
+            <div className="h-3 w-24 bg-[#222222] rounded animate-pulse" />
           </div>
-          <div className="h-5 w-16 bg-gray-100 rounded-full animate-pulse" />
+          <div className="h-5 w-16 bg-[#222222] rounded-full animate-pulse" />
         </div>
-        <div className="h-2 w-full bg-gray-100 rounded-full animate-pulse" />
+        <div className="h-2 w-full bg-[#222222] rounded-full animate-pulse" />
         <div className="flex gap-1.5">
-          <div className="h-5 w-12 bg-gray-100 rounded animate-pulse" />
-          <div className="h-5 w-14 bg-gray-100 rounded animate-pulse" />
+          <div className="h-5 w-12 bg-[#222222] rounded animate-pulse" />
+          <div className="h-5 w-14 bg-[#222222] rounded animate-pulse" />
         </div>
         <div className="flex gap-1">
-          <div className="h-7 w-7 bg-gray-100 rounded animate-pulse" />
-          <div className="h-7 w-7 bg-gray-100 rounded animate-pulse" />
-          <div className="h-7 w-7 bg-gray-100 rounded animate-pulse" />
+          <div className="h-7 w-7 bg-[#222222] rounded animate-pulse" />
+          <div className="h-7 w-7 bg-[#222222] rounded animate-pulse" />
+          <div className="h-7 w-7 bg-[#222222] rounded animate-pulse" />
         </div>
       </CardContent>
     </Card>
@@ -957,12 +957,12 @@ export default function InstallersPage() {
   }, [])
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6 bg-gray-50 min-h-full">
+    <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }} className="p-4 sm:p-6 lg:p-8 space-y-6">
       {/* Header */}
       <motion.div {...fadeUp} initial="initial" animate="animate" transition={{ duration: 0.3 }} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Installers</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-white">Installers</h1>
+          <p className="text-sm text-[#A0A0A0] mt-1">
             Solar installer profiles and onboarding
             {stats && !statsLoading && (
               <span className="text-gray-400"> · {stats.totalInstallers} total</span>
@@ -1091,8 +1091,8 @@ export default function InstallersPage() {
               <div className="h-12 w-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-3">
                 <AlertTriangle className="h-6 w-6 text-red-500" />
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">Failed to load installers</h3>
-              <p className="text-sm text-gray-500">Please try again or check your connection.</p>
+              <h3 className="text-sm font-semibold text-white mb-1">Failed to load installers</h3>
+              <p className="text-sm text-[#A0A0A0]">Please try again or check your connection.</p>
               <Button
                 variant="outline"
                 className="mt-4"
@@ -1105,11 +1105,11 @@ export default function InstallersPage() {
         ) : installers.length === 0 ? (
           <Card className="border-0 shadow-sm">
             <CardContent className="p-12 text-center">
-              <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
+              <div className="h-12 w-12 rounded-full bg-[#222222] flex items-center justify-center mx-auto mb-3">
                 <Building2 className="h-6 w-6 text-gray-400" />
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">No installers found</h3>
-              <p className="text-sm text-gray-500 mb-4">
+              <h3 className="text-sm font-semibold text-white mb-1">No installers found</h3>
+              <p className="text-sm text-[#A0A0A0] mb-4">
                 {search || planFilter || onboardingFilter || countyFilter
                   ? 'Try adjusting your filters to see more results.'
                   : 'Get started by adding your first installer.'}
@@ -1140,7 +1140,7 @@ export default function InstallersPage() {
             {/* Pagination */}
             {pagination.totalPages > 1 && (
               <motion.div {...fadeUp} initial="initial" animate="animate" transition={{ duration: 0.3 }} className="flex items-center justify-between mt-6 pt-4">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[#A0A0A0]">
                   Showing {((pagination.page - 1) * 12) + 1}–{Math.min(pagination.page * 12, pagination.total)} of {pagination.total}
                 </p>
                 <div className="flex items-center gap-2">

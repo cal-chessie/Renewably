@@ -86,3 +86,111 @@ Stage Summary:
 - Pages like Activities, Proposals, Workflows, Reports, Invoices still exist and work, just not in the main nav
 - Zero dead files remaining
 - Clean build confirmed
+
+---
+Task ID: 5
+Agent: UI Polish Agent
+Task: Polish CRM contacts pages to dark brand aesthetic
+
+Work Log:
+- Updated contacts/page.tsx outer container and all content to dark theme
+- Updated PeoplePage header (h1 white, p secondary), TabsList (dark bg, border)
+- Updated ContactsView: Card dark bg/border, table headers dark bg/text, rows dark borders/hover, skeleton loaders dark
+- Updated CompaniesView: Card dark bg/border, company name/industry/location text dark, borders dark
+- Updated ContactDetailPanel slide-over: bg-white → #1A1A1A, all borders → #2A2A2A
+- Updated panel header: close button hover, contact name white, job title/company secondary
+- Updated Contact Info section: icon backgrounds to dark variants, text white, labels muted
+- Updated Quick Actions: dark border bg, label text secondary
+- Updated Related Deals, Tasks, Activities, Notes, Proposals: dark bg/borders/text
+- Updated LogCallDialog contact name display to dark theme
+- Updated BookMeetingDialog checkbox border for dark theme
+- Updated CreateProposalDialog line item totals, trash icon, total text, border
+- Updated contact detail page [id]/page.tsx: outer container, back button, header, TabsList
+- Updated all tab content cards: Overview, Deals, Activities, Tasks, Notes
+- Converted all text-gray-*, bg-gray-*, border-gray-* classes to inline dark equivalents
+- Lint passed (2 pre-existing errors in other files, 0 in edited files)
+
+Stage Summary:
+- Contacts list and detail pages now match dark brand aesthetic
+- Consistent with companies page reference pattern
+
+---
+Task ID: 7
+Agent: UI Polish Agent
+Task: Polish pipeline page to dark brand aesthetic
+
+Work Log:
+- Updated main container, header, kanban columns, deal cards to dark theme
+- Updated DealDetailPanel slide-over to dark bg
+- Converted all text, borders, hover states to dark equivalents
+- Updated loading skeletons
+- Lint passed
+
+Stage Summary:
+- Pipeline page now matches dark brand aesthetic
+
+---
+Task ID: 5b
+Agent: UI Polish Agent
+Task: Polish dashboard page (crm/page.tsx) to dark brand aesthetic
+
+Work Log:
+- Changed outer container to backgroundColor #0A0A0A
+- Updated skeleton loading states to dark theme (#222222, #1A1A1A, #2A2A2A borders)
+- Converted all 8 Card components to dark bg #1A1A1A with #2A2A2A borders
+- Changed all CardTitle text from text-gray-900 to style color #FFFFFF
+- Changed header heading to white, subtitle to #A0A0A0
+- Changed date pill to dark bg #1A1A1A with #2A2A2A border, text #A0A0A0
+- Converted all text-gray-900 references to white (#FFFFFF)
+- Converted text-gray-500/600/700 references to #A0A0A0 or #666666
+- Updated all hover:bg-gray-50 to hover:bg-white/5
+- Updated all bg-gray-50 quick action tiles to backgroundColor #141414
+- Updated all border-gray-100 references to #2A2A2A
+- Updated chart CartesianGrid stroke from #f0f0f0 to #2A2A2A
+- Updated tooltip style to dark bg #1A1A1A with #2A2A2A border
+- Updated pipeline funnel bars to dark bg #222222
+- Updated overdue warning to dark transparent red bg
+- Updated "View all" links to muted #666666 color
+- Updated text-gray-200 separator to #444444 for dark visibility
+- Updated Activity Breakdown legend text and values to dark theme
+- Lint passed (0 errors in edited file; 3 pre-existing errors in other files)
+
+Stage Summary:
+- Dashboard page now matches companies/contacts/pipeline dark brand aesthetic
+- All light theme remnants removed from crm/page.tsx
+---
+Task ID: 8
+Agent: UI Polish Agent
+Task: Polish installers, reports, and workflows pages to dark brand aesthetic
+
+Work Log:
+- Updated all 3 pages outer containers to dark bg (#0A0A0A with inline style)
+- Converted text-gray-900 → text-white across all 3 files
+- Converted text-gray-500/600/700 → text-[#A0A0A0] across all 3 files
+- Converted bg-gray-50 → bg-[#1A1A1A], bg-gray-100 → bg-[#222222] across all 3 files
+- Converted bg-white → bg-[#141414] for panels and containers
+- Converted border-gray-100/200 → border-[#2A2A2A] across all 3 files
+- Converted hover:bg-gray-50/100 → hover:bg-white/5 across all 3 files
+- Converted bg-gray-300 → bg-[#444444] in workflows (inactive indicators)
+- Darkened chart grid strokes (#f0f0f0 → #2A2A2A) and circle strokes (#f3f4f6 → #2A2A2A) in reports
+- Darkened chart fill areas (#f9fafb → #1A1A1A, #ffffff → #0A0A0A) in reports
+- Fixed border-t border-gray-50 → border-[#2A2A2A] in installers
+- Lint passed (0 errors)
+
+Stage Summary:
+- Installers, reports, and workflows pages now match dark brand aesthetic
+---
+Task ID: 9
+Agent: Main Coordinator
+Task: Fix lint errors from polish agents + final verification
+
+Work Log:
+- Fixed 3 unterminated string literal errors in invoices, meetings, proposals pages
+- Fixed 2 missing closing `>` errors in tasks/page.tsx (pre-existing)
+- All 14 CRM pages now consistently use dark brand aesthetic
+- ESLint: 0 errors
+- Tests: 29/29 passing
+
+Stage Summary:
+- All CRM pages polished and lint-clean
+- Full test suite passing

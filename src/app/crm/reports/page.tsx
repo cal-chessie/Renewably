@@ -156,13 +156,13 @@ const CustomTooltip = ({ active, payload, label, formatter }: {
 }) => {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white rounded-lg shadow-lg border border-gray-100 p-3 text-xs">
-      <p className="font-semibold text-gray-700 mb-1">{label}</p>
+    <div className="bg-[#141414] rounded-lg shadow-lg border border-[#2A2A2A] p-3 text-xs">
+      <p className="font-semibold text-[#A0A0A0] mb-1">{label}</p>
       {payload.map((p, i) => (
         <div key={i} className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
-          <span className="text-gray-500">{p.name}:</span>
-          <span className="font-medium text-gray-900">
+          <span className="text-[#A0A0A0]">{p.name}:</span>
+          <span className="font-medium text-white">
             {formatter ? formatter(p.value) : formatCurrency(p.value ?? 0)}
           </span>
         </div>
@@ -207,8 +207,8 @@ function StatCard({
       <CardContent className="p-5">
         <div className="flex items-start justify-between">
           <div className="space-y-2">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{title}</p>
-            <p className="text-2xl font-bold text-gray-900">{value}</p>
+            <p className="text-xs font-medium text-[#A0A0A0] uppercase tracking-wider">{title}</p>
+            <p className="text-2xl font-bold text-white">{value}</p>
             {change !== undefined && (
               <div className="flex items-center gap-1">
                 {change >= 0 ? (
@@ -273,15 +273,15 @@ function ComparisonCard({
       <CardContent className="p-4">
         <div className="flex items-center gap-2 mb-3">
           <Icon className="h-4 w-4 text-gray-400" />
-          <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">{title}</span>
+          <span className="text-xs font-medium text-[#A0A0A0] uppercase tracking-wider">{title}</span>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <p className="text-lg font-bold text-gray-900">{thisMonth}</p>
+            <p className="text-lg font-bold text-white">{thisMonth}</p>
             <p className="text-[10px] text-gray-400 uppercase tracking-wider">This Month</p>
           </div>
           <div>
-            <p className="text-lg font-semibold text-gray-500">{lastMonth}</p>
+            <p className="text-lg font-semibold text-[#A0A0A0]">{lastMonth}</p>
             <p className="text-[10px] text-gray-400 uppercase tracking-wider">Last Month</p>
           </div>
         </div>
@@ -371,16 +371,16 @@ export default function ReportsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 text-[#F3D840] animate-spin" />
-          <p className="text-sm text-gray-500">Loading reports...</p>
+          <p className="text-sm text-[#A0A0A0]">Loading reports...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }}>
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 sticky top-0 z-30">
+      <div className="bg-[#141414] border-b border-[#2A2A2A] sticky top-0 z-30">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -388,8 +388,8 @@ export default function ReportsPage() {
                 <BarChart3 className="h-5 w-5 text-[#F3D840]" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Reports & Analytics</h1>
-                <p className="text-sm text-gray-500">Advanced reporting and revenue forecasting</p>
+                <h1 className="text-xl font-bold text-white">Reports & Analytics</h1>
+                <p className="text-sm text-[#A0A0A0]">Advanced reporting and revenue forecasting</p>
               </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
@@ -525,8 +525,8 @@ export default function ReportsPage() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-base font-bold text-gray-900">Revenue Forecast</CardTitle>
-                    <CardDescription className="text-xs text-gray-500 mt-0.5">
+                    <CardTitle className="text-base font-bold text-white">Revenue Forecast</CardTitle>
+                    <CardDescription className="text-xs text-[#A0A0A0] mt-0.5">
                       Actual vs projected revenue with confidence intervals
                     </CardDescription>
                   </div>
@@ -537,7 +537,7 @@ export default function ReportsPage() {
               </CardHeader>
               <CardContent className="pt-2">
                 <div className="mb-3 flex items-baseline gap-2">
-                  <span className="text-sm text-gray-500">Expected this quarter:</span>
+                  <span className="text-sm text-[#A0A0A0]">Expected this quarter:</span>
                   <span className="text-lg font-bold text-[#F3D840]">
                     {formatCurrency(data.revenueForecast.projected)}
                   </span>
@@ -559,18 +559,18 @@ export default function ReportsPage() {
                           <stop offset="100%" stopColor="#F3D840" stopOpacity={0.02} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" />
                       <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
                       <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false}
                         tickFormatter={(v) => `€${(v / 1000).toFixed(0)}k`} />
                       <Tooltip content={<CustomTooltip />} />
                       <Area type="monotone" dataKey="upper90" stroke="none" fill="url(#band90Grad)"
                         name="90% Upper" connectNulls={false} />
-                      <Area type="monotone" dataKey="lower90" stroke="none" fill="#f9fafb"
+                      <Area type="monotone" dataKey="lower90" stroke="none" fill="#1A1A1A"
                         name="90% Lower" connectNulls={false} />
                       <Area type="monotone" dataKey="upper70" stroke="none" fill="url(#projectedGrad)"
                         name="70% Upper" connectNulls={false} />
-                      <Area type="monotone" dataKey="lower70" stroke="none" fill="#ffffff"
+                      <Area type="monotone" dataKey="lower70" stroke="none" fill="#0A0A0A"
                         name="70% Lower" connectNulls={false} />
                       <Area type="monotone" dataKey="actual" stroke="#F3D840" strokeWidth={2.5}
                         fill="url(#actualGrad)" name="Actual Revenue" dot={false} connectNulls={false} />
@@ -600,8 +600,8 @@ export default function ReportsPage() {
             <div className="space-y-4">
               <Card className="shadow-sm border-0">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-base font-bold text-gray-900">Monthly Comparison</CardTitle>
-                  <CardDescription className="text-xs text-gray-500">This month vs last month</CardDescription>
+                  <CardTitle className="text-base font-bold text-white">Monthly Comparison</CardTitle>
+                  <CardDescription className="text-xs text-[#A0A0A0]">This month vs last month</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3 pt-2">
                   <ComparisonCard
@@ -642,8 +642,8 @@ export default function ReportsPage() {
             {/* Pipeline by Stage */}
             <Card className="shadow-sm border-0">
               <CardHeader className="pb-2">
-                <CardTitle className="text-base font-bold text-gray-900">Pipeline by Stage</CardTitle>
-                <CardDescription className="text-xs text-gray-500">
+                <CardTitle className="text-base font-bold text-white">Pipeline by Stage</CardTitle>
+                <CardDescription className="text-xs text-[#A0A0A0]">
                   Deal value distribution across pipeline stages
                 </CardDescription>
               </CardHeader>
@@ -652,7 +652,7 @@ export default function ReportsPage() {
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={data.pipelineMetrics.byStage} layout="vertical"
                       margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" horizontal={false} />
                       <XAxis type="number" tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false}
                         tickFormatter={(v) => `€${(v / 1000).toFixed(0)}k`} />
                       <YAxis type="category" dataKey="stage" tick={{ fontSize: 12, fill: '#6B7280' }}
@@ -672,8 +672,8 @@ export default function ReportsPage() {
             {/* Conversion Funnel */}
             <Card className="shadow-sm border-0">
               <CardHeader className="pb-2">
-                <CardTitle className="text-base font-bold text-gray-900">Conversion Funnel</CardTitle>
-                <CardDescription className="text-xs text-gray-500">
+                <CardTitle className="text-base font-bold text-white">Conversion Funnel</CardTitle>
+                <CardDescription className="text-xs text-[#A0A0A0]">
                   Deal flow through pipeline stages
                 </CardDescription>
               </CardHeader>
@@ -694,13 +694,13 @@ export default function ReportsPage() {
                         className="space-y-1"
                       >
                         <div className="flex items-center justify-between text-xs">
-                          <span className="font-medium text-gray-700">{stage.stage}</span>
+                          <span className="font-medium text-[#A0A0A0]">{stage.stage}</span>
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-gray-900">{stage.count}</span>
+                            <span className="font-bold text-white">{stage.count}</span>
                             <span className="text-gray-400">{formatCurrency(stage.value)}</span>
                           </div>
                         </div>
-                        <div className="relative h-8 bg-gray-50 rounded-lg overflow-hidden">
+                        <div className="relative h-8 bg-[#1A1A1A] rounded-lg overflow-hidden">
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${width}%` }}
@@ -735,8 +735,8 @@ export default function ReportsPage() {
             {/* Activity Trend */}
             <Card className="shadow-sm border-0">
               <CardHeader className="pb-2">
-                <CardTitle className="text-base font-bold text-gray-900">Activity Trend</CardTitle>
-                <CardDescription className="text-xs text-gray-500">Weekly activity volume</CardDescription>
+                <CardTitle className="text-base font-bold text-white">Activity Trend</CardTitle>
+                <CardDescription className="text-xs text-[#A0A0A0]">Weekly activity volume</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-[250px]">
@@ -748,7 +748,7 @@ export default function ReportsPage() {
                           <stop offset="100%" stopColor="#F3D840" stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" />
                       <XAxis dataKey="week" tick={{ fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
                       <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
                       <Tooltip content={<CustomTooltip />} />
@@ -763,8 +763,8 @@ export default function ReportsPage() {
             {/* Activity by Type */}
             <Card className="shadow-sm border-0">
               <CardHeader className="pb-2">
-                <CardTitle className="text-base font-bold text-gray-900">Activity Breakdown</CardTitle>
-                <CardDescription className="text-xs text-gray-500">Activities by type and user</CardDescription>
+                <CardTitle className="text-base font-bold text-white">Activity Breakdown</CardTitle>
+                <CardDescription className="text-xs text-[#A0A0A0]">Activities by type and user</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-[250px]">
@@ -805,9 +805,9 @@ export default function ReportsPage() {
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-gray-400" />
-                  <CardTitle className="text-base font-bold text-gray-900">Deal Velocity</CardTitle>
+                  <CardTitle className="text-base font-bold text-white">Deal Velocity</CardTitle>
                 </div>
-                <CardDescription className="text-xs text-gray-500">
+                <CardDescription className="text-xs text-[#A0A0A0]">
                   Avg days in each stage · Bottleneck detection
                 </CardDescription>
               </CardHeader>
@@ -825,13 +825,13 @@ export default function ReportsPage() {
                             {isBottleneck && (
                               <AlertTriangle className="h-3 w-3 text-amber-500" />
                             )}
-                            <span className={`font-medium ${isBottleneck ? 'text-amber-700' : 'text-gray-700'}`}>
+                            <span className={`font-medium ${isBottleneck ? 'text-amber-700' : 'text-[#A0A0A0]'}`}>
                               {stage}
                             </span>
                           </div>
-                          <span className="font-semibold text-gray-900">{days}d</span>
+                          <span className="font-semibold text-white">{days}d</span>
                         </div>
-                        <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="relative h-2 bg-[#222222] rounded-full overflow-hidden">
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${width}%` }}
@@ -857,25 +857,25 @@ export default function ReportsPage() {
             {/* Proposal Performance */}
             <Card className="shadow-sm border-0">
               <CardHeader className="pb-2">
-                <CardTitle className="text-base font-bold text-gray-900">Proposal Performance</CardTitle>
-                <CardDescription className="text-xs text-gray-500">
+                <CardTitle className="text-base font-bold text-white">Proposal Performance</CardTitle>
+                <CardDescription className="text-xs text-[#A0A0A0]">
                   Pipeline funnel: sent → viewed → accepted
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-center mb-4">
                   <div className="relative">
-                    <div className="w-28 h-28 rounded-full border-4 border-gray-100 flex items-center justify-center">
-                      <div className="w-20 h-20 rounded-full border-4 border-gray-100 flex items-center justify-center">
+                    <div className="w-28 h-28 rounded-full border-4 border-[#2A2A2A] flex items-center justify-center">
+                      <div className="w-20 h-20 rounded-full border-4 border-[#2A2A2A] flex items-center justify-center">
                         <div className="w-12 h-12 rounded-full border-4 border-[#F3D840] flex items-center justify-center">
                           <span className="text-sm font-bold text-[#374151]">{data.proposalMetrics.acceptanceRate}%</span>
                         </div>
                       </div>
                     </div>
-                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-semibold text-gray-600 bg-white px-2">
+                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-semibold text-[#A0A0A0] bg-[#141414] px-2">
                       {data.proposalMetrics.sent} sent
                     </div>
-                    <div className="absolute top-2 -right-8 text-xs font-semibold text-gray-600 bg-white px-1">
+                    <div className="absolute top-2 -right-8 text-xs font-semibold text-[#A0A0A0] bg-[#141414] px-1">
                       {data.proposalMetrics.viewed} viewed
                     </div>
                     <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-xs font-semibold text-[#F3D840]">
@@ -884,12 +884,12 @@ export default function ReportsPage() {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 mt-2">
-                  <div className="text-center p-2 bg-gray-50 rounded-lg">
-                    <p className="text-lg font-bold text-gray-900">{formatCurrency(data.proposalMetrics.avgValue)}</p>
+                  <div className="text-center p-2 bg-[#1A1A1A] rounded-lg">
+                    <p className="text-lg font-bold text-white">{formatCurrency(data.proposalMetrics.avgValue)}</p>
                     <p className="text-[10px] text-gray-400 uppercase tracking-wider">Avg Value</p>
                   </div>
-                  <div className="text-center p-2 bg-gray-50 rounded-lg">
-                    <p className="text-lg font-bold text-gray-900">{data.proposalMetrics.acceptanceRate}%</p>
+                  <div className="text-center p-2 bg-[#1A1A1A] rounded-lg">
+                    <p className="text-lg font-bold text-white">{data.proposalMetrics.acceptanceRate}%</p>
                     <p className="text-[10px] text-gray-400 uppercase tracking-wider">Accept Rate</p>
                   </div>
                 </div>
@@ -899,14 +899,14 @@ export default function ReportsPage() {
             {/* Meeting Metrics */}
             <Card className="shadow-sm border-0">
               <CardHeader className="pb-2">
-                <CardTitle className="text-base font-bold text-gray-900">Meeting Metrics</CardTitle>
-                <CardDescription className="text-xs text-gray-500">Completion rates by meeting type</CardDescription>
+                <CardTitle className="text-base font-bold text-white">Meeting Metrics</CardTitle>
+                <CardDescription className="text-xs text-[#A0A0A0]">Completion rates by meeting type</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-center mb-4">
                   <div className="relative w-24 h-24">
                     <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-                      <circle cx="50" cy="50" r="42" fill="none" stroke="#f3f4f6" strokeWidth="8" />
+                      <circle cx="50" cy="50" r="42" fill="none" stroke="#2A2A2A" strokeWidth="8" />
                       <circle
                         cx="50" cy="50" r="42" fill="none"
                         stroke="#F3D840" strokeWidth="8"
@@ -915,7 +915,7 @@ export default function ReportsPage() {
                       />
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span className="text-xl font-bold text-gray-900">{data.meetingMetrics.completionRate}%</span>
+                      <span className="text-xl font-bold text-white">{data.meetingMetrics.completionRate}%</span>
                       <span className="text-[9px] text-gray-400 uppercase tracking-wider">Completion</span>
                     </div>
                   </div>
@@ -927,12 +927,12 @@ export default function ReportsPage() {
                     return (
                       <div key={type} className="space-y-1">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="font-medium text-gray-700">{typeLabel}</span>
+                          <span className="font-medium text-[#A0A0A0]">{typeLabel}</span>
                           <span className="text-gray-400">
                             {metrics.completed}/{metrics.total} ({rate}%)
                           </span>
                         </div>
-                        <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-1.5 bg-[#222222] rounded-full overflow-hidden">
                           <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${rate}%` }}
@@ -955,9 +955,9 @@ export default function ReportsPage() {
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
                   <PieChartIcon className="h-4 w-4 text-gray-400" />
-                  <CardTitle className="text-base font-bold text-gray-900">Revenue by Source</CardTitle>
+                  <CardTitle className="text-base font-bold text-white">Revenue by Source</CardTitle>
                 </div>
-                <CardDescription className="text-xs text-gray-500">Won revenue by lead source</CardDescription>
+                <CardDescription className="text-xs text-[#A0A0A0]">Won revenue by lead source</CardDescription>
               </CardHeader>
               <CardContent>
                 {data.revenueBySource.length > 0 ? (
@@ -985,7 +985,7 @@ export default function ReportsPage() {
                           iconSize={8}
                           wrapperStyle={{ fontSize: '12px' }}
                           formatter={(value: string) => (
-                            <span className="text-gray-600 capitalize">{value}</span>
+                            <span className="text-[#A0A0A0] capitalize">{value}</span>
                           )}
                         />
                       </PieChart>
@@ -1004,9 +1004,9 @@ export default function ReportsPage() {
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-gray-400" />
-                  <CardTitle className="text-base font-bold text-gray-900">Top Performers</CardTitle>
+                  <CardTitle className="text-base font-bold text-white">Top Performers</CardTitle>
                 </div>
-                <CardDescription className="text-xs text-gray-500">Team performance by revenue & deals won</CardDescription>
+                <CardDescription className="text-xs text-[#A0A0A0]">Team performance by revenue & deals won</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -1022,15 +1022,15 @@ export default function ReportsPage() {
                         transition={{ delay: index * 0.08 }}
                         className="flex items-center gap-3"
                       >
-                        <div className="flex items-center justify-center w-7 h-7 rounded-full bg-gray-100 text-xs font-bold text-gray-500 shrink-0">
+                        <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#222222] text-xs font-bold text-[#A0A0A0] shrink-0">
                           {index + 1}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm font-medium text-gray-900 truncate">{performer.name}</span>
+                            <span className="text-sm font-medium text-white truncate">{performer.name}</span>
                             <span className="text-sm font-bold text-[#F3D840] ml-2">{formatCurrency(performer.revenue)}</span>
                           </div>
-                          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                          <div className="h-1.5 bg-[#222222] rounded-full overflow-hidden">
                             <motion.div
                               initial={{ width: 0 }}
                               animate={{ width: `${barWidth}%` }}
@@ -1055,25 +1055,25 @@ export default function ReportsPage() {
           <motion.div variants={item} className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <Card className="shadow-sm border-0">
               <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-gray-900">{formatCurrency(data.pipelineMetrics.weightedPipeline)}</p>
+                <p className="text-2xl font-bold text-white">{formatCurrency(data.pipelineMetrics.weightedPipeline)}</p>
                 <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Weighted Pipeline</p>
               </CardContent>
             </Card>
             <Card className="shadow-sm border-0">
               <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-gray-900">{data.pipelineMetrics.avgCycleDays}</p>
+                <p className="text-2xl font-bold text-white">{data.pipelineMetrics.avgCycleDays}</p>
                 <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Avg Deal Cycle (days)</p>
               </CardContent>
             </Card>
             <Card className="shadow-sm border-0">
               <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-gray-900">{data.meetingMetrics.total}</p>
+                <p className="text-2xl font-bold text-white">{data.meetingMetrics.total}</p>
                 <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Total Meetings</p>
               </CardContent>
             </Card>
             <Card className="shadow-sm border-0">
               <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold text-gray-900">{data.proposalMetrics.accepted}</p>
+                <p className="text-2xl font-bold text-white">{data.proposalMetrics.accepted}</p>
                 <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">Proposals Accepted</p>
               </CardContent>
             </Card>

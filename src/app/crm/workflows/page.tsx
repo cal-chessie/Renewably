@@ -260,7 +260,7 @@ function StatusBadge({ status }: { status: string }) {
     )
   }
   return (
-    <Badge variant="outline" className="text-gray-500 border-gray-200 bg-gray-50 gap-1 text-xs font-medium">
+    <Badge variant="outline" className="text-[#A0A0A0] border-[#2A2A2A] bg-[#1A1A1A] gap-1 text-xs font-medium">
       <Clock className="h-3 w-3" />
       Skipped
     </Badge>
@@ -298,27 +298,27 @@ function RuleCard({
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.2 }}
     >
-      <Card className={`border transition-all duration-200 ${rule.isActive ? 'border-gray-200 shadow-sm' : 'border-gray-100 opacity-70'}`}>
+      <Card className={`border transition-all duration-200 ${rule.isActive ? 'border-[#2A2A2A] shadow-sm' : 'border-[#2A2A2A] opacity-70'}`}>
         <CardContent className="p-0">
           {/* Header row */}
           <div className="flex items-center gap-3 p-4">
             {/* Active indicator */}
-            <div className={`h-2.5 w-2.5 rounded-full shrink-0 ${rule.isActive ? 'bg-green-500' : 'bg-gray-300'}`} />
+            <div className={`h-2.5 w-2.5 rounded-full shrink-0 ${rule.isActive ? 'bg-green-500' : 'bg-[#444444]'}`} />
 
             {/* Trigger icon */}
-            <div className={`h-9 w-9 rounded-lg flex items-center justify-center shrink-0 ${triggerInfo?.bgColor || 'bg-gray-50'}`}>
-              <TriggerIconComponent className={`h-4.5 w-4.5 ${triggerInfo?.color || 'text-gray-500'}`} />
+            <div className={`h-9 w-9 rounded-lg flex items-center justify-center shrink-0 ${triggerInfo?.bgColor || 'bg-[#1A1A1A]'}`}>
+              <TriggerIconComponent className={`h-4.5 w-4.5 ${triggerInfo?.color || 'text-[#A0A0A0]'}`} />
             </div>
 
             {/* Main info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold text-gray-900 truncate">{rule.name}</h3>
+                <h3 className="text-sm font-semibold text-white truncate">{rule.name}</h3>
                 <Badge variant="secondary" className="text-[10px] px-1.5 py-0 shrink-0">
                   {getTriggerLabel(rule.triggerType)}
                 </Badge>
               </div>
-              <p className="text-xs text-gray-500 mt-0.5 truncate">
+              <p className="text-xs text-[#A0A0A0] mt-0.5 truncate">
                 {formatTriggerDescription(rule.triggerType, triggerConfig)}
               </p>
             </div>
@@ -380,15 +380,15 @@ function RuleCard({
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="px-4 pb-4 border-t border-gray-100">
+                <div className="px-4 pb-4 border-t border-[#2A2A2A]">
                   {/* Actions list */}
                   <div className="pt-3 space-y-2">
-                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</p>
+                    <p className="text-xs font-medium text-[#A0A0A0] uppercase tracking-wider">Actions</p>
                     {actions.map((action, index) => (
-                      <div key={index} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
+                      <div key={index} className="flex items-center gap-2 bg-[#1A1A1A] rounded-lg px-3 py-2">
                         <ArrowRight className="h-3.5 w-3.5 text-[#F3D840] shrink-0" />
-                        <span className="text-xs text-gray-700 font-medium">{getActionLabel(action.type)}</span>
-                        <span className="text-xs text-gray-500 truncate">
+                        <span className="text-xs text-[#A0A0A0] font-medium">{getActionLabel(action.type)}</span>
+                        <span className="text-xs text-[#A0A0A0] truncate">
                           — {formatActionDescription(action.type, action.config)}
                         </span>
                       </div>
@@ -413,7 +413,7 @@ function RuleCard({
                   </div>
 
                   {rule.description && (
-                    <p className="text-xs text-gray-500 mt-3 bg-gray-50 rounded-lg p-3">{rule.description}</p>
+                    <p className="text-xs text-[#A0A0A0] mt-3 bg-[#1A1A1A] rounded-lg p-3">{rule.description}</p>
                   )}
                 </div>
               </motion.div>
@@ -444,10 +444,10 @@ function TriggerBuilder({
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${triggerInfo?.bgColor || 'bg-gray-50'}`}>
-          <TriggerIcon className={`h-4 w-4 ${triggerInfo?.color || 'text-gray-500'}`} />
+        <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${triggerInfo?.bgColor || 'bg-[#1A1A1A]'}`}>
+          <TriggerIcon className={`h-4 w-4 ${triggerInfo?.color || 'text-[#A0A0A0]'}`} />
         </div>
-        <Label className="text-sm font-medium text-gray-700">When this happens...</Label>
+        <Label className="text-sm font-medium text-[#A0A0A0]">When this happens...</Label>
       </div>
 
       <Select value={triggerType} onValueChange={(v) => {
@@ -520,9 +520,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="space-y-2 bg-gray-50 rounded-lg p-3"
+            className="space-y-2 bg-[#1A1A1A] rounded-lg p-3"
           >
-            <Label className="text-xs text-gray-500">When deal moves to stage:</Label>
+            <Label className="text-xs text-[#A0A0A0]">When deal moves to stage:</Label>
             <Select
               value={(triggerConfig.stage as string) || ''}
               onValueChange={(v) => onConfigChange({ ...triggerConfig, stage: v })}
@@ -545,9 +545,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="bg-gray-50 rounded-lg p-3"
+            className="bg-[#1A1A1A] rounded-lg p-3"
           >
-            <p className="text-xs text-gray-500">Triggers automatically when a new contact is created in the CRM.</p>
+            <p className="text-xs text-[#A0A0A0]">Triggers automatically when a new contact is created in the CRM.</p>
           </motion.div>
         )}
 
@@ -557,9 +557,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="space-y-2 bg-gray-50 rounded-lg p-3"
+            className="space-y-2 bg-[#1A1A1A] rounded-lg p-3"
           >
-            <Label className="text-xs text-gray-500">When task is overdue by (days):</Label>
+            <Label className="text-xs text-[#A0A0A0]">When task is overdue by (days):</Label>
             <Input
               type="number"
               min={1}
@@ -576,9 +576,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="space-y-2 bg-gray-50 rounded-lg p-3"
+            className="space-y-2 bg-[#1A1A1A] rounded-lg p-3"
           >
-            <Label className="text-xs text-gray-500">When proposal status is:</Label>
+            <Label className="text-xs text-[#A0A0A0]">When proposal status is:</Label>
             <Select
               value={(triggerConfig.status as string) || ''}
               onValueChange={(v) => onConfigChange({ ...triggerConfig, status: v })}
@@ -603,9 +603,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="space-y-2 bg-gray-50 rounded-lg p-3"
+            className="space-y-2 bg-[#1A1A1A] rounded-lg p-3"
           >
-            <Label className="text-xs text-gray-500">When contact has no activity for (days):</Label>
+            <Label className="text-xs text-[#A0A0A0]">When contact has no activity for (days):</Label>
             <Input
               type="number"
               min={1}
@@ -622,9 +622,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="bg-gray-50 rounded-lg p-3"
+            className="bg-[#1A1A1A] rounded-lg p-3"
           >
-            <p className="text-xs text-gray-500">Triggers automatically when a new deal is created in the pipeline.</p>
+            <p className="text-xs text-[#A0A0A0]">Triggers automatically when a new deal is created in the pipeline.</p>
           </motion.div>
         )}
 
@@ -634,9 +634,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="bg-gray-50 rounded-lg p-3"
+            className="bg-[#1A1A1A] rounded-lg p-3"
           >
-            <p className="text-xs text-gray-500">Triggers when a task is marked as completed.</p>
+            <p className="text-xs text-[#A0A0A0]">Triggers when a task is marked as completed.</p>
           </motion.div>
         )}
 
@@ -646,9 +646,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="bg-gray-50 rounded-lg p-3"
+            className="bg-[#1A1A1A] rounded-lg p-3"
           >
-            <p className="text-xs text-gray-500">Triggers automatically when a new meeting is scheduled.</p>
+            <p className="text-xs text-[#A0A0A0]">Triggers automatically when a new meeting is scheduled.</p>
           </motion.div>
         )}
 
@@ -658,9 +658,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="bg-gray-50 rounded-lg p-3"
+            className="bg-[#1A1A1A] rounded-lg p-3"
           >
-            <p className="text-xs text-gray-500">Triggers when a meeting is marked as completed.</p>
+            <p className="text-xs text-[#A0A0A0]">Triggers when a meeting is marked as completed.</p>
           </motion.div>
         )}
 
@@ -670,9 +670,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="bg-gray-50 rounded-lg p-3"
+            className="bg-[#1A1A1A] rounded-lg p-3"
           >
-            <p className="text-xs text-gray-500">Triggers when a meeting is cancelled.</p>
+            <p className="text-xs text-[#A0A0A0]">Triggers when a meeting is cancelled.</p>
           </motion.div>
         )}
 
@@ -682,9 +682,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="bg-gray-50 rounded-lg p-3"
+            className="bg-[#1A1A1A] rounded-lg p-3"
           >
-            <p className="text-xs text-gray-500">Triggers automatically when a new invoice is created.</p>
+            <p className="text-xs text-[#A0A0A0]">Triggers automatically when a new invoice is created.</p>
           </motion.div>
         )}
 
@@ -694,9 +694,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="space-y-2 bg-gray-50 rounded-lg p-3"
+            className="space-y-2 bg-[#1A1A1A] rounded-lg p-3"
           >
-            <Label className="text-xs text-gray-500">Days after due date (unpaid):</Label>
+            <Label className="text-xs text-[#A0A0A0]">Days after due date (unpaid):</Label>
             <Input
               type="number"
               min={1}
@@ -713,9 +713,9 @@ function TriggerBuilder({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="bg-gray-50 rounded-lg p-3"
+            className="bg-[#1A1A1A] rounded-lg p-3"
           >
-            <p className="text-xs text-gray-500">Triggers automatically when a payment is received for an invoice.</p>
+            <p className="text-xs text-[#A0A0A0]">Triggers automatically when a payment is received for an invoice.</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -744,14 +744,14 @@ function ActionCard({
       initial={{ opacity: 0, y: -5 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 5 }}
-      className="bg-gray-50 border border-gray-100 rounded-lg p-3 space-y-3"
+      className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-3 space-y-3"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="h-6 w-6 rounded bg-[#F3D840]/20 flex items-center justify-center">
-            <span className="text-[10px] font-bold text-gray-700">{index + 1}</span>
+            <span className="text-[10px] font-bold text-[#A0A0A0]">{index + 1}</span>
           </div>
-          <ActionIcon className="h-4 w-4 text-gray-500" />
+          <ActionIcon className="h-4 w-4 text-[#A0A0A0]" />
           <Select
             value={action.type}
             onValueChange={(v) => {
@@ -991,7 +991,7 @@ function ActionCard({
 
       {action.type === 'create_invoice' && (
         <div className="pl-8">
-          <p className="text-xs text-gray-500 bg-gray-100 rounded-md px-2 py-1.5">
+          <p className="text-xs text-[#A0A0A0] bg-[#222222] rounded-md px-2 py-1.5">
             Automatically creates an invoice from the associated deal's value and line items.
           </p>
         </div>
@@ -1079,9 +1079,9 @@ function ModuleCoverageGrid({ rules }: { rules: WorkflowRule[] }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs text-gray-500">Coverage Score</span>
+        <span className="text-xs text-[#A0A0A0]">Coverage Score</span>
         <div className="flex items-center gap-1.5">
-          <span className="text-sm font-bold text-gray-900">{coveredCount}</span>
+          <span className="text-sm font-bold text-white">{coveredCount}</span>
           <span className="text-xs text-gray-400">/ {modules.length} modules automated</span>
         </div>
       </div>
@@ -1092,18 +1092,18 @@ function ModuleCoverageGrid({ rules }: { rules: WorkflowRule[] }) {
             className={`flex flex-col items-center gap-1.5 p-2 rounded-lg border transition-colors ${
               mod.covered
                 ? 'border-green-200 bg-green-50/50'
-                : 'border-gray-200 bg-gray-50/50'
+                : 'border-[#2A2A2A] bg-[#0A0A0A]'
             }`}
           >
-            <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${mod.covered ? mod.bgColor : 'bg-gray-100'}`}>
+            <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${mod.covered ? mod.bgColor : 'bg-[#222222]'}`}>
               <mod.icon className={`h-4 w-4 ${mod.covered ? mod.color : 'text-gray-400'}`} />
             </div>
             {mod.covered ? (
               <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
             ) : (
-              <div className="h-3.5 w-3.5 rounded-full bg-gray-300" />
+              <div className="h-3.5 w-3.5 rounded-full bg-[#444444]" />
             )}
-            <span className={`text-[10px] font-medium ${mod.covered ? 'text-gray-700' : 'text-gray-400'}`}>
+            <span className={`text-[10px] font-medium ${mod.covered ? 'text-[#A0A0A0]' : 'text-gray-400'}`}>
               {mod.name}
             </span>
           </div>
@@ -1202,8 +1202,8 @@ function WorkflowRuleDialog({
               </SelectContent>
             </Select>
           </div>
-          <div className="rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
-            <p className="font-semibold text-gray-700 mb-1">Available Trigger Types:</p>
+          <div className="rounded-lg bg-[#1A1A1A] p-3 text-xs text-[#A0A0A0]">
+            <p className="font-semibold text-[#A0A0A0] mb-1">Available Trigger Types:</p>
             <ul className="space-y-1 ml-3 list-disc">
               {allTriggerTypes.map((t) => (
                 <li key={t.value}><span className="font-medium">{t.label}</span> — {t.configDesc}</li>
@@ -1223,8 +1223,8 @@ function WorkflowRuleDialog({
               </SelectContent>
             </Select>
           </div>
-          <div className="rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
-            <p className="font-semibold text-gray-700 mb-1">Available Action Types:</p>
+          <div className="rounded-lg bg-[#1A1A1A] p-3 text-xs text-[#A0A0A0]">
+            <p className="font-semibold text-[#A0A0A0] mb-1">Available Action Types:</p>
             <ul className="space-y-1 ml-3 list-disc">
               {allActionTypes.map((a) => (
                 <li key={a.value}><span className="font-medium">{a.label}</span></li>
@@ -1267,12 +1267,12 @@ function ExecutionHistory({ open, onOpenChange }: { open: boolean; onOpenChange:
             <p className="text-sm text-gray-400 text-center py-8">No executions yet</p>
           ) : (
             data?.executions?.map((ex: Record<string, unknown>) => (
-              <div key={ex.id as string} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 text-sm">
+              <div key={ex.id as string} className="flex items-center gap-3 p-3 rounded-lg bg-[#1A1A1A] text-sm">
                 <Badge variant={ex.status === 'success' ? 'default' : 'destructive'} className="text-xs">
                   {ex.status as string}
                 </Badge>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-gray-900 truncate">{ex.actionType as string}</p>
+                  <p className="font-medium text-white truncate">{ex.actionType as string}</p>
                   <p className="text-xs text-gray-400">{ex.triggerType as string} — {ex.entityType as string}</p>
                 </div>
                 <span className="text-xs text-gray-400">{format(new Date(ex.executedAt as string), 'MMM d, HH:mm')}</span>
@@ -1437,7 +1437,7 @@ export default function WorkflowsPage() {
   const totalExecutions = rules.reduce((sum, r) => sum + r.executionCount, 0)
 
   return (
-    <div className="p-4 lg:p-6 space-y-5">
+    <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }} className="p-4 lg:p-6 space-y-5">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -1450,8 +1450,8 @@ export default function WorkflowsPage() {
               <Zap className="h-5 w-5 text-[#F3D840]" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Automations</h1>
-              <p className="text-gray-500 text-sm mt-0.5">
+              <h1 className="text-2xl font-bold text-white">Automations</h1>
+              <p className="text-[#A0A0A0] text-sm mt-0.5">
                 {activeRules} active rule{activeRules !== 1 ? 's' : ''} &middot; {totalExecutions} total executions
               </p>
             </div>
@@ -1490,57 +1490,57 @@ export default function WorkflowsPage() {
         transition={{ delay: 0.05 }}
         className="grid grid-cols-2 lg:grid-cols-4 gap-3"
       >
-        <Card className="border-gray-100">
+        <Card className="border-[#2A2A2A]">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-green-50 flex items-center justify-center">
                 <Play className="h-5 w-5 text-green-500" />
               </div>
               <div>
-                <p className="text-lg font-bold text-gray-900">{activeRules}</p>
-                <p className="text-xs text-gray-500">Active Rules</p>
+                <p className="text-lg font-bold text-white">{activeRules}</p>
+                <p className="text-xs text-[#A0A0A0]">Active Rules</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-100">
+        <Card className="border-[#2A2A2A]">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-gray-50 flex items-center justify-center">
+              <div className="h-10 w-10 rounded-lg bg-[#1A1A1A] flex items-center justify-center">
                 <Pause className="h-5 w-5 text-gray-400" />
               </div>
               <div>
-                <p className="text-lg font-bold text-gray-900">{rules.length - activeRules}</p>
-                <p className="text-xs text-gray-500">Inactive Rules</p>
+                <p className="text-lg font-bold text-white">{rules.length - activeRules}</p>
+                <p className="text-xs text-[#A0A0A0]">Inactive Rules</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-100">
+        <Card className="border-[#2A2A2A]">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-[#F3D840]/20 flex items-center justify-center">
                 <Sparkles className="h-5 w-5 text-[#F3D840]" />
               </div>
               <div>
-                <p className="text-lg font-bold text-gray-900">{totalExecutions}</p>
-                <p className="text-xs text-gray-500">Total Runs</p>
+                <p className="text-lg font-bold text-white">{totalExecutions}</p>
+                <p className="text-xs text-[#A0A0A0]">Total Runs</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-100">
+        <Card className="border-[#2A2A2A]">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center">
                 <Bot className="h-5 w-5 text-blue-500" />
               </div>
               <div>
-                <p className="text-lg font-bold text-gray-900">{TRIGGER_TYPES.length}</p>
-                <p className="text-xs text-gray-500">Trigger Types</p>
+                <p className="text-lg font-bold text-white">{TRIGGER_TYPES.length}</p>
+                <p className="text-xs text-[#A0A0A0]">Trigger Types</p>
               </div>
             </div>
           </CardContent>
@@ -1553,7 +1553,7 @@ export default function WorkflowsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.08 }}
       >
-        <Card className="border-gray-100">
+        <Card className="border-[#2A2A2A]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
@@ -1561,8 +1561,8 @@ export default function WorkflowsPage() {
                   <LayoutGrid className="h-4 w-4 text-[#F3D840]" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Module Coverage</h3>
-                  <p className="text-xs text-gray-500">Automation coverage across CRM modules</p>
+                  <h3 className="text-sm font-semibold text-white">Module Coverage</h3>
+                  <p className="text-xs text-[#A0A0A0]">Automation coverage across CRM modules</p>
                 </div>
               </div>
             </div>
@@ -1580,17 +1580,17 @@ export default function WorkflowsPage() {
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
             <div className="flex flex-col items-center gap-3">
-              <span className="h-8 w-8 border-2 border-gray-200 border-t-[#F3D840] rounded-full animate-spin" />
-              <p className="text-sm text-gray-500">Loading workflows...</p>
+              <span className="h-8 w-8 border-2 border-[#2A2A2A] border-t-[#F3D840] rounded-full animate-spin" />
+              <p className="text-sm text-[#A0A0A0]">Loading workflows...</p>
             </div>
           </div>
         ) : rules.length === 0 ? (
           <div className="text-center py-16">
-            <div className="h-16 w-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4">
-              <Zap className="h-8 w-8 text-gray-300" />
+            <div className="h-16 w-16 rounded-2xl bg-[#222222] flex items-center justify-center mx-auto mb-4">
+              <Zap className="h-8 w-8 text-[#666666]" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">No automation rules yet</h3>
-            <p className="text-sm text-gray-500 mb-4 max-w-md mx-auto">
+            <h3 className="text-lg font-semibold text-white mb-1">No automation rules yet</h3>
+            <p className="text-sm text-[#A0A0A0] mb-4 max-w-md mx-auto">
               Create your first workflow automation to save time and keep your CRM running smoothly.
             </p>
             <Button

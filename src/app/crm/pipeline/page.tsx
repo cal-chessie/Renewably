@@ -106,28 +106,29 @@ interface Stage {
 function DealCard({ deal, isDragging, onClick }: { deal: Deal; isDragging?: boolean; onClick?: () => void }) {
   return (
     <div
-      className={`bg-white rounded-lg p-3 shadow-sm border border-gray-100 transition-shadow hover:shadow-md cursor-pointer ${
+      className={`rounded-lg p-3 transition-shadow hover:shadow-md cursor-pointer ${
         isDragging ? 'shadow-lg rotate-2 opacity-90' : ''
       }`}
+      style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A' }}
       onClick={onClick}
     >
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h4 className="text-sm font-medium text-gray-900 leading-tight line-clamp-2">
+        <h4 className="text-sm font-medium leading-tight line-clamp-2" style={{ color: '#FFFFFF' }}>
           {deal.title}
         </h4>
         <GripVertical className="h-4 w-4 text-gray-300 shrink-0 cursor-grab" />
       </div>
-      <p className="text-lg font-bold text-gray-900">{formatCurrency(deal.value)}</p>
+      <p className="text-lg font-bold" style={{ color: '#FFFFFF' }}>{formatCurrency(deal.value)}</p>
       <div className="flex items-center justify-between mt-2">
         {deal.contact && (
-          <span className="text-xs text-gray-500">
+          <span className="text-xs" style={{ color: '#A0A0A0' }}>
             {deal.contact.firstName} {deal.contact.lastName}
           </span>
         )}
         <span className="text-xs text-gray-400">{deal.probability}%</span>
       </div>
       {deal.assignee && (
-        <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-gray-50">
+        <div className="flex items-center gap-1.5 mt-2 pt-2" style={{ borderTop: '1px solid #2A2A2A' }}>
           <Avatar className="h-5 w-5">
             <AvatarFallback className="bg-[#F3D840] text-[#374151] text-[10px]">
               {deal.assignee.name.split(' ').map((n) => n[0]).join('')}
@@ -314,12 +315,12 @@ function CreateProposalFromDealDialog({ dealId, dealTitle, contactId, open, onOp
                   <Input value={li.name} onChange={e => updateLineItem(i, 'name', e.target.value)} placeholder="Item name" className="h-9 text-sm" />
                   <Input type="number" value={li.quantity} onChange={e => updateLineItem(i, 'quantity', parseInt(e.target.value) || 0)} className="h-9 text-sm" min={1} />
                   <Input type="number" value={li.unitPrice} onChange={e => updateLineItem(i, 'unitPrice', parseFloat(e.target.value) || 0)} className="h-9 text-sm" />
-                  <span className="text-sm text-gray-600 font-medium pb-2 text-right">{formatCurrency(li.total)}</span>
+                  <span className="text-sm font-medium pb-2 text-right" style={{ color: '#A0A0A0' }}>{formatCurrency(li.total)}</span>
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-red-500" onClick={() => removeLineItem(i)}><Trash2 className="h-3.5 w-3.5" /></Button>
                 </div>
               ))}
             </div>
-            <div className="flex justify-end pt-2 border-t"><span className="text-sm font-bold text-gray-900">Total: {formatCurrency(totalAmount)}</span></div>
+            <div className="flex justify-end pt-2" style={{ borderTop: '1px solid #2A2A2A' }}><span className="text-sm font-bold" style={{ color: '#FFFFFF' }}>Total: {formatCurrency(totalAmount)}</span></div>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={() => { if (!title) { toast.error('Title is required'); return } mutation.mutate({ title, dealId, contactId, lineItems: lineItems.map((li, i) => ({ ...li, sortOrder: i })), validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() }) }} disabled={mutation.isPending} className="flex-1">Save Draft</Button>
@@ -405,7 +406,7 @@ function DealDetailPanel({ dealId, stages, contacts, onClose }: {
 
   if (isLoading) {
     return (
-      <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 30, stiffness: 300 }} className="fixed inset-y-0 right-0 w-full md:w-[480px] bg-white shadow-xl z-50 flex items-center justify-center">
+      <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 30, stiffness: 300 }} className="fixed inset-y-0 right-0 w-full md:w-[480px] shadow-xl z-50 flex items-center justify-center" style={{ backgroundColor: '#1A1A1A' }}>
         <div className="animate-pulse text-gray-400">Loading...</div>
       </motion.div>
     )
@@ -427,12 +428,12 @@ function DealDetailPanel({ dealId, stages, contacts, onClose }: {
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/30 z-40 md:block hidden" onClick={onClose} />
 
       {/* Panel */}
-      <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 30, stiffness: 300 }} className="fixed inset-y-0 right-0 w-full md:w-[480px] bg-white shadow-xl z-50 flex flex-col">
+      <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 30, stiffness: 300 }} className="fixed inset-y-0 right-0 w-full md:w-[480px] shadow-xl z-50 flex flex-col" style={{ backgroundColor: '#1A1A1A' }}>
         {/* Header */}
-        <div className="p-5 border-b border-gray-100 shrink-0">
+        <div className="p-5 shrink-0" style={{ borderBottom: '1px solid #2A2A2A' }}>
           <div className="flex items-start justify-between mb-3">
-            <button onClick={onClose} className="p-1 rounded-lg hover:bg-gray-100 transition-colors">
-              <X className="h-5 w-5 text-gray-500" />
+            <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/5 transition-colors">
+              <X className="h-5 w-5" style={{ color: '#A0A0A0' }} />
             </button>
             <div className="flex items-center gap-2">
               {deal.closeDate && (
@@ -443,9 +444,9 @@ function DealDetailPanel({ dealId, stages, contacts, onClose }: {
               )}
             </div>
           </div>
-          <h2 className="text-lg font-bold text-gray-900 mb-2">{deal.title}</h2>
+          <h2 className="text-lg font-bold mb-2" style={{ color: '#FFFFFF' }}>{deal.title}</h2>
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-xl font-bold text-gray-900">{formatCurrency(deal.value)}</span>
+            <span className="text-xl font-bold" style={{ color: '#FFFFFF' }}>{formatCurrency(deal.value)}</span>
             {deal.stage && (
               <Badge variant="outline" className="font-medium" style={{ borderColor: deal.stage.color, color: deal.stage.color }}>{deal.stage.name}</Badge>
             )}
@@ -458,15 +459,15 @@ function DealDetailPanel({ dealId, stages, contacts, onClose }: {
         <ScrollArea className="flex-1">
           {/* Contact Info */}
           {deal.contact && (
-            <div className="p-5 border-b border-gray-100">
+            <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Contact</h3>
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
+              <div className="flex items-center gap-3 p-3 rounded-lg" style={{ backgroundColor: '#141414' }}>
                 <div className="h-10 w-10 rounded-full bg-[#F3D840]/20 flex items-center justify-center shrink-0">
                   <span className="text-[#374151] text-xs font-bold">{deal.contact.firstName[0]}{deal.contact.lastName[0]}</span>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-gray-900">{deal.contact.firstName} {deal.contact.lastName}</p>
-                  {deal.contact.email && <p className="text-xs text-gray-500">{deal.contact.email}</p>}
+                  <p className="text-sm font-medium" style={{ color: '#FFFFFF' }}>{deal.contact.firstName} {deal.contact.lastName}</p>
+                  {deal.contact.email && <p className="text-xs" style={{ color: '#A0A0A0' }}>{deal.contact.email}</p>}
                   {deal.contact.company && <p className="text-xs text-gray-400">{deal.contact.company.name}</p>}
                 </div>
               </div>
@@ -475,14 +476,14 @@ function DealDetailPanel({ dealId, stages, contacts, onClose }: {
 
           {/* Description */}
           {deal.description && (
-            <div className="p-5 border-b border-gray-100">
+            <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Description</h3>
-              <p className="text-sm text-gray-700 whitespace-pre-wrap">{deal.description}</p>
+              <p className="text-sm whitespace-pre-wrap" style={{ color: '#A0A0A0' }}>{deal.description}</p>
             </div>
           )}
 
           {/* Quick Actions */}
-          <div className="p-5 border-b border-gray-100">
+          <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Quick Actions</h3>
             <div className="grid grid-cols-3 gap-2">
               {quickActions.map(action => (
@@ -497,9 +498,10 @@ function DealDetailPanel({ dealId, stages, contacts, onClose }: {
                   }}
                   className={`flex flex-col items-center gap-1.5 p-3 rounded-lg border transition-all ${
                     action.variant === 'danger'
-                      ? 'border-red-100 hover:border-red-300 hover:bg-red-50 text-red-600'
-                      : 'border-gray-100 hover:border-[#F3D840]/50 hover:bg-[#F3D840]/5 text-[#374151]'
+                      ? 'border-red-900 hover:border-red-600 hover:bg-red-500/10 text-red-400'
+                      : 'hover:border-[#F3D840]/50 hover:bg-[#F3D840]/5 text-[#F3D840]'
                   }`}
+                  style={{ borderColor: action.variant === 'danger' ? '#7F1D1D' : '#2A2A2A' }}
                 >
                   <action.icon className="h-5 w-5" />
                   <span className="text-[11px] font-medium text-center leading-tight">{action.label}</span>
@@ -510,15 +512,15 @@ function DealDetailPanel({ dealId, stages, contacts, onClose }: {
 
           {/* Activities */}
           {deal.activities.length > 0 && (
-            <div className="p-5 border-b border-gray-100">
+            <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Activities ({deal.activities.length})</h3>
               <div className="space-y-3">
                 {deal.activities.slice(0, 10).map(activity => (
                   <div key={activity.id} className="flex gap-3">
                     <ActivityIcon type={activity.type} size="sm" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-900">{activity.subject}</p>
-                      {activity.description && <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{activity.description}</p>}
+                      <p className="text-sm" style={{ color: '#FFFFFF' }}>{activity.subject}</p>
+                      {activity.description && <p className="text-xs mt-0.5 line-clamp-2" style={{ color: '#A0A0A0' }}>{activity.description}</p>}
                       <p className="text-[10px] text-gray-400 mt-0.5">{format(new Date(activity.createdAt), 'MMM d, yyyy \'at\' h:mm a')}</p>
                     </div>
                   </div>
@@ -529,14 +531,14 @@ function DealDetailPanel({ dealId, stages, contacts, onClose }: {
 
           {/* Tasks */}
           {deal.tasks.length > 0 && (
-            <div className="p-5 border-b border-gray-100">
+            <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Tasks ({deal.tasks.length})</h3>
               <div className="space-y-2">
                 {deal.tasks.slice(0, 5).map(task => (
-                  <div key={task.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div key={task.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 transition-colors">
                     <PriorityBadge priority={task.priority} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-900 truncate">{task.title}</p>
+                      <p className="text-sm truncate" style={{ color: '#FFFFFF' }}>{task.title}</p>
                       {task.dueDate && <p className="text-[10px] text-gray-400">{format(new Date(task.dueDate), 'MMM d, yyyy')}</p>}
                     </div>
                     <StatusBadge status={task.status} />
@@ -548,12 +550,12 @@ function DealDetailPanel({ dealId, stages, contacts, onClose }: {
 
           {/* Notes */}
           {deal.notes.length > 0 && (
-            <div className="p-5 border-b border-gray-100">
+            <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Notes ({deal.notes.length})</h3>
               <div className="space-y-2">
                 {deal.notes.slice(0, 5).map(note => (
-                  <div key={note.id} className="p-2.5 rounded-lg bg-gray-50">
-                    <p className="text-sm text-gray-700 whitespace-pre-wrap">{note.content}</p>
+                  <div key={note.id} className="p-2.5 rounded-lg" style={{ backgroundColor: '#141414' }}>
+                    <p className="text-sm whitespace-pre-wrap" style={{ color: '#A0A0A0' }}>{note.content}</p>
                     <div className="flex items-center justify-between mt-1.5">
                       {note.user && <span className="text-[10px] text-gray-400">{note.user.name}</span>}
                       <span className="text-[10px] text-gray-400">{format(new Date(note.createdAt), 'MMM d, yyyy')}</span>
@@ -570,12 +572,12 @@ function DealDetailPanel({ dealId, stages, contacts, onClose }: {
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Proposals ({deal.proposals.length})</h3>
               <div className="space-y-2">
                 {deal.proposals.map(p => (
-                  <div key={p.id} className="flex items-center justify-between p-2.5 rounded-lg bg-gray-50">
+                  <div key={p.id} className="flex items-center justify-between p-2.5 rounded-lg" style={{ backgroundColor: '#141414' }}>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-gray-900 truncate">{p.title}</p>
+                      <p className="text-sm font-medium truncate" style={{ color: '#FFFFFF' }}>{p.title}</p>
                     </div>
                     <div className="flex items-center gap-2 ml-2">
-                      <span className="text-sm font-bold text-gray-900">{formatCurrency(p.totalAmount)}</span>
+                      <span className="text-sm font-bold" style={{ color: '#FFFFFF' }}>{formatCurrency(p.totalAmount)}</span>
                       <StatusBadge status={p.status} />
                     </div>
                   </div>
@@ -705,7 +707,7 @@ export default function PipelinePage() {
   const contacts = contactsData?.contacts || []
 
   return (
-    <div className="p-6 lg:p-8 space-y-6 h-full flex flex-col">
+    <div className="p-6 lg:p-8 space-y-6 h-full flex flex-col" style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -713,8 +715,8 @@ export default function PipelinePage() {
         className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shrink-0"
       >
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Pipeline</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <h1 style={{ color: '#FFFFFF' }} className="text-2xl font-bold">Pipeline</h1>
+          <p style={{ color: '#A0A0A0' }} className="text-sm mt-1">
             Drag and drop deals between stages
           </p>
         </div>
@@ -821,7 +823,7 @@ export default function PipelinePage() {
       {isLoading ? (
         <div className="flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-gray-100 rounded-xl animate-pulse h-96" />
+            <div key={i} className="rounded-xl animate-pulse h-96" style={{ backgroundColor: '#1A1A1A' }} />
           ))}
         </div>
       ) : (
@@ -839,7 +841,8 @@ export default function PipelinePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex flex-col bg-gray-100/80 rounded-xl min-h-[200px]"
+                className="flex flex-col rounded-xl min-h-[200px]"
+                style={{ backgroundColor: '#141414' }}
               >
                 {/* Stage Header */}
                 <div
@@ -852,7 +855,7 @@ export default function PipelinePage() {
                         className="h-2.5 w-2.5 rounded-full"
                         style={{ backgroundColor: stage.color }}
                       />
-                      <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                      <h3 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#A0A0A0' }}>
                         {stage.name}
                       </h3>
                     </div>

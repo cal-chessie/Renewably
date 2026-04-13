@@ -176,7 +176,7 @@ function LogCallDialog({ contact, contactEmail, open, onOpenChange }: { contact:
       <DialogContent className="sm:max-w-md">
         <DialogHeader><DialogTitle>Log Call</DialogTitle></DialogHeader>
         <div className="grid gap-4 py-2">
-          <div className="text-sm text-gray-500">Contact: <span className="font-medium text-gray-900">{contact.firstName} {contact.lastName}</span></div>
+          <div style={{ color: '#A0A0A0' }} className="text-sm">Contact: <span style={{ color: '#FFFFFF' }} className="font-medium">{contact.firstName} {contact.lastName}</span></div>
           <div className="space-y-2">
             <Label>Outcome</Label>
             <Select value={outcome} onValueChange={setOutcome}>
@@ -410,7 +410,7 @@ function BookMeetingDialog({ contact, dealOptions, open, onOpenChange }: { conta
             </div>
           )}
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="followup" checked={createFollowUp} onChange={e => setCreateFollowUp(e.target.checked)} className="rounded border-gray-300" />
+            <input type="checkbox" id="followup" checked={createFollowUp} onChange={e => setCreateFollowUp(e.target.checked)} className="rounded border-gray-600" />
             <Label htmlFor="followup" className="text-sm">Create Follow-up Task</Label>
           </div>
           <Button onClick={handleSave} disabled={mutation.isPending} className="bg-[#374151] hover:bg-[#1F2937] text-white">
@@ -510,13 +510,13 @@ function CreateProposalDialog({ contact, dealOptions, open, onOpenChange }: { co
                   <Input value={li.name} onChange={e => updateLineItem(i, 'name', e.target.value)} placeholder="Item name" className="h-9 text-sm" />
                   <Input type="number" value={li.quantity} onChange={e => updateLineItem(i, 'quantity', parseInt(e.target.value) || 0)} className="h-9 text-sm" min={1} />
                   <Input type="number" value={li.unitPrice} onChange={e => updateLineItem(i, 'unitPrice', parseFloat(e.target.value) || 0)} className="h-9 text-sm" />
-                  <span className="text-sm text-gray-600 font-medium pb-2 text-right">{formatCurrency(li.total)}</span>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-red-500" onClick={() => removeLineItem(i)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                  <span style={{ color: '#A0A0A0' }} className="text-sm font-medium pb-2 text-right">{formatCurrency(li.total)}</span>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-red-500" style={{ color: '#666666' }} onClick={() => removeLineItem(i)}><Trash2 className="h-3.5 w-3.5" /></Button>
                 </div>
               ))}
             </div>
-            <div className="flex justify-end pt-2 border-t">
-              <span className="text-sm font-bold text-gray-900">Total: {formatCurrency(totalAmount)}</span>
+            <div className="flex justify-end pt-2" style={{ borderTop: '1px solid #2A2A2A' }}>
+              <span style={{ color: '#FFFFFF' }} className="text-sm font-bold">Total: {formatCurrency(totalAmount)}</span>
             </div>
           </div>
           <div className="flex gap-2">
@@ -548,8 +548,8 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
 
   if (isLoading) {
     return (
-      <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 30, stiffness: 300 }} className="fixed inset-y-0 right-0 w-full md:w-[480px] bg-white shadow-xl z-50 flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading...</div>
+      <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 30, stiffness: 300 }} className="fixed inset-y-0 right-0 w-full md:w-[480px] shadow-xl z-50 flex items-center justify-center" style={{ backgroundColor: '#1A1A1A' }}>
+        <div className="animate-pulse" style={{ color: '#666666' }}>Loading...</div>
       </motion.div>
     )
   }
@@ -573,12 +573,12 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/30 z-40 md:block hidden" onClick={onClose} />
 
       {/* Panel */}
-      <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 30, stiffness: 300 }} className="fixed inset-y-0 right-0 w-full md:w-[480px] bg-white shadow-xl z-50 flex flex-col">
+      <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'spring', damping: 30, stiffness: 300 }} className="fixed inset-y-0 right-0 w-full md:w-[480px] shadow-xl z-50 flex flex-col" style={{ backgroundColor: '#1A1A1A' }}>
         {/* Header */}
-        <div className="p-5 border-b border-gray-100 shrink-0">
+        <div className="p-5 shrink-0" style={{ borderBottom: '1px solid #2A2A2A' }}>
           <div className="flex items-start justify-between mb-4">
-            <button onClick={onClose} className="p-1 rounded-lg hover:bg-gray-100 transition-colors">
-              <X className="h-5 w-5 text-gray-500" />
+            <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/10 transition-colors">
+              <X className="h-5 w-5" style={{ color: '#A0A0A0' }} />
             </button>
           </div>
           <div className="flex items-center gap-3">
@@ -586,10 +586,10 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
               <span className="text-[#374151] text-sm font-bold">{contact.firstName[0]}{contact.lastName[0]}</span>
             </div>
             <div className="min-w-0 flex-1">
-              <h2 className="text-lg font-bold text-gray-900 truncate">{contact.firstName} {contact.lastName}</h2>
+              <h2 style={{ color: '#FFFFFF' }} className="text-lg font-bold truncate">{contact.firstName} {contact.lastName}</h2>
               <div className="flex items-center gap-2 flex-wrap mt-1">
-                {contact.jobTitle && <span className="text-xs text-gray-500">{contact.jobTitle}</span>}
-                {contact.company && <span className="text-xs text-gray-400">at {contact.company.name}</span>}
+                {contact.jobTitle && <span style={{ color: '#A0A0A0' }} className="text-xs">{contact.jobTitle}</span>}
+                {contact.company && <span style={{ color: '#666666' }} className="text-xs">at {contact.company.name}</span>}
               </div>
             </div>
             <div className="flex flex-col items-end gap-1">
@@ -601,14 +601,14 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
 
         <ScrollArea className="flex-1">
           {/* Contact Info */}
-          <div className="p-5 border-b border-gray-100 space-y-3">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Contact Info</h3>
+          <div className="p-5 space-y-3" style={{ borderBottom: '1px solid #2A2A2A' }}>
+            <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Contact Info</h3>
             {contact.email && (
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg bg-blue-50 flex items-center justify-center"><Mail className="h-4 w-4 text-blue-600" /></div>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#1E3A5F' }}><Mail className="h-4 w-4 text-blue-400" /></div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 truncate">{contact.email}</p>
-                  <p className="text-[10px] text-gray-400">Email</p>
+                  <p style={{ color: '#FFFFFF' }} className="text-sm truncate">{contact.email}</p>
+                  <p style={{ color: '#666666' }} className="text-[10px]">Email</p>
                 </div>
                 <Button variant="ghost" size="sm" className="h-7 text-xs text-[#374151] hover:bg-[#F3D840]/10" onClick={() => setActiveDialog('email')}>
                   <Mail className="h-3 w-3 mr-1" /> Send
@@ -617,10 +617,10 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
             )}
             {contact.phone && (
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg bg-green-50 flex items-center justify-center"><Phone className="h-4 w-4 text-green-600" /></div>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#1A3D2A' }}><Phone className="h-4 w-4 text-green-400" /></div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 truncate">{contact.phone}</p>
-                  <p className="text-[10px] text-gray-400">Phone</p>
+                  <p style={{ color: '#FFFFFF' }} className="text-sm truncate">{contact.phone}</p>
+                  <p style={{ color: '#666666' }} className="text-[10px]">Phone</p>
                 </div>
                 <Button variant="ghost" size="sm" className="h-7 text-xs text-[#374151] hover:bg-[#F3D840]/10" onClick={() => setActiveDialog('call')}>
                   <Phone className="h-3 w-3 mr-1" /> Call
@@ -629,32 +629,32 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
             )}
             {contact.linkedin && (
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg bg-purple-50 flex items-center justify-center"><Linkedin className="h-4 w-4 text-purple-600" /></div>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#2D1B4E' }}><Linkedin className="h-4 w-4 text-purple-400" /></div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 truncate">{contact.linkedin}</p>
-                  <p className="text-[10px] text-gray-400">LinkedIn</p>
+                  <p style={{ color: '#FFFFFF' }} className="text-sm truncate">{contact.linkedin}</p>
+                  <p style={{ color: '#666666' }} className="text-[10px]">LinkedIn</p>
                 </div>
               </div>
             )}
             {(contact.city || contact.address) && (
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg bg-orange-50 flex items-center justify-center"><MapPin className="h-4 w-4 text-orange-600" /></div>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#3D2A1A' }}><MapPin className="h-4 w-4 text-orange-400" /></div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-900 truncate">{[contact.address, contact.city, contact.country].filter(Boolean).join(', ')}</p>
-                  <p className="text-[10px] text-gray-400">Address</p>
+                  <p style={{ color: '#FFFFFF' }} className="text-sm truncate">{[contact.address, contact.city, contact.country].filter(Boolean).join(', ')}</p>
+                  <p style={{ color: '#666666' }} className="text-[10px]">Address</p>
                 </div>
               </div>
             )}
           </div>
 
           {/* Quick Actions */}
-          <div className="p-5 border-b border-gray-100">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Quick Actions</h3>
+          <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
+            <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Quick Actions</h3>
             <div className="grid grid-cols-3 gap-2">
               {quickActions.map(action => (
-                <button key={action.key} onClick={() => setActiveDialog(action.key)} className="flex flex-col items-center gap-1.5 p-3 rounded-lg border border-gray-100 hover:border-[#F3D840]/50 hover:bg-[#F3D840]/5 transition-all">
+                <button key={action.key} onClick={() => setActiveDialog(action.key)} className="flex flex-col items-center gap-1.5 p-3 rounded-lg transition-all" style={{ border: '1px solid #2A2A2A', backgroundColor: 'transparent' }}>
                   <action.icon className="h-5 w-5 text-[#374151]" />
-                  <span className="text-[11px] font-medium text-gray-600 text-center leading-tight">{action.label}</span>
+                  <span className="text-[11px] font-medium text-center leading-tight" style={{ color: '#A0A0A0' }}>{action.label}</span>
                 </button>
               ))}
             </div>
@@ -662,19 +662,19 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
 
           {/* Related Deals */}
           {contact.deals.length > 0 && (
-            <div className="p-5 border-b border-gray-100">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Related Deals ({contact.deals.length})</h3>
+            <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
+              <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Related Deals ({contact.deals.length})</h3>
               <div className="space-y-2">
                 {contact.deals.slice(0, 5).map(deal => (
-                  <div key={deal.id} className="flex items-center justify-between p-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <div key={deal.id} className="flex items-center justify-between p-2.5 rounded-lg hover:bg-white/5 transition-colors" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-gray-900 truncate">{deal.title}</p>
+                      <p style={{ color: '#FFFFFF' }} className="text-sm font-medium truncate">{deal.title}</p>
                       <div className="flex items-center gap-2 mt-0.5">
                         <Badge variant="outline" className="text-[10px]" style={{ borderColor: deal.stage.color, color: deal.stage.color }}>{deal.stage.name}</Badge>
-                        <span className="text-[10px] text-gray-400">{deal.probability}%</span>
+                        <span style={{ color: '#666666' }} className="text-[10px]">{deal.probability}%</span>
                       </div>
                     </div>
-                    <span className="text-sm font-bold text-gray-900 ml-2">{formatCurrency(deal.value)}</span>
+                    <span style={{ color: '#FFFFFF' }} className="text-sm font-bold ml-2">{formatCurrency(deal.value)}</span>
                   </div>
                 ))}
               </div>
@@ -683,15 +683,15 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
 
           {/* Upcoming Tasks */}
           {contact.tasks.length > 0 && (
-            <div className="p-5 border-b border-gray-100">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Tasks ({contact.tasks.length})</h3>
+            <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
+              <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Tasks ({contact.tasks.length})</h3>
               <div className="space-y-2">
                 {contact.tasks.slice(0, 5).map(task => (
-                  <div key={task.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div key={task.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 transition-colors">
                     <PriorityBadge priority={task.priority} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-900 truncate">{task.title}</p>
-                      {task.dueDate && <p className="text-[10px] text-gray-400">{format(new Date(task.dueDate), 'MMM d, yyyy')}</p>}
+                      <p style={{ color: '#FFFFFF' }} className="text-sm truncate">{task.title}</p>
+                      {task.dueDate && <p style={{ color: '#666666' }} className="text-[10px]">{format(new Date(task.dueDate), 'MMM d, yyyy')}</p>}
                     </div>
                     <StatusBadge status={task.status} />
                   </div>
@@ -702,16 +702,16 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
 
           {/* Recent Activities */}
           {contact.activities.length > 0 && (
-            <div className="p-5 border-b border-gray-100">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Recent Activities</h3>
+            <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
+              <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Recent Activities</h3>
               <div className="space-y-3">
                 {contact.activities.slice(0, 8).map(activity => (
                   <div key={activity.id} className="flex gap-3">
                     <ActivityIcon type={activity.type} size="sm" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-900">{activity.subject}</p>
-                      {activity.description && <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{activity.description}</p>}
-                      <p className="text-[10px] text-gray-400 mt-0.5">{format(new Date(activity.createdAt), 'MMM d, yyyy \'at\' h:mm a')}</p>
+                      <p style={{ color: '#FFFFFF' }} className="text-sm">{activity.subject}</p>
+                      {activity.description && <p style={{ color: '#A0A0A0' }} className="text-xs mt-0.5 line-clamp-2">{activity.description}</p>}
+                      <p style={{ color: '#666666' }} className="text-[10px] mt-0.5">{format(new Date(activity.createdAt), 'MMM d, yyyy \'at\' h:mm a')}</p>
                     </div>
                   </div>
                 ))}
@@ -721,15 +721,15 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
 
           {/* Notes */}
           {contact.notes.length > 0 && (
-            <div className="p-5 border-b border-gray-100">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Notes ({contact.notes.length})</h3>
+            <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
+              <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Notes ({contact.notes.length})</h3>
               <div className="space-y-2">
                 {contact.notes.slice(0, 5).map(note => (
-                  <div key={note.id} className="p-2.5 rounded-lg bg-gray-50">
-                    <p className="text-sm text-gray-700 whitespace-pre-wrap">{note.content}</p>
+                  <div key={note.id} className="p-2.5 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
+                    <p style={{ color: '#A0A0A0' }} className="text-sm whitespace-pre-wrap">{note.content}</p>
                     <div className="flex items-center justify-between mt-1.5">
-                      {note.user && <span className="text-[10px] text-gray-400">{note.user.name}</span>}
-                      <span className="text-[10px] text-gray-400">{format(new Date(note.createdAt), 'MMM d, yyyy')}</span>
+                      {note.user && <span style={{ color: '#666666' }} className="text-[10px]">{note.user.name}</span>}
+                      <span style={{ color: '#666666' }} className="text-[10px]">{format(new Date(note.createdAt), 'MMM d, yyyy')}</span>
                     </div>
                   </div>
                 ))}
@@ -740,15 +740,15 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
           {/* Proposals */}
           {contact.proposals && (contact.proposals as unknown[]).length > 0 && (
             <div className="p-5">
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Proposals</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Proposals</h3>
               <div className="space-y-2">
                 {(contact.proposals as Array<Record<string, unknown>>).map((p: Record<string, unknown>) => (
-                  <div key={p.id as string} className="flex items-center justify-between p-2.5 rounded-lg bg-gray-50">
+                  <div key={p.id as string} className="flex items-center justify-between p-2.5 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-gray-900 truncate">{p.title as string}</p>
+                      <p style={{ color: '#FFFFFF' }} className="text-sm font-medium truncate">{p.title as string}</p>
                     </div>
                     <div className="flex items-center gap-2 ml-2">
-                      <span className="text-sm font-bold text-gray-900">{formatCurrency(p.totalAmount as number)}</span>
+                      <span style={{ color: '#FFFFFF' }} className="text-sm font-bold">{formatCurrency(p.totalAmount as number)}</span>
                       <StatusBadge status={p.status as string} />
                     </div>
                   </div>
@@ -896,51 +896,51 @@ function ContactsView({ onContactClick, companyFilter }: { onContactClick: (id: 
       )}
 
       {/* Table */}
-      <Card className="border-0 shadow-sm overflow-hidden">
+      <Card style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A' }} className="shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-100">
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Name</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3 hidden md:table-cell">Email</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3 hidden lg:table-cell">Company</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3">Status</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3 hidden lg:table-cell">Source</th>
-                <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider px-6 py-3 hidden xl:table-cell">Last Contact</th>
+              <tr style={{ borderBottom: '1px solid #2A2A2A' }}>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3">Name</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden md:table-cell">Email</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden lg:table-cell">Company</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3">Status</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden lg:table-cell">Source</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden xl:table-cell">Last Contact</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 [...Array(5)].map((_, i) => (
-                  <tr key={i} className="border-b border-gray-50">
-                    <td className="px-6 py-4"><div className="h-4 w-32 bg-gray-100 rounded animate-pulse" /></td>
-                    <td className="px-6 py-4 hidden md:table-cell"><div className="h-4 w-40 bg-gray-100 rounded animate-pulse" /></td>
-                    <td className="px-6 py-4 hidden lg:table-cell"><div className="h-4 w-24 bg-gray-100 rounded animate-pulse" /></td>
-                    <td className="px-6 py-4"><div className="h-5 w-16 bg-gray-100 rounded animate-pulse" /></td>
+                  <tr key={i} style={{ borderBottom: '1px solid #222222' }}>
+                    <td className="px-6 py-4"><div className="h-4 w-32 rounded animate-pulse" style={{ backgroundColor: '#222222' }} /></td>
+                    <td className="px-6 py-4 hidden md:table-cell"><div className="h-4 w-40 rounded animate-pulse" style={{ backgroundColor: '#222222' }} /></td>
+                    <td className="px-6 py-4 hidden lg:table-cell"><div className="h-4 w-24 rounded animate-pulse" style={{ backgroundColor: '#222222' }} /></td>
+                    <td className="px-6 py-4"><div className="h-5 w-16 rounded animate-pulse" style={{ backgroundColor: '#222222' }} /></td>
                   </tr>
                 ))
               ) : data?.contacts?.length === 0 ? (
-                <tr><td colSpan={6} className="px-6 py-12 text-center text-gray-400">No contacts found</td></tr>
+                <tr><td colSpan={6} className="px-6 py-12 text-center" style={{ color: '#666666' }}>No contacts found</td></tr>
               ) : (
                 data?.contacts?.map((contact: ContactRow) => (
-                  <tr key={contact.id} className="border-b border-gray-50 hover:bg-gray-50/50 cursor-pointer transition-colors" onClick={() => onContactClick(contact.id)}>
+                  <tr key={contact.id} className="hover:bg-white/5 cursor-pointer transition-colors" style={{ borderBottom: '1px solid #222222' }} onClick={() => onContactClick(contact.id)}>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="h-9 w-9 rounded-full bg-[#F3D840]/20 flex items-center justify-center shrink-0">
                           <span className="text-[#374151] text-xs font-bold">{contact.firstName[0]}{contact.lastName[0]}</span>
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{contact.firstName} {contact.lastName}</p>
-                          {contact.jobTitle && <p className="text-xs text-gray-400">{contact.jobTitle}</p>}
+                          <p style={{ color: '#FFFFFF' }} className="text-sm font-medium">{contact.firstName} {contact.lastName}</p>
+                          {contact.jobTitle && <p style={{ color: '#666666' }} className="text-xs">{contact.jobTitle}</p>}
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 hidden md:table-cell"><span className="text-sm text-gray-600">{contact.email || '—'}</span></td>
-                    <td className="px-6 py-4 hidden lg:table-cell"><span className="text-sm text-gray-600">{contact.company?.name || '—'}</span></td>
+                    <td className="px-6 py-4 hidden md:table-cell"><span style={{ color: '#A0A0A0' }} className="text-sm">{contact.email || '—'}</span></td>
+                    <td className="px-6 py-4 hidden lg:table-cell"><span style={{ color: '#A0A0A0' }} className="text-sm">{contact.company?.name || '—'}</span></td>
                     <td className="px-6 py-4"><StatusBadge status={contact.status} /></td>
                     <td className="px-6 py-4 hidden lg:table-cell"><Badge variant="secondary" className="capitalize text-xs">{contact.source}</Badge></td>
                     <td className="px-6 py-4 hidden xl:table-cell">
-                      <span className="text-sm text-gray-400">{contact.lastContactAt ? format(new Date(contact.lastContactAt), 'MMM d, yyyy') : 'Never'}</span>
+                      <span style={{ color: '#666666' }} className="text-sm">{contact.lastContactAt ? format(new Date(contact.lastContactAt), 'MMM d, yyyy') : 'Never'}</span>
                     </td>
                   </tr>
                 ))
@@ -951,11 +951,11 @@ function ContactsView({ onContactClick, companyFilter }: { onContactClick: (id: 
 
         {/* Pagination */}
         {data?.pagination && data.pagination.totalPages > 1 && (
-          <div className="flex items-center justify-between px-6 py-3 border-t border-gray-100">
-            <p className="text-sm text-gray-500">Showing {(page - 1) * 15 + 1} to {Math.min(page * 15, data.pagination.total)} of {data.pagination.total}</p>
+          <div className="flex items-center justify-between px-6 py-3" style={{ borderTop: '1px solid #2A2A2A' }}>
+            <p style={{ color: '#A0A0A0' }} className="text-sm">Showing {(page - 1) * 15 + 1} to {Math.min(page * 15, data.pagination.total)} of {data.pagination.total}</p>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}><ChevronLeft className="h-4 w-4" /></Button>
-              <span className="text-sm text-gray-600">Page {page} of {data.pagination.totalPages}</span>
+              <span style={{ color: '#A0A0A0' }} className="text-sm">Page {page} of {data.pagination.totalPages}</span>
               <Button variant="outline" size="sm" disabled={page >= data.pagination.totalPages} onClick={() => setPage(p => p + 1)}><ChevronRight className="h-4 w-4" /></Button>
             </div>
           </div>
@@ -991,22 +991,22 @@ function CompaniesView({ onCompanyClick }: { onCompanyClick: (id: string) => voi
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {isLoading ? (
-          [...Array(6)].map((_, i) => <Card key={i} className="border-0 shadow-sm"><CardContent className="p-5"><div className="animate-pulse space-y-3"><div className="h-5 w-32 bg-gray-100 rounded" /><div className="h-4 w-24 bg-gray-100 rounded" /><div className="h-4 w-40 bg-gray-100 rounded" /></div></CardContent></Card>)
+          [...Array(6)].map((_, i) => <Card key={i} style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A' }} className="shadow-sm"><CardContent className="p-5"><div className="animate-pulse space-y-3"><div className="h-5 w-32 rounded" style={{ backgroundColor: '#222222' }} /><div className="h-4 w-24 rounded" style={{ backgroundColor: '#222222' }} /><div className="h-4 w-40 rounded" style={{ backgroundColor: '#222222' }} /></div></CardContent></Card>)
         ) : data?.companies?.length === 0 ? (
-          <div className="col-span-full py-12 text-center text-gray-400">No companies found</div>
+          <div className="col-span-full py-12 text-center" style={{ color: '#666666' }}>No companies found</div>
         ) : (
           data?.companies?.map((company: CompanyRow) => (
-            <Card key={company.id} className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer group" onClick={() => onCompanyClick(company.id)}>
+            <Card key={company.id} style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A' }} className="shadow-sm hover:shadow-md transition-shadow cursor-pointer group" onClick={() => onCompanyClick(company.id)}>
               <CardContent className="p-5">
                 <div className="flex items-start justify-between mb-3">
                   <div className="h-10 w-10 rounded-lg bg-[#374151]/10 flex items-center justify-center shrink-0">
                     <Building2 className="h-5 w-5 text-[#374151]" />
                   </div>
-                  <ExternalLink className="h-4 w-4 text-gray-300 group-hover:text-[#F3D840] transition-colors" />
+                  <ExternalLink className="h-4 w-4 text-gray-600 group-hover:text-[#F3D840] transition-colors" />
                 </div>
-                <h3 className="text-sm font-bold text-gray-900 mb-1 truncate">{company.name}</h3>
-                {company.industry && <p className="text-xs text-gray-500 mb-2">{company.industry}</p>}
-                <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
+                <h3 style={{ color: '#FFFFFF' }} className="text-sm font-bold mb-1 truncate">{company.name}</h3>
+                {company.industry && <p style={{ color: '#A0A0A0' }} className="text-xs mb-2">{company.industry}</p>}
+                <div className="flex items-center gap-3 text-xs mb-3" style={{ color: '#666666' }}>
                   {(company.city || company.country) && (
                     <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{[company.city, company.country].filter(Boolean).join(', ')}</span>
                   )}
@@ -1014,14 +1014,14 @@ function CompaniesView({ onCompanyClick }: { onCompanyClick: (id: string) => voi
                     <span className="flex items-center gap-1 truncate"><Globe className="h-3 w-3" />{company.website.replace(/https?:\/\//, '')}</span>
                   )}
                 </div>
-                <div className="flex items-center gap-4 pt-3 border-t border-gray-100">
+                <div className="flex items-center gap-4 pt-3" style={{ borderTop: '1px solid #2A2A2A' }}>
                   <div className="flex items-center gap-1.5">
-                    <Users className="h-3.5 w-3.5 text-gray-400" />
-                    <span className="text-xs font-medium text-gray-600">{company._count.contacts} contacts</span>
+                    <Users className="h-3.5 w-3.5" style={{ color: '#666666' }} />
+                    <span style={{ color: '#A0A0A0' }} className="text-xs font-medium">{company._count.contacts} contacts</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <DollarSign className="h-3.5 w-3.5 text-gray-400" />
-                    <span className="text-xs font-medium text-gray-600">{company._count.deals} deals</span>
+                    <DollarSign className="h-3.5 w-3.5" style={{ color: '#666666' }} />
+                    <span style={{ color: '#A0A0A0' }} className="text-xs font-medium">{company._count.deals} deals</span>
                   </div>
                 </div>
               </CardContent>
@@ -1034,7 +1034,7 @@ function CompaniesView({ onCompanyClick }: { onCompanyClick: (id: string) => voi
       {data?.pagination && data.pagination.totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
           <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)}><ChevronLeft className="h-4 w-4" /></Button>
-          <span className="text-sm text-gray-600">Page {page} of {data.pagination.totalPages}</span>
+          <span style={{ color: '#A0A0A0' }} className="text-sm">Page {page} of {data.pagination.totalPages}</span>
           <Button variant="outline" size="sm" disabled={page >= data.pagination.totalPages} onClick={() => setPage(p => p + 1)}><ChevronRight className="h-4 w-4" /></Button>
         </div>
       )}
@@ -1049,22 +1049,22 @@ export default function PeoplePage() {
   const [companyFilter, setCompanyFilter] = useState<string | null>(null)
 
   return (
-    <div className="p-6 lg:p-8 space-y-6">
+    <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }} className="p-6 lg:p-8 space-y-6">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">People</h1>
-          <p className="text-gray-500 text-sm mt-1">Manage contacts and companies</p>
+          <h1 style={{ color: '#FFFFFF' }} className="text-2xl font-bold">People</h1>
+          <p style={{ color: '#A0A0A0' }} className="text-sm mt-1">Manage contacts and companies</p>
         </div>
       </motion.div>
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={v => { setActiveTab(v); setCompanyFilter(null) }}>
-        <TabsList className="bg-gray-100 p-1">
-          <TabsTrigger value="contacts" className="data-[state=active]:bg-white data-[state=active]:text-[#374151] data-[state=active]:shadow-sm">
+        <TabsList className="bg-[#1A1A1A] p-1" style={{ border: '1px solid #2A2A2A' }}>
+          <TabsTrigger value="contacts" className="data-[state=active]:bg-[#2A2A2A] data-[state=active]:text-white data-[state=active]:shadow-sm">
             <Users className="h-4 w-4 mr-2" />Contacts
           </TabsTrigger>
-          <TabsTrigger value="companies" className="data-[state=active]:bg-white data-[state=active]:text-[#374151] data-[state=active]:shadow-sm">
+          <TabsTrigger value="companies" className="data-[state=active]:bg-[#2A2A2A] data-[state=active]:text-white data-[state=active]:shadow-sm">
             <Building2 className="h-4 w-4 mr-2" />Companies
           </TabsTrigger>
         </TabsList>

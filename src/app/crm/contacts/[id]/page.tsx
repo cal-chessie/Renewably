@@ -124,10 +124,10 @@ export default function ContactDetailPage() {
 
   if (isLoading || !data) {
     return (
-      <div className="p-6 lg:p-8">
+      <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }} className="p-6 lg:p-8">
         <div className="space-y-4">
-          <div className="h-8 w-48 bg-gray-100 rounded animate-pulse" />
-          <div className="h-64 bg-gray-100 rounded-xl animate-pulse" />
+          <div className="h-8 w-48 rounded animate-pulse" style={{ backgroundColor: '#222222' }} />
+          <div className="h-64 rounded-xl animate-pulse" style={{ backgroundColor: '#222222' }} />
         </div>
       </div>
     )
@@ -137,12 +137,13 @@ export default function ContactDetailPage() {
   const tags = (contact.tags || []).map((t: Record<string, unknown>) => t.tag)
 
   return (
-    <div className="p-6 lg:p-8 space-y-6">
+    <div style={{ backgroundColor: '#0A0A0A', minHeight: '100vh' }} className="p-6 lg:p-8 space-y-6">
       {/* Back Button */}
       <Button
         variant="ghost"
         onClick={() => router.push('/crm/contacts')}
-        className="text-gray-500 hover:text-gray-900"
+        className="hover:text-white"
+        style={{ color: '#A0A0A0' }}
       >
         <ArrowLeft className="h-4 w-4 mr-2" />
         Back to Contacts
@@ -162,16 +163,16 @@ export default function ContactDetailPage() {
             </span>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 style={{ color: '#FFFFFF' }} className="text-2xl font-bold">
               {contact.firstName} {contact.lastName}
             </h1>
             {contact.jobTitle && (
-              <p className="text-gray-500 text-sm">{contact.jobTitle}</p>
+              <p style={{ color: '#A0A0A0' }} className="text-sm">{contact.jobTitle}</p>
             )}
             {contact.company && (
               <div className="flex items-center gap-1 mt-1">
-                <Building2 className="h-3.5 w-3.5 text-gray-400" />
-                <span className="text-sm text-gray-500">{contact.company.name}</span>
+                <Building2 className="h-3.5 w-3.5" style={{ color: '#666666' }} />
+                <span style={{ color: '#A0A0A0' }} className="text-sm">{contact.company.name}</span>
               </div>
             )}
             <div className="flex items-center gap-2 mt-2">
@@ -198,7 +199,7 @@ export default function ContactDetailPage() {
         transition={{ delay: 0.1 }}
       >
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="bg-gray-100 p-1">
+          <TabsList className="bg-[#1A1A1A] p-1" style={{ border: '1px solid #2A2A2A' }}>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="deals">
               Deals ({contact.deals?.length || 0})
@@ -217,35 +218,35 @@ export default function ContactDetailPage() {
           {/* Overview Tab */}
           <TabsContent value="overview">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card className="border-0 shadow-sm lg:col-span-1">
+              <Card style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A' }} className="shadow-sm lg:col-span-1">
                 <CardHeader>
-                  <CardTitle className="text-base">Contact Information</CardTitle>
+                  <CardTitle style={{ color: '#FFFFFF' }} className="text-base">Contact Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {contact.email && (
                     <div className="flex items-center gap-3">
-                      <Mail className="h-4 w-4 text-gray-400" />
+                      <Mail className="h-4 w-4" style={{ color: '#666666' }} />
                       <div>
-                        <p className="text-xs text-gray-400">Email</p>
-                        <p className="text-sm text-gray-900">{contact.email}</p>
+                        <p style={{ color: '#666666' }} className="text-xs">Email</p>
+                        <p style={{ color: '#FFFFFF' }} className="text-sm">{contact.email}</p>
                       </div>
                     </div>
                   )}
                   {contact.phone && (
                     <div className="flex items-center gap-3">
-                      <Phone className="h-4 w-4 text-gray-400" />
+                      <Phone className="h-4 w-4" style={{ color: '#666666' }} />
                       <div>
-                        <p className="text-xs text-gray-400">Phone</p>
-                        <p className="text-sm text-gray-900">{contact.phone}</p>
+                        <p style={{ color: '#666666' }} className="text-xs">Phone</p>
+                        <p style={{ color: '#FFFFFF' }} className="text-sm">{contact.phone}</p>
                       </div>
                     </div>
                   )}
                   {contact.address && (
                     <div className="flex items-center gap-3">
-                      <MapPin className="h-4 w-4 text-gray-400" />
+                      <MapPin className="h-4 w-4" style={{ color: '#666666' }} />
                       <div>
-                        <p className="text-xs text-gray-400">Address</p>
-                        <p className="text-sm text-gray-900">
+                        <p style={{ color: '#666666' }} className="text-xs">Address</p>
+                        <p style={{ color: '#FFFFFF' }} className="text-sm">
                           {contact.address}
                           {contact.city && `, ${contact.city}`}
                           {contact.country && `, ${contact.country}`}
@@ -255,23 +256,23 @@ export default function ContactDetailPage() {
                   )}
                   {contact.linkedin && (
                     <div className="flex items-center gap-3">
-                      <Linkedin className="h-4 w-4 text-gray-400" />
+                      <Linkedin className="h-4 w-4" style={{ color: '#666666' }} />
                       <div>
-                        <p className="text-xs text-gray-400">LinkedIn</p>
-                        <p className="text-sm text-[#374151]">Profile</p>
+                        <p style={{ color: '#666666' }} className="text-xs">LinkedIn</p>
+                        <p style={{ color: '#FFFFFF' }} className="text-sm">Profile</p>
                       </div>
                     </div>
                   )}
                   <div className="flex items-center gap-3">
-                    <Briefcase className="h-4 w-4 text-gray-400" />
+                    <Briefcase className="h-4 w-4" style={{ color: '#666666' }} />
                     <div>
-                      <p className="text-xs text-gray-400">Source</p>
-                      <p className="text-sm text-gray-900 capitalize">{contact.source}</p>
+                      <p style={{ color: '#666666' }} className="text-xs">Source</p>
+                      <p style={{ color: '#FFFFFF' }} className="text-sm capitalize">{contact.source}</p>
                     </div>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400">Last Contact</p>
-                    <p className="text-sm text-gray-900">
+                    <p style={{ color: '#666666' }} className="text-xs">Last Contact</p>
+                    <p style={{ color: '#FFFFFF' }} className="text-sm">
                       {contact.lastContactAt
                         ? format(new Date(contact.lastContactAt), 'MMM d, yyyy')
                         : 'Never'}
@@ -280,12 +281,12 @@ export default function ContactDetailPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-sm lg:col-span-2">
+              <Card style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A' }} className="shadow-sm lg:col-span-2">
                 <CardHeader>
-                  <CardTitle className="text-base">Description</CardTitle>
+                  <CardTitle style={{ color: '#FFFFFF' }} className="text-base">Description</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-600">
+                  <p style={{ color: '#A0A0A0' }} className="text-sm">
                     {contact.description || 'No description provided.'}
                   </p>
                 </CardContent>
@@ -295,32 +296,32 @@ export default function ContactDetailPage() {
 
           {/* Deals Tab */}
           <TabsContent value="deals">
-            <Card className="border-0 shadow-sm">
+            <Card style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A' }} className="shadow-sm">
               <CardContent className="p-0">
                 {contact.deals?.length === 0 ? (
-                  <p className="text-sm text-gray-400 text-center py-12">No deals associated</p>
+                  <p style={{ color: '#666666' }} className="text-sm text-center py-12">No deals associated</p>
                 ) : (
-                  <div className="divide-y divide-gray-50">
-                    {contact.deals.map((deal: Record<string, unknown>) => (
-                      <div key={deal.id as string} className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
+                  <div>
+                    {contact.deals.map((deal: Record<string, unknown>, i: number) => (
+                      <div key={deal.id as string} className="flex items-center justify-between px-6 py-4 hover:bg-white/5 transition-colors" style={i < contact.deals.length - 1 ? { borderBottom: '1px solid #2A2A2A' } : {}}>
                         <div className="flex items-center gap-4">
                           <div
                             className="h-10 w-1 rounded-full"
                             style={{ backgroundColor: (deal.stage as Record<string, string>)?.color || '#ccc' }}
                           />
                           <div>
-                            <p className="text-sm font-medium text-gray-900">{deal.title as string}</p>
-                            <p className="text-xs text-gray-400">
+                            <p style={{ color: '#FFFFFF' }} className="text-sm font-medium">{deal.title as string}</p>
+                            <p style={{ color: '#666666' }} className="text-xs">
                               {(deal.stage as Record<string, string>)?.name} · {(deal.probability as number)}% probability
                             </p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-semibold text-gray-900">
+                          <p style={{ color: '#FFFFFF' }} className="text-sm font-semibold">
                             {formatCurrency(deal.value as number)}
                           </p>
                           {deal.closeDate && (
-                            <p className="text-xs text-gray-400">
+                            <p style={{ color: '#666666' }} className="text-xs">
                               Close: {format(new Date(deal.closeDate as string), 'MMM d, yyyy')}
                             </p>
                           )}
@@ -402,25 +403,25 @@ export default function ContactDetailPage() {
                 </Dialog>
               </div>
 
-              <Card className="border-0 shadow-sm">
+              <Card style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A' }} className="shadow-sm">
                 <CardContent className="p-0">
                   {contact.activities?.length === 0 ? (
-                    <p className="text-sm text-gray-400 text-center py-12">No activities yet</p>
+                    <p style={{ color: '#666666' }} className="text-sm text-center py-12">No activities yet</p>
                   ) : (
-                    <div className="divide-y divide-gray-50">
-                      {contact.activities.map((activity: Record<string, unknown>) => (
-                        <div key={activity.id as string} className="flex items-start gap-3 px-6 py-4">
+                    <div>
+                      {contact.activities.map((activity: Record<string, unknown>, i: number) => (
+                        <div key={activity.id as string} className="flex items-start gap-3 px-6 py-4" style={i < contact.activities.length - 1 ? { borderBottom: '1px solid #2A2A2A' } : {}}>
                           <ActivityIcon type={activity.type as string} />
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900">
+                            <p style={{ color: '#FFFFFF' }} className="text-sm font-medium">
                               {activity.subject as string}
                             </p>
                             {activity.description && (
-                              <p className="text-sm text-gray-500 mt-0.5">
+                              <p style={{ color: '#A0A0A0' }} className="text-sm mt-0.5">
                                 {activity.description as string}
                               </p>
                             )}
-                            <p className="text-xs text-gray-400 mt-1">
+                            <p style={{ color: '#666666' }} className="text-xs mt-1">
                               {timeAgo(activity.createdAt as string)}
                             </p>
                           </div>
@@ -435,20 +436,20 @@ export default function ContactDetailPage() {
 
           {/* Tasks Tab */}
           <TabsContent value="tasks">
-            <Card className="border-0 shadow-sm">
+            <Card style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A' }} className="shadow-sm">
               <CardContent className="p-0">
                 {contact.tasks?.length === 0 ? (
-                  <p className="text-sm text-gray-400 text-center py-12">No tasks</p>
+                  <p style={{ color: '#666666' }} className="text-sm text-center py-12">No tasks</p>
                 ) : (
-                  <div className="divide-y divide-gray-50">
-                    {contact.tasks.map((task: Record<string, unknown>) => (
-                      <div key={task.id as string} className="flex items-center justify-between px-6 py-4">
+                  <div>
+                    {contact.tasks.map((task: Record<string, unknown>, i: number) => (
+                      <div key={task.id as string} className="flex items-center justify-between px-6 py-4" style={i < contact.tasks.length - 1 ? { borderBottom: '1px solid #2A2A2A' } : {}}>
                         <div>
-                          <p className={`text-sm font-medium ${task.status === 'completed' ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
+                          <p className={`text-sm font-medium ${task.status === 'completed' ? 'line-through' : ''}`} style={{ color: task.status === 'completed' ? '#666666' : '#FFFFFF' }}>
                             {task.title as string}
                           </p>
                           {task.description && (
-                            <p className="text-xs text-gray-400 mt-0.5">{task.description as string}</p>
+                            <p style={{ color: '#666666' }} className="text-xs mt-0.5">{task.description as string}</p>
                           )}
                         </div>
                         <div className="flex items-center gap-2">
@@ -465,7 +466,7 @@ export default function ContactDetailPage() {
 
           {/* Notes Tab */}
           <TabsContent value="notes">
-            <Card className="border-0 shadow-sm">
+            <Card style={{ backgroundColor: '#1A1A1A', border: '1px solid #2A2A2A' }} className="shadow-sm">
               <CardContent className="p-6 space-y-4">
                 <div className="flex gap-3">
                   <Textarea
@@ -490,21 +491,22 @@ export default function ContactDetailPage() {
                 </div>
 
                 {contact.notes?.length === 0 ? (
-                  <p className="text-sm text-gray-400 text-center py-8">No notes yet</p>
+                  <p style={{ color: '#666666' }} className="text-sm text-center py-8">No notes yet</p>
                 ) : (
                   <div className="space-y-3 mt-4">
                     {contact.notes.map((note: Record<string, unknown>) => (
                       <div
                         key={note.id as string}
-                        className="bg-gray-50 rounded-lg p-4"
+                        className="rounded-lg p-4"
+                        style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}
                       >
-                        <p className="text-sm text-gray-700">{note.content as string}</p>
+                        <p style={{ color: '#A0A0A0' }} className="text-sm">{note.content as string}</p>
                         <div className="flex items-center gap-2 mt-2">
-                          <span className="text-xs text-gray-400">
+                          <span style={{ color: '#666666' }} className="text-xs">
                             {(note.user as Record<string, string>)?.name || 'Unknown'}
                           </span>
-                          <span className="text-xs text-gray-300">·</span>
-                          <span className="text-xs text-gray-400">
+                          <span style={{ color: '#444444' }} className="text-xs">·</span>
+                          <span style={{ color: '#666666' }} className="text-xs">
                             {timeAgo(note.createdAt as string)}
                           </span>
                         </div>
