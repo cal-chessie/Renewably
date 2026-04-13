@@ -429,7 +429,7 @@ function InstallerDetailPanel({ installerId, onClose }: { installerId: string; o
       {/* Backdrop */}
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/30 z-40 md:block hidden"
+        className="fixed inset-0 bg-black/30 z-40 block"
         onClick={onClose}
       />
 
