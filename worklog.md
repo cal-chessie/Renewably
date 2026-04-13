@@ -50,7 +50,7 @@ Task: Simplify website + rebrand CRM from SolarPilot to Renewably
 
 Work Log:
 - Removed Footer from SiteShell.tsx (user requested: "remove the footer, it's useless")
-- Removed LoadingScreen from root layout (1s delay = bad for ADHD users, unnecessary friction)
+- Removed LoadingScreen from root layout (1s delay = unnecessary friction)
 - Removed CustomCursor from root layout (visual noise, no functional value)
 - Rebranded CRM sidebar: "SolarPilot / by Renewably" → "Renewably / Installer CRM"
 - Rebranded CRM dashboard: "SolarPilot Dashboard" → "Dashboard"
@@ -63,7 +63,7 @@ Work Log:
 
 Stage Summary:
 - Footer removed from website
-- LoadingScreen and CustomCursor removed (simpler, faster, ADHD-friendly)
+- LoadingScreen and CustomCursor removed (simpler, faster, cleaner)
 - CRM fully rebranded as "Renewably" (SolarPilot is now just a feature, not the brand)
 - All changes verified and passing
 
@@ -82,7 +82,7 @@ Work Log:
 - Homepage and CRM login both return HTTP 200
 
 Stage Summary:
-- Sidebar now has 6 clear items — ADHD-friendly, self-explanatory
+- Sidebar now has 6 clear items — simplified, self-explanatory
 - Pages like Activities, Proposals, Workflows, Reports, Invoices still exist and work, just not in the main nav
 - Zero dead files remaining
 - Clean build confirmed

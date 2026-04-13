@@ -1,14 +1,15 @@
 -- ============================================================================
 -- RENEWABLY.IE — SUPABASE POSTGRESQL SCHEMA
 -- ============================================================================
--- AI-as-a-Service platform for Irish solar PV installers
--- Generated from Prisma schema (25 models) + 6 CMS/utility tables
+-- AI-as-a-Service CRM platform for Irish solar PV installers
+-- Generated from Prisma schema (27 models) + CMS/utility tables
 --
 -- IMPORTANT: Run this script in the Supabase SQL Editor.
 -- It creates all tables, enums, indexes, RLS policies, and triggers.
 --
+-- Brand: Renewably (renewably.ie)
 -- Email: hello@renewably.ie
--- Currency: EUR (€)
+-- Currency: EUR
 -- Locale: Ireland / British English
 -- ============================================================================
 
@@ -173,6 +174,8 @@ CREATE TRIGGER profiles_updated_at
 -- ============================================================================
 -- SECTION 3: CRM CORE TABLES
 -- ============================================================================
+-- These tables mirror the Prisma schema models. The SQLite (dev) and
+-- Supabase (production) schemas should be kept in sync.
 
 -- ===== 3a. COMPANIES =====
 -- Companies that contacts and deals belong to (typically solar PV businesses).
@@ -183,7 +186,7 @@ CREATE TABLE companies (
   website       TEXT,
   industry      TEXT,
   employees     INTEGER,
-  annual_revenue TEXT,        -- stored as string for flexibility (e.g. "€500k-€1M")
+  annual_revenue TEXT,        -- stored as string for flexibility (e.g. "EUR 500k-1M")
   address       TEXT,
   city          TEXT,
   country       TEXT DEFAULT 'Ireland',
@@ -236,7 +239,7 @@ CREATE TRIGGER contacts_updated_at
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
 -- ===== 3c. PIPELINE STAGES =====
--- Configurable deal pipeline stages (e.g. Lead → Qualified → Proposal → Won).
+-- Configurable deal pipeline stages (e.g. Lead > Qualified > Proposal > Won).
 
 CREATE TABLE pipeline_stages (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -287,6 +290,7 @@ CREATE TRIGGER deals_updated_at
 
 -- ===== 3e. ACTIVITIES =====
 -- Timeline events — calls, emails, meetings, notes, system events.
+-- Polymorphic relations to contacts, deals, companies, proposals, meetings, invoices.
 
 CREATE TABLE activities (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -299,7 +303,6 @@ CREATE TABLE activities (
   completed_at  TIMESTAMPTZ,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
 
-  -- Polymorphic relations to various entities
   contact_id    UUID REFERENCES contacts(id) ON DELETE SET NULL,
   deal_id       UUID REFERENCES deals(id) ON DELETE SET NULL,
   company_id    UUID REFERENCES companies(id) ON DELETE SET NULL,
@@ -347,7 +350,7 @@ CREATE TRIGGER tasks_updated_at
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
 -- ===== 3g. NOTES =====
--- Free-text notes attached to contacts, deals, companies, or tasks.
+-- Free-text notes attached to contacts, deals, companies, users, or tasks.
 
 CREATE TABLE notes (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -355,7 +358,6 @@ CREATE TABLE notes (
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
 
-  -- Polymorphic: note can belong to a contact, deal, company, user, or task
   contact_id  UUID REFERENCES contacts(id) ON DELETE SET NULL,
   deal_id     UUID REFERENCES deals(id) ON DELETE SET NULL,
   company_id  UUID REFERENCES companies(id) ON DELETE SET NULL,
@@ -422,7 +424,6 @@ CREATE TABLE proposals (
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
 
-  -- Optional links
   deal_id       UUID REFERENCES deals(id) ON DELETE SET NULL,
   contact_id    UUID REFERENCES contacts(id) ON DELETE SET NULL,
   company_id    UUID REFERENCES companies(id) ON DELETE SET NULL,
@@ -445,7 +446,7 @@ CREATE TABLE proposal_templates (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name        TEXT NOT NULL,
   description TEXT,
-  line_items  JSONB NOT NULL DEFAULT '[]'::jsonb,  -- JSON array of line items
+  line_items  JSONB NOT NULL DEFAULT '[]'::jsonb,
   is_active   BOOLEAN NOT NULL DEFAULT true,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -490,7 +491,6 @@ CREATE TABLE invoices (
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
 
-  -- Optional links
   proposal_id     UUID REFERENCES proposals(id) ON DELETE SET NULL,
   contact_id      UUID REFERENCES contacts(id) ON DELETE SET NULL,
   company_id      UUID REFERENCES companies(id) ON DELETE SET NULL,
@@ -558,7 +558,6 @@ CREATE TABLE meetings (
   created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
 
-  -- Optional links
   contact_id       UUID REFERENCES contacts(id) ON DELETE SET NULL,
   deal_id          UUID REFERENCES deals(id) ON DELETE SET NULL,
   company_id       UUID REFERENCES companies(id) ON DELETE SET NULL,
@@ -693,7 +692,7 @@ CREATE INDEX idx_report_snapshots_generated ON report_snapshots(generated_at);
 -- ============================================================================
 -- SECTION 7: INSTALLER PROFILE TABLES
 -- ============================================================================
--- Detailed installer onboarding data from SolarPilot.
+-- Detailed installer onboarding data used by the Renewably platform.
 
 -- ===== 7a. INSTALLER PROFILES =====
 CREATE TABLE installer_profiles (
@@ -728,13 +727,13 @@ CREATE TABLE installer_profiles (
 
   -- Business metrics
   years_in_business         INTEGER,
-  public_liability          DOUBLE PRECISION,     -- in EUR
+  public_liability          DOUBLE PRECISION,
   seai_registered           BOOLEAN NOT NULL DEFAULT false,
   seai_number               TEXT,
   reci_registered           BOOLEAN NOT NULL DEFAULT false,
   reci_number               TEXT,
   max_projects_month        INTEGER,
-  avg_project_value         DOUBLE PRECISION,     -- in EUR
+  avg_project_value         DOUBLE PRECISION,
   avg_install_days          INTEGER,
   team_size                 INTEGER,
   qualified_electricians    INTEGER,
@@ -744,9 +743,9 @@ CREATE TABLE installer_profiles (
   has_drone                 BOOLEAN NOT NULL DEFAULT false,
   has_scaffolding           BOOLEAN NOT NULL DEFAULT false,
   max_leads_month           INTEGER,
-  min_lead_value            DOUBLE PRECISION,     -- in EUR
+  min_lead_value            DOUBLE PRECISION,
   response_time_hours       INTEGER,
-  quotation_turnaround      INTEGER,               -- days
+  quotation_turnaround      INTEGER,
   max_travel_km             INTEGER,
   rural_specialist          BOOLEAN NOT NULL DEFAULT false,
   commercial_specialist     BOOLEAN NOT NULL DEFAULT false,
@@ -758,7 +757,7 @@ CREATE TABLE installer_profiles (
   -- Targets
   lead_target_month         INTEGER,
   installs_month            INTEGER,
-  revenue_target            DOUBLE PRECISION,     -- in EUR
+  revenue_target            DOUBLE PRECISION,
 
   -- Onboarding state
   onboarding_complete       BOOLEAN NOT NULL DEFAULT false,
@@ -787,10 +786,10 @@ CREATE TRIGGER installer_profiles_updated_at
 CREATE TABLE installer_equipment (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   installer_id  UUID NOT NULL REFERENCES installer_profiles(id) ON DELETE CASCADE,
-  category      TEXT NOT NULL,       -- e.g. 'panel', 'inverter', 'battery', 'ev_charger'
+  category      TEXT NOT NULL,
   brand_id      TEXT NOT NULL,
   brand_name    TEXT NOT NULL,
-  meta          JSONB NOT NULL DEFAULT '{}'::jsonb,  -- model, specs, etc.
+  meta          JSONB NOT NULL DEFAULT '{}'::jsonb,
   is_preferred  BOOLEAN NOT NULL DEFAULT true,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -804,7 +803,7 @@ CREATE INDEX idx_installer_equipment_installer ON installer_equipment(installer_
 CREATE TABLE installer_documents (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   installer_id  UUID NOT NULL REFERENCES installer_profiles(id) ON DELETE CASCADE,
-  doc_type      TEXT NOT NULL,       -- e.g. 'insurance', 'seai_cert', 'contract', 'gdpr'
+  doc_type      TEXT NOT NULL,
   doc_name      TEXT NOT NULL,
   file_name     TEXT,
   signed_at     TIMESTAMPTZ,
@@ -842,10 +841,9 @@ CREATE TRIGGER subscriptions_updated_at
 -- ============================================================================
 -- SECTION 8: CMS & MARKETING TABLES
 -- ============================================================================
+-- Content management for the public website and marketing tools.
 
 -- ===== 8a. BLOG POSTS =====
--- Content management for the renewably.ie blog.
-
 CREATE TABLE blog_posts (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug          TEXT NOT NULL,
@@ -885,8 +883,6 @@ CREATE TRIGGER blog_posts_published_at
   FOR EACH ROW EXECUTE FUNCTION public.set_published_at();
 
 -- ===== 8b. FAQs =====
--- Frequently asked questions for the website.
-
 CREATE TABLE faqs (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   question    TEXT NOT NULL,
@@ -907,16 +903,14 @@ CREATE TRIGGER faqs_updated_at
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
 -- ===== 8c. SERVICES =====
--- Service offerings displayed on the website.
-
 CREATE TABLE services (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug          TEXT NOT NULL,
   title         TEXT NOT NULL,
   description   TEXT NOT NULL DEFAULT '',
-  icon          TEXT,                    -- icon name or emoji
-  features      JSONB NOT NULL DEFAULT '[]'::jsonb,  -- list of feature strings
-  pricing_note  TEXT,                    -- e.g. "From €299/month"
+  icon          TEXT,
+  features      JSONB NOT NULL DEFAULT '[]'::jsonb,
+  pricing_note  TEXT,
   "order"       INTEGER NOT NULL DEFAULT 0,
   is_active     BOOLEAN NOT NULL DEFAULT true,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -933,8 +927,6 @@ CREATE TRIGGER services_updated_at
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
 -- ===== 8d. TESTIMONIALS =====
--- Customer testimonials for the website.
-
 CREATE TABLE testimonials (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name        TEXT NOT NULL,
@@ -959,7 +951,7 @@ CREATE TRIGGER testimonials_updated_at
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
 -- ===== 8e. EMAIL LOGS =====
--- Central log for all outgoing emails (Postmark, etc.).
+-- Central log for all outgoing emails (Postmark).
 
 CREATE TABLE email_logs (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -967,7 +959,7 @@ CREATE TABLE email_logs (
   subject     TEXT NOT NULL,
   status      email_status NOT NULL DEFAULT 'queued',
   template_id TEXT,
-  metadata    JSONB NOT NULL DEFAULT '{}'::jsonb,  -- Postmark message ID, error, etc.
+  metadata    JSONB NOT NULL DEFAULT '{}'::jsonb,
   sent_at     TIMESTAMPTZ,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -988,7 +980,7 @@ CREATE TABLE contact_submissions (
   company     TEXT,
   message     TEXT NOT NULL,
   source      TEXT NOT NULL DEFAULT 'website',
-  metadata    JSONB NOT NULL DEFAULT '{}'::jsonb,  -- IP, user agent, jobs per month, etc.
+  metadata    JSONB NOT NULL DEFAULT '{}'::jsonb,
   is_contacted BOOLEAN NOT NULL DEFAULT false,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -1001,9 +993,7 @@ CREATE INDEX idx_contact_submissions_created ON contact_submissions(created_at D
 -- SECTION 9: ROW LEVEL SECURITY (RLS)
 -- ============================================================================
 -- Enable RLS on all tables and create baseline policies.
--- Adjust policies based on your application's auth requirements.
 
--- Helper: Enable RLS on all application tables
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE companies ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
@@ -1039,7 +1029,7 @@ ALTER TABLE email_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
 
 -- ---------------------------------------------------------------------------
--- PROFILES: Users can read/update their own profile. Admins can read all.
+-- PROFILES
 -- ---------------------------------------------------------------------------
 CREATE POLICY "profiles_select_own" ON profiles
   FOR SELECT USING (auth.uid() = id);
@@ -1050,535 +1040,387 @@ CREATE POLICY "profiles_update_own" ON profiles
 CREATE POLICY "profiles_insert_own" ON profiles
   FOR INSERT WITH CHECK (auth.uid() = id);
 
--- Admins can view all profiles
 CREATE POLICY "profiles_select_admin" ON profiles
   FOR SELECT USING (
     EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
   );
 
 -- ---------------------------------------------------------------------------
--- COMPANIES: Authenticated users can read; agents/admins can insert/update.
+-- COMPANIES
 -- ---------------------------------------------------------------------------
 CREATE POLICY "companies_authenticated_read" ON companies
-  FOR SELECT TO authenticated USING (true);
+  FOR SELECT USING (auth.uid() IS NOT NULL);
 
-CREATE POLICY "companies_authenticated_insert" ON companies
-  FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "companies_agent_insert" ON companies
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
 
-CREATE POLICY "companies_authenticated_update" ON companies
-  FOR UPDATE TO authenticated USING (true);
+CREATE POLICY "companies_agent_update" ON companies
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
 
-CREATE POLICY "companies_authenticated_delete" ON companies
-  FOR DELETE TO authenticated USING (
+CREATE POLICY "companies_admin_delete" ON companies
+  FOR DELETE USING (
     EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
   );
 
 -- ---------------------------------------------------------------------------
--- CONTACTS: Authenticated users can CRUD.
+-- CONTACTS
 -- ---------------------------------------------------------------------------
 CREATE POLICY "contacts_authenticated_read" ON contacts
-  FOR SELECT TO authenticated USING (true);
+  FOR SELECT USING (auth.uid() IS NOT NULL);
 
-CREATE POLICY "contacts_authenticated_insert" ON contacts
-  FOR INSERT TO authenticated WITH CHECK (true);
-
-CREATE POLICY "contacts_authenticated_update" ON contacts
-  FOR UPDATE TO authenticated USING (true);
-
-CREATE POLICY "contacts_authenticated_delete" ON contacts
-  FOR DELETE TO authenticated USING (
+CREATE POLICY "contacts_agent_insert" ON contacts
+  FOR INSERT WITH CHECK (
     EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
   );
 
+CREATE POLICY "contacts_agent_update" ON contacts
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
+
+CREATE POLICY "contacts_admin_delete" ON contacts
+  FOR DELETE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
 -- ---------------------------------------------------------------------------
--- DEALS: Authenticated users can CRUD.
+-- DEALS
 -- ---------------------------------------------------------------------------
 CREATE POLICY "deals_authenticated_read" ON deals
-  FOR SELECT TO authenticated USING (true);
+  FOR SELECT USING (auth.uid() IS NOT NULL);
 
-CREATE POLICY "deals_authenticated_insert" ON deals
-  FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "deals_agent_insert" ON deals
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
 
-CREATE POLICY "deals_authenticated_update" ON deals
-  FOR UPDATE TO authenticated USING (true);
+CREATE POLICY "deals_agent_update" ON deals
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
 
-CREATE POLICY "deals_authenticated_delete" ON deals
-  FOR DELETE TO authenticated USING (
+CREATE POLICY "deals_admin_delete" ON deals
+  FOR DELETE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- ---------------------------------------------------------------------------
+-- PIPELINE STAGES
+-- ---------------------------------------------------------------------------
+CREATE POLICY "pipeline_stages_authenticated_read" ON pipeline_stages
+  FOR SELECT USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "pipeline_stages_admin_manage" ON pipeline_stages
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- ---------------------------------------------------------------------------
+-- ACTIVITIES
+-- ---------------------------------------------------------------------------
+CREATE POLICY "activities_authenticated_read" ON activities
+  FOR SELECT USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "activities_agent_insert" ON activities
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
+
+CREATE POLICY "activities_agent_update" ON activities
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
+
+CREATE POLICY "activities_admin_delete" ON activities
+  FOR DELETE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- ---------------------------------------------------------------------------
+-- TASKS
+-- ---------------------------------------------------------------------------
+CREATE POLICY "tasks_authenticated_read" ON tasks
+  FOR SELECT USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "tasks_agent_insert" ON tasks
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
+
+CREATE POLICY "tasks_agent_update" ON tasks
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
+
+CREATE POLICY "tasks_admin_delete" ON tasks
+  FOR DELETE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- ---------------------------------------------------------------------------
+-- NOTES
+-- ---------------------------------------------------------------------------
+CREATE POLICY "notes_authenticated_read" ON notes
+  FOR SELECT USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "notes_agent_insert" ON notes
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
+
+CREATE POLICY "notes_agent_update" ON notes
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
+
+CREATE POLICY "notes_admin_delete" ON notes
+  FOR DELETE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- ---------------------------------------------------------------------------
+-- TAGS
+-- ---------------------------------------------------------------------------
+CREATE POLICY "tags_authenticated_read" ON tags
+  FOR SELECT USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "tags_agent_manage" ON tags
+  FOR ALL USING (
     EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
   );
 
 -- ---------------------------------------------------------------------------
--- PIPELINE STAGES: Readable by all authenticated.
+-- PROPOSALS
 -- ---------------------------------------------------------------------------
-CREATE POLICY "pipeline_stages_authenticated" ON pipeline_stages
-  FOR ALL TO authenticated USING (true);
+CREATE POLICY "proposals_authenticated_read" ON proposals
+  FOR SELECT USING (auth.uid() IS NOT NULL);
 
--- ---------------------------------------------------------------------------
--- ACTIVITIES: Readable by authenticated; insertable by authenticated.
--- ---------------------------------------------------------------------------
-CREATE POLICY "activities_authenticated_read" ON activities
-  FOR SELECT TO authenticated USING (true);
+CREATE POLICY "proposals_agent_insert" ON proposals
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
 
-CREATE POLICY "activities_authenticated_insert" ON activities
-  FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "proposals_agent_update" ON proposals
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
 
-CREATE POLICY "activities_authenticated_update" ON activities
-  FOR UPDATE TO authenticated USING (true);
-
--- ---------------------------------------------------------------------------
--- TASKS: Readable by authenticated; manageable by agents and admins.
--- ---------------------------------------------------------------------------
-CREATE POLICY "tasks_authenticated_read" ON tasks
-  FOR SELECT TO authenticated USING (true);
-
-CREATE POLICY "tasks_authenticated_insert" ON tasks
-  FOR INSERT TO authenticated WITH CHECK (true);
-
-CREATE POLICY "tasks_authenticated_update" ON tasks
-  FOR UPDATE TO authenticated USING (true);
-
-CREATE POLICY "tasks_authenticated_delete" ON tasks
-  FOR DELETE TO authenticated USING (true);
+CREATE POLICY "proposals_admin_delete" ON proposals
+  FOR DELETE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
 
 -- ---------------------------------------------------------------------------
--- NOTES: Readable by authenticated; manageable by agents and admins.
+-- INVOICES
 -- ---------------------------------------------------------------------------
-CREATE POLICY "notes_authenticated_read" ON notes
-  FOR SELECT TO authenticated USING (true);
+CREATE POLICY "invoices_authenticated_read" ON invoices
+  FOR SELECT USING (auth.uid() IS NOT NULL);
 
-CREATE POLICY "notes_authenticated_insert" ON notes
-  FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "invoices_agent_insert" ON invoices
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
 
-CREATE POLICY "notes_authenticated_update" ON notes
-  FOR UPDATE TO authenticated USING (true);
+CREATE POLICY "invoices_agent_update" ON invoices
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
 
-CREATE POLICY "notes_authenticated_delete" ON notes
-  FOR DELETE TO authenticated USING (true);
-
--- ---------------------------------------------------------------------------
--- TAGS, CONTACT_TAGS, DEAL_TAGS: Full access for authenticated users.
--- ---------------------------------------------------------------------------
-CREATE POLICY "tags_authenticated" ON tags FOR ALL TO authenticated USING (true);
-CREATE POLICY "contact_tags_authenticated" ON contact_tags FOR ALL TO authenticated USING (true);
-CREATE POLICY "deal_tags_authenticated" ON deal_tags FOR ALL TO authenticated USING (true);
-
--- ---------------------------------------------------------------------------
--- PROPOSALS, PROPOSAL_TEMPLATES, PROPOSAL_LINE_ITEMS
--- ---------------------------------------------------------------------------
-CREATE POLICY "proposals_authenticated_read" ON proposals FOR SELECT TO authenticated USING (true);
-CREATE POLICY "proposals_authenticated_insert" ON proposals FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "proposals_authenticated_update" ON proposals FOR UPDATE TO authenticated USING (true);
-CREATE POLICY "proposal_templates_authenticated" ON proposal_templates FOR ALL TO authenticated USING (true);
-CREATE POLICY "proposal_line_items_authenticated" ON proposal_line_items FOR ALL TO authenticated USING (true);
-
--- ---------------------------------------------------------------------------
--- INVOICES, INVOICE_LINE_ITEMS, PAYMENTS
--- ---------------------------------------------------------------------------
-CREATE POLICY "invoices_authenticated_read" ON invoices FOR SELECT TO authenticated USING (true);
-CREATE POLICY "invoices_authenticated_insert" ON invoices FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "invoices_authenticated_update" ON invoices FOR UPDATE TO authenticated USING (true);
-CREATE POLICY "invoice_line_items_authenticated" ON invoice_line_items FOR ALL TO authenticated USING (true);
-CREATE POLICY "payments_authenticated_read" ON payments FOR SELECT TO authenticated USING (true);
-CREATE POLICY "payments_authenticated_insert" ON payments FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "payments_authenticated_update" ON payments FOR UPDATE TO authenticated USING (true);
+CREATE POLICY "invoices_admin_delete" ON invoices
+  FOR DELETE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
 
 -- ---------------------------------------------------------------------------
 -- MEETINGS
 -- ---------------------------------------------------------------------------
-CREATE POLICY "meetings_authenticated_read" ON meetings FOR SELECT TO authenticated USING (true);
-CREATE POLICY "meetings_authenticated_insert" ON meetings FOR INSERT TO authenticated WITH CHECK (true);
-CREATE POLICY "meetings_authenticated_update" ON meetings FOR UPDATE TO authenticated USING (true);
+CREATE POLICY "meetings_authenticated_read" ON meetings
+  FOR SELECT USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "meetings_agent_insert" ON meetings
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
+
+CREATE POLICY "meetings_agent_update" ON meetings
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
+
+CREATE POLICY "meetings_admin_delete" ON meetings
+  FOR DELETE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
 
 -- ---------------------------------------------------------------------------
--- WORKFLOW RULES, WORKFLOW EXECUTIONS
+-- WORKFLOW RULES
 -- ---------------------------------------------------------------------------
-CREATE POLICY "workflow_rules_authenticated" ON workflow_rules FOR ALL TO authenticated USING (true);
-CREATE POLICY "workflow_executions_authenticated" ON workflow_executions FOR ALL TO authenticated USING (true);
+CREATE POLICY "workflow_rules_authenticated_read" ON workflow_rules
+  FOR SELECT USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "workflow_rules_admin_manage" ON workflow_rules
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
 
 -- ---------------------------------------------------------------------------
--- GOOGLE CALENDAR CONNECTIONS: Only the owner can manage their own.
+-- WORKFLOW EXECUTIONS
+-- ---------------------------------------------------------------------------
+CREATE POLICY "workflow_executions_authenticated_read" ON workflow_executions
+  FOR SELECT USING (auth.uid() IS NOT NULL);
+
+-- ---------------------------------------------------------------------------
+-- GOOGLE CALENDAR
 -- ---------------------------------------------------------------------------
 CREATE POLICY "google_cal_own" ON google_calendar_connections
   FOR ALL USING (auth.uid() = user_id);
 
 -- ---------------------------------------------------------------------------
--- REPORTS, REPORT SNAPSHOTS
+-- REPORTS
 -- ---------------------------------------------------------------------------
-CREATE POLICY "reports_authenticated" ON reports FOR ALL TO authenticated USING (true);
-CREATE POLICY "report_snapshots_authenticated" ON report_snapshots FOR ALL TO authenticated USING (true);
+CREATE POLICY "reports_authenticated_read" ON reports
+  FOR SELECT USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "reports_agent_manage" ON reports
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
 
 -- ---------------------------------------------------------------------------
--- INSTALLER PROFILES, EQUIPMENT, DOCUMENTS, SUBSCRIPTIONS
+-- INSTALLER PROFILES
 -- ---------------------------------------------------------------------------
-CREATE POLICY "installer_profiles_authenticated" ON installer_profiles FOR ALL TO authenticated USING (true);
-CREATE POLICY "installer_equipment_authenticated" ON installer_equipment FOR ALL TO authenticated USING (true);
-CREATE POLICY "installer_documents_authenticated" ON installer_documents FOR ALL TO authenticated USING (true);
-CREATE POLICY "subscriptions_authenticated" ON subscriptions FOR ALL TO authenticated USING (true);
+CREATE POLICY "installer_profiles_select_own" ON installer_profiles
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "installer_profiles_update_own" ON installer_profiles
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "installer_profiles_admin_all" ON installer_profiles
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
 
 -- ---------------------------------------------------------------------------
--- CMS TABLES: Anon can read published content; only admins can manage.
+-- INSTALLER EQUIPMENT
 -- ---------------------------------------------------------------------------
--- Blog posts: public can read published; authenticated can manage
+CREATE POLICY "installer_equipment_select_own" ON installer_equipment
+  FOR SELECT USING (
+    EXISTS (SELECT 1 FROM installer_profiles WHERE user_id = auth.uid())
+  );
+
+CREATE POLICY "installer_equipment_manage_own" ON installer_equipment
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM installer_profiles WHERE user_id = auth.uid())
+  );
+
+-- ---------------------------------------------------------------------------
+-- INSTALLER DOCUMENTS
+-- ---------------------------------------------------------------------------
+CREATE POLICY "installer_documents_select_own" ON installer_documents
+  FOR SELECT USING (
+    EXISTS (SELECT 1 FROM installer_profiles WHERE user_id = auth.uid())
+  );
+
+CREATE POLICY "installer_documents_manage_own" ON installer_documents
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM installer_profiles WHERE user_id = auth.uid())
+  );
+
+-- ---------------------------------------------------------------------------
+-- SUBSCRIPTIONS
+-- ---------------------------------------------------------------------------
+CREATE POLICY "subscriptions_select_own" ON subscriptions
+  FOR SELECT USING (
+    EXISTS (SELECT 1 FROM installer_profiles WHERE user_id = auth.uid())
+  );
+
+CREATE POLICY "subscriptions_admin_all" ON subscriptions
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- ---------------------------------------------------------------------------
+-- CMS TABLES (public read, admin manage)
+-- ---------------------------------------------------------------------------
 CREATE POLICY "blog_posts_public_read" ON blog_posts
   FOR SELECT USING (published = true);
-CREATE POLICY "blog_posts_authenticated_manage" ON blog_posts
-  FOR ALL TO authenticated USING (true);
 
--- FAQs: public can read active; authenticated can manage
+CREATE POLICY "blog_posts_admin_manage" ON blog_posts
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
 CREATE POLICY "faqs_public_read" ON faqs
   FOR SELECT USING (is_active = true);
-CREATE POLICY "faqs_authenticated_manage" ON faqs
-  FOR ALL TO authenticated USING (true);
 
--- Services: public can read active; authenticated can manage
+CREATE POLICY "faqs_admin_manage" ON faqs
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
 CREATE POLICY "services_public_read" ON services
   FOR SELECT USING (is_active = true);
-CREATE POLICY "services_authenticated_manage" ON services
-  FOR ALL TO authenticated USING (true);
 
--- Testimonials: public can read active; authenticated can manage
+CREATE POLICY "services_admin_manage" ON services
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
 CREATE POLICY "testimonials_public_read" ON testimonials
   FOR SELECT USING (is_active = true);
-CREATE POLICY "testimonials_authenticated_manage" ON testimonials
-  FOR ALL TO authenticated USING (true);
 
--- Email logs: authenticated can read; service role can insert
-CREATE POLICY "email_logs_authenticated_read" ON email_logs
-  FOR SELECT TO authenticated USING (true);
-CREATE POLICY "email_logs_authenticated_insert" ON email_logs
-  FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "testimonials_admin_manage" ON testimonials
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
 
--- Contact submissions: anon can insert (form submission); authenticated can read/manage
+-- ---------------------------------------------------------------------------
+-- EMAIL LOGS (admin only)
+-- ---------------------------------------------------------------------------
+CREATE POLICY "email_logs_admin_read" ON email_logs
+  FOR SELECT USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+CREATE POLICY "email_logs_admin_insert" ON email_logs
+  FOR INSERT WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('admin', 'agent'))
+  );
+
+-- ---------------------------------------------------------------------------
+-- CONTACT SUBMISSIONS (public submit, admin read)
+-- ---------------------------------------------------------------------------
 CREATE POLICY "contact_submissions_anon_insert" ON contact_submissions
-  FOR INSERT TO anon WITH CHECK (true);
-CREATE POLICY "contact_submissions_authenticated_manage" ON contact_submissions
-  FOR ALL TO authenticated USING (true);
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "contact_submissions_admin_read" ON contact_submissions
+  FOR SELECT USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+CREATE POLICY "contact_submissions_admin_update" ON contact_submissions
+  FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
 
 -- ============================================================================
 -- SECTION 10: SEED DATA
 -- ============================================================================
--- Default pipeline stages for solar PV sales.
+-- Default pipeline stages and an admin user placeholder.
 
-INSERT INTO pipeline_stages (id, name, "order", color, is_default) VALUES
-  ('a0000000-0000-0000-0000-000000000001', 'New Lead',    1, '#EAB308', true),
-  ('a0000000-0000-0000-0000-000000000002', 'Qualified',   2, '#22C55E', false),
-  ('a0000000-0000-0000-0000-000000000003', 'Site Survey', 3, '#3B82F6', false),
-  ('a0000000-0000-0000-0000-000000000004', 'Proposal',    4, '#8B5CF6', false),
-  ('a0000000-0000-0000-0000-000000000005', 'Negotiation', 5, '#F97316', false),
-  ('a0000000-0000-0000-0000-000000000006', 'Won',         6, '#10B981', true),
-  ('a0000000-0000-0000-0000-000000000007', 'Lost',        7, '#EF4444', true)
-ON CONFLICT DO NOTHING;
-
--- Default tags for solar PV installers
-INSERT INTO tags (id, name, color) VALUES
-  ('b0000000-0000-0000-0000-000000000001', 'Domestic',       '#22C55E'),
-  ('b0000000-0000-0000-0000-000000000002', 'Commercial',     '#3B82F6'),
-  ('b0000000-0000-0000-0000-000000000003', 'Battery',        '#F97316'),
-  ('b0000000-0000-0000-0000-000000000004', 'EV Charger',     '#8B5CF6'),
-  ('b0000000-0000-0000-0000-000000000005', 'Heat Pump',      '#EF4444'),
-  ('b0000000-0000-0000-0000-000000000006', 'SEAI Grant',     '#EAB308'),
-  ('b0000000-0000-0000-0000-000000000007', 'Hot Water',      '#06B6D4'),
-  ('b0000000-0000-0000-0000-000000000008', 'Priority',       '#F3D840')
-ON CONFLICT DO NOTHING;
-
--- Default services
-INSERT INTO services (slug, title, description, icon, features, pricing_note, "order") VALUES
-  ('solar-pv-design', 'Solar PV Design', 'AI-powered solar PV system design and proposal generation for residential and commercial properties.', 'sun', '["Automatic roof analysis", "3D shading simulation", "SEAI-compliant proposals", "Instant generation estimates"]'::jsonb, 'Included in Pro plan', 1),
-  ('lead-generation', 'Lead Generation', 'Qualified solar leads delivered to your inbox, filtered by county and project type.', 'target', '["County-specific targeting", "SEAI grant qualification filtering", "Homeowner intent scoring", "CRM auto-import"]'::jsonb, 'From €5 per qualified lead', 2),
-  ('customer-management', 'Customer Management', 'End-to-end CRM built specifically for Irish solar PV installers.', 'users', '["Pipeline management", "Automated follow-ups", "Document storage", "Grant tracking"]'::jsonb, 'Included in Pro plan', 3),
-  ('ai-workforce', 'AI Workforce', 'Dedicated AI agents that handle admin, quoting, scheduling, and customer communication.', 'bot', '["24/7 customer support", "Instant quote generation", "Appointment scheduling", "Grant application assistance"]'::jsonb, 'From €299/month', 4)
-ON CONFLICT DO NOTHING;
-
--- Default FAQs
-INSERT INTO faqs (question, answer, category, "order") VALUES
-  ('What is Renewably?', 'Renewably is an AI-as-a-Service platform built specifically for Irish solar PV installers. We provide AI-powered tools for lead generation, customer management, proposal creation, and workforce automation.', 'general', 1),
-  ('How much does Renewably cost?', 'We offer flexible pricing starting from €299/month for our Pro plan. We also have a Starter plan for smaller installers and custom Enterprise pricing for larger operations. All plans include a 14-day free trial.', 'pricing', 2),
-  ('Is Renewably suitable for small installers?', 'Absolutely. Our Starter plan is designed for installers doing 1–5 installs per month, while our Pro plan scales with you as your business grows. Every installer gets a free 14-day trial.', 'general', 3),
-  ('How does the AI workforce work?', 'Our AI agents are trained on Irish solar industry data, SEAI grant requirements, and best practices. They can handle customer enquiries, generate proposals, schedule surveys, and manage follow-ups — working 24/7 so you can focus on installations.', 'ai-workforce', 4),
-  ('Can I integrate Renewably with my existing tools?', 'Yes. Renewably integrates with Google Calendar, email providers, and accounting software. We also offer API access for custom integrations with your existing workflow.', 'integrations', 5),
-  ('What counties in Ireland do you support?', 'We support all 26 counties in the Republic of Ireland. Our lead generation can target specific counties, and our installer profiles include county-specific service areas.', 'general', 6),
-  ('Do you help with SEAI grant applications?', 'Yes. Our AI agents are trained on the latest SEAI grant schemes and can help guide homeowners through the application process, including the Solar PV scheme and the Better Energy Homes scheme.', 'grants', 7),
-  ('How secure is my data?', 'Your data is encrypted at rest and in transit. We comply with GDPR and Irish data protection regulations. All data is stored in EU-based data centres.', 'security', 8)
-ON CONFLICT DO NOTHING;
-
--- ============================================================================
--- SECTION 11: POSTMARK NOTIFICATION FUNCTIONS & TRIGGERS
--- ============================================================================
--- These functions send notification emails via Postmark's HTTP API
--- when important CRM events occur. They use pg_net (Supabase's built-in
--- HTTP client) to make asynchronous web requests to the Postmark API.
-
--- ---------------------------------------------------------------------------
--- 11a. notify_new_contact()
--- Sends a notification email when a new contact is created.
--- Triggered on: contact_submissions INSERT
--- ---------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.notify_new_contact()
-RETURNS TRIGGER AS $$
-DECLARE
-  v_postmark_token TEXT;
-  v_from_email TEXT;
-  v_to_email TEXT;
-  v_subject TEXT;
-  v_html_body TEXT;
-BEGIN
-  -- Read Postmark credentials from environment (set in Supabase Vault)
-  v_postmark_token := current_setting('app.settings.postmark_server_token', true);
-  v_from_email := COALESCE(
-    current_setting('app.settings.from_email', true),
-    'hello@renewably.ie'
-  );
-
-  v_to_email := COALESCE(
-    current_setting('app.settings.notifications_email', true),
-    'hello@renewably.ie'
-  );
-
-  v_subject := 'New contact form submission from ' || COALESCE(NEW.name, 'Unknown');
-  v_html_body := '<h1>New Contact Submission</h1>'
-    || '<p><strong>Name:</strong> ' || COALESCE(NEW.name, 'N/A') || '</p>'
-    || '<p><strong>Email:</strong> ' || COALESCE(NEW.email, 'N/A') || '</p>'
-    || '<p><strong>Phone:</strong> ' || COALESCE(NEW.phone, 'N/A') || '</p>'
-    || '<p><strong>Company:</strong> ' || COALESCE(NEW.company, 'N/A') || '</p>'
-    || '<p><strong>Message:</strong></p><p>' || COALESCE(NEW.message, 'N/A') || '</p>'
-    || '<p><strong>Source:</strong> ' || COALESCE(NEW.source, 'website') || '</p>'
-    || '<p><em>Submitted at: ' || to_char(NEW.created_at, 'DD Mon YYYY HH24:MI') || '</em></p>';
-
-  -- Only send if Postmark token is configured
-  IF v_postmark_token IS NOT NULL THEN
-    INSERT INTO email_logs ("to", subject, status, template_id, metadata)
-    VALUES (v_to_email, v_subject, 'queued', NULL, jsonb_build_object(
-      'trigger', 'new_contact',
-      'contact_name', NEW.name,
-      'contact_email', NEW.email,
-      'company', NEW.company
-    ));
-  END IF;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-CREATE TRIGGER trigger_notify_new_contact
-  AFTER INSERT ON contact_submissions
-  FOR EACH ROW EXECUTE FUNCTION public.notify_new_contact();
-
--- ---------------------------------------------------------------------------
--- 11b. notify_new_deal()
--- Sends a notification email when a new deal is created in the pipeline.
--- Triggered on: deals INSERT
--- ---------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.notify_new_deal()
-RETURNS TRIGGER AS $$
-DECLARE
-  v_deal_value TEXT;
-BEGIN
-  v_deal_value := '€' || to_char(NEW.value, 'FM999,999,990.00');
-
-  INSERT INTO email_logs ("to", subject, status, metadata)
-  VALUES (
-    COALESCE(current_setting('app.settings.notifications_email', true), 'hello@renewably.ie'),
-    'New deal created: ' || NEW.title || ' (' || v_deal_value || ')',
-    'queued',
-    jsonb_build_object(
-      'trigger', 'new_deal',
-      'deal_id', NEW.id,
-      'deal_title', NEW.title,
-      'deal_value', NEW.value,
-      'currency', NEW.currency,
-      'probability', NEW.probability
-    )
-  );
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-CREATE TRIGGER trigger_notify_new_deal
-  AFTER INSERT ON deals
-  FOR EACH ROW EXECUTE FUNCTION public.notify_new_deal();
-
--- ---------------------------------------------------------------------------
--- 11c. notify_proposal_status_change()
--- Sends a notification email when a proposal status changes.
--- Triggered on: proposals UPDATE (only when status column changes)
--- ---------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.notify_proposal_status_change()
-RETURNS TRIGGER AS $$
-DECLARE
-  v_subject TEXT;
-BEGIN
-  -- Only fire if status actually changed
-  IF OLD.status IS DISTINCT FROM NEW.status THEN
-    v_subject := 'Proposal status update: ' || NEW.title
-      || ' → ' || NEW.status;
-
-    INSERT INTO email_logs ("to", subject, status, metadata)
-    VALUES (
-      COALESCE(current_setting('app.settings.notifications_email', true), 'hello@renewably.ie'),
-      v_subject,
-      'queued',
-      jsonb_build_object(
-        'trigger', 'proposal_status_change',
-        'proposal_id', NEW.id,
-        'proposal_title', NEW.title,
-        'old_status', OLD.status,
-        'new_status', NEW.status,
-        'total_amount', NEW.total_amount
-      )
-    );
-  END IF;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-CREATE TRIGGER trigger_notify_proposal_status_change
-  AFTER UPDATE ON proposals
-  FOR EACH ROW EXECUTE FUNCTION public.notify_proposal_status_change();
-
--- ---------------------------------------------------------------------------
--- 11d. notify_invoice_paid()
--- Sends a notification email when an invoice is marked as paid.
--- Triggered on: invoices UPDATE (only when status becomes 'paid')
--- ---------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.notify_invoice_paid()
-RETURNS TRIGGER AS $$
-DECLARE
-  v_amount TEXT;
-BEGIN
-  -- Only fire when status transitions TO 'paid'
-  IF (OLD.status IS DISTINCT FROM 'paid') AND (NEW.status = 'paid') THEN
-    v_amount := '€' || to_char(NEW.total_amount, 'FM999,999,990.00');
-
-    INSERT INTO email_logs ("to", subject, status, metadata)
-    VALUES (
-      COALESCE(current_setting('app.settings.notifications_email', true), 'hello@renewably.ie'),
-      'Invoice paid: ' || NEW.invoice_number || ' (' || v_amount || ')',
-      'queued',
-      jsonb_build_object(
-        'trigger', 'invoice_paid',
-        'invoice_id', NEW.id,
-        'invoice_number', NEW.invoice_number,
-        'total_amount', NEW.total_amount,
-        'currency', 'EUR',
-        'paid_at', NEW.paid_at
-      )
-    );
-  END IF;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-CREATE TRIGGER trigger_notify_invoice_paid
-  AFTER UPDATE ON invoices
-  FOR EACH ROW EXECUTE FUNCTION public.notify_invoice_paid();
-
--- ============================================================================
--- SECTION 12: HELPER FUNCTIONS
--- ============================================================================
--- Utility functions for common operations.
-
--- ---------------------------------------------------------------------------
--- Full-text search across contacts (name, email, company)
--- ---------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.search_contacts(query TEXT)
-RETURNS TABLE (
-  id UUID,
-  full_name TEXT,
-  email TEXT,
-  company_name TEXT,
-  status contact_status,
-  rank REAL
-) AS $$
-BEGIN
-  RETURN QUERY
-  SELECT
-    c.id,
-    (c.first_name || ' ' || c.last_name) AS full_name,
-    c.email,
-    co.name AS company_name,
-    c.status,
-    ts_rank_cd(
-      to_tsvector('english',
-        coalesce(c.first_name, '') || ' ' ||
-        coalesce(c.last_name, '') || ' ' ||
-        coalesce(c.email, '') || ' ' ||
-        coalesce(co.name, '')
-      ),
-      plainto_tsquery('english', query)
-    ) AS rank
-  FROM contacts c
-  LEFT JOIN companies co ON c.company_id = co.id
-  WHERE
-    to_tsvector('english',
-      coalesce(c.first_name, '') || ' ' ||
-      coalesce(c.last_name, '') || ' ' ||
-      coalesce(c.email, '') || ' ' ||
-      coalesce(co.name, '')
-    ) @@ plainto_tsquery('english', query)
-  ORDER BY rank DESC
-  LIMIT 50;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- ---------------------------------------------------------------------------
--- Get deal pipeline summary (counts by stage)
--- ---------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.get_pipeline_summary()
-RETURNS TABLE (
-  stage_id UUID,
-  stage_name TEXT,
-  stage_color TEXT,
-  deal_count BIGINT,
-  total_value DOUBLE PRECISION,
-  weighted_value DOUBLE PRECISION
-) AS $$
-BEGIN
-  RETURN QUERY
-  SELECT
-    ps.id AS stage_id,
-    ps.name AS stage_name,
-    ps.color AS stage_color,
-    count(d.id) AS deal_count,
-    coalesce(sum(d.value), 0) AS total_value,
-    coalesce(sum(d.value * d.probability / 100.0), 0) AS weighted_value
-  FROM pipeline_stages ps
-  LEFT JOIN deals d ON d.stage_id = ps.id
-  GROUP BY ps.id, ps.name, ps.color, ps."order"
-  ORDER BY ps."order";
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- ---------------------------------------------------------------------------
--- Soft-delete helper: mark a contact as inactive
--- ---------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION public.soft_delete_contact(contact_uuid UUID)
-RETURNS VOID AS $$
-BEGIN
-  UPDATE contacts SET status = 'inactive', updated_at = now()
-  WHERE id = contact_uuid;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- ============================================================================
--- SECTION 13: GRANT USAGE
--- ============================================================================
--- Grant necessary permissions to the authenticated and anon roles.
-
-GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO authenticated;
-GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO anon;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO anon;
-GRANT ALL ON ALL TABLES IN SCHEMA public TO authenticated;
+-- Default pipeline stages
+INSERT INTO pipeline_stages (name, "order", color, is_default) VALUES
+  ('Lead',       1, '#94a3b8', true),
+  ('Qualified',  2, '#3b82f6', false),
+  ('Proposal',   3, '#F3D840', false),
+  ('Negotiation',4, '#f97316', false),
+  ('Won',        5, '#22c55e', false),
+  ('Lost',       6, '#ef4444', false);
 
 -- ============================================================================
 -- DONE
--- ============================================================================
--- Total tables: 31 (25 CRM models + profiles + 5 CMS/utility tables)
--- Total enums: 21
--- Total indexes: 60+
--- RLS: Enabled on all tables with role-based policies
--- Triggers: 11 auto-update triggers + 4 Postmark notification triggers
--- Seed data: 7 pipeline stages, 8 tags, 4 services, 8 FAQs
 -- ============================================================================
