@@ -447,18 +447,35 @@ function FeaturesSection() {
   ];
 
   return (
-    <section className="bg-[#FFFDF5] py-20 md:py-28 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      style={{
+        backgroundColor: '#FFFDF5',
+        paddingTop: 'clamp(48px, 6vw, 80px)',
+        paddingBottom: 'clamp(48px, 6vw, 112px)',
+        overflow: 'hidden',
+      }}
+    >
+      <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-6">
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 3vw, 40px)' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '6px 14px',
+                borderRadius: 9999,
+                backgroundColor: 'rgba(243,216,64,0.1)',
+                border: '1px solid rgba(243,216,64,0.2)',
+              }}
+            >
               <motion.span
                 className="w-2 h-2 rounded-full bg-[#F3D840]"
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
-              <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
+              <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
                 Here&apos;s what they do.
               </span>
             </div>
@@ -466,12 +483,12 @@ function FeaturesSection() {
         </ScrollReveal>
 
         {/* Feature grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
           {features.map((feature, i) => (
             <ScrollReveal key={feature.title} delay={i * 0.1}>
               <motion.div
                 whileHover={{ y: -6, boxShadow: "0 20px 40px rgba(243,216,64,0.12)" }}
-                className="p-6 lg:p-8 rounded-2xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 transition-all duration-300 cursor-pointer group h-full"
+                className="p-5 lg:p-6 rounded-2xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 transition-all duration-300 cursor-pointer group h-full"
               >
                 <div className="w-12 h-12 rounded-2xl bg-[#F3D840] flex items-center justify-center text-[#374151] group-hover:scale-110 transition-transform duration-300 mb-5">
                   {feature.icon}
@@ -535,13 +552,30 @@ function AgentsSection() {
   ];
 
   return (
-    <section className="bg-white py-20 md:py-28 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      style={{
+        backgroundColor: '#fff',
+        paddingTop: 'clamp(48px, 6vw, 80px)',
+        paddingBottom: 'clamp(48px, 6vw, 112px)',
+        overflow: 'hidden',
+      }}
+    >
+      <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-6">
-              <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 3vw, 40px)' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '6px 14px',
+                borderRadius: 9999,
+                backgroundColor: 'rgba(243,216,64,0.1)',
+                border: '1px solid rgba(243,216,64,0.2)',
+              }}
+            >
+              <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
                 What you actually get.
               </span>
             </div>
@@ -549,12 +583,12 @@ function AgentsSection() {
         </ScrollReveal>
 
         {/* Agent cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5" style={{ marginBottom: 'clamp(32px, 4vw, 48px)' }}>
           {agents.map((agent, i) => (
             <ScrollReveal key={agent.title} delay={i * 0.08}>
               <motion.div
                 whileHover={{ y: -4, boxShadow: "0 12px 30px rgba(243,216,64,0.1)" }}
-                className="p-6 lg:p-8 rounded-2xl bg-white border-2 border-[#F3D840]/30 hover:border-[#F3D840]/60 transition-all duration-300 cursor-pointer group h-full"
+                className="p-5 lg:p-6 rounded-2xl bg-white border-2 border-[#F3D840]/30 hover:border-[#F3D840]/60 transition-all duration-300 cursor-pointer group h-full"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-3 h-3 rounded-full bg-[#F3D840] group-hover:scale-125 transition-transform duration-300" />
@@ -574,7 +608,7 @@ function AgentsSection() {
             <Link href="/workforce">
               <motion.div
                 whileHover={{ y: -4, boxShadow: "0 12px 30px rgba(243,216,64,0.15)" }}
-                className="p-6 lg:p-8 rounded-2xl bg-[#0A0A0A] border-2 border-[#F3D840]/40 hover:border-[#F3D840] transition-all duration-300 cursor-pointer group h-full flex flex-col items-center justify-center text-center min-h-[120px]"
+                className="p-5 lg:p-6 rounded-2xl bg-[#0A0A0A] border-2 border-[#F3D840]/40 hover:border-[#F3D840] transition-all duration-300 cursor-pointer group h-full flex flex-col items-center justify-center text-center min-h-[100px]"
               >
                 <span className="text-[#F3D840] text-2xl font-extrabold mb-2 group-hover:scale-110 transition-transform duration-300">
                   + Much More
