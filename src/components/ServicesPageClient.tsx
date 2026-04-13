@@ -105,7 +105,10 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
 
   return (
     <ScrollReveal>
-      <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <div
+        className="grid grid-cols-1 lg:grid-cols-2 items-center"
+        style={{ gap: 'clamp(24px, 5vw, 48px)', alignItems: 'center' }}
+      >
         {/* Image */}
         <motion.div
           initial={{ opacity: 0, x: isReversed ? 40 : -40 }}
@@ -114,18 +117,18 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
         >
-          <div className="relative overflow-hidden rounded-2xl shadow-xl">
+          <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 16, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
             <Image
               src={agent.image}
               alt={`${agent.title} — AI workforce for solar`}
               width={1360}
               height={768}
-              className="w-full object-cover"
+              style={{ width: '100%', height: 'auto', objectFit: 'cover', display: 'block' }}
             />
             {/* Yellow gradient overlay at bottom */}
-            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#F3D840]/40 to-transparent" />
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 64, background: 'linear-gradient(to top, rgba(243,216,64,0.4), transparent)' }} />
             {/* Number badge */}
-            <div className="absolute top-4 left-4 bg-[#F3D840] text-[#1A1A1A] font-extrabold text-sm px-3 py-1.5 rounded-full shadow-lg">
+            <div style={{ position: 'absolute', top: 12, left: 12, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 13, padding: '5px 12px', borderRadius: 9999, boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
               {agent.num}
             </div>
           </div>
@@ -137,12 +140,12 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className={`${isReversed ? "lg:order-1" : "lg:order-2"}`}
+          className={isReversed ? "lg:order-1" : "lg:order-2"}
         >
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1A1A1A] leading-tight mb-4">
+          <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, marginBottom: 'clamp(10px, 1.5vw, 16px)' }}>
             {agent.title}
           </h2>
-          <p className="text-[#535353] text-base sm:text-lg leading-relaxed">
+          <p style={{ color: '#535353', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', lineHeight: 1.7 }}>
             {agent.desc}
           </p>
         </motion.div>
@@ -159,12 +162,12 @@ function PricingSection() {
   const totalInView = useInView(totalRef, { once: true, margin: "-60px" });
 
   return (
-    <section className="bg-[#FFFDF5] py-20 md:py-28">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section style={{ backgroundColor: '#FFFDF5', paddingTop: 'clamp(48px, 10vw, 112px)', paddingBottom: 'clamp(48px, 10vw, 112px)' }}>
+      <div style={{ maxWidth: 896, margin: '0 auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-6">
-            <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(20px, 3vw, 24px)' }}>
+            <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
               What it costs.
             </span>
           </div>
@@ -172,21 +175,21 @@ function PricingSection() {
 
         {/* Intro */}
         <ScrollReveal delay={0.1}>
-          <p className="text-[#535353] text-base sm:text-lg leading-relaxed mb-12 max-w-2xl">
+          <p style={{ color: '#535353', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', lineHeight: 1.7, marginBottom: 'clamp(32px, 5vw, 48px)', maxWidth: 640 }}>
             Less than one junior admin. Less than the time you spend on grants yourself. Less than the customers you lose because nobody called back.
           </p>
         </ScrollReveal>
 
         {/* Pricing list */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" style={{ marginBottom: 'clamp(24px, 4vw, 40px)' }}>
           {pricingItems.map((item, i) => (
             <ScrollReveal key={item.name} delay={0.1 + i * 0.06}>
               <div className="flex items-center justify-between p-4 sm:p-5 rounded-xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 transition-all duration-300 group">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full bg-[#F3D840] group-hover:scale-125 transition-transform" />
-                  <span className="text-[#1A1A1A] font-semibold text-sm sm:text-base">{item.name}</span>
+                  <span style={{ color: '#1A1A1A', fontWeight: 600, fontSize: 'clamp(0.875rem, 1.2vw, 1rem)' }}>{item.name}</span>
                 </div>
-                <span className="text-[#374151] font-bold text-sm sm:text-base">{item.price}</span>
+                <span style={{ color: '#374151', fontWeight: 700, fontSize: 'clamp(0.875rem, 1.2vw, 1rem)' }}>{item.price}</span>
               </div>
             </ScrollReveal>
           ))}
@@ -198,21 +201,21 @@ function PricingSection() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={totalInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="bg-[#F3D840] rounded-2xl px-6 py-6 sm:px-12 sm:py-10 text-center mb-4"
+          style={{ backgroundColor: '#F3D840', borderRadius: 16, padding: 'clamp(20px, 4vw, 40px) clamp(16px, 3vw, 48px)', textAlign: 'center', marginBottom: 'clamp(12px, 2vw, 16px)' }}
         >
-          <p className="text-[#1A1A1A] text-xl sm:text-2xl lg:text-4xl font-extrabold">
+          <p style={{ color: '#1A1A1A', fontSize: 'clamp(1.25rem, 4vw, 2.5rem)', fontWeight: 800, lineHeight: 1.2 }}>
             €1,000 – €1,500/month for your full AI team
           </p>
         </motion.div>
 
         <ScrollReveal delay={0.3}>
-          <p className="text-center text-[#535353] text-base sm:text-lg mb-4">
+          <p style={{ textAlign: 'center', color: '#535353', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', marginBottom: 'clamp(10px, 1.5vw, 16px)' }}>
             That&apos;s less than one day of a contractor. For a full team.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.4}>
-          <p className="text-center text-[#374151] text-sm font-semibold">
+          <p style={{ textAlign: 'center', color: '#374151', fontSize: 'clamp(0.875rem, 1.2vw, 0.875rem)', fontWeight: 600 }}>
             One-time setup fee. You bring your own AI keys — you pay the models directly.
           </p>
         </ScrollReveal>
@@ -226,31 +229,32 @@ function PricingSection() {
    ============================================================ */
 function BeforeAfterSection() {
   return (
-    <section className="bg-white py-20 md:py-28">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(48px, 10vw, 112px)', paddingBottom: 'clamp(48px, 10vw, 112px)' }}>
+      <div style={{ maxWidth: 896, margin: '0 auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-12">
-            <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(28px, 5vw, 48px)' }}>
+            <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
               What changes.
             </span>
           </div>
         </ScrollReveal>
 
         {/* Comparisons */}
-        <div className="space-y-8">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(16px, 3vw, 32px)' }}>
           {comparisons.map((item, i) => (
             <ScrollReveal key={i} delay={i * 0.1}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {/* Before */}
                 <motion.div
                   whileHover={{ y: -2 }}
-                  className="p-6 rounded-xl bg-[#FFFDF5] border-l-4 border-l-[#EF4444]/40 border border-[#EF4444]/15"
+                  className="p-5 sm:p-6 rounded-xl"
+                  style={{ backgroundColor: '#FFFDF5', borderLeft: '4px solid rgba(239,68,68,0.4)', border: '1px solid rgba(239,68,68,0.15)', borderLeftWidth: 4, borderLeftStyle: 'solid', borderLeftColor: 'rgba(239,68,68,0.4)' }}
                 >
-                  <span className="inline-block text-[#EF4444]/70 text-xs font-bold uppercase tracking-wider mb-3">
+                  <span style={{ display: 'block', color: 'rgba(239,68,68,0.7)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'clamp(8px, 1.5vw, 12px)' }}>
                     Before
                   </span>
-                  <p className="text-[#535353] text-sm sm:text-base leading-relaxed">
+                  <p style={{ color: '#535353', fontSize: 'clamp(0.875rem, 1.5vw, 1rem)', lineHeight: 1.7 }}>
                     {item.before}
                   </p>
                 </motion.div>
@@ -258,12 +262,13 @@ function BeforeAfterSection() {
                 {/* After */}
                 <motion.div
                   whileHover={{ y: -2 }}
-                  className="p-6 rounded-xl bg-[#FFFDF5] border-l-4 border-l-[#F3D840] border border-[#F3D840]/15"
+                  className="p-5 sm:p-6 rounded-xl"
+                  style={{ backgroundColor: '#FFFDF5', borderLeft: '4px solid #F3D840', border: '1px solid rgba(243,216,64,0.15)', borderLeftWidth: 4, borderLeftStyle: 'solid', borderLeftColor: '#F3D840' }}
                 >
-                  <span className="inline-block text-[#F3D840] text-xs font-bold uppercase tracking-wider mb-3">
+                  <span style={{ display: 'block', color: '#F3D840', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'clamp(8px, 1.5vw, 12px)' }}>
                     After
                   </span>
-                  <p className="text-[#1A1A1A] text-sm sm:text-base leading-relaxed font-semibold">
+                  <p style={{ color: '#1A1A1A', fontSize: 'clamp(0.875rem, 1.5vw, 1rem)', lineHeight: 1.7, fontWeight: 600 }}>
                     {item.after}
                   </p>
                 </motion.div>
@@ -281,13 +286,13 @@ function BeforeAfterSection() {
    ============================================================ */
 function AudienceSection() {
   return (
-    <section data-theme="dark" className="bg-[#0A0A0A] py-20 md:py-28">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section data-theme="dark" style={{ backgroundColor: '#0A0A0A', paddingTop: 'clamp(48px, 10vw, 112px)', paddingBottom: 'clamp(48px, 10vw, 112px)' }}>
+      <div style={{ maxWidth: 896, margin: '0 auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 mb-10">
-            <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
-            <span className="text-white text-xs sm:text-sm font-semibold tracking-wide">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840' }} className="animate-pulse" />
+            <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
               Who is this for.
             </span>
           </div>
@@ -295,21 +300,21 @@ function AudienceSection() {
 
         {/* Headline */}
         <ScrollReveal delay={0.1}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-8">
+          <h2 style={{ fontSize: 'clamp(1.875rem, 5vw, 3rem)', fontWeight: 800, color: '#fff', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(20px, 3vw, 32px)' }}>
             Solar installers doing 20+ jobs a month.
           </h2>
         </ScrollReveal>
 
         {/* Body */}
         <ScrollReveal delay={0.2}>
-          <p className="text-white/70 text-lg sm:text-xl leading-relaxed mb-6">
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(1rem, 2vw, 1.25rem)', lineHeight: 1.7, marginBottom: 'clamp(16px, 2vw, 24px)' }}>
             You have more work than time. You&apos;re turning down leads because you can&apos;t handle the admin. You&apos;re burning out your best people.
           </p>
         </ScrollReveal>
 
         {/* Closing */}
         <ScrollReveal delay={0.3}>
-          <p className="text-white/50 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(1rem, 1.8vw, 1.125rem)', lineHeight: 1.7, maxWidth: 640, margin: '0 auto' }}>
             Not for one-person shows. Not for hobbyists. For actual solar companies that want to scale without hiring ten more humans.
           </p>
         </ScrollReveal>
@@ -326,70 +331,70 @@ function HowItStartsSection() {
   const stepsInView = useInView(stepsRef, { once: true, margin: "-80px" });
 
   return (
-    <section className="bg-[#F3D840] py-20 md:py-28">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section style={{ backgroundColor: '#F3D840', paddingTop: 'clamp(48px, 10vw, 112px)', paddingBottom: 'clamp(48px, 10vw, 112px)' }}>
+      <div style={{ maxWidth: 896, margin: '0 auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1A1A1A]/10 border border-[#1A1A1A]/15 mb-10">
-            <span className="text-[#1A1A1A] text-xs sm:text-sm font-semibold tracking-wide">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(26,26,26,0.1)', border: '1px solid rgba(26,26,26,0.15)', marginBottom: 'clamp(20px, 4vw, 40px)' }}>
+            <span style={{ color: '#1A1A1A', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
               How it starts.
             </span>
           </div>
         </ScrollReveal>
 
         {/* Steps */}
-        <div ref={stepsRef} className="space-y-4 mb-12">
+        <div ref={stepsRef} style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(10px, 2vw, 16px)', marginBottom: 'clamp(24px, 4vw, 48px)' }}>
           {steps.map((step, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, x: -20 }}
               animate={stepsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
               transition={{ delay: 0.2 + i * 0.15, duration: 0.4, ease: "easeOut" }}
-              className="flex items-center gap-4"
+              style={{ display: 'flex', alignItems: 'center', gap: 'clamp(10px, 2vw, 16px)' }}
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={stepsInView ? { scale: 1 } : { scale: 0 }}
                 transition={{ delay: 0.2 + i * 0.15, duration: 0.3, type: "spring", stiffness: 300 }}
-                className="w-8 h-8 rounded-full bg-[#1A1A1A] flex items-center justify-center shrink-0"
+                style={{ width: 'clamp(28px, 4vw, 32px)', height: 'clamp(28px, 4vw, 32px)', minWidth: 'clamp(28px, 4vw, 32px)', borderRadius: '50%', background: '#1A1A1A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
-                <span className="text-[#F3D840] font-bold text-xs">{i + 1}</span>
+                <span style={{ color: '#F3D840', fontWeight: 700, fontSize: 'clamp(11px, 1.5vw, 13px)' }}>{i + 1}</span>
               </motion.div>
-              <p className="text-[#1A1A1A] text-lg sm:text-xl font-semibold">{step}</p>
+              <p style={{ color: '#1A1A1A', fontSize: 'clamp(1rem, 1.8vw, 1.25rem)', fontWeight: 600 }}>{step}</p>
             </motion.div>
           ))}
         </div>
 
         {/* Closing text */}
         <ScrollReveal delay={0.5}>
-          <p className="text-[#374151] text-base sm:text-lg leading-relaxed mb-6">
+          <p style={{ color: '#374151', fontSize: 'clamp(1rem, 1.6vw, 1.125rem)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)' }}>
             You don&apos;t install software. You don&apos;t configure APIs. You don&apos;t learn a new system.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.6}>
-          <p className="text-[#1A1A1A] text-xl sm:text-2xl font-extrabold mb-12">
+          <p style={{ color: '#1A1A1A', fontSize: 'clamp(1.25rem, 2.5vw, 1.5rem)', fontWeight: 800, marginBottom: 'clamp(24px, 4vw, 48px)' }}>
             You just start managing instead of doing.
           </p>
         </ScrollReveal>
 
         {/* CTA */}
         <ScrollReveal delay={0.7}>
-          <div className="text-center">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1A1A1A] mb-4">
+          <div style={{ textAlign: 'center' }}>
+            <h2 style={{ fontSize: 'clamp(1.875rem, 5vw, 3rem)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, marginBottom: 'clamp(10px, 1.5vw, 16px)' }}>
               Let&apos;s talk.
             </h2>
-            <p className="text-[#374151] text-base sm:text-lg mb-8">
-              <a href="mailto:hello@renewably.ie" className="underline hover:text-[#1A1A1A] transition-colors">
+            <p style={{ color: '#374151', fontSize: 'clamp(1rem, 1.6vw, 1.125rem)', marginBottom: 'clamp(20px, 3vw, 32px)' }}>
+              <a href="mailto:hello@renewably.ie" style={{ textDecoration: 'underline' }}>
                 hello@renewably.ie
               </a>
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1A1A] hover:bg-[#374151] text-white font-semibold rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: 'clamp(12px, 2vw, 14px) 24px', background: '#1A1A1A', color: '#fff', fontWeight: 700, fontSize: 'clamp(0.875rem, 1.3vw, 1rem)', borderRadius: 9999, textDecoration: 'none' }}
             >
               Get Started
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </Link>
@@ -407,34 +412,40 @@ export default function ServicesPageClient() {
   return (
     <main>
         {/* ===== HERO — Full-Width Robot Banner ===== */}
-        <section data-theme="dark" className="relative overflow-hidden" style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center' }}>
+        <section data-theme="dark" style={{ position: 'relative', minHeight: '100dvh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
           {/* Robot image background */}
-          <div className="absolute inset-0 z-0">
+          <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
             <Image
               src="/service-hero.jpg"
               alt=""
               fill
-              className="object-cover"
+              className="services-hero-bg"
+              style={{ objectFit: 'cover' }}
               priority
             />
+            <style>{`
+              .services-hero-bg { object-position: 65% center !important; }
+              @media (min-width: 768px) { .services-hero-bg { object-position: center !important; } }
+            `}</style>
           </div>
           {/* Dark overlay */}
-          <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#0A0A0A]/85 via-[#0A0A0A]/70 to-[#0A0A0A]/50" />
+          <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(135deg, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.6) 50%, rgba(10,10,10,0.3) 100%)' }} />
 
           {/* Content */}
-          <div className="relative z-[2] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ padding: 'clamp(80px, 15vh, 160px) 16px' }}>
-            <div className="max-w-3xl">
+          <div style={{ position: 'relative', zIndex: 2, maxWidth: 896, margin: '0 auto', padding: 'clamp(80px, 15vh, 160px) clamp(16px, 4vw, 32px)' }}>
+            <div>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm mb-8"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', marginBottom: 'clamp(20px, 4vw, 32px)' }}
               >
                 <motion.span
-                  className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
-                  style={{ boxShadow: "0 0 8px rgba(243,216,64,0.6)" }}
+                  style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840', boxShadow: '0 0 8px rgba(243,216,64,0.6)' }}
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
                 />
-                <span className="text-[#F3D840] text-xs sm:text-sm font-bold tracking-wide">
+                <span style={{ color: '#F3D840', fontSize: 'clamp(12px, 1.5vw, 14px)', fontWeight: 700, letterSpacing: '0.03em' }}>
                   Renewably
                 </span>
               </motion.div>
@@ -443,7 +454,7 @@ export default function ServicesPageClient() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.08] tracking-tight mb-6"
+                style={{ fontSize: 'clamp(2rem, 6vw, 3.75rem)', fontWeight: 800, color: '#fff', lineHeight: 1.08, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}
               >
                 AI Workforce That Runs Your Solar Company, On Autopilot
               </motion.h1>
@@ -452,7 +463,7 @@ export default function ServicesPageClient() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
-                className="text-white/70 text-lg sm:text-xl leading-relaxed max-w-2xl"
+                style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(1rem, 2vw, 1.25rem)', lineHeight: 1.7, maxWidth: 640 }}
               >
                 A fully managed AI workforce deployed across your operations, customer support, grants, and logistics. Built for solar companies that want to scale without finding staff they can&apos;t hire.
               </motion.p>
@@ -460,22 +471,22 @@ export default function ServicesPageClient() {
           </div>
 
           {/* Yellow fade at bottom */}
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent z-[3] pointer-events-none" />
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 96, background: 'linear-gradient(to top, white, transparent)', zIndex: 3, pointerEvents: 'none' }} />
         </section>
 
         {/* ===== AGENTS SHOWCASE ===== */}
-        <section className="bg-white py-20 md:py-28">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(48px, 10vw, 112px)', paddingBottom: 'clamp(48px, 10vw, 112px)' }}>
+          <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
             {/* Badge */}
             <ScrollReveal>
-              <div className="text-center max-w-3xl mx-auto mb-20">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#F3D840]/10 border border-[#F3D840]/20 mb-6">
+              <div style={{ textAlign: 'center', maxWidth: 768, margin: '0 auto clamp(32px, 5vw, 80px)' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)' }}>
                   <motion.span
-                    className="w-2 h-2 rounded-full bg-[#F3D840]"
+                    style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840' }}
                     animate={{ scale: [1, 1.3, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
-                  <span className="text-[#374151] text-xs sm:text-sm font-semibold tracking-wide">
+                  <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
                     Here&apos;s what we deploy.
                   </span>
                 </div>
@@ -483,7 +494,7 @@ export default function ServicesPageClient() {
             </ScrollReveal>
 
             {/* Agent cards — alternating image/copy layout */}
-            <div className="space-y-20 md:space-y-28">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(64px, 15vw, 120px)' }}>
               {agents.map((agent, i) => (
                 <AgentCard key={agent.num} agent={agent} index={i} />
               ))}
