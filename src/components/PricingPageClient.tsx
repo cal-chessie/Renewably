@@ -75,7 +75,7 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
         </span>
         <span
           style={{
-            color: "#F3D840",
+            color: "#B89A10",
             fontSize: 24,
             fontWeight: 300,
             lineHeight: 1,
@@ -181,7 +181,7 @@ export default function PricingPageClient() {
                   <ul style={{ display: "flex", flexDirection: "column", gap: 12, listStyle: "none", padding: 0, margin: 0 }}>
                     {includedItems.map((item) => (
                       <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                        <svg style={{ width: 18, height: 18, color: "#F3D840", flexShrink: 0, marginTop: 2 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg style={{ width: 18, height: 18, color: "#B89A10", flexShrink: 0, marginTop: 2 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                         </svg>
                         <span style={{ color: "#535353", fontSize: 14, lineHeight: 1.5 }}>{item}</span>

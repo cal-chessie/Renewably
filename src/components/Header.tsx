@@ -13,9 +13,6 @@ const navLinks = [
   { href: "/contact", label: "Contact Us", num: "05" },
 ];
 
-/* ─── Spring config ─── */
-const menuSpring = { type: "spring" as const, damping: 30, stiffness: 200, mass: 0.8 };
-
 /* ─── Tap-scale wrapper for mobile ─── */
 function TapLink({ children, ...props }: React.ComponentProps<typeof Link>) {
   return (

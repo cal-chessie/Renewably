@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -410,7 +410,7 @@ function PlatformTourSection() {
    SECTION 5: FEATURES SECTION — Off-White Background
    ============================================================ */
 function FeaturesSection() {
-  const features = [
+  const features = useMemo(() => [
     {
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -465,7 +465,7 @@ function FeaturesSection() {
       title: "Flag problems before they blow up.",
       desc: "Job taking too long? Customer hasn't heard anything in a week? Budget running over? Agent alerts you. Not after the fact. Before.",
     },
-  ];
+  ], []);
 
   return (
     <section
@@ -533,7 +533,7 @@ function FeaturesSection() {
    SECTION 5: AGENTS SECTION — White Background
    ============================================================ */
 function AgentsSection() {
-  const agents = [
+  const agents = useMemo(() => [
     {
       title: "CEO agent",
       desc: "Sets strategy. Assigns work. Manages the team. Reports to you weekly.",
@@ -571,7 +571,7 @@ function AgentsSection() {
       desc: "Coming soon. Runs campaigns. Generates leads. Writes copy. Manages socials.",
       comingSoon: true,
     },
-  ];
+  ], []);
 
   return (
     <section
@@ -776,7 +776,7 @@ function BeforeAfterSection() {
                   whileHover={{ y: -2 }}
                   style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)', borderRadius: 16, backgroundColor: '#FFFDF5', borderLeftWidth: 4, borderLeftStyle: 'solid', borderLeftColor: '#F3D840', border: '1px solid rgba(243,216,64,0.15)' }}
                 >
-                  <span style={{ display: 'block', color: '#F3D840', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'clamp(8px, 1.5vw, 12px)' }}>
+                  <span style={{ display: 'block', color: '#B89A10', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'clamp(8px, 1.5vw, 12px)' }}>
                     After
                   </span>
                   <p style={{ color: '#1A1A1A', fontSize: 'clamp(14px, 1.8vw, 16px)', lineHeight: 1.7, fontWeight: 600 }}>

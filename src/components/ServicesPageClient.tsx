@@ -265,7 +265,7 @@ function BeforeAfterSection() {
                   className="p-5 sm:p-6 rounded-xl"
                   style={{ backgroundColor: '#FFFDF5', borderLeft: '4px solid #F3D840', border: '1px solid rgba(243,216,64,0.15)', borderLeftWidth: 4, borderLeftStyle: 'solid', borderLeftColor: '#F3D840' }}
                 >
-                  <span style={{ display: 'block', color: '#F3D840', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'clamp(8px, 1.5vw, 12px)' }}>
+                  <span style={{ display: 'block', color: '#B89A10', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'clamp(8px, 1.5vw, 12px)' }}>
                     After
                   </span>
                   <p style={{ color: '#1A1A1A', fontSize: 'clamp(0.875rem, 1.5vw, 1rem)', lineHeight: 1.7, fontWeight: 600 }}>
