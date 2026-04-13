@@ -14,63 +14,79 @@ import ScrollReveal from "@/components/ScrollReveal";
 function HeroSection() {
   return (
     <>
-      {/* ── MOBILE HERO (< md) ── */}
+      {/* ── MOBILE HERO (< md) — full-screen background with text overlay ── */}
       <section
         className="md:hidden"
         style={{
-          backgroundColor: '#F3D840',
-          paddingTop: 80,
-          paddingBottom: 48,
           position: 'relative',
+          minHeight: '100vh',
+          minHeight: '100dvh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           overflow: 'hidden',
+          backgroundColor: '#F3D840',
         }}
       >
-        {/* Subtle decorative circles */}
+        {/* Full-screen background image */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <Image
+            src="/robot-mobile-hero.png"
+            alt=""
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'center' }}
+            priority
+          />
+        </div>
+
+        {/* Dark gradient overlay */}
         <div
           style={{
             position: 'absolute',
-            top: -40,
-            right: -40,
-            width: 180,
-            height: 180,
-            borderRadius: '50%',
-            backgroundColor: 'rgba(10,10,10,0.04)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: -30,
-            left: -30,
-            width: 120,
-            height: 120,
-            borderRadius: '50%',
-            backgroundColor: 'rgba(10,10,10,0.04)',
+            inset: 0,
+            zIndex: 1,
+            background: 'linear-gradient(180deg, rgba(10,10,10,0.75) 0%, rgba(10,10,10,0.55) 40%, rgba(10,10,10,0.3) 100%)',
           }}
         />
 
+        {/* Yellow fade at bottom */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 120,
+            background: 'linear-gradient(to top, #F3D840, transparent)',
+            zIndex: 2,
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* Hero content */}
         <div
           style={{
             position: 'relative',
-            zIndex: 1,
+            zIndex: 3,
             paddingLeft: 24,
             paddingRight: 24,
             textAlign: 'center',
+            maxWidth: 400,
           }}
         >
           {/* Brand badge */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: 8,
               borderRadius: 9999,
-              backgroundColor: 'rgba(10,10,10,0.08)',
-              border: '1px solid rgba(10,10,10,0.12)',
-              marginBottom: 20,
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              marginBottom: 24,
               padding: '5px 14px',
               fontSize: 12,
               fontWeight: 600,
@@ -78,40 +94,10 @@ function HeroSection() {
             }}
           >
             <motion.span
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              style={{
-                width: 7,
-                height: 7,
-                borderRadius: '50%',
-                backgroundColor: '#0A0A0A',
-                display: 'inline-block',
-              }}
+              className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
+              style={{ boxShadow: '0 0 8px rgba(243,216,64,0.6)' }}
             />
-            <span style={{ color: '#1A1A1A' }}>AI as a Service</span>
-          </motion.div>
-
-          {/* Robot image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            style={{ marginBottom: 24 }}
-          >
-            <Image
-              src="/robot-mobile-hero.png"
-              alt="Renewably AI workforce"
-              width={280}
-              height={280}
-              priority
-              style={{
-                width: '100%',
-                maxWidth: 260,
-                height: 'auto',
-                margin: '0 auto',
-                display: 'block',
-              }}
-            />
+            <span style={{ color: 'rgba(255,255,255,0.85)' }}>AI as a Service</span>
           </motion.div>
 
           {/* Setup line */}
@@ -122,7 +108,7 @@ function HeroSection() {
             style={{
               fontSize: 18,
               fontWeight: 500,
-              color: '#374151',
+              color: 'rgba(255,255,255,0.7)',
               marginBottom: 8,
               lineHeight: 1.4,
             }}
@@ -134,14 +120,14 @@ function HeroSection() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ delay: 0.65, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             style={{
-              fontSize: 32,
+              fontSize: 34,
               fontWeight: 800,
               lineHeight: 1.1,
               letterSpacing: '-0.02em',
-              color: '#1A1A1A',
-              marginBottom: 28,
+              color: '#F3D840',
+              marginBottom: 32,
             }}
           >
             You need a workforce that never sleeps.
@@ -151,7 +137,7 @@ function HeroSection() {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
+            transition={{ delay: 0.85, duration: 0.5 }}
           >
             <a
               href="/contact"
@@ -164,12 +150,13 @@ function HeroSection() {
                 fontSize: 15,
                 fontWeight: 700,
                 letterSpacing: '0.02em',
-                color: '#F3D840',
-                backgroundColor: '#0A0A0A',
+                color: '#1A1A1A',
+                background: 'linear-gradient(to right, #F3D840, #E5C832)',
                 borderRadius: 9999,
                 textDecoration: 'none',
                 border: 'none',
                 lineHeight: 1,
+                boxShadow: '0 10px 25px rgba(243,216,64,0.2)',
               }}
             >
               Let&apos;s Talk
