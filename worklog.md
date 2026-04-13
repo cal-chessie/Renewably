@@ -194,3 +194,27 @@ Work Log:
 Stage Summary:
 - All CRM pages polished and lint-clean
 - Full test suite passing
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix public website mobile hero with uploaded robot image + mobile responsiveness fixes
+
+Work Log:
+- Analyzed uploaded screenshot using VLM: 3D yellow robot character with laptop on yellow background
+- Copied image to /home/z/my-project/public/robot-mobile-hero.png
+- Read HomePageClient.tsx, Header.tsx, SiteShell.tsx, layout.tsx, ChatWidget.tsx
+- Redesigned HeroSection with mobile/desktop split:
+  - Mobile (< md): Bright yellow background with robot image centered, clean text layout, dark CTA button
+  - Desktop (>= md): Kept existing cinematic dark hero with robot-hero.jpg background
+- Fixed ProblemSection callout: Removed hardcoded 56px/48px padding and 40px font size
+- Fixed BeforeAfterSection: Replaced hardcoded 96px top/bottom padding with responsive py-12 md:py-20 lg:py-28
+- Fixed HowItStartsSection: Reduced padding (80→64), font sizes (36→28, 20→18), margins for mobile
+- Read and audited AboutPageClient.tsx, WorkforcePageClient.tsx, ContactPageClient.tsx — all use clamp() for responsive fonts, already mobile-friendly
+- Ran lint — clean, zero errors
+
+Stage Summary:
+- Mobile hero now shows the uploaded robot image on bright yellow background
+- Desktop hero unchanged (cinematic dark background with robot-hero.jpg)
+- Multiple sections fixed for mobile padding/font sizing
+- Lint passes cleanly
+- Files changed: src/components/HomePageClient.tsx, public/robot-mobile-hero.png
