@@ -33,3 +33,28 @@ Stage Summary:
 - Pipeline kanban board has touch-friendly snap scrolling
 - Tables collapse properly with hidden columns on smaller screens
 - All changes pass ESLint with zero warnings
+---
+Task ID: 2
+Agent: Main
+Task: Investigate and fix "copy isn't loading" on mobile preview
+
+Work Log:
+- Discovered dev server process was dying — background processes in the environment get cleaned up after shell commands return
+- Initially suspected OOM kill (dmesg showed next-server killed by OOM with 10GB+ virtual memory)
+- Tested both Turbopack and Webpack modes — both died after initial successful request
+- Discovered the preview proxy at space.z.ai has a 5-second auto-reload loop (`setTimeout(() => { window.location.href = window.location.href; }, 5000)`) that shows a placeholder while backend is unreachable
+- Confirmed all 4 key page components (HomePageClient, WorkforcePageClient, PricingPageClient, ContactPageClient) have NO syntax errors — verified via subagent
+- Set `reactStrictMode: false` in next.config.ts to reduce memory (double rendering in dev)
+- Built production standalone server successfully as fallback
+- Root cause: environment kills background processes after tool calls complete; the long-running `bun run dev` command with 10-minute timeout keeps the process alive
+- Verified all pages load correctly on mobile via agent-browser:
+  - Homepage: all sections render with correct copy
+  - Workforce: "Eight AI employees. One team. Your solar company, automated. (Ninth coming soon.)" 
+  - MiniDesktop dashboard renders properly on mobile viewport
+  - Pricing, Contact, About all accessible
+
+Stage Summary:
+- Issue was NOT a code problem — all components render correctly
+- Issue was the dev server process lifecycle in the sandboxed environment
+- Workaround: long-running foreground `bun run dev` keeps server alive for preview proxy
+- All mobile content and copy verified working across all pages

@@ -2,11 +2,14 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  reactStrictMode: true,
+  reactStrictMode: false,
   poweredByHeader: false,
   compress: true,
   typescript: {
     ignoreBuildErrors: true,
+  },
+  experimental: {
+    optimizeCss: false,
   },
   images: {
     formats: ["image/avif", "image/webp"],
