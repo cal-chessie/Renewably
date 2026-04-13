@@ -173,7 +173,8 @@ function HeroSection() {
           src="/robot-3.jpg"
           alt=""
           fill
-          style={{ objectFit: "cover" }}
+          className="about-hero-bg"
+          style={{ objectFit: "cover", objectPosition: "65% center" }}
           priority
         />
       </div>
@@ -328,6 +329,12 @@ function HeroSection() {
           pointerEvents: "none",
         }}
       />
+
+      {/* Mobile: shift focus to robot, Desktop: centre */}
+      <style>{`
+        .about-hero-bg { object-position: 65% center !important; }
+        @media (min-width: 768px) { .about-hero-bg { object-position: center !important; } }
+      `}</style>
     </section>
   );
 }
