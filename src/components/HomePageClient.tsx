@@ -36,13 +36,13 @@ function HeroSection() {
         />
       </div>
 
-      {/* Dark gradient overlay */}
+      {/* Dark gradient overlay — lighter on mobile so robot stays visible longer */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           zIndex: 1,
-          background: 'linear-gradient(180deg, rgba(10,10,10,0.8) 0%, rgba(10,10,10,0.5) 40%, rgba(10,10,10,0.3) 100%)',
+          background: 'linear-gradient(180deg, rgba(10,10,10,0.7) 0%, rgba(10,10,10,0.4) 40%, rgba(10,10,10,0.2) 100%)',
         }}
       />
 

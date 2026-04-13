@@ -374,8 +374,8 @@ export default function ContactPageClient() {
         />
 
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-[1] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" >
-          <div style={{ padding: 'clamp(60px, 10vh, 100px) 0' }}>
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div style={{ padding: 'clamp(80px, 12vh, 100px) 0 clamp(40px, 6vh, 60px)' }}>
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-20 items-center">
               {/* Left: Copy */}
               <div>
                 <motion.div
@@ -407,7 +407,7 @@ export default function ContactPageClient() {
                   initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ fontSize: "clamp(36px, 6vw, 64px)", fontWeight: 800, color: WHITE, lineHeight: 1.05, letterSpacing: "-0.03em", marginBottom: 24 }}
+                  style={{ fontSize: "clamp(30px, 6vw, 64px)", fontWeight: 800, color: WHITE, lineHeight: 1.08, letterSpacing: "-0.02em", marginBottom: 'clamp(16px, 2.5vw, 24px)' }}
                 >
                   Stop doing
                   <br />
@@ -418,7 +418,7 @@ export default function ContactPageClient() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7, duration: 0.6 }}
-                  style={{ fontSize: 18, lineHeight: 1.7, color: "rgba(255,255,255,0.6)", marginBottom: 40, maxWidth: 480 }}
+                  style={{ fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7, color: "rgba(255,255,255,0.6)", marginBottom: 'clamp(24px, 3vw, 40px)', maxWidth: 480 }}
                 >
                   One hour. That is all it takes. We will look at your operation, show you what your AI team would look like, and give you a straight answer on whether it makes sense for your business. No fluff, no sales pitch.
                 </motion.p>
@@ -428,7 +428,7 @@ export default function ContactPageClient() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.9, duration: 0.6 }}
-                  className="flex flex-wrap gap-6"
+                  className="flex flex-wrap gap-4 sm:gap-6"
                 >
                   {[
                     { value: "< 24h", label: "Response time" },
@@ -436,10 +436,10 @@ export default function ContactPageClient() {
                     { value: "5-7 days", label: "To go live" },
                   ].map((stat) => (
                     <div key={stat.label} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <div style={{ width: 4, height: 32, borderRadius: 2, backgroundColor: YELLOW }} />
+                      <div style={{ width: 4, height: 'clamp(24px, 4vw, 32px)', borderRadius: 2, backgroundColor: YELLOW }} />
                       <div>
-                        <p style={{ fontSize: 20, fontWeight: 800, color: WHITE, lineHeight: 1.2 }}>{stat.value}</p>
-                        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>{stat.label}</p>
+                        <p style={{ fontSize: 'clamp(16px, 2.5vw, 20px)', fontWeight: 800, color: WHITE, lineHeight: 1.2 }}>{stat.value}</p>
+                        <p style={{ fontSize: 'clamp(10px, 1.3vw, 12px)', color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>{stat.label}</p>
                       </div>
                     </div>
                   ))}
