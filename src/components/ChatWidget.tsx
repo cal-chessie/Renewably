@@ -58,6 +58,14 @@ function uid() {
 // Persistent visitor ID for lead deduplication (stored in sessionStorage per tab)
 function getVisitorId(): string {
   if (typeof window === 'undefined') return `srv-${Date.now()}`;
+  // GDPR: Check cookie consent before creating/storing visitor ID
+  try {
+    const consent = localStorage.getItem('renewably_cookie_consent');
+    if (consent) {
+      const prefs = JSON.parse(consent);
+      if (!prefs.marketing) return `anon-${Date.now()}`;
+    }
+  } catch { /* ignore */ }
   let id = sessionStorage.getItem('renewably_vid');
   if (!id) {
     id = `v-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
@@ -332,7 +340,14 @@ export default function ChatWidget() {
 
   /* ─── Basic inline formatting (bold with **) ─── */
   const formatInlineStyles = (text: string) => {
-    return text
+    // Sanitize: escape HTML entities first to prevent XSS from AI output
+    const escaped = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+    return escaped
       .replace(/\*\*(.*?)\*\*/g, '<strong style="fontWeight:600;color:#1A1A1A">$1</strong>')
       .replace(/`(.*?)`/g, '<code style="background:#F3D84022;padding:1px 5px;borderRadius:4px;fontSize:12px;color:#1A1A1A">$1</code>');
   };

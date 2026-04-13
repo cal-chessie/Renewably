@@ -13,6 +13,7 @@ const quickLinks = [
   { label: "Workforce", href: "/workforce" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
+  { label: "Pricing", href: "/pricing" },
 ];
 
 const services = [
@@ -233,17 +234,51 @@ export default function Footer() {
             textAlign: "center",
           }}
         >
-          © 2026 Renewably. All rights reserved.
+          © {new Date().getFullYear()} Renewably. All rights reserved.
         </span>
-        <span
+        <div
           style={{
-            fontSize: "clamp(0.7rem, 1.2vw, 0.8rem)",
-            color: FAINT_TEXT,
-            textAlign: "center",
+            display: "flex",
+            gap: "clamp(0.75rem, 1.5vw, 1rem)",
+            alignItems: "center",
           }}
         >
-          Built in Ireland.
-        </span>
+          <Link
+            href="/privacy"
+            style={{
+              fontSize: "clamp(0.7rem, 1.2vw, 0.8rem)",
+              color: FAINT_TEXT,
+              textDecoration: "none",
+              transition: "color 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = BRAND_YELLOW;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = FAINT_TEXT;
+            }}
+          >
+            Privacy Policy
+          </Link>
+          <span style={{ color: "rgba(255,255,255,0.15)" }}>|</span>
+          <Link
+            href="/terms"
+            style={{
+              fontSize: "clamp(0.7rem, 1.2vw, 0.8rem)",
+              color: FAINT_TEXT,
+              textDecoration: "none",
+              transition: "color 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = BRAND_YELLOW;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = FAINT_TEXT;
+            }}
+          >
+            Terms of Service
+          </Link>
+        </div>
       </div>
 
       {/* Responsive overrides via a tiny style tag — no Tailwind, no external CSS */}

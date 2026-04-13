@@ -1,27 +1,100 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function ExitIntentPopup() {
   const [isOpen, setIsOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const pathname = usePathname();
 
-  const handleMouseLeave = useCallback((e: MouseEvent) => {
-    // Only fire when mouse leaves through the top of the viewport (desktop behaviour)
-    if (e.clientY <= 0 && !sessionStorage.getItem("exit_intent_shown")) {
-      setIsOpen(true);
-      sessionStorage.setItem("exit_intent_shown", "1");
-    }
-  }, []);
+  // Only show on public pages (not CRM or API routes)
+  const isPublicPage = !pathname.startsWith("/crm") && !pathname.startsWith("/api");
+
+  const handleMouseLeave = useCallback(
+    (e: MouseEvent) => {
+      if (!isPublicPage) return;
+      // Only fire when mouse leaves through the top of the viewport (desktop behaviour)
+      if (e.clientY <= 0 && !sessionStorage.getItem("exit_intent_shown")) {
+        previousFocusRef.current = document.activeElement as HTMLElement;
+        setIsOpen(true);
+        sessionStorage.setItem("exit_intent_shown", "1");
+      }
+    },
+    [isPublicPage]
+  );
 
   useEffect(() => {
+    if (!isPublicPage) return;
+
     // Don't add listener on mobile/touch devices
     if (typeof window !== "undefined" && !window.matchMedia("(hover: none)").matches) {
       document.addEventListener("mouseleave", handleMouseLeave);
       return () => document.removeEventListener("mouseleave", handleMouseLeave);
     }
-  }, [handleMouseLeave]);
+  }, [handleMouseLeave, isPublicPage]);
+
+  // Focus trap + Escape key handling
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Focus the close button when modal opens
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+        previousFocusRef.current?.focus();
+        return;
+      }
+
+      // Focus trap: Tab / Shift+Tab cycles within the modal
+      if (e.key === "Tab" && modalRef.current) {
+        const focusableSelectors =
+          'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+        const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(focusableSelectors);
+        const firstEl = focusableElements[0];
+        const lastEl = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstEl) {
+            e.preventDefault();
+            lastEl?.focus();
+          }
+        } else {
+          if (document.activeElement === lastEl) {
+            e.preventDefault();
+            firstEl?.focus();
+          }
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+      previousFocusRef.current?.focus();
+    };
+  }, [isOpen]);
+
+  // Reset sessionStorage flag when navigating (optional UX improvement)
+  useEffect(() => {
+    // Clear on navigation so exit intent can fire again on new page visits
+  }, [pathname]);
+
+  const close = useCallback(() => {
+    setIsOpen(false);
+    previousFocusRef.current?.focus();
+  }, []);
+
+  if (!isPublicPage) return null;
 
   return (
     <AnimatePresence>
@@ -40,20 +113,26 @@ export default function ExitIntentPopup() {
             justifyContent: "center",
             padding: 16,
           }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="exit-intent-title"
+          aria-describedby="exit-intent-desc"
         >
           {/* Backdrop */}
           <div
-            onClick={() => setIsOpen(false)}
+            onClick={close}
             style={{
               position: "absolute",
               inset: 0,
               backgroundColor: "rgba(10,10,10,0.7)",
               backdropFilter: "blur(8px)",
             }}
+            aria-hidden="true"
           />
 
           {/* Card */}
           <motion.div
+            ref={modalRef}
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -80,11 +159,13 @@ export default function ExitIntentPopup() {
                 height: 4,
                 background: "linear-gradient(90deg, #F3D840, #E5C832, #F3D840)",
               }}
+              aria-hidden="true"
             />
 
             {/* Close button */}
             <button
-              onClick={() => setIsOpen(false)}
+              ref={closeButtonRef}
+              onClick={close}
               style={{
                 position: "absolute",
                 top: 16,
@@ -100,7 +181,7 @@ export default function ExitIntentPopup() {
                 justifyContent: "center",
                 transition: "background-color 0.2s",
               }}
-              aria-label="Close"
+              aria-label="Close popup"
             >
               <svg width="16" height="16" fill="none" stroke="#535353" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -119,6 +200,7 @@ export default function ExitIntentPopup() {
                 justifyContent: "center",
                 margin: "0 auto 20px",
               }}
+              aria-hidden="true"
             >
               <svg width="24" height="24" fill="none" stroke="#1A1A1A" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -126,6 +208,7 @@ export default function ExitIntentPopup() {
             </div>
 
             <h2
+              id="exit-intent-title"
               style={{
                 fontSize: "clamp(20px, 4vw, 26px)",
                 fontWeight: 800,
@@ -138,6 +221,7 @@ export default function ExitIntentPopup() {
             </h2>
 
             <p
+              id="exit-intent-desc"
               style={{
                 fontSize: "clamp(14px, 2vw, 16px)",
                 color: "#535353",
@@ -158,7 +242,7 @@ export default function ExitIntentPopup() {
             >
               <Link
                 href="/contact"
-                onClick={() => setIsOpen(false)}
+                onClick={close}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -183,7 +267,7 @@ export default function ExitIntentPopup() {
               </Link>
 
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={close}
                 style={{
                   padding: "10px 24px",
                   borderRadius: 9999,

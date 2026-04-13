@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     locale: siteConfig.locale,
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: `${siteConfig.name} — AI as a Service for Sales, Marketing & Automation`,
+    title: `${siteConfig.name} — AI Workforce for Solar Installers`,
     description: siteConfig.description,
     images: [
       {
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — AI as a Service for Sales, Marketing & Automation`,
+    title: `${siteConfig.name} — AI Workforce for Solar Installers`,
     description: siteConfig.description,
     images: [`${siteConfig.url}/og-image.png`],
   },
@@ -201,11 +201,32 @@ export default function RootLayout({
               .z-\\[200\\] { z-index: 200; }
               @media (min-width: 768px) { .md\\:py-28 { padding-top: 7rem; padding-bottom: 7rem; } .md\\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .md\\:hidden { display: none; } .md\\:flex { display: flex; } .md\\:inline-flex { display: inline-flex; } }
               @media (min-width: 1024px) { .lg\\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } .lg\\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); } .lg\\:px-8 { padding-left: 2rem; padding-right: 2rem; } .lg\\:text-5xl { font-size: 3rem; } .lg\\:py-8 { padding-top: 2rem; padding-bottom: 2rem; } }
+              .skip-link:focus { top: 8px !important; }
             `,
           }}
         />
       </head>
       <body className={`${poppins.variable} ${poppins.className} min-h-screen`}>
+        {/* Accessibility: Skip to main content link */}
+        <a
+          href="#main-content"
+          style={{
+            position: "absolute",
+            top: -100,
+            left: 16,
+            zIndex: 9999,
+            padding: "8px 16px",
+            background: "#F3D840",
+            color: "#1A1A1A",
+            fontWeight: 700,
+            borderRadius: 8,
+            textDecoration: "none",
+            fontSize: 14,
+          }}
+          className="skip-link"
+        >
+          Skip to main content
+        </a>
         <SiteShell>{children}</SiteShell>
       </body>
     </html>

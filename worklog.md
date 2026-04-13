@@ -1,79 +1,88 @@
+# Renewably.ie — Worklog
+
 ---
 Task ID: 1
-Agent: Main
-Task: Fix workforce hero robot centering + mobile-optimize all 12 CRM pages
+Agent: Main Agent
+Task: Deep audit of entire codebase
 
 Work Log:
-- Fixed workforce hero `objectPosition` from `60% center` to `50% 40%` on mobile, `center center` on desktop
-- Added 56px mobile spacer div in CRM layout to prevent content overlap with floating sidebar toggle
-- Updated mobile toggle position from `top: 8, left: 8` to `top: 12, left: 12`
-- Applied consistent mobile padding pattern `px-4 pt-2 pb-6 sm:p-6 lg:p-8` to all 12 CRM pages:
-  - Dashboard (crm/page.tsx)
-  - Pipeline (crm/pipeline/page.tsx) 
-  - Contacts (crm/contacts/page.tsx)
-  - Activities (crm/activities/page.tsx)
-  - Companies (crm/companies/page.tsx)
-  - Tasks (crm/tasks/page.tsx)
-  - Meetings (crm/meetings/page.tsx)
-  - Invoices (crm/invoices/page.tsx)
-  - Proposals (crm/proposals/page.tsx)
-  - Reports (crm/reports/page.tsx)
-  - Installers (crm/installers/page.tsx)
-  - Workflows (crm/workflows/page.tsx)
-- Fixed dashboard skeleton chart grid `minmax(400px, 1fr)` → `minmax(280px, 1fr)` for mobile
-- Added snap scrolling to pipeline kanban board for better mobile UX
-- Fixed companies table cell padding `px-6` → `px-3 sm:px-6` for mobile
-- Verified login page already mobile-optimized (centered card layout)
-- Verified footer already mobile-optimized (responsive grid + clamp)
-- Verified homepage sections all use clamp() for fluid responsive sizing
+- Read all 50+ source files across the project
+- Analysed performance, accessibility, SEO, GDPR, security, code quality, mobile, and brand consistency
+- Produced a comprehensive audit report with severity ratings
 
 Stage Summary:
-- All 12 CRM pages now have mobile-safe padding that accounts for the floating hamburger toggle
-- Workforce hero robot now centres properly on mobile viewports
-- Pipeline kanban board has touch-friendly snap scrolling
-- Tables collapse properly with hidden columns on smaller screens
-- All changes pass ESLint with zero warnings
+- Overall score: 5.5/10
+- Found 2 critical, 8 high, 12 medium, 9 low issues
+- Key areas needing attention: security headers, XSS in chat, stale SEO content, GDPR gaps
+
 ---
 Task ID: 2
-Agent: Main
-Task: Investigate and fix "copy isn't loading" on mobile preview
+Agent: Main Agent
+Task: Exit-intent popup improvements
 
 Work Log:
-- Discovered dev server process was dying — background processes in the environment get cleaned up after shell commands return
-- Initially suspected OOM kill (dmesg showed next-server killed by OOM with 10GB+ virtual memory)
-- Tested both Turbopack and Webpack modes — both died after initial successful request
-- Discovered the preview proxy at space.z.ai has a 5-second auto-reload loop (`setTimeout(() => { window.location.href = window.location.href; }, 5000)`) that shows a placeholder while backend is unreachable
-- Confirmed all 4 key page components (HomePageClient, WorkforcePageClient, PricingPageClient, ContactPageClient) have NO syntax errors — verified via subagent
-- Set `reactStrictMode: false` in next.config.ts to reduce memory (double rendering in dev)
-- Built production standalone server successfully as fallback
-- Root cause: environment kills background processes after tool calls complete; the long-running `bun run dev` command with 10-minute timeout keeps the process alive
-- Verified all pages load correctly on mobile via agent-browser:
-  - Homepage: all sections render with correct copy
-  - Workforce: "Eight AI employees. One team. Your solar company, automated. (Ninth coming soon.)" 
-  - MiniDesktop dashboard renders properly on mobile viewport
-  - Pricing, Contact, About all accessible
+- Added focus trap (Tab/Shift+Tab cycling within modal)
+- Added Escape key handler to close modal
+- Added role="dialog", aria-modal="true", aria-labelledby, aria-describedby
+- Added body overflow: hidden when modal is open
+- Added previous focus restoration on close
+- Restricted popup to public pages only (not CRM)
+- Used next/dynamic with ssr: false in SiteShell to avoid loading on CRM routes
+- Updated SiteShell to conditionally render ExitIntentPopup based on pathname
 
 Stage Summary:
-- Issue was NOT a code problem — all components render correctly
-- Issue was the dev server process lifecycle in the sandboxed environment
-- Workaround: long-running foreground `bun run dev` keeps server alive for preview proxy
-- All mobile content and copy verified working across all pages
+- ExitIntentPopup.tsx now fully accessible with keyboard navigation
+- Lazy-loaded on public pages only via dynamic import
+- File: /home/z/my-project/src/components/ExitIntentPopup.tsx
+- File: /home/z/my-project/src/components/SiteShell.tsx
+
 ---
 Task ID: 3
-Agent: Main
-Task: Implement exit-intent popup, speed optimisation, GDPR cookie banner
+Agent: Main Agent
+Task: Speed optimisation
 
 Work Log:
-- Created ExitIntentPopup.tsx: detects mouse leaving viewport (desktop only, no mobile), shows animated modal with "Book a 15-Minute Call" CTA, stored in sessionStorage so only fires once per session, uses AnimatePresence for smooth enter/exit, close button + "keep browsing" option
-- Speed optimisation on WorkforcePageClient.tsx: added DashboardSkeleton component (dark-themed skeleton matching dashboard layout with top bar, stats row, content grid), applied as `loading` fallback to all 8 dynamic imports
-- Speed optimisation on HomePageClient.tsx: converted PlatformTourSection to lazy-load the 2.6MB video, video element only rendered when container scrolls within 200px margin via useInView, skeleton placeholder with play icon shown until video can play, smooth crossfade via onCanPlay callback
-- Created CookieBanner.tsx: GDPR-compliant consent banner with 3 states (Accept All / Reject Optional / Customise), customise view shows toggleable checkboxes for Analytics and Marketing (Necessary always on), stores preference in localStorage with key "renewably_cookie_consent", dispatches custom "cookie-consent" event for script integration, links to /privacy page, slides up with framer-motion after 800ms delay, mobile-responsive layout
-- Wired both components into SiteShell.tsx: CookieBanner and ExitIntentPopup added after ChatWidget
-- All changes pass ESLint with zero errors
-- Footer copyright updated from 2025 to 2026
+- next.config.ts: Enabled reactStrictMode: true
+- next.config.ts: Enabled optimizeCss: true
+- next.config.ts: Increased minimumCacheTTL from 60s to 86400s (1 day)
+- next.config.ts: Fixed X-Frame-Options from ALLOWALL to SAMEORIGIN
+- next.config.ts: Added Content-Security-Policy header
+- Created generic rate limiter: /home/z/my-project/src/lib/rate-limit.ts
+- Added rate limiting to /api/contact (5 submissions/15min per IP)
+- Added rate limiting to /api/chat (20 messages/15min per IP)
+- Added input length validation to contact form (name: 100, email: 254, message: 5000)
 
 Stage Summary:
-- Exit-intent popup: /src/components/ExitIntentPopup.tsx (fires once per session, desktop only)
-- Cookie banner: /src/components/CookieBanner.tsx (GDPR-compliant, 3 preference categories)
-- Speed: 2.6MB video now lazy-loaded, 8 dashboards have skeleton fallbacks
-- Files modified: SiteShell.tsx, HomePageClient.tsx, WorkforcePageClient.tsx, Footer.tsx, next.config.ts
+- Security headers hardened (CSP, X-Frame-Options, existing HSTS)
+- CSS optimization enabled at build time
+- Image cache TTL increased from 60s to 1 day
+- Public API endpoints now rate-limited with Redis + in-memory fallback
+- Files: next.config.ts, src/lib/rate-limit.ts, src/app/api/contact/route.ts, src/app/api/chat/route.ts
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: GDPR compliance & SEO fixes
+
+Work Log:
+- Footer: Added Privacy Policy and Terms of Service links with hover effects
+- Footer: Added Pricing to Quick Links
+- Footer: Changed copyright to dynamic new Date().getFullYear()
+- Chat Widget: Added GDPR consent check before creating/storing visitor ID
+- Chat Widget: Fixed XSS vulnerability in formatInlineStyles() — now escapes HTML entities before applying markdown formatting
+- CookieBanner: Fixed privacy link contrast from yellow-on-white (#F3D840) to dark (#1A1A1A)
+- Layout: Added "Skip to main content" accessibility link with focus styles
+- Layout: Updated OG titles from "Sales, Marketing & Automation" to "AI Workforce for Solar Installers"
+- Home page: Updated schema to match actual solar installer positioning
+- Home page: Updated FAQ schema with correct solar-focused Q&As
+- Home page: Changed areaServed from "Worldwide" to "Ireland"
+- Services page: Updated metadata from "Sales Agents, Marketing Automation" to "AI Workforce for Solar PV Installers"
+- Robots: Added /crm/ to disallow list
+- Main content: Added id="main-content" to homepage for skip link target
+
+Stage Summary:
+- GDPR: Footer now has legal links; chat respects consent; visitor IDs gated on marketing consent
+- Security: XSS sanitization in chat widget prevents HTML injection from AI output
+- SEO: All stale schema content replaced with accurate solar-focused positioning
+- Accessibility: Skip-to-content link, proper contrast on cookie banner
+- Files: Footer.tsx, ChatWidget.tsx, CookieBanner.tsx, layout.tsx, page.tsx, services/page.tsx, robots.ts

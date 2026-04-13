@@ -13,6 +13,7 @@ import {
   sendContactNotification,
   sendWelcomeEmail,
 } from "@/lib/postmark";
+import { checkRateLimit, getClientIp, CONTACT_RATE_LIMIT } from "@/lib/rate-limit";
 
 // ============================================================================
 // TYPES
@@ -34,6 +35,20 @@ interface ContactFormData {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting: max 5 submissions per 15 minutes per IP
+    const clientIp = getClientIp(request);
+    const { allowed, retryAfterMs } = await checkRateLimit(clientIp, CONTACT_RATE_LIMIT);
+    if (!allowed) {
+      const retryAfterSec = Math.ceil(retryAfterMs / 1000);
+      return NextResponse.json(
+        { error: `Too many submissions. Please try again in ${retryAfterSec} seconds.` },
+        {
+          status: 429,
+          headers: { "Retry-After": String(retryAfterSec) },
+        }
+      );
+    }
+
     const body: ContactFormData = await request.json();
 
     // ------------------------------------------------------------------
@@ -41,30 +56,30 @@ export async function POST(request: NextRequest) {
     // ------------------------------------------------------------------
     const { firstName, lastName, email, message } = body;
 
-    if (!firstName?.trim()) {
+    if (!firstName?.trim() || firstName.trim().length > 100) {
       return NextResponse.json(
-        { error: "First name is required" },
+        { error: "First name is required (max 100 characters)" },
         { status: 400 }
       );
     }
 
-    if (!lastName?.trim()) {
+    if (!lastName?.trim() || lastName.trim().length > 100) {
       return NextResponse.json(
-        { error: "Last name is required" },
+        { error: "Last name is required (max 100 characters)" },
         { status: 400 }
       );
     }
 
-    if (!email?.trim() || !isValidEmail(email)) {
+    if (!email?.trim() || !isValidEmail(email) || email.trim().length > 254) {
       return NextResponse.json(
         { error: "A valid email address is required" },
         { status: 400 }
       );
     }
 
-    if (!message?.trim()) {
+    if (!message?.trim() || message.trim().length > 5000) {
       return NextResponse.json(
-        { error: "Please include a message" },
+        { error: "Please include a message (max 5,000 characters)" },
         { status: 400 }
       );
     }

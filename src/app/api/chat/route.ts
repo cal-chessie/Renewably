@@ -11,6 +11,7 @@ import { NextRequest, NextResponse } from "next/server";
 import ZAI from "z-ai-web-dev-sdk";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/postmark";
+import { checkRateLimit, getClientIp, CHAT_RATE_LIMIT } from "@/lib/rate-limit";
 
 const SYSTEM_PROMPT = `You are the Renewably AI Assistant — the friendly, knowledgeable face of renewably.ie, Ireland's leading AI-as-a-Service platform for solar PV installers.
 
@@ -89,6 +90,16 @@ interface ChatMessage {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting: max 20 messages per 15 minutes per IP
+    const clientIp = getClientIp(request);
+    const { allowed, retryAfterMs } = await checkRateLimit(clientIp, CHAT_RATE_LIMIT);
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Too many messages. Please slow down." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { messages, pageContext, visitorId } = body as {
       messages: ChatMessage[];

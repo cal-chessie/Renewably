@@ -282,7 +282,7 @@ export default function CookieBanner() {
                   <div style={{ flex: 1 }}>
                     <p style={{ fontSize: "clamp(13px, 1.6vw, 15px)", color: "#1A1A1A", lineHeight: 1.6, margin: 0 }}>
                       We use cookies to improve your experience. By clicking "Accept all", you consent to our use of cookies.{" "}
-                      <Link href="/privacy" style={{ color: "#F3D840", textDecoration: "underline", fontWeight: 600 }}>
+                      <Link href="/privacy" style={{ color: "#1A1A1A", textDecoration: "underline", fontWeight: 600 }}>
                         Privacy policy
                       </Link>
                     </p>
