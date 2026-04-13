@@ -346,7 +346,7 @@ function StorySection() {
   const [expandedStep, setExpandedStep] = useState<number | null>(0);
 
   return (
-    <section style={{ backgroundColor: "#fff", paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
+    <section style={{ backgroundColor: "#fff", paddingTop: 'clamp(32px, 8vw, 96px)', paddingBottom: 'clamp(32px, 8vw, 96px)' }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
         <ScrollReveal>
@@ -359,13 +359,13 @@ function StorySection() {
               borderRadius: 9999,
               backgroundColor: "rgba(243,216,64,0.1)",
               border: "1px solid rgba(243,216,64,0.2)",
-              marginBottom: 'clamp(20px, 4vw, 32px)',
+              marginBottom: 'clamp(14px, 3vw, 32px)',
             }}
           >
             <span
               style={{
                 color: "#374151",
-                fontSize: 13,
+                fontSize: 'clamp(11px, 1.5vw, 13px)',
                 fontWeight: 600,
                 letterSpacing: "0.03em",
               }}
@@ -379,12 +379,12 @@ function StorySection() {
         <ScrollReveal delay={0.1}>
           <h2
             style={{
-              fontSize: "clamp(32px, 5vw, 48px)",
+              fontSize: "clamp(24px, 6vw, 48px)",
               fontWeight: 800,
               color: "#1A1A1A",
               lineHeight: 1.1,
               letterSpacing: "-0.02em",
-              marginBottom: 'clamp(10px, 2vw, 16px)',
+              marginBottom: 'clamp(8px, 2vw, 16px)',
               maxWidth: 600,
             }}
           >
@@ -397,11 +397,11 @@ function StorySection() {
         <ScrollReveal delay={0.2}>
           <p
             style={{
-              fontSize: 'clamp(15px, 2vw, 17px)',
-              lineHeight: 1.7,
+              fontSize: 'clamp(14px, 2vw, 17px)',
+              lineHeight: 1.65,
               color: "#535353",
               maxWidth: 560,
-              marginBottom: 'clamp(24px, 5vw, 48px)',
+              marginBottom: 'clamp(16px, 4vw, 48px)',
             }}
           >
             Click each phase to see how we got here. The story starts where every
@@ -427,9 +427,9 @@ function StorySection() {
                   <div
                     style={{
                       display: "flex",
-                      gap: 'clamp(12px, 3vw, 24px)',
-                      paddingTop: 'clamp(16px, 3vw, 24px)',
-                      paddingBottom: 'clamp(16px, 3vw, 24px)',
+                      gap: 'clamp(8px, 2vw, 24px)',
+                      paddingTop: 'clamp(10px, 2.5vw, 24px)',
+                      paddingBottom: 'clamp(10px, 2.5vw, 24px)',
                       borderBottom: isLast
                         ? "none"
                         : "1px solid rgba(0,0,0,0.06)",
@@ -438,7 +438,7 @@ function StorySection() {
                     {/* Left: phase + year */}
                     <div
                       style={{
-                        minWidth: 'clamp(64px, 12vw, 80px)',
+                        minWidth: 'clamp(52px, 12vw, 80px)',
                         display: "flex",
                         flexDirection: "column",
                         gap: 2,
