@@ -1,273 +1,167 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import MagneticButton from "@/components/MagneticButton";
-import AnimatedCounter from "@/components/AnimatedCounter";
 import ScrollReveal from "@/components/ScrollReveal";
 
 /* ============================================================
-   SECTION 1: HERO — Mobile-first robot image, Desktop cinematic bg
+   SECTION 1: HERO — Full-bleed cinematic background, responsive
    ============================================================ */
 function HeroSection() {
   return (
-    <>
-      {/* ── MOBILE HERO (< md) — full-screen background with text overlay ── */}
-      <section
-        className="md:hidden"
+    <section
+      data-theme="dark"
+      style={{
+        position: 'relative',
+        minHeight: '100dvh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        backgroundColor: '#0A0A0A',
+      }}
+    >
+      {/* Full-screen background image */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+        <Image
+          src="/robot-hero.jpg"
+          alt=""
+          fill
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
+          priority
+        />
+      </div>
+
+      {/* Dark gradient overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 1,
+          background: 'linear-gradient(180deg, rgba(10,10,10,0.8) 0%, rgba(10,10,10,0.5) 40%, rgba(10,10,10,0.3) 100%)',
+        }}
+      />
+
+      {/* Subtle dot grid */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 2,
+          opacity: 0.04,
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+        }}
+      />
+
+      {/* Yellow fade at bottom */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 120,
+          background: 'linear-gradient(to top, #F3D840, transparent)',
+          zIndex: 3,
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Hero content — responsive sizing via clamp */}
+      <div
         style={{
           position: 'relative',
-          minHeight: '100vh',
-          minHeight: '100dvh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          overflow: 'hidden',
-          backgroundColor: '#F3D840',
+          zIndex: 4,
+          maxWidth: 800,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          paddingLeft: 16,
+          paddingRight: 16,
+          paddingTop: 80,
+          paddingBottom: 100,
+          textAlign: 'center',
         }}
       >
-        {/* Full-screen background image */}
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-          <Image
-            src="/robot-mobile-hero.png"
-            alt=""
-            fill
-            style={{ objectFit: 'cover', objectPosition: 'center' }}
-            priority
-          />
-        </div>
-
-        {/* Dark gradient overlay */}
-        <div
+        {/* Brand badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
           style={{
-            position: 'absolute',
-            inset: 0,
-            zIndex: 1,
-            background: 'linear-gradient(180deg, rgba(10,10,10,0.75) 0%, rgba(10,10,10,0.55) 40%, rgba(10,10,10,0.3) 100%)',
-          }}
-        />
-
-        {/* Yellow fade at bottom */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 120,
-            background: 'linear-gradient(to top, #F3D840, transparent)',
-            zIndex: 2,
-            pointerEvents: 'none',
-          }}
-        />
-
-        {/* Hero content */}
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 3,
-            paddingLeft: 24,
-            paddingRight: 24,
-            textAlign: 'center',
-            maxWidth: 400,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            borderRadius: 9999,
+            backgroundColor: 'rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            marginBottom: 'clamp(16px, 3vw, 32px)',
+            padding: '5px 14px',
+            fontSize: 'clamp(11px, 1.3vw, 13px)',
+            fontWeight: 600,
+            letterSpacing: '0.03em',
           }}
         >
-          {/* Brand badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              borderRadius: 9999,
-              backgroundColor: 'rgba(255,255,255,0.1)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              marginBottom: 24,
-              padding: '5px 14px',
-              fontSize: 12,
-              fontWeight: 600,
-              letterSpacing: '0.03em',
-            }}
-          >
-            <motion.span
-              className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
-              style={{ boxShadow: '0 0 8px rgba(243,216,64,0.6)' }}
-            />
-            <span style={{ color: 'rgba(255,255,255,0.85)' }}>AI as a Service</span>
-          </motion.div>
-
-          {/* Setup line */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            style={{
-              fontSize: 18,
-              fontWeight: 500,
-              color: 'rgba(255,255,255,0.7)',
-              marginBottom: 8,
-              lineHeight: 1.4,
-            }}
-          >
-            You don&apos;t need more staff.
-          </motion.p>
-
-          {/* Hero statement */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.65, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              fontSize: 34,
-              fontWeight: 800,
-              lineHeight: 1.1,
-              letterSpacing: '-0.02em',
-              color: '#F3D840',
-              marginBottom: 32,
-            }}
-          >
-            You need a workforce that never sleeps.
-          </motion.h1>
-
-          {/* CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.85, duration: 0.5 }}
-          >
-            <a
-              href="/contact"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-                padding: '14px 32px',
-                fontSize: 15,
-                fontWeight: 700,
-                letterSpacing: '0.02em',
-                color: '#1A1A1A',
-                background: 'linear-gradient(to right, #F3D840, #E5C832)',
-                borderRadius: 9999,
-                textDecoration: 'none',
-                border: 'none',
-                lineHeight: 1,
-                boxShadow: '0 10px 25px rgba(243,216,64,0.2)',
-              }}
-            >
-              Let&apos;s Talk
-              <span style={{ display: 'inline-block', marginLeft: 2 }}>&#8594;</span>
-            </a>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── DESKTOP HERO (>= md) ── */}
-      <section
-        data-theme="dark"
-        className="hidden md:flex relative min-h-screen items-center justify-center overflow-hidden"
-      >
-        {/* Full-screen background image */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/robot-hero.jpg"
-            alt=""
-            fill
-            className="object-cover"
-            priority
+          <motion.span
+            className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
+            style={{ boxShadow: '0 0 8px rgba(243,216,64,0.6)' }}
           />
-        </div>
+          <span style={{ color: 'rgba(255,255,255,0.85)' }}>
+            AI as a Service
+          </span>
+        </motion.div>
 
-        {/* Dark gradient overlay */}
-        <div className="absolute inset-0 z-[1] bg-gradient-to-br from-[#0A0A0A]/80 via-[#0A0A0A]/50 to-[#0A0A0A]/30" />
-
-        {/* Subtle dot grid on dark */}
-        <div
-          className="absolute inset-0 z-[2] opacity-[0.04]"
+        {/* Setup line */}
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           style={{
-            backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px)`,
-            backgroundSize: "40px 40px",
+            fontSize: 'clamp(17px, 3.5vw, 30px)',
+            fontWeight: 500,
+            color: 'rgba(255,255,255,0.7)',
+            marginBottom: 'clamp(6px, 1.2vw, 16px)',
+            lineHeight: 1.4,
           }}
-        />
+        >
+          You don&apos;t need more staff.
+        </motion.p>
 
-        {/* Subtle neural grid */}
-        <div className="absolute inset-0 z-[2] opacity-[0.03]">
-          <svg width="100%" height="100%" className="absolute inset-0">
-            <defs>
-              <pattern id="heroNeuralGrid" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-                <circle cx="40" cy="40" r="1.5" fill="white" />
-                <line x1="40" y1="0" x2="40" y2="40" stroke="white" strokeWidth="0.3" />
-                <line x1="40" y1="40" x2="80" y2="40" stroke="white" strokeWidth="0.3" />
-                <line x1="0" y1="40" x2="40" y2="40" stroke="white" strokeWidth="0.3" />
-                <line x1="40" y1="40" x2="40" y2="80" stroke="white" strokeWidth="0.3" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#heroNeuralGrid)" />
-          </svg>
-        </div>
+        {/* Hero statement */}
+        <motion.h1
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            fontSize: 'clamp(28px, 7vw, 72px)',
+            fontWeight: 800,
+            lineHeight: 1.08,
+            letterSpacing: '-0.02em',
+            color: '#F3D840',
+            marginBottom: 'clamp(24px, 4vw, 48px)',
+          }}
+        >
+          You need a workforce that never sleeps.
+        </motion.h1>
 
-        {/* Yellow fade at very bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#F3D840] to-transparent z-[3] pointer-events-none" />
-
-        {/* Hero content */}
-        <div className="relative z-[4] max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Brand badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm"
-            style={{ marginBottom: 32, padding: '6px 16px', fontSize: 13, fontWeight: 600, letterSpacing: '0.03em' }}
-          >
-            <motion.span
-              className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
-              style={{ boxShadow: "0 0 8px rgba(243,216,64,0.6)" }}
-            />
-            <span style={{ color: 'rgba(255,255,255,0.85)' }}>
-              AI as a Service
-            </span>
-          </motion.div>
-
-          {/* Setup line */}
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="text-xl sm:text-2xl lg:text-3xl font-medium text-white/70 mb-4"
-          >
-            You don&apos;t need more staff.
-          </motion.p>
-
-          {/* Hero statement */}
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.08] tracking-tight text-[#F3D840] mb-12"
-          >
-            You need a workforce that never sleeps.
-          </motion.h1>
-
-          {/* CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.5 }}
-          >
-            <MagneticButton href="/contact">
-              Let&apos;s Talk
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </MagneticButton>
-          </motion.div>
-        </div>
-      </section>
-    </>
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.1, duration: 0.5 }}
+        >
+          <MagneticButton href="/contact">
+            Let&apos;s Talk
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </MagneticButton>
+        </motion.div>
+      </div>
+    </section>
   );
 }
 
