@@ -963,7 +963,7 @@ export default function InstallersPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Installers</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Solar installer profiles from SolarPilot onboarding
+            Solar installer profiles and onboarding
             {stats && !statsLoading && (
               <span className="text-gray-400"> · {stats.totalInstallers} total</span>
             )}

@@ -126,8 +126,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             style={{ borderRadius: 8 }}
           />
           <div>
-            <div style={{ color: '#FFF', fontWeight: 700, fontSize: 18, lineHeight: 1.2 }}>SolarPilot</div>
-            <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 12 }}>by Renewably</div>
+            <div style={{ color: '#FFF', fontWeight: 700, fontSize: 18, lineHeight: 1.2 }}>Renewably</div>
+            <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 12 }}>Installer CRM</div>
           </div>
         </div>
       </div>

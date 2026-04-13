@@ -286,7 +286,7 @@ async function captureChatLead(
         htmlBody: `
           <div style="font-family: system-ui, sans-serif; color: #1A1A1A; max-width: 560px; margin: 0 auto;">
             <div style="background: #0A0A0A; padding: 24px 32px; border-radius: 12px 12px 0 0;">
-              <p style="color: #F3D840; font-weight: 700; font-size: 18px; margin: 0;">SolarPilot — Chat Lead Alert</p>
+              <p style="color: #F3D840; font-weight: 700; font-size: 18px; margin: 0;">Renewably — Chat Lead Alert</p>
             </div>
             <div style="padding: 24px 32px; border: 1px solid #E5E7EB; border-top: none; border-radius: 0 0 12px 12px;">
               <p style="margin: 0 0 16px; font-size: 15px;">A new ${isStrongLead ? "<strong>strong</strong>" : ""} lead was captured from the chat widget:</p>

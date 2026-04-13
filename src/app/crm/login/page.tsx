@@ -133,7 +133,7 @@ export default function LoginPage() {
             letterSpacing: '-0.02em',
             margin: '0 0 8px',
           }}>
-            Welcome to SolarPilot
+            Welcome to Renewably
           </h1>
           <p style={{
             color: 'rgba(255,255,255,0.45)',

@@ -42,3 +42,27 @@ Stage Summary:
 - Dashboard header upgraded with personality and live indicator
 - Loading skeletons converted from Tailwind classes to inline styles
 - All changes pass lint checks
+
+---
+Task ID: 3
+Agent: Main Coordinator
+Task: Simplify website + rebrand CRM from SolarPilot to Renewably
+
+Work Log:
+- Removed Footer from SiteShell.tsx (user requested: "remove the footer, it's useless")
+- Removed LoadingScreen from root layout (1s delay = bad for ADHD users, unnecessary friction)
+- Removed CustomCursor from root layout (visual noise, no functional value)
+- Rebranded CRM sidebar: "SolarPilot / by Renewably" → "Renewably / Installer CRM"
+- Rebranded CRM dashboard: "SolarPilot Dashboard" → "Dashboard"
+- Rebranded CRM login: "Welcome to SolarPilot" → "Welcome to Renewably"
+- Fixed installers page subtitle: removed SolarPilot reference
+- Fixed chat API email template: "SolarPilot — Chat Lead Alert" → "Renewably — Chat Lead Alert"
+- Verified zero remaining SolarPilot references in src/
+- ESLint: zero errors
+- Homepage and CRM login both return HTTP 200
+
+Stage Summary:
+- Footer removed from website
+- LoadingScreen and CustomCursor removed (simpler, faster, ADHD-friendly)
+- CRM fully rebranded as "Renewably" (SolarPilot is now just a feature, not the brand)
+- All changes verified and passing
