@@ -1,18 +1,38 @@
+<div align="center">
+
 # Renewably
 
-<p align="center">
-  <strong>AI workforce platform for solar installers in Ireland</strong><br>
-  <a href="https://renewably.ie">renewably.ie</a>
-</p>
+**AI workforce platform for solar installers in Ireland**
+
+[Website](https://renewably.ie) &nbsp;·&nbsp; [Documentation](#) &nbsp;·&nbsp; [Getting Started](#getting-started)
+
+<img src="https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs" alt="Next.js 16" />
+<img src="https://img.shields.io/badge/React-19-61DAFB?logo=react" alt="React 19" />
+<img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript" alt="TypeScript 5" />
+<img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss" alt="Tailwind CSS 4" />
+<img src="https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma" alt="Prisma 6" />
+<img src="https://img.shields.io/badge/Supabase-Auth-3ECF8E?logo=supabase" alt="Supabase" />
+<img src="https://img.shields.io/badge/Bun-Runtime-FBFDF7?logo=bun" alt="Bun" />
+
+<br/>
+
+<img src="https://img.shields.io/badge/31_pages-7C3AED" alt="31 pages" />
+<img src="https://img.shields.io/badge/99_API_endpoints-059669" alt="99 API endpoints" />
+<img src="https://img.shields.io/badge/128_components-DB2777" alt="128 components" />
+<img src="https://img.shields.io/badge/12_DB_models-2563EB" alt="12 DB models" />
+<img src="https://img.shields.io/badge/2_274_test_lines-F59E0B" alt="2,274 test lines" />
+
+</div>
 
 ---
 
-Renewably is a full-stack platform that helps solar installation companies run their entire business. It combines a conversion-optimised marketing website with a comprehensive CRM dashboard, both built on a single Next.js 16 codebase. The marketing site captures leads through an AI-powered chat widget and a multi-step onboarding wizard. The CRM manages the full lifecycle — companies, contacts, deals, pipeline, proposals, invoices, billing, calendar, and AI-assisted workflows — so installers can spend less time on admin and more time on rooftops.
+Renewably is a full-stack platform that helps solar installation companies run their entire business from a single codebase. It combines a conversion-optimised marketing website with a comprehensive CRM dashboard — both built on Next.js 16. The marketing site captures leads through an AI-powered chat widget and a multi-step onboarding wizard. The CRM manages the full sales lifecycle: companies, contacts, deals, pipeline, proposals, invoices, billing, calendar, and AI-assisted workflows. The goal is simple — let installers spend less time on admin and more time on rooftops.
 
 ---
 
 ## Table of Contents
 
+- [Key Features](#key-features)
 - [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
@@ -32,53 +52,102 @@ Renewably is a full-stack platform that helps solar installation companies run t
 
 ---
 
+## Key Features
+
+<table>
+<tr>
+<td width="33%">
+
+**Marketing Website**
+- Cinematic homepage with scroll animations
+- 8 AI workforce agent showcase cards
+- 9 full-content blog posts (markdown)
+- GDPR cookie consent banner
+- Exit-intent lead capture popup
+- PWA-ready with manifest + icons
+- Dynamic sitemap + robots.txt
+- SEO: Open Graph, JSON-LD
+
+</td>
+<td width="33%">
+
+**CRM Dashboard**
+- KPI dashboard with Recharts
+- 8-stage drag-and-drop pipeline
+- Company + contact management
+- Proposal & invoice PDF generation
+- Stripe billing (checkout + portal)
+- Google Calendar (bidirectional sync)
+- WhatsApp messaging integration
+- Workflow automation engine
+
+</td>
+<td width="33%">
+
+**AI-Powered**
+- Claude assistant (8 action types)
+- Real-time CRM context injection
+- Public chat widget (lead capture)
+- Buying signal detection
+- AI-powered phone calls
+- Automated email drafting
+- Deal health analysis
+- Objection handling scripts
+
+</td>
+</tr>
+</table>
+
+---
+
 ## Architecture
 
 ```
-                        ┌─────────────────────────────┐
-                        │      renewably.ie (Caddy)      │
-                        │     Reverse proxy / HTTPS      │
-                        └──────────────┬───────────────┘
-                                       │
-                        ┌──────────────┴───────────────┐
-                        │   Next.js 16 (port 3000)       │
-                        │   ┌───────────────────────┐   │
-                        │   │   proxy.ts (auth)     │   │
-                        │   │   JWT → Supabase     │   │
-                        │   │   Rate limit: 10/min  │   │
-                        │   └───────────┬───────────┘   │
-                        │               │               │
-                        │   ┌───────────┴───────────┐   │
-                        │   │                      │   │
-                        │   │  Public (/)          │   │
-                        │   │  - Marketing pages   │   │
-                        │   │  - Blog              │   │
-                        │   │  - Chat widget       │   │
-                        │   │  - Onboarding        │   │
-                        │   │  - Contact form      │   │
-                        │   │                      │   │
-                        │   │  /crm (authenticated)│   │
-                        │   │  - Dashboard         │   │
-                        │   │  - Pipeline (Kanban) │   │
-                        │   │  - Companies        │   │
-                        │   │  - Deals / Invoices  │   │
-                        │   │  - AI Assistant     │   │
-                        │   │  - Calendar         │   │
-                        │   │  - Billing (Stripe)  │   │
-                        │   └──────────────────────┘   │
-                        └──────────────┬───────────────┘
-                                       │
-              ┌────────────────────────┼────────────────────────┐
-              │                        │                        │
-   ┌──────────┴──────────┐  ┌──────────┴──────────┐  ┌──────────┴──────────┐
-   │  Supabase (Postgres) │  │  SQLite (Prisma)   │  │  External APIs     │
-   │  - auth.users        │  │  - Companies        │  │  - Anthropic Claude │
-   │  - profiles          │  │  - Contacts         │  │  - Stripe          │
-   │  - email_logs        │  │  - Deals            │  │  - Postmark         │
-   │                      │  │  - Invoices         │  │  - Google Calendar │
-   │                      │  │  - Subscriptions    │  │                    │
-   │                      │  │  - Calendar tokens  │  │                    │
-   └─────────────────────┘  └─────────────────────┘  └─────────────────────┘
+                          ┌───────────────────────────┐
+                          │   renewably.ie (Caddy)     │
+                          │   Reverse proxy / HTTPS     │
+                          └─────────────┬─────────────┘
+                                        │
+                          ┌─────────────┴─────────────┐
+                          │  Next.js 16 (port 3000)     │
+                          │                             │
+                          │  ┌───────────────────────┐  │
+                          │  │  proxy.ts (auth)      │  │
+                          │  │  JWT → Supabase       │  │
+                          │  │  Rate limit: 10/min   │  │
+                          │  └───────────┬───────────┘  │
+                          │              │              │
+                          │  ┌───────────┴───────────┐  │
+                          │  │                        │  │
+                          │  │  Public (/)            │  │
+                          │  │  - Marketing pages     │  │
+                          │  │  - Blog                │  │
+                          │  │  - Chat widget         │  │
+                          │  │  - Onboarding          │  │
+                          │  │  - Contact form        │  │
+                          │  │                        │  │
+                          │  │  /crm (authenticated)  │  │
+                          │  │  - Dashboard           │  │
+                          │  │  - Pipeline (Kanban)   │  │
+                          │  │  - Companies           │  │
+                          │  │  - Deals / Invoices    │  │
+                          │  │  - AI Assistant        │  │
+                          │  │  - Calendar            │  │
+                          │  │  - Billing (Stripe)    │  │
+                          │  └────────────────────────┘  │
+                          └─────────────┬───────────────┘
+                                        │
+            ┌───────────────────────────┼───────────────────────────┐
+            │                           │                           │
+  ┌─────────┴──────────┐   ┌───────────┴──────────┐   ┌────────────┴──────────┐
+  │ Supabase (Postgres) │   │  SQLite (Prisma)     │   │  External APIs        │
+  │ - auth.users        │   │  - Companies         │   │  - Anthropic Claude   │
+  │ - profiles          │   │  - Contacts          │   │  - Stripe             │
+  │ - email_logs        │   │  - Deals             │   │  - Postmark           │
+  │                     │   │  - Invoices          │   │  - Google Calendar    │
+  │                     │   │  - Subscriptions     │   │                       │
+  │                     │   │  - Calendar tokens   │   │                       │
+  └─────────────────────┘   └──────────────────────┘   └───────────────────────┘
 ```
 
 ### How a request flows
@@ -98,17 +167,17 @@ Renewably is a full-stack platform that helps solar installation companies run t
 | Layer | Technology |
 |-------|-----------|
 | Framework | Next.js 16 (App Router, standalone output) |
-| Language | TypeScript 5 |
+| Language | TypeScript 5 (strict mode) |
 | Runtime | Bun (Node.js fallback) |
-| Styling | Tailwind CSS 4 + shadcn/ui (new-york theme, 47 primitives) |
+| Styling | Tailwind CSS 4 + shadcn/ui (new-york theme, 49 primitives) |
 | Animations | Framer Motion 12 |
 | Database | Supabase (PostgreSQL) — auth, profiles, email logs |
-| Local DB | SQLite via Prisma ORM — CRM data, sessions |
+| Local DB | SQLite via Prisma 6 ORM — CRM data, sessions |
 | Auth | Supabase Auth (JWT + HttpOnly cookies) |
 | Email | Postmark (transactional email + delivery webhooks) |
 | Payments | Stripe (checkout sessions, customer portal, webhooks) |
 | Calendar | Google Calendar API (OAuth2, bidirectional event sync) |
-| AI | Anthropic Claude (`claude-sonnet-4-20250514`) + Z-AI SDK (public chat) |
+| AI | Anthropic Claude + Z-AI SDK (public chat) |
 | Charts | Recharts |
 | State | React Query (TanStack Query 5) + React Context |
 | Tables | React Table (`@tanstack/react-table`) |
@@ -133,13 +202,12 @@ renewably/
 ├── Caddyfile                        # Reverse proxy — port 81 → localhost:3000
 ├── components.json                  # shadcn/ui config (new-york theme)
 ├── eslint.config.mjs                # ESLint config
-├── keep-alive.sh                    # Dev server keep-alive script (cron)
 ├── next.config.ts                   # Next.js — CSP, security headers, standalone output
 ├── package.json                     # Dependencies and scripts
 ├── postcss.config.mjs               # PostCSS — @tailwindcss/postcss
 ├── tailwind.config.ts               # Tailwind — CSS variables, shadcn/ui theme
 ├── tsconfig.json                    # TypeScript — strict, ES2017, @/ alias
-└── vitest.config.ts                 # Vitest — node env, v8 coverage
+├── vitest.config.ts                 # Vitest — node env, v8 coverage
 │
 ├── prisma/
 │   ├── schema.prisma                # Database schema — 12 models (SQLite)
@@ -163,7 +231,7 @@ renewably/
     ├── proxy.ts                     # Auth middleware — JWT validation, rate limiting,
     │                               #   public route exemptions (replaces middleware.ts)
     │
-    ├── app/                         # Next.js App Router
+    ├── app/                         # Next.js App Router (31 pages)
     │   ├── layout.tsx               # Root layout — globals.css, polyfills, Open Graph,
     │   │                           #   JSON-LD, Sonner toaster, MotionProvider
     │   ├── globals.css              # Tailwind base + CSS variable theme
@@ -176,8 +244,8 @@ renewably/
     │   ├── sitemap.ts               # Dynamic sitemap (9 pages + 9 blog posts)
     │   │
     │   ├── about/page.tsx           # About
-    │   ├── blog/page.tsx             # Blog listing
-    │   ├── blog/[slug]/page.tsx      # Blog post (dynamic)
+    │   ├── blog/page.tsx            # Blog listing
+    │   ├── blog/[slug]/page.tsx     # Blog post (dynamic)
     │   ├── contact/page.tsx         # Contact form
     │   ├── pricing/page.tsx         # Pricing plans
     │   ├── privacy/page.tsx         # Privacy policy
@@ -213,7 +281,7 @@ renewably/
     │       ├── settings/page.tsx    # Profile, branding, password
     │       └── workflows/page.tsx   # Workflow automation
     │
-    ├── api/                         # API route handlers (~95 endpoints)
+    ├── api/                         # API route handlers (99 route files)
     │   ├── contact/route.ts         # POST — public contact form
     │   ├── chat-widget/route.ts     # POST — AI chat (lead capture)
     │   ├── ai-agent/route.ts        # CRUD — blog/services/testimonials/FAQs
@@ -236,7 +304,7 @@ renewably/
     │       ├── reports/             # CRUD + export + dashboard
     │       ├── billing/             # Stripe plans, checkout, portal, webhook
     │       ├── ai/                  # Claude assistant + usage + validate
-    │       ├── email/                # Postmark sending + delivery webhook
+    │       ├── email/               # Postmark sending + delivery webhook
     │       ├── whatsapp/            # Messaging + webhook + config (5 endpoints)
     │       ├── workflows/           # CRUD + trigger + executions
     │       ├── settings/            # Profile, logo, password
@@ -260,8 +328,24 @@ renewably/
     │   ├── MiniDesktop.tsx          # Mini desktop preview
     │   ├── LoadingScreen.tsx        # Loading screen
     │   │
-    │   ├── *PageClient.tsx          # Marketing pages (11)
-    │   ├── *Dashboard.tsx           # Dashboard previews (7)
+    │   ├── AboutPageClient.tsx      # About page client
+    │   ├── BlogPageClient.tsx       # Blog listing client
+    │   ├── BlogPostClient.tsx       # Blog post client
+    │   ├── ContactPageClient.tsx    # Contact page client
+    │   ├── HomePageClient.tsx       # Homepage client
+    │   ├── PricingPageClient.tsx    # Pricing page client
+    │   ├── PrivacyPageClient.tsx    # Privacy page client
+    │   ├── ServicesPageClient.tsx   # Services page client
+    │   ├── TermsPageClient.tsx      # Terms page client
+    │   ├── WorkforcePageClient.tsx  # Workforce page client
+    │   │
+    │   ├── GrantsDashboard.tsx      # Grants dashboard preview
+    │   ├── LogisticsDashboard.tsx   # Logistics dashboard preview
+    │   ├── OperationsDashboard.tsx  # Operations dashboard preview
+    │   ├── PermittingDashboard.tsx  # Permitting dashboard preview
+    │   ├── QADashboard.tsx          # QA dashboard preview
+    │   ├── ReportingDashboard.tsx   # Reporting dashboard preview
+    │   └── SupportDashboard.tsx     # Support dashboard preview
     │   │
     │   ├── crm/                     # CRM components (32)
     │   │   ├── CRMProvider.tsx       # Auth state + React Query provider
@@ -272,15 +356,29 @@ renewably/
     │   │   ├── CalendarView.tsx     # Calendar
     │   │   └── ...                  # Page content + shared UI
     │   │
-    │   ├── onboarding/              # Onboarding wizard (16 files)
-    │   │   ├── steps-*.tsx          # 10 step components
-    │   │   ├── Stepper.tsx          # Step indicator
+    │   ├── onboarding/              # Onboarding wizard (17 files)
+    │   │   ├── steps-landing.tsx    # Step 1 — intro
+    │   │   ├── steps-welcome.tsx    # Step 2 — company name
+    │   │   ├── steps-company.tsx    # Step 3 — business details
+    │   │   ├── steps-territory.tsx  # Step 4 — service area
+    │   │   ├── steps-finance.tsx    # Step 5 — revenue
+    │   │   ├── steps-tech.tsx       # Step 6 — software
+    │   │   ├── steps-tools.tsx      # Step 7 — hardware
+    │   │   ├── steps-legal.tsx      # Step 8 — compliance
+    │   │   ├── steps-account.tsx    # Step 9 — account creation
+    │   │   ├── steps-complete.tsx   # Step 10 — confirmation
+    │   │   ├── Stepper.tsx          # Progress indicator
     │   │   ├── Backdrop.tsx         # Modal backdrop
-    │   │   └── book-demo.tsx        # Book a demo CTA
+    │   │   ├── book-demo.tsx        # Book a demo CTA
+    │   │   ├── data.tsx             # Wizard data constants
+    │   │   └── ui.tsx               # Wizard UI components
     │   │
     │   ├── shared/                  # Reusable marketing sections (3)
+    │   │   ├── AudienceSection.tsx
+    │   │   ├── BeforeAfterSection.tsx
+    │   │   └── HowItStartsSection.tsx
     │   │
-    │   └── ui/                      # shadcn/ui primitives (47)
+    │   └── ui/                      # shadcn/ui primitives (49)
     │
     ├── lib/                         # Server-side utilities (26 files)
     │   ├── supabase.ts              # Supabase client + service role
@@ -297,9 +395,16 @@ renewably/
     │   ├── sanitize.ts              # Input sanitization
     │   ├── crm-schemas.ts           # Zod validation schemas
     │   ├── crm-validation.ts        # Input validation helpers
-    │   ├── logger.ts / logger-crm.ts # Structured logging
+    │   ├── crm-data.ts              # CRM data helpers
+    │   ├── crm-route-helpers.ts     # API route utilities
+    │   ├── crm-theme.ts             # CRM theming
+    │   ├── api-auth.ts              # API key authentication
+    │   ├── logger.ts                # Structured logging (app)
+    │   ├── logger-crm.ts            # Structured logging (CRM)
     │   ├── blog-data.ts             # 9 blog posts + getPostBySlug()
-    │   └── utils.ts / utils.tsx / format.ts
+    │   ├── format.ts                # Number/date formatting
+    │   ├── utils.ts                 # General utilities (cn, etc.)
+    │   └── utils.tsx                # General React utilities
     │
     ├── data/                        # Static JSON (AI agent CRUD target)
     │   ├── blog.json                # Blog post metadata
@@ -307,7 +412,8 @@ renewably/
     │   ├── testimonials.json        # Customer testimonials
     │   └── faqs.json                # FAQ entries
     │
-    └── __tests__/                   # Test suites (6, ~2,274 lines)
+    └── __tests__/                   # Test suites (6, 2,274 lines)
+        ├── setup.ts                 # Test configuration
         ├── auth.test.ts             # Password hashing, sessions
         ├── crm-auth.test.ts         # CRM auth middleware
         ├── crm-core.test.ts         # Core CRM logic (802 lines)
@@ -329,7 +435,7 @@ renewably/
 | AI Workforce | `/workforce` | Detailed AI agent descriptions |
 | Pricing | `/pricing` | Subscription plans (Starter, Pro, Enterprise) |
 | About | `/about` | Company story and mission |
-| Blog | `/blog` | Blog listing (9 articles, JSON-based with full markdown content) |
+| Blog | `/blog` | Blog listing (9 articles, full markdown content) |
 | Blog Post | `/blog/[slug]` | Individual blog posts rendered via react-markdown |
 | Contact | `/contact` | Contact form |
 | Onboarding | `/onboarding` | Multi-step signup wizard (10 stages) |
@@ -592,7 +698,7 @@ The app uses **Supabase Auth** as its primary authentication system:
 - `requireAuth()` — validates session and returns the user profile (used in API routes and pages)
 - `requireAdmin()` — validates session and checks role === 'admin'
 
-**Important:** This project uses `src/proxy.ts` instead of `src/middleware.ts` (Next.js 16 requirement). Do NOT create a `src/middleware.ts` file — it will conflict with `proxy.ts` and crash the server.
+> **Important:** This project uses `src/proxy.ts` instead of `src/middleware.ts` (Next.js 16 requirement). Do NOT create a `src/middleware.ts` file — it will conflict with `proxy.ts` and crash the server.
 
 **Legacy auth code** exists in `src/lib/auth.ts` (PBKDF2 password hashing) and `src/lib/sessions.ts` (Redis-backed sessions) but is not used by the active auth flow.
 
@@ -716,7 +822,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```bash
 bun run test           # single run
-bun run test:watch    # watch mode
+bun run test:watch     # watch mode
 ```
 
 ### Build
@@ -763,10 +869,10 @@ The app is configured for self-hosted deployment:
 
 | Metric | Count |
 |--------|-------|
-| Pages | 33 (11 public + 21 CRM + 1 onboarding) |
-| API endpoints | ~95 |
-| React components | ~138 (32 CRM + 47 shadcn/ui + 16 onboarding + 11 marketing + 7 dashboard previews + 15 shared) |
-| Server utilities | 26 |
+| Pages | 31 (11 public + 19 CRM + 1 onboarding) |
+| API route files | 99 |
+| React components | 128 (32 CRM + 49 shadcn/ui + 17 onboarding + 30 root) |
+| Server utilities (lib) | 26 |
 | Prisma models | 12 |
 | Test suites | 6 (2,274 lines total) |
 | Environment variables | 18 (3 required, 15 optional) |
