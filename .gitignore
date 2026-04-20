@@ -91,6 +91,16 @@ seed-crm.js
 _cleanup.cjs
 paperclip-*.json
 prisma/seed.json
+watchdog.js
+watchdog.sh
+start.sh
+generate-*-doc.js
+generate_polish_report.py
+supabase-migrations/
+supabase-additional-tables.sql
+supabase-advisory-audit.json
+supabase-google-calendar.sql
+supabase-schema.sql
 
 # Backup files
 *.bak
