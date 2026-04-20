@@ -79,12 +79,11 @@ export default function Header() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex items-center justify-between h-full">
             <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-              <Image
+              <img
                 src="/logo-white.png"
                 alt="Renewably"
                 width={44}
                 height={44}
-                priority
                 style={{ transition: 'transform 0.3s' }}
               />
               <span style={{ fontSize: 21, fontWeight: 600, letterSpacing: '-0.01em', color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
