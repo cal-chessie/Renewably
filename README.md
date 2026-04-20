@@ -220,6 +220,27 @@ renewably/
 | Privacy | `/privacy` | Privacy policy |
 | Terms | `/terms` | Terms of service |
 
+### Onboarding Wizard
+
+A multi-step public signup wizard at `/onboarding` (no auth required) that walks new solar installers through setting up their business profile. It collects company information, territory, financial details, tech stack, tools, and legal compliance. Submissions are stored in the database and can be resumed via progress tracking.
+
+**Steps (9 stages):**
+
+1. **Landing** — Introduction and value proposition
+2. **Welcome** — Company name and primary contact
+3. **Company Info** — Business type, SEAI registration, team size
+4. **Territory** — Service area and target counties
+5. **Finance** — Revenue range and pricing model
+6. **Tech Stack** — Current software and tools
+7. **Tools** — Hardware and equipment used
+8. **Legal** — Compliance and certifications
+9. **Account** — Email and password creation
+10. **Complete** — Confirmation and next steps
+
+**API Endpoints:**
+- `POST /api/onboarding/submit` — Submit onboarding form
+- `GET/PUT /api/onboarding/progress` — Track or resume progress
+
 ### CRM Dashboard (Authenticated)
 
 | Page | Route | Description |
