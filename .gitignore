@@ -84,8 +84,13 @@ prisma/db/custom.db
 # Examples directory
 /examples/
 
-# Legacy build scripts
-/.zscripts/
+# Agent tools/sessions
+keepalive.js
+keepalive.sh
+seed-crm.js
+_cleanup.cjs
+paperclip-*.json
+prisma/seed.json
 
 # Backup files
 *.bak
