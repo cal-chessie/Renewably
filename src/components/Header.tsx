@@ -80,7 +80,7 @@ export default function Header() {
           <div className="flex items-center justify-between h-full">
             <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
               <Image
-                src="/logo-yellow.png"
+                src="/logo-transparent.png"
                 alt="Renewably"
                 width={44}
                 height={44}
