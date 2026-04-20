@@ -753,8 +753,9 @@ export function AIAssistant() {
             if (data === '[DONE]') continue
             try {
               const parsed = JSON.parse(data)
-              if (parsed.content) {
-                streamContentRef.current += parsed.content
+              const chunk = parsed.content || parsed.token || parsed.reply || ''
+              if (chunk) {
+                streamContentRef.current += chunk
                 setMessages(prev => prev.map(m =>
                   m.id === assistantMsgId
                     ? { ...m, content: streamContentRef.current, isStreaming: true }
