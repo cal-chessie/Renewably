@@ -18,8 +18,8 @@
 //   - /api/crm/billing/webhook — Stripe webhook (signature-verified)
 //   - /api/crm/email/webhook   — Postmark webhook (signature-verified)
 //   - /api/contact              — public contact form
-//   - /api/chat                 — public AI chat
-//   - /api/agent                — public AI agent
+//   - /api/chat-widget          — public AI chat widget
+//   - /api/ai-agent             — public AI agent
 //   - /crm/login                — login page itself
 //   - Static assets             — _next/*, favicon, images, etc.
 //   - Marketing pages           — /, /about, /services, /pricing, etc.
@@ -78,8 +78,8 @@ const PUBLIC_API_PREFIXES: string[] = [
   '/api/crm/billing/webhook', // Stripe webhook (signature-verified)
   '/api/crm/email/webhook',   // Postmark webhook (signature-verified)
   '/api/contact',             // Public contact form
-  '/api/chat',                // Public AI chat
-  '/api/agent',               // Public AI agent
+  '/api/chat-widget',          // Public AI chat widget
+  '/api/ai-agent',             // Public AI agent
 ]
 
 /** CRM page routes that should skip auth. */

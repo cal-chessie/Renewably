@@ -4,7 +4,7 @@ import path from "path";
 
 const AGENT_API_KEY = process.env.AGENT_API_KEY;
 if (!AGENT_API_KEY) {
-  console.warn('[agent] AGENT_API_KEY is not set — the /api/agent endpoints will reject all requests.');
+  console.warn('[ai-agent] AGENT_API_KEY is not set — the /api/ai-agent endpoints will reject all requests.');
 }
 const CONTENT_DIR = path.join(process.cwd(), "src", "data");
 
@@ -66,7 +66,7 @@ function getFilename(type: string): string {
   }
 }
 
-// GET /api/agent — List all content or search
+// GET /api/ai-agent — List all content or search
 export async function GET(request: NextRequest) {
   if (!auth(request)) {
     return jsonResponse({ error: "Unauthorised. Provide x-agent-api-key header." }, 401);
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
   return jsonResponse({ success: true, count: results.length, data: results });
 }
 
-// POST /api/agent — Create new content
+// POST /api/ai-agent — Create new content
 export async function POST(request: NextRequest) {
   if (!auth(request)) {
     return jsonResponse({ error: "Unauthorised. Provide x-agent-api-key header." }, 401);
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/agent — Update existing content
+// PUT /api/ai-agent — Update existing content
 export async function PUT(request: NextRequest) {
   if (!auth(request)) {
     return jsonResponse({ error: "Unauthorised. Provide x-agent-api-key header." }, 401);
@@ -192,7 +192,7 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// DELETE /api/agent — Delete content
+// DELETE /api/ai-agent — Delete content
 export async function DELETE(request: NextRequest) {
   if (!auth(request)) {
     return jsonResponse({ error: "Unauthorised. Provide x-agent-api-key header." }, 401);

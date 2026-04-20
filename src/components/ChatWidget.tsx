@@ -206,7 +206,7 @@ export default function ChatWidget() {
       try {
         const pageContext = PAGE_CONTEXT_MAP[pathname] || `page: ${pathname}`;
         const visitorId = getVisitorId();
-        const res = await fetch("/api/chat", {
+        const res = await fetch("/api/chat-widget", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

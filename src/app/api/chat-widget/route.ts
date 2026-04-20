@@ -1,7 +1,7 @@
 // ============================================================================
-// RENEWABLY.IE — PUBLIC CHAT API (with CRM lead capture)
+// RENEWABLY.IE — PUBLIC CHAT WIDGET API (with CRM lead capture)
 // ============================================================================
-// POST /api/chat
+// POST /api/chat-widget
 //
 // Handles visitor chat via z-ai-web-dev-sdk.
 // Detects buying signals and captures leads into the CRM as contacts.
