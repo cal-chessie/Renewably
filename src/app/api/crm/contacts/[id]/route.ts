@@ -23,36 +23,8 @@ export async function GET(
     const contact = await db.contact.findUnique({
       where: { id },
       include: {
-        company: true,
-        deals: {
-          include: {
-            stage: true,
-            assignee: { select: { id: true, name: true, avatar: true } },
-            company: { select: { id: true, name: true } },
-          },
-          orderBy: { createdAt: 'desc' },
-        },
-        activities: {
-          include: {
-            user: { select: { id: true, name: true, avatar: true } },
-            deal: { select: { id: true, title: true } },
-          },
-          orderBy: { createdAt: 'desc' },
-        },
-        tasks: {
-          include: {
-            assignee: { select: { id: true, name: true, avatar: true } },
-            deal: { select: { id: true, title: true } },
-          },
-          orderBy: { createdAt: 'desc' },
-        },
-        notes: {
-          include: {
-            user: { select: { id: true, name: true, avatar: true } },
-          },
-          orderBy: { createdAt: 'desc' },
-        },
-        tags: { include: { tag: true } },
+        company: { select: { id: true, name: true, status: true } },
+        tags: { include: { tag: { select: { id: true, name: true, color: true } } } },
       },
     })
 
@@ -86,53 +58,33 @@ export async function PUT(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    let body: z.infer<typeof updateContactSchema>
-    try {
-      body = updateContactSchema.parse(await request.json())
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return NextResponse.json({ error: 'Validation failed', details: formatZodError(error) }, { status: 400 })
-      }
-      throw error
+    const body = await request.json()
+    const updateData: Record<string, unknown> = {}
+
+    if (body.name !== undefined) updateData.name = String(body.name)
+    if (body.email !== undefined) updateData.email = String(body.email)
+    if (body.phone !== undefined) updateData.phone = String(body.phone)
+    if (body.jobTitle !== undefined) updateData.jobTitle = String(body.jobTitle)
+    if (body.linkedin !== undefined) updateData.linkedin = String(body.linkedin)
+    if (body.source !== undefined) updateData.source = String(body.source)
+    if (body.status !== undefined) updateData.status = String(body.status)
+    if (body.address !== undefined) updateData.address = String(body.address)
+    if (body.city !== undefined) updateData.city = String(body.city)
+    if (body.country !== undefined) updateData.country = String(body.country)
+    if (body.description !== undefined) updateData.description = String(body.description)
+    if (body.companyId !== undefined) updateData.companyId = body.companyId || null
+    if (body.notes !== undefined) updateData.notes = String(body.notes)
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
     }
-    const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      jobTitle,
-      linkedin,
-      source,
-      status,
-      address,
-      city,
-      country,
-      description,
-      companyId,
-      lastContactAt,
-    } = body
 
     const contact = await db.contact.update({
       where: { id },
-      data: {
-        ...(firstName !== undefined && { firstName }),
-        ...(lastName !== undefined && { lastName }),
-        ...(email !== undefined && { email }),
-        ...(phone !== undefined && { phone }),
-        ...(jobTitle !== undefined && { jobTitle }),
-        ...(linkedin !== undefined && { linkedin }),
-        ...(source !== undefined && { source }),
-        ...(status !== undefined && { status }),
-        ...(address !== undefined && { address }),
-        ...(city !== undefined && { city }),
-        ...(country !== undefined && { country }),
-        ...(description !== undefined && { description }),
-        ...(companyId !== undefined && { companyId: companyId || null }),
-        ...(lastContactAt !== undefined && { lastContactAt }),
-      },
+      data: updateData,
       include: {
-        company: true,
-        tags: { include: { tag: true } },
+        company: { select: { id: true, name: true, status: true } },
+        tags: { include: { tag: { select: { id: true, name: true, color: true } } } },
       },
     })
 

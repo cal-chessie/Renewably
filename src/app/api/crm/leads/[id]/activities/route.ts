@@ -1,67 +1,59 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
-import { getSession, parseCookie } from '@/lib/crm-session'
+import { createServiceClient } from '@/lib/supabase'
+import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { logger } from '@/lib/logger'
-import { dealActivitySchema, formatZodError } from '@/lib/crm-schemas'
 
-async function getUser(request: NextRequest) {
-  const cookieHeader = request.headers.get('cookie') || ''
-  const token = parseCookie(cookieHeader, 'crm_session')
-  if (!token) return null
-  const session = await getSession(token)
-  return session?.user || null
-}
-
-// POST /api/crm/leads/[id]/activities — add activity to lead
+// POST /api/crm/leads/[id]/activities — add activity to a deal (lead)
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await getUser(request)
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
 
     const rateLimitResult = checkApiRateLimit(`lead_activities_create:${getClientIp(request)}`, { maxAttempts: 20, windowMs: 60_000 })
     if (!rateLimitResult.allowed) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) } })
     }
 
-    const { id: leadId } = await params
-    if (!isValidUuid(leadId)) {
+    const { id: dealId } = await params
+    if (!isValidUuid(dealId)) {
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
     const rawBody = await request.json()
-    const parsed = dealActivitySchema.safeParse(rawBody)
-    if (!parsed.success) {
-      return NextResponse.json({ error: 'Validation failed', details: formatZodError(parsed.error) }, { status: 400 })
-    }
-    const body = parsed.data
-    const { type, title, content } = body
+    const { type, title, content } = rawBody
 
     if (!type || !title) {
       return NextResponse.json({ error: 'Type and title are required' }, { status: 400 })
     }
 
-    // Verify lead exists
-    const lead = await db.lead.findUnique({ where: { id: leadId } })
-    if (!lead) {
+    const supabase = createServiceClient()
+
+    // Verify deal exists
+    const { data: deal } = await supabase.from('deals').select('id').eq('id', dealId).single()
+    if (!deal) {
       return NextResponse.json({ error: 'Lead not found' }, { status: 404 })
     }
 
-    const activity = await db.activity.create({
-      data: {
+    const { data: activity, error } = await supabase
+      .from('deal_activities')
+      .insert({
+        deal_id: dealId,
+        user_id: user.id,
         type,
         title,
-        content,
-        leadId,
-        userId: user.id,
-      },
-      include: {
-        user: { select: { id: true, name: true } },
-      },
-    })
+        content: content || null,
+      })
+      .select('id, type, title, content, created_at, user:profiles!user_id(id, name)')
+      .single()
+
+    if (error) {
+      logger.error('Activity create DB error', { error: error.message })
+      return NextResponse.json({ error: 'Failed to create activity' }, { status: 400 })
+    }
 
     return NextResponse.json({ activity }, { status: 201 })
   } catch (error) {

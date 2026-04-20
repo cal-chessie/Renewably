@@ -22,7 +22,6 @@ interface RawActivity {
   title: string
   content: string | null
   created_at: string
-  updated_at: string
   deal_id: string | null
   user_id: string | null
   deal: { id: string; stage: string; product: string | null; value: number | null; company: { id: string; name: string; status: string | null } | null } | null
@@ -65,11 +64,11 @@ function formatMeeting(raw: RawActivity) {
       ? { id: raw.user.id, name: raw.user.name }
       : null,
     createdAt: raw.created_at,
-    updatedAt: raw.updated_at,
+    updatedAt: raw.created_at,
   }
 }
 
-const SELECT_WITH_JOINS = 'id, type, title, content, created_at, updated_at, deal_id, user_id, deal:deals(id, stage, product, value, company:companies(id, name, status)), user:profiles(id, name)'
+const SELECT_WITH_JOINS = 'id, type, title, content, created_at, deal_id, user_id, deal:deals(id, stage, product, value, company:companies(id, name, status)), user:profiles!user_id(id, name)'
 
 // ── Validation ───────────────────────────────────────────────────────────────
 

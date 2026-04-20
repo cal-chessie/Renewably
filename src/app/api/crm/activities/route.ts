@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from('deal_activities')
-      .select('*, user:profiles(id, name)', { count: 'exact' })
+      .select('*, user:profiles!user_id(id, name)', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(from, to)
 

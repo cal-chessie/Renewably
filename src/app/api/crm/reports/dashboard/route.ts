@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       // All activities with user info
       supabase
         .from('deal_activities')
-        .select('id, type, title, created_at, user_id, user:profiles(id, name)'),
+        .select('id, type, title, created_at, user_id, user:profiles!user_id(id, name)'),
       // All contacts
       supabase
         .from('contacts')

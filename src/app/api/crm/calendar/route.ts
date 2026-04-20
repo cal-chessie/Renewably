@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
           id,
           company:companies(id, name)
         ),
-        user:profiles(id, name)
+        user:profiles!user_id(id, name)
       `,
       )
       .gte('created_at', start)

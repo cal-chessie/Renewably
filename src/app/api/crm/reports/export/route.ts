@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
 
       const { data: activities } = await supabase
         .from('deal_activities')
-        .select('id, type, title, content, created_at, user:profiles(id, name), deal:deals(company:companies(name))')
+        .select('id, type, title, content, created_at, user:profiles!user_id(id, name), deal:deals(company:companies(name))')
         .gte('created_at', start)
         .lte('created_at', end)
         .order('created_at', { ascending: false })

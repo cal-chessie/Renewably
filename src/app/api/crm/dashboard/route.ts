@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
       supabase
         .from('deal_activities')
         .select(
-          'id, type, title, content, created_at, deal:deals(company:companies(name)), user:profiles(id, name)',
+          'id, type, title, content, created_at, deal:deals(company:companies(name)), user:profiles!user_id(id, name)',
         )
         .order('created_at', { ascending: false })
         .limit(12),

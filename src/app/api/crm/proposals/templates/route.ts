@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { db } from '@/lib/db'
+import { supabase } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { clampPagination, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { createProposalTemplateSchema, formatZodError } from '@/lib/crm-schemas'
@@ -20,21 +20,24 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
     const limit = clampPagination(parseInt(searchParams.get('limit')), 50)
-    const skip = (page - 1) * limit
+    const from = (page - 1) * limit
+    const to = from + limit - 1
 
-    const [templates, total] = await Promise.all([
-      db.proposalTemplate.findMany({
-        where: { isActive: true },
-        orderBy: { createdAt: 'desc' },
-        take: limit,
-        skip,
-      }),
-      db.proposalTemplate.count({ where: { isActive: true } }),
-    ])
+    const { data, error, count } = await supabase
+      .from('proposal_templates')
+      .select('*', { count: 'exact' })
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .range(from, to)
+
+    if (error) {
+      logger.error('Templates list error', { error: error.message })
+      return NextResponse.json({ error: 'Failed to fetch templates' }, { status: 500 })
+    }
 
     return NextResponse.json({
-      templates,
-      pagination: { page, limit, total, pages: Math.ceil(total / limit) },
+      templates: data || [],
+      pagination: { page, limit, total: count || 0, pages: Math.ceil((count || 0) / limit) },
     })
   } catch (error) {
     logger.error('Templates list error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
@@ -64,13 +67,21 @@ export async function POST(request: NextRequest) {
     }
     const { name, description, lineItems } = body
 
-    const template = await db.proposalTemplate.create({
-      data: {
+    const { data: template, error } = await supabase
+      .from('proposal_templates')
+      .insert({
         name,
         description: description || null,
-        lineItems: JSON.stringify(lineItems || []),
-      },
-    })
+        line_items: JSON.stringify(lineItems || []),
+        is_active: true,
+      })
+      .select()
+      .single()
+
+    if (error) {
+      logger.error('Create template error', { error: error.message })
+      return NextResponse.json({ error: 'Failed to create template' }, { status: 500 })
+    }
 
     return NextResponse.json({ template }, { status: 201 })
   } catch (error) {

@@ -50,11 +50,6 @@ export async function GET(request: NextRequest) {
     const [notes, total] = await Promise.all([
       db.note.findMany({
         where,
-        include: {
-          user: { select: { id: true, name: true, avatar: true } },
-          contact: { select: { id: true, firstName: true, lastName: true } },
-          deal: { select: { id: true, title: true } },
-        },
         orderBy: { createdAt: 'desc' },
         take: limit,
         skip,
@@ -101,10 +96,6 @@ export async function POST(request: NextRequest) {
         dealId: body.dealId || null,
         companyId: body.companyId || null,
         userId: user.id,
-      },
-      include: {
-        user: { select: { id: true, name: true, avatar: true } },
-        task: { select: { id: true, title: true } },
       },
     })
 
