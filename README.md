@@ -446,6 +446,36 @@ Stores all CRM business data via 12 models:
 
 ---
 
+## Onboarding Wizard
+
+A multi-step public signup wizard at `/onboarding` that lets prospective solar installers walk through setting up their company profile before they're onboarded into the CRM. No auth required.
+
+### Steps (10)
+
+| Step | Component | Description |
+|------|-----------|-------------|
+| 1 | Landing | Overview of the onboarding process |
+| 2 | Welcome | Introduction and account creation intent |
+| 3 | Company Info | Company name, registration, team size, installation count |
+| 4 | Territory | Service area and county selection |
+| 5 | Finance | Revenue, billing preferences, pricing model |
+| 6 | Tech Stack | Existing software and integration preferences |
+| 7 | Tools | Tool and equipment inventory |
+| 8 | Legal | Compliance, insurance, and document signing |
+| 9 | Account | User account creation (name, email, password) |
+| 10 | Complete | Confirmation and next steps |
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/onboarding/progress` | GET, PUT | Save and resume onboarding progress |
+| `/api/onboarding/submit` | POST | Submit the completed onboarding form |
+
+Submissions are stored in the `OnboardingSubmission` Prisma model with the form data as JSON and a status field for tracking.
+
+---
+
 ## Authentication
 
 The app uses a **dual auth system**:
