@@ -31,7 +31,7 @@ The platform has two sides:
 - **Marketing site** (`/`) — A conversion-optimised website that captures leads through an AI-powered chat widget and a multi-step onboarding wizard. This is what prospective solar installers see when they visit renewably.ie.
 - **CRM dashboard** (`/crm`) — An authenticated internal tool that the Renewably team uses to manage the full lifecycle of solar installer companies: contacts, deals, pipeline, proposals, invoices, billing, calendar, tasks, and AI-assisted workflows.
 
-The CRM tracks **SolarPilot** (the commercial CRM product for solar installers) as a deal product, alongside the **AI Workforce** upsell. When a prospective installer signs up through the onboarding wizard or chats with the website chatbot, their details flow into the CRM as contacts and deals for the team to manage.
+The CRM tracks **SolarPilot** deals — SolarPilot is the commercial CRM product for solar installers, developed in a [separate repository](#) and integrated with this project. Alongside SolarPilot, the team also sells the **AI Workforce** upsell. When a prospective installer signs up through the onboarding wizard or chats with the website chatbot, their details flow into the CRM as contacts and deals for the team to manage.
 
 ```
                     ┌─────────────────────────────────────┐
@@ -89,6 +89,7 @@ The CRM tracks **SolarPilot** (the commercial CRM product for solar installers) 
 ## Table of Contents
 
 - [What is this?](#what-is-this)
+- [Renewably vs SolarPilot](#renewably-vs-solarpilot)
 - [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
@@ -105,6 +106,23 @@ The CRM tracks **SolarPilot** (the commercial CRM product for solar installers) 
 - [Deployment](#deployment)
 - [Stats](#stats)
 - [License](#license)
+
+---
+
+## Renewably vs SolarPilot
+
+These are two separate products. This repo is **Renewably**.
+
+| | **Renewably** (this repo) | **SolarPilot** (separate repo) |
+|---|---|---|
+| **What** | Marketing website + internal CRM | Customer-facing CRM for solar installers |
+| **Who uses it** | The Renewably team only | Solar installation companies across Ireland |
+| **Purpose** | Generate leads, manage our sales pipeline, run internal operations | End-to-end business management for installers |
+| **Public URL** | `renewably.ie` | Standalone product |
+| **Access** | `/crm` (team-only, authenticated) | Its own auth system |
+| **Source** | You're looking at it | Linked repository (coming soon) |
+
+This repo handles the top of the funnel — attracting visitors, capturing leads, and giving the Renewably team the tools to close deals. SolarPilot is what those customers actually buy and use.
 
 ---
 
@@ -518,7 +536,7 @@ renewably/
 
 ### Marketing Website (Public — `renewably.ie`)
 
-These pages are visible to anyone visiting the site. They exist to attract and convert prospective solar installers into leads.
+These pages are visible to anyone visiting the site. They exist to attract prospective solar installers and convert them into leads for the Renewably team to follow up on.
 
 | Page | Route | Description |
 |------|-------|-------------|
@@ -534,9 +552,9 @@ These pages are visible to anyone visiting the site. They exist to attract and c
 | Privacy | `/privacy` | Privacy policy |
 | Terms | `/terms` | Terms of service |
 
-### CRM Dashboard (Authenticated — `/crm`)
+### Internal CRM (Authenticated — `/crm`)
 
-These pages are only accessible to authenticated Renewably team members. The CRM is the internal tool for managing the entire sales pipeline and customer lifecycle.
+These pages are only accessible to authenticated Renewably team members. This is the internal ops tool — not the SolarPilot customer product.
 
 | Page | Route | Description |
 |------|-------|-------------|
