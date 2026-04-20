@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     const [tags, total] = await Promise.all([
       db.tag.findMany({
         include: {
-          _count: { select: { contacts: true, deals: true } },
+          _count: { select: { contactTags: true, dealTags: true } },
         },
         orderBy: { name: 'asc' },
         take: limit,

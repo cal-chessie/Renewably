@@ -56,9 +56,8 @@ export async function GET(request: NextRequest) {
       db.task.findMany({
         where,
         include: {
-          contact: { select: { id: true, firstName: true, lastName: true } },
-          deal: { select: { id: true, title: true } },
-          assignee: { select: { id: true, name: true, avatar: true } },
+          company: { select: { id: true, name: true } },
+          deal: { select: { id: true, stage: true, product: true } },
         },
         orderBy: [
           { status: 'asc' },
@@ -116,9 +115,8 @@ export async function POST(request: NextRequest) {
         dueDate: body.dueDate ? new Date(body.dueDate) : null,
       },
       include: {
-        contact: { select: { id: true, firstName: true, lastName: true } },
-        deal: { select: { id: true, title: true } },
-        assignee: { select: { id: true, name: true, avatar: true } },
+        company: { select: { id: true, name: true } },
+        deal: { select: { id: true, stage: true, product: true } },
       },
     })
 
@@ -167,9 +165,8 @@ export async function PUT(request: NextRequest) {
         ...(validated.dueDate !== undefined && { dueDate: validated.dueDate ? new Date(validated.dueDate) : null }),
       },
       include: {
-        contact: { select: { id: true, firstName: true, lastName: true } },
-        deal: { select: { id: true, title: true } },
-        assignee: { select: { id: true, name: true, avatar: true } },
+        company: { select: { id: true, name: true } },
+        deal: { select: { id: true, stage: true, product: true } },
       },
     })
 

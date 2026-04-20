@@ -77,10 +77,8 @@ export async function GET(request: NextRequest) {
         where,
         include: {
           user: { select: { id: true, email: true, name: true, avatar: true } },
-          contact: { select: { id: true, firstName: true, lastName: true, email: true, phone: true } },
-          company: { select: { id: true, name: true, industry: true, phone: true } },
-          subscription: { select: { id: true, status: true, planId: true, billingCycle: true, currentPeriodStart: true, currentPeriodEnd: true } },
-          _count: { select: { equipment: true, signedDocuments: true } },
+          subscriptions: { select: { id: true, status: true, planId: true, billingCycle: true, currentPeriodStart: true, currentPeriodEnd: true } },
+          _count: { select: { documents: true } },
         },
         orderBy: { createdAt: 'desc' },
         skip: (page - 1) * limit,
@@ -223,11 +221,8 @@ export async function POST(request: NextRequest) {
       },
       include: {
         user: { select: { id: true, email: true, name: true, avatar: true } },
-        contact: { select: { id: true, firstName: true, lastName: true, email: true, phone: true } },
-        company: { select: { id: true, name: true, industry: true } },
-        subscription: true,
-        equipment: true,
-        signedDocuments: true,
+        subscriptions: true,
+        documents: true,
       },
     })
 

@@ -95,7 +95,7 @@ export async function GET(
 
       if (userIds.length > 0) {
         const { data: users } = await supabase
-          .from('users')
+          .from('profiles')
           .select('id, name, avatar')
           .in('id', userIds)
 

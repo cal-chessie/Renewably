@@ -28,10 +28,6 @@ export async function GET(request: NextRequest) {
       where.OR = [
         { title: { contains: search } },
         { notes: { contains: search } },
-        { contact: { OR: [
-          { firstName: { contains: search } },
-          { lastName: { contains: search } },
-        ]}},
       ]
     }
 
@@ -43,10 +39,8 @@ export async function GET(request: NextRequest) {
       db.proposal.findMany({
         where,
         include: {
-          contact: { select: { id: true, firstName: true, lastName: true, email: true } },
           company: { select: { id: true, name: true } },
-          deal: { select: { id: true, title: true } },
-          template: { select: { id: true, name: true } },
+          deal: { select: { id: true, stage: true, product: true } },
           _count: { select: { lineItems: true } },
         },
         orderBy: { updatedAt: 'desc' },
@@ -113,10 +107,8 @@ export async function POST(request: NextRequest) {
         },
       },
       include: {
-        contact: { select: { id: true, firstName: true, lastName: true, email: true } },
         company: { select: { id: true, name: true } },
-        deal: { select: { id: true, title: true } },
-        template: { select: { id: true, name: true } },
+        deal: { select: { id: true, stage: true, product: true } },
         lineItems: { orderBy: { sortOrder: 'asc' } },
       },
     })

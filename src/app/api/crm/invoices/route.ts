@@ -31,10 +31,6 @@ export async function GET(request: NextRequest) {
     if (search) {
       where.OR = [
         { invoiceNumber: { contains: search } },
-        { contact: { OR: [
-          { firstName: { contains: search } },
-          { lastName: { contains: search } },
-        ]}},
         { company: { name: { contains: search } } },
       ]
     }
@@ -60,10 +56,8 @@ export async function GET(request: NextRequest) {
       db.invoice.findMany({
         where,
         include: {
-          contact: { select: { id: true, firstName: true, lastName: true, email: true } },
           company: { select: { id: true, name: true } },
-          deal: { select: { id: true, title: true } },
-          proposal: { select: { id: true, title: true } },
+          deal: { select: { id: true, stage: true, product: true } },
           payments: { select: { id: true, amount: true } },
           _count: { select: { lineItems: true, payments: true } },
         },
@@ -200,10 +194,8 @@ export async function POST(request: NextRequest) {
         },
       },
       include: {
-        contact: { select: { id: true, firstName: true, lastName: true, email: true } },
         company: { select: { id: true, name: true } },
-        deal: { select: { id: true, title: true } },
-        proposal: { select: { id: true, title: true } },
+        deal: { select: { id: true, stage: true, product: true } },
         lineItems: { orderBy: { sortOrder: 'asc' } },
         payments: true,
       },

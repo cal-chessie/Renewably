@@ -54,6 +54,9 @@ model Company {
   deals           Deal[]
   onboarding      Onboarding?
   subscriptions   Subscription[]
+  tasks           Task[]
+  proposals       Proposal[]
+  invoices        Invoice[]
 }
 
 // PEOPLE at each company
@@ -74,6 +77,7 @@ model Contact {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  tags            ContactTag[]
 
   @@index([companyId])
 }
@@ -98,6 +102,10 @@ model Deal {
   company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   assignedTo      User?    @relation("DealAssignee", fields: [assignedToId], references: [id])
   activities      DealActivity[]
+  tags            DealTag[]
+  tasks           Task[]
+  proposals       Proposal[]
+  invoices        Invoice[]
 
   @@index([companyId])
   @@index([stage])
@@ -228,6 +236,205 @@ model OnboardingSubmission {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   installer    InstallerProfile? @relation(fields: [installerId], references: [id])
+}
+
+// TASKS — CRM tasks with priority and assignee
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  priority    String    @default("medium") // low, medium, high, urgent
+  status      String    @default("pending") // pending, in_progress, completed, cancelled
+  dueDate     DateTime?
+  completedAt DateTime?
+  assigneeId  String?
+  contactId   String?
+  companyId   String?
+  dealId      String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  company     Company?  @relation(fields: [companyId], references: [id])
+  deal        Deal?     @relation(fields: [dealId], references: [id])
+
+  @@index([status])
+  @@index([assigneeId])
+  @@index([dealId])
+  @@index([companyId])
+}
+
+// TAGS — Tagging system for contacts and deals
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  color     String?
+  createdAt DateTime @default(now())
+  contactTags ContactTag[]
+  dealTags     DealTag[]
+}
+
+model ContactTag {
+  contactId String
+  tagId     String
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([contactId, tagId])
+}
+
+model DealTag {
+  dealId String
+  tagId  String
+  deal  Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  tag   Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([dealId, tagId])
+}
+
+// PROPOSALS — Sales proposals with line items
+model Proposal {
+  id           String    @id @default(cuid())
+  title        String
+  status       String    @default("draft") // draft, sent, accepted, rejected, expired
+  totalAmount  Float?
+  validUntil   DateTime?
+  notes        String?
+  templateId   String?
+  contactId    String?
+  companyId    String?
+  dealId       String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  company     Company?  @relation(fields: [companyId], references: [id])
+  deal        Deal?     @relation(fields: [dealId], references: [id])
+  lineItems    ProposalLineItem[]
+
+  @@index([dealId])
+  @@index([companyId])
+}
+
+model ProposalLineItem {
+  id          String  @id @default(cuid())
+  proposalId  String
+  description String
+  quantity    Float   @default(1)
+  unitPrice   Float?
+  amount      Float?
+  sortOrder   Int     @default(0)
+  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  @@index([proposalId])
+}
+
+// INVOICES — Billing invoices with line items and payments
+model Invoice {
+  id             String    @id @default(cuid())
+  invoiceNumber  String    @unique
+  status         String    @default("draft") // draft, sent, paid, overdue, cancelled
+  subtotalAmount Float?
+  taxAmount      Float?
+  totalAmount    Float?
+  paidAt         DateTime?
+  dueDate        DateTime?
+  notes          String?
+  contactId      String?
+  companyId      String?
+  dealId         String?
+  proposalId     String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  company     Company?  @relation(fields: [companyId], references: [id])
+  deal        Deal?     @relation(fields: [dealId], references: [id])
+  lineItems      InvoiceLineItem[]
+  payments       Payment[]
+
+  @@index([companyId])
+  @@index([dealId])
+}
+
+model InvoiceLineItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  description String
+  quantity    Float   @default(1)
+  unitPrice   Float?
+  amount      Float?
+  sortOrder   Int     @default(0)
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+}
+
+model Payment {
+  id         String    @id @default(cuid())
+  invoiceId  String
+  amount     Float
+  method     String?   // bank_transfer, credit_card, stripe, etc.
+  paidAt     DateTime?
+  reference  String?
+  status     String    @default("completed") // pending, completed, failed
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  invoice    Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+}
+
+// NOTES — General notes attached to any entity
+model Note {
+  id        String    @id @default(cuid())
+  content   String
+  userId    String?
+  contactId String?
+  companyId String?
+  dealId    String?
+  taskId    String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([contactId])
+  @@index([dealId])
+  @@index([companyId])
+}
+
+// WORKFLOW RULES — Automation triggers and actions
+model WorkflowRule {
+  id              String    @id @default(cuid())
+  name            String
+  description     String?
+  triggerType     String    // deal_stage_change, task_overdue, etc.
+  conditions      String?   // JSON
+  actions         String?   // JSON
+  isActive        Boolean   @default(true)
+  executionCount  Int       @default(0)
+  lastExecutedAt  DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  executions      WorkflowExecution[]
+}
+
+model WorkflowExecution {
+  id        String    @id @default(cuid())
+  ruleId    String
+  status    String    @default("pending") // pending, running, completed, failed
+  input     String?   // JSON
+  output    String?   // JSON
+  error     String?
+  executedAt DateTime?
+  createdAt DateTime  @default(now())
+  rule      WorkflowRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  @@index([ruleId])
+}
+
+// PIPELINE STAGES — Custom pipeline stage definitions
+model PipelineStage {
+  id        String  @id @default(cuid())
+  name      String
+  color     String?
+  order     Int     @default(0)
+  isDefault Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // GOOGLE CALENDAR CONNECTION — OAuth2 tokens per user
