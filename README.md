@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/logo.svg" alt="Renewably" width="280" />
+<img src="public/logo-yellow.png" alt="Renewably" width="280" />
 
 # Renewably
 
@@ -217,10 +217,8 @@ renewably/
 │   ├── favicon.ico                  # Favicon
 │   ├── apple-touch-icon.png         # iOS home screen icon
 │   ├── og-image.png                 # Open Graph social sharing image
-│   ├── logo.svg                     # Primary brand logo (SVG)
-│   ├── logo.png                     # Primary brand logo (PNG)
+│   ├── logo-yellow.png              # Primary brand logo (yellow leaf, rounded)
 │   ├── logo-white.png               # White variant
-│   ├── logo-yellow.png              # Yellow accent variant
 │   ├── logo-transparent.png         # Transparent background
 │   ├── logo-circle.png              # Circular variant
 │   ├── logo-circle-sm.png           # Small circular variant
