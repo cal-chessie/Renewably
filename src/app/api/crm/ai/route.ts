@@ -166,7 +166,7 @@ function buildSystemPrompt(
 }
 
 // ============================================================================
-// POST — Chat with AI (supports action types + conversation history)
+// POST — Chat with AI (supports SSE streaming, action types, conversation history)
 // ============================================================================
 
 export async function POST(request: NextRequest) {
@@ -190,7 +190,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { message, context, action, conversationHistory } = body
+    const { message, context, action, conversationHistory, stream } = body
 
     if (!message || typeof message !== 'string') {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 })
@@ -331,11 +331,77 @@ export async function POST(request: NextRequest) {
     // Add current message
     messages.push({ role: 'user', content: message })
 
-    // Call AI
+    // ============================================================================
+    // SSE STREAMING MODE
+    // ============================================================================
+    if (stream) {
+      const zai = await ZAI.create()
+      const streamBody = await zai.chat.completions.create({
+        messages,
+        stream: true,
+      })
+
+      // The SDK returns a ReadableStream when stream: true
+      if (!(streamBody instanceof ReadableStream)) {
+        // Fallback: return as JSON if stream not supported
+        return NextResponse.json({
+          reply: typeof streamBody === 'object' && streamBody?.choices?.[0]?.message?.content
+            ? streamBody.choices[0].message.content
+            : 'Sorry, streaming is not available.',
+          action: action || 'chat',
+          timestamp: new Date().toISOString(),
+        })
+      }
+
+      // Create a TransformStream to parse SSE from the SDK and re-emit
+      const encoder = new TextEncoder()
+      const decoder = new TextDecoder()
+
+      const transformStream = new TransformStream({
+        async transform(chunk, controller) {
+          const text = decoder.decode(chunk, { stream: true })
+          // The SDK returns OpenAI-format SSE: data: {"choices":[{"delta":{"content":"..."}}]}
+          const lines = text.split('\n')
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6).trim()
+              if (data === '[DONE]') {
+                controller.enqueue(encoder.encode('data: [DONE]\n\n'))
+                return
+              }
+              try {
+                const parsed = JSON.parse(data)
+                const content = parsed.choices?.[0]?.delta?.content
+                if (content) {
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`))
+                }
+              } catch {
+                // Skip malformed JSON lines
+              }
+            }
+          }
+        },
+      })
+
+      const readable = streamBody.pipeThrough(transformStream)
+
+      return new Response(readable, {
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache, no-transform',
+          'Connection': 'keep-alive',
+          'X-Accel-Buffering': 'no',
+        },
+      })
+    }
+
+    // ============================================================================
+    // NON-STREAMING (fallback / legacy)
+    // ============================================================================
     const zai = await ZAI.create()
     const completion = await zai.chat.completions.create({ messages })
     const reply =
-      completion.choices[0]?.message?.content ||
+      completion.choices?.[0]?.message?.content ||
       "Sorry, I couldn't generate a response. Please try again."
 
     return NextResponse.json({
