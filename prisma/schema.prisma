@@ -1,0 +1,246 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  role          String    @default("admin") // admin, manager, user
+  avatar        String?
+  phone         String?
+  isActive      Boolean   @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions         Session[]
+  dealActivities   DealActivity[]
+  assignedDeals    Deal[]    @relation("DealAssignee")
+  installerProfile InstallerProfile?
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// CENTRAL ENTITY — The solar installer companies Cal's agency serves
+model Company {
+  id              String    @id @default(cuid())
+  name            String
+  counties        String    // comma-separated e.g. "Dublin, Wicklow, Kildare"
+  seaiReg         String?   // SEAI registration number
+  teamSize        Int?      // Number of employees
+  installsPerYear Int?      // Annual installation capacity
+  status          String    @default("prospect") // prospect, active, inactive, churned
+  industry        String?   // e.g. "Solar Installation"
+  address         String?   // Business address
+  logoUrl         String?   // Company logo image URL
+  website         String?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  contacts        Contact[]
+  deals           Deal[]
+  onboarding      Onboarding?
+  subscriptions   Subscription[]
+}
+
+// PEOPLE at each company
+model Contact {
+  id              String   @id @default(cuid())
+  companyId       String
+  name            String
+  email           String?
+  phone           String?
+  role            String?  // Role at company: Owner, Operations Manager, Sales Director, etc.
+  isDecisionMaker Boolean  @default(false)
+  status          String?  // active, inactive, lead
+  source          String?  // demo, referral, inbound, etc.
+  city            String?
+  address         String?
+  jobTitle        String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+}
+
+// DEALS — Offers to companies (SolarPilot / AI Workforce / Both)
+model Deal {
+  id              String   @id @default(cuid())
+  companyId       String
+  product         String   // solarpilot, ai_workforce, both
+  mrr             Float?   // Monthly recurring revenue from this deal
+  setupFee        Float?   // One-time setup/onboarding fee
+  stage           String   @default("new_lead") // 8 pipeline stages
+  // qualifiedAnswers stored as JSON: { q1: "...", q2: "...", q3: "..." }
+  qualifiedAnswers String? // JSON string with 3 mandatory qualifying answers
+  demoOutcome     String?  // booked, completed, no_show, cancelled
+  closeReason     String?  // If lost: price, timing, competitor, no_response, not_interested
+  assignedToId    String?
+  value           Float?   // Total deal value (setup + projected first year MRR)
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  company         Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  assignedTo      User?    @relation("DealAssignee", fields: [assignedToId], references: [id])
+  activities      DealActivity[]
+
+  @@index([companyId])
+  @@index([stage])
+}
+
+// ACTIVITIES — Logged on each deal (Calls, Emails, Demos, Proposals)
+model DealActivity {
+  id        String   @id @default(cuid())
+  dealId    String
+  userId    String
+  type      String   // call, email, demo, proposal, note
+  title     String
+  content   String?
+  createdAt DateTime @default(now())
+  deal      Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([dealId])
+  @@index([createdAt])
+}
+
+// ONBOARDING STATUS — Per company, tracks setup progress
+model Onboarding {
+  id                   String    @id @default(cuid())
+  companyId            String    @unique
+  solarpilotProgress   Int       @default(0) // 0-100 percentage
+  aiWorkforceProgress  Int       @default(0) // 0-100 percentage
+  // JSON checklists for detailed step tracking
+  solarpilotSteps      String?   // JSON: [{ step: "...", done: true/false }, ...]
+  aiWorkforceSteps     String?   // JSON: [{ step: "...", done: true/false }, ...]
+  startedAt            DateTime?
+  completedAt          DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  company              Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+// INSTALLER PROFILE — Detailed onboarding data per installer
+model InstallerProfile {
+  id                    String    @id @default(cuid())
+  userId                String    @unique
+  contactId             String?
+  companyId             String?
+  companyName           String
+  contactName           String
+  email                 String
+  phone                 String?
+  vatNumber             String?
+  businessAddress       String?
+  serviceCounties       String?   // JSON array of county names
+  planId                String    @default("pro")
+  billingCycle          String    @default("monthly")
+  billingEmail          String?
+  billingAddress        String?
+  billingCity           String?
+  billingCounty         String?
+  billingEircode        String?
+  integrations          String?   // JSON array of integration names
+  securityFeatures      String?   // JSON array
+  yearsInBusiness       Int?
+  teamSize              Int?
+  onboardingComplete    Boolean   @default(false)
+  onboardingStep        Int       @default(0)
+  signedDocuments       String?   // JSON array of signed doc records
+  teamMembers           String?   // JSON array of team member objects
+  dataRetentionMonths   Int       @default(24)
+  leadTargetMonth       Int       @default(30)
+  installsMonth         Int       @default(12)
+  revenueTarget         Float     @default(65000)
+  trialStartAt          DateTime?
+  trialEndsAt           DateTime?
+  demoBookingDate       DateTime?
+  demoBookingTime       String?
+  demoFocusAreas        String?   // JSON array
+  demoCompanySize       String?
+  demoRole              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id])
+  subscriptions         Subscription[]
+  documents             InstallerDocument[]
+  onboardingSubmissions OnboardingSubmission[]
+
+  @@index([companyId])
+}
+
+// SUBSCRIPTION — Billing/trial status per installer
+model Subscription {
+  id                 String   @id @default(cuid())
+  installerId        String
+  planId             String   // starter, pro, enterprise
+  status             String   @default("trialing") // trialing, active, past_due, cancelled
+  billingCycle       String   @default("monthly")
+  currentPeriodStart DateTime @default(now())
+  currentPeriodEnd   DateTime?
+  stripeSubscriptionId String?
+  companyId          String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  installer          InstallerProfile @relation(fields: [installerId], references: [id], onDelete: Cascade)
+  company            Company?         @relation(fields: [companyId], references: [id])
+
+  @@index([installerId])
+}
+
+// INSTALLER DOCUMENT — Signed legal/compliance docs
+model InstallerDocument {
+  id           String   @id @default(cuid())
+  installerId  String
+  documentType String   // e.g. "terms_of_service", "privacy_policy", "data_processing"
+  signedAt     DateTime @default(now())
+  createdAt    DateTime @default(now())
+  installer    InstallerProfile @relation(fields: [installerId], references: [id], onDelete: Cascade)
+
+  @@index([installerId])
+}
+
+// ONBOARDING SUBMISSION — Tracks submitted onboarding form data
+model OnboardingSubmission {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  formData     String   // JSON blob of full form data
+  status       String   @default("in_progress") // in_progress, completed, abandoned
+  userId       String?
+  companyId    String?
+  contactId    String?
+  installerId  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  installer    InstallerProfile? @relation(fields: [installerId], references: [id])
+}
+
+// GOOGLE CALENDAR CONNECTION — OAuth2 tokens per user
+model GoogleCalendarConnection {
+  id           String    @id @default(cuid())
+  userId       String    @unique
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime
+  calendarId   String    @default("primary")
+  email        String?
+  isActive     Boolean   @default(true)
+  lastSyncedAt DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}

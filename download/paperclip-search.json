@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://github.com/paperclipai/paperclip",
+    "name": "paperclipai/paperclip: Open-source orchestration for zero-human",
+    "snippet": "Paperclip is a Node.js server and React UI that orchestrates a team of AI agents to run a business. Bring your own agents, assign goals, and ...",
+    "host_name": "github.com",
+    "rank": 0,
+    "date": "Apr 13, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://paperclipai-paperclip.mintlify.app",
+    "name": "Paperclip Documentation - Paperclip",
+    "snippet": "Open-source orchestration for autonomous AI agent companies. ... API Reference. Complete REST API documentation for agents and integrations. Key Features. Org ... Missing: platform | Show results with: platform",
+    "host_name": "paperclipai-paperclip.mintlify.app",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://paperclip.ing",
+    "name": "Paperclip — Open-source orchestration for zero-human companies",
+    "snippet": "Manage a team of AI agents to run your business. Org charts, budgets ... Documentation API reference GitHub. Resources. Blog Changelog ...",
+    "host_name": "paperclip.ing",
+    "rank": 2,
+    "date": "Apr 13, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://zeabur.com/blogs/deploy-paperclip-ai-agent-orchestration",
+    "name": "Paperclip: Run a Zero-Human Company with AI Agent Teams - Zeabur",
+    "snippet": "It's an open-source orchestration platform for teams of AI agents that operate a business with zero human intervention. Think of it as the ...",
+    "host_name": "zeabur.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://mintlify.com/paperclipai/paperclip/api/introduction",
+    "name": "API Introduction - Paperclip - Mintlify",
+    "snippet": "The Paperclip API provides programmatic access to the control plane for AI-agent companies. ... Documentation: https://docs.paperclip.ai; GitHub Issues ... Missing: orchestration platform",
+    "host_name": "mintlify.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

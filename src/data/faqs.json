@@ -1,0 +1,134 @@
+[
+  {
+    "id": "what-is-renewably",
+    "type": "faq",
+    "question": "What is Renewably?",
+    "answer": "Renewably is an AI-as-a-Service platform built specifically for Irish solar PV installers. We provide a workforce of specialised AI agents that handle everything from customer enquiries and SEAI grant applications to logistics, permitting, and business reporting — essentially replacing an entire back-office team with intelligent automation that works 24/7.",
+    "category": "general",
+    "order": 1,
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "how-does-renewably-work",
+    "type": "faq",
+    "question": "How does Renewably work?",
+    "answer": "Once you sign up, our team sets up your AI workforce tailored to your business. The agents integrate with your existing tools — your CRM, email, calendar, and communication channels. From there, they handle tasks autonomously: responding to customer enquiries, managing grant applications, tracking jobs, coordinating logistics, and generating reports. You oversee everything from a single dashboard, and a human support team is always available when you need it.",
+    "category": "general",
+    "order": 2,
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "is-renewably-suitable-for-my-business",
+    "type": "faq",
+    "question": "Is Renewably suitable for my business?",
+    "answer": "Renewably is designed for any solar PV installation business operating in Ireland, whether you are a one-person outfit doing 5 installs a month or a larger company doing 50+. Our platform scales with you, and the AI agents adapt to your specific workflows, suppliers, and customer base. If you handle SEAI grants, ESB applications, or customer enquiries, Renewably will save you time and money.",
+    "category": "general",
+    "order": 3,
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "how-much-does-renewably-cost",
+    "type": "faq",
+    "question": "How much does Renewably cost?",
+    "answer": "Plans start from €1,000 per month for the full AI workforce. This gives you access to all eight specialised agents, the central dashboard, and ongoing support. Pricing tiers are based on your install volume and the level of customisation you need. We also offer enterprise plans for larger operations with more complex requirements.",
+    "category": "pricing",
+    "order": 4,
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "what-is-the-setup-fee",
+    "type": "faq",
+    "question": "What is the setup fee?",
+    "answer": "Yes, there is a one-time setup fee to get your AI workforce configured and integrated with your existing systems. This covers agent customisation, workflow design, data migration, and staff training. The setup fee varies depending on the complexity of your operations — contact us for a tailored quote based on your specific needs.",
+    "category": "pricing",
+    "order": 5,
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "are-there-hidden-fees",
+    "type": "faq",
+    "question": "Are there hidden fees?",
+    "answer": "No hidden fees whatsoever. Your monthly subscription covers full access to all AI agents, the dashboard, and support. You bring your own AI API keys and pay model providers directly — Renewably does not mark up AI usage costs. We are transparent about pricing from day one, and everything is laid out clearly in your agreement before you commit.",
+    "category": "pricing",
+    "order": 6,
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "do-i-pay-for-ai-usage",
+    "type": "faq",
+    "question": "Do I pay for AI usage?",
+    "answer": "You pay your AI model provider directly — we do not mark up usage costs. Typical AI model costs range from €50 to €200 per month depending on your enquiry volume and usage. You supply your own API keys for models like OpenAI or Anthropic, and Renewably connects to them. This means you always know exactly what you are spending on AI, with no surprises.",
+    "category": "pricing",
+    "order": 7,
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "what-ai-models-do-you-use",
+    "type": "faq",
+    "question": "What AI models do you use?",
+    "answer": "Renewably is model-agnostic and works with leading AI providers including OpenAI (GPT-4), Anthropic (Claude), and others. You choose which models to use and supply your own API keys. Our platform is designed to integrate with any major LLM provider, so you are never locked into a single model and can switch or combine models as your needs evolve.",
+    "category": "technical",
+    "order": 8,
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "is-my-data-secure",
+    "type": "faq",
+    "question": "Is my data secure?",
+    "answer": "Absolutely. Your data is encrypted at rest and in transit, stored securely in EU-based data centres, and never shared with third parties. We comply with GDPR and Irish data protection regulations. Your customer data, business information, and conversation histories are yours alone — we do not use them to train AI models or for any purpose other than running your service.",
+    "category": "technical",
+    "order": 9,
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "what-integrations-are-available",
+    "type": "faq",
+    "question": "What integrations are available?",
+    "answer": "Renewably integrates with the tools you already use: CRM systems, email platforms, calendar apps, social media channels, and accounting software. We support integrations with popular platforms and can build custom connections for your specific stack. Our team handles all the technical setup during onboarding so you do not need any technical expertise.",
+    "category": "technical",
+    "order": 10,
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "what-support-do-you-offer",
+    "type": "faq",
+    "question": "What kind of support do you offer?",
+    "answer": "Every Renewably subscriber gets access to our dedicated support team via phone, email, and chat. We also provide onboarding and training to ensure your team is comfortable with the platform from day one. For higher-tier plans, we offer a named account manager who proactively monitors your AI agents and suggests improvements. We are an Irish company supporting Irish businesses, and we are always just a phone call away.",
+    "category": "support",
+    "order": 11,
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  },
+  {
+    "id": "how-do-i-get-started",
+    "type": "faq",
+    "question": "How do I get started?",
+    "answer": "Getting started is simple. Book a free demo call through our website or give us a ring on +353 873 958 424. We will walk you through the platform, discuss your specific needs, and provide a tailored quote. Once you sign up, our team handles the entire setup process — typically within one to two weeks. You will be up and running with your AI workforce faster than you could hire a single new employee.",
+    "category": "support",
+    "order": 12,
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-04-01T09:00:00.000Z"
+  }
+]

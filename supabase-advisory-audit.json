@@ -1,0 +1,551 @@
+[
+  {
+    "num": 1,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "profiles",
+    "column": "\u2014",
+    "description": "Table \"profiles\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 2,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "companies",
+    "column": "\u2014",
+    "description": "Table \"companies\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE companies ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 3,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "contacts",
+    "column": "\u2014",
+    "description": "Table \"contacts\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 4,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "deals",
+    "column": "\u2014",
+    "description": "Table \"deals\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE deals ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 5,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "deal_activities",
+    "column": "\u2014",
+    "description": "Table \"deal_activities\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE deal_activities ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 6,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "sessions",
+    "column": "\u2014",
+    "description": "Table \"sessions\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 7,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "onboarding",
+    "column": "\u2014",
+    "description": "Table \"onboarding\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE onboarding ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 8,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "onboarding_submissions",
+    "column": "\u2014",
+    "description": "Table \"onboarding_submissions\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE onboarding_submissions ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 9,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "installer_profiles",
+    "column": "\u2014",
+    "description": "Table \"installer_profiles\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE installer_profiles ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 10,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "subscriptions",
+    "column": "\u2014",
+    "description": "Table \"subscriptions\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 11,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "installer_equipment",
+    "column": "\u2014",
+    "description": "Table \"installer_equipment\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE installer_equipment ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 12,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "installer_documents",
+    "column": "\u2014",
+    "description": "Table \"installer_documents\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE installer_documents ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 13,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "activity",
+    "column": "\u2014",
+    "description": "Table \"activity\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE activity ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 14,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "tasks",
+    "column": "\u2014",
+    "description": "Table \"tasks\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 15,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "meetings",
+    "column": "\u2014",
+    "description": "Table \"meetings\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE meetings ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 16,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "notes",
+    "column": "\u2014",
+    "description": "Table \"notes\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE notes ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 17,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "tags",
+    "column": "\u2014",
+    "description": "Table \"tags\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE tags ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 18,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "contact_tags",
+    "column": "\u2014",
+    "description": "Table \"contact_tags\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE contact_tags ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 19,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "deal_tags",
+    "column": "\u2014",
+    "description": "Table \"deal_tags\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE deal_tags ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 20,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "pipeline_stages",
+    "column": "\u2014",
+    "description": "Table \"pipeline_stages\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE pipeline_stages ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 21,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "invoices",
+    "column": "\u2014",
+    "description": "Table \"invoices\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 22,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "invoice_line_items",
+    "column": "\u2014",
+    "description": "Table \"invoice_line_items\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE invoice_line_items ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 23,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "payments",
+    "column": "\u2014",
+    "description": "Table \"payments\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE payments ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 24,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "proposals",
+    "column": "\u2014",
+    "description": "Table \"proposals\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE proposals ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 25,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "proposal_line_items",
+    "column": "\u2014",
+    "description": "Table \"proposal_line_items\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE proposal_line_items ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 26,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "proposal_templates",
+    "column": "\u2014",
+    "description": "Table \"proposal_templates\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE proposal_templates ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 27,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "workflow_rules",
+    "column": "\u2014",
+    "description": "Table \"workflow_rules\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE workflow_rules ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 28,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "workflow_executions",
+    "column": "\u2014",
+    "description": "Table \"workflow_executions\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE workflow_executions ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 29,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "reports",
+    "column": "\u2014",
+    "description": "Table \"reports\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE reports ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 30,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "email_logs",
+    "column": "\u2014",
+    "description": "Table \"email_logs\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE email_logs ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 31,
+    "category": "RLS Not Enabled",
+    "severity": "HIGH",
+    "table": "google_calendar_connections",
+    "column": "\u2014",
+    "description": "Table \"google_calendar_connections\" does not have Row Level Security (RLS) enabled. Any client with the anon key could potentially read/write all rows. RLS was disabled by migration_002 step 9.",
+    "fix": "Run: ALTER TABLE google_calendar_connections ENABLE ROW LEVEL SECURITY;\nThen add appropriate policies (see rls-policies.sql)."
+  },
+  {
+    "num": 32,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "activity",
+    "column": "proposal_id",
+    "description": "Foreign key column \"activity.proposal_id\" \u2192 proposals(id) has no index. JOINs, DELETEs, and UPDATEs on proposals will require sequential scans on activity.",
+    "fix": "CREATE INDEX activity_proposal_id_idx ON activity (proposal_id);"
+  },
+  {
+    "num": 33,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "activity",
+    "column": "meeting_id",
+    "description": "Foreign key column \"activity.meeting_id\" \u2192 meetings(id) has no index. JOINs, DELETEs, and UPDATEs on meetings will require sequential scans on activity.",
+    "fix": "CREATE INDEX activity_meeting_id_idx ON activity (meeting_id);"
+  },
+  {
+    "num": 34,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "activity",
+    "column": "invoice_id",
+    "description": "Foreign key column \"activity.invoice_id\" \u2192 invoices(id) has no index. JOINs, DELETEs, and UPDATEs on invoices will require sequential scans on activity.",
+    "fix": "CREATE INDEX activity_invoice_id_idx ON activity (invoice_id);"
+  },
+  {
+    "num": 35,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "contacts",
+    "column": "company_id",
+    "description": "Foreign key column \"contacts.company_id\" \u2192 companies(id) has no index. JOINs, DELETEs, and UPDATEs on companies will require sequential scans on contacts.",
+    "fix": "CREATE INDEX contacts_company_id_idx ON contacts (company_id);"
+  },
+  {
+    "num": 36,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "deal_activities",
+    "column": "deal_id",
+    "description": "Foreign key column \"deal_activities.deal_id\" \u2192 deals(id) has no index. JOINs, DELETEs, and UPDATEs on deals will require sequential scans on deal_activities.",
+    "fix": "CREATE INDEX deal_activities_deal_id_idx ON deal_activities (deal_id);"
+  },
+  {
+    "num": 37,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "deal_activities",
+    "column": "user_id",
+    "description": "Foreign key column \"deal_activities.user_id\" \u2192 profiles(id) has no index. JOINs, DELETEs, and UPDATEs on profiles will require sequential scans on deal_activities.",
+    "fix": "CREATE INDEX deal_activities_user_id_idx ON deal_activities (user_id);"
+  },
+  {
+    "num": 38,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "deals",
+    "column": "company_id",
+    "description": "Foreign key column \"deals.company_id\" \u2192 companies(id) has no index. JOINs, DELETEs, and UPDATEs on companies will require sequential scans on deals.",
+    "fix": "CREATE INDEX deals_company_id_idx ON deals (company_id);"
+  },
+  {
+    "num": 39,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "deals",
+    "column": "assigned_to_id",
+    "description": "Foreign key column \"deals.assigned_to_id\" \u2192 profiles(id) has no index. JOINs, DELETEs, and UPDATEs on profiles will require sequential scans on deals.",
+    "fix": "CREATE INDEX deals_assigned_to_id_idx ON deals (assigned_to_id);"
+  },
+  {
+    "num": 40,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "email_logs",
+    "column": "company_id",
+    "description": "Foreign key column \"email_logs.company_id\" \u2192 companies(id) has no index. JOINs, DELETEs, and UPDATEs on companies will require sequential scans on email_logs.",
+    "fix": "CREATE INDEX email_logs_company_id_idx ON email_logs (company_id);"
+  },
+  {
+    "num": 41,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "email_logs",
+    "column": "contact_id",
+    "description": "Foreign key column \"email_logs.contact_id\" \u2192 contacts(id) has no index. JOINs, DELETEs, and UPDATEs on contacts will require sequential scans on email_logs.",
+    "fix": "CREATE INDEX email_logs_contact_id_idx ON email_logs (contact_id);"
+  },
+  {
+    "num": 42,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "email_logs",
+    "column": "deal_id",
+    "description": "Foreign key column \"email_logs.deal_id\" \u2192 deals(id) has no index. JOINs, DELETEs, and UPDATEs on deals will require sequential scans on email_logs.",
+    "fix": "CREATE INDEX email_logs_deal_id_idx ON email_logs (deal_id);"
+  },
+  {
+    "num": 43,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "email_logs",
+    "column": "user_id",
+    "description": "Foreign key column \"email_logs.user_id\" \u2192 profiles(id) has no index. JOINs, DELETEs, and UPDATEs on profiles will require sequential scans on email_logs.",
+    "fix": "CREATE INDEX email_logs_user_id_idx ON email_logs (user_id);"
+  },
+  {
+    "num": 44,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "invoices",
+    "column": "proposal_id",
+    "description": "Foreign key column \"invoices.proposal_id\" \u2192 proposals(id) has no index. JOINs, DELETEs, and UPDATEs on proposals will require sequential scans on invoices.",
+    "fix": "CREATE INDEX invoices_proposal_id_idx ON invoices (proposal_id);"
+  },
+  {
+    "num": 45,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "meetings",
+    "column": "follow_up_task_id",
+    "description": "Foreign key column \"meetings.follow_up_task_id\" \u2192 tasks(id) has no index. JOINs, DELETEs, and UPDATEs on tasks will require sequential scans on meetings.",
+    "fix": "CREATE INDEX meetings_follow_up_task_id_idx ON meetings (follow_up_task_id);"
+  },
+  {
+    "num": 46,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "onboarding",
+    "column": "company_id",
+    "description": "Foreign key column \"onboarding.company_id\" \u2192 companies(id) has no index. JOINs, DELETEs, and UPDATEs on companies will require sequential scans on onboarding.",
+    "fix": "CREATE INDEX onboarding_company_id_idx ON onboarding (company_id);"
+  },
+  {
+    "num": 47,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "onboarding_submissions",
+    "column": "user_id",
+    "description": "Foreign key column \"onboarding_submissions.user_id\" \u2192 profiles(id) has no index. JOINs, DELETEs, and UPDATEs on profiles will require sequential scans on onboarding_submissions.",
+    "fix": "CREATE INDEX onboarding_submissions_user_id_idx ON onboarding_submissions (user_id);"
+  },
+  {
+    "num": 48,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "onboarding_submissions",
+    "column": "company_id",
+    "description": "Foreign key column \"onboarding_submissions.company_id\" \u2192 companies(id) has no index. JOINs, DELETEs, and UPDATEs on companies will require sequential scans on onboarding_submissions.",
+    "fix": "CREATE INDEX onboarding_submissions_company_id_idx ON onboarding_submissions (company_id);"
+  },
+  {
+    "num": 49,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "onboarding_submissions",
+    "column": "contact_id",
+    "description": "Foreign key column \"onboarding_submissions.contact_id\" \u2192 contacts(id) has no index. JOINs, DELETEs, and UPDATEs on contacts will require sequential scans on onboarding_submissions.",
+    "fix": "CREATE INDEX onboarding_submissions_contact_id_idx ON onboarding_submissions (contact_id);"
+  },
+  {
+    "num": 50,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "proposals",
+    "column": "template_id",
+    "description": "Foreign key column \"proposals.template_id\" \u2192 proposal_templates(id) has no index. JOINs, DELETEs, and UPDATEs on proposal_templates will require sequential scans on proposals.",
+    "fix": "CREATE INDEX proposals_template_id_idx ON proposals (template_id);"
+  },
+  {
+    "num": 51,
+    "category": "Missing FK Index",
+    "severity": "MEDIUM",
+    "table": "subscriptions",
+    "column": "company_id",
+    "description": "Foreign key column \"subscriptions.company_id\" \u2192 companies(id) has no index. JOINs, DELETEs, and UPDATEs on companies will require sequential scans on subscriptions.",
+    "fix": "CREATE INDEX subscriptions_company_id_idx ON subscriptions (company_id);"
+  },
+  {
+    "num": 52,
+    "category": "Reserved Word",
+    "severity": "LOW",
+    "table": "pipeline_stages",
+    "column": "order",
+    "description": "\"order\" is a PostgreSQL reserved word (ORDER BY). It requires quoting.",
+    "fix": "Rename column to \"sort_order\" or \"display_order\""
+  },
+  {
+    "num": 53,
+    "category": "Reserved Word",
+    "severity": "LOW",
+    "table": "contacts",
+    "column": "role",
+    "description": "\"role\" is a PostgreSQL reserved word (CREATE ROLE). It requires quoting.",
+    "fix": "Rename column to \"contact_role\" or \"user_role\""
+  },
+  {
+    "num": 54,
+    "category": "Reserved Word",
+    "severity": "LOW",
+    "table": "profiles",
+    "column": "role",
+    "description": "\"role\" is a PostgreSQL reserved word (CREATE ROLE). It requires quoting.",
+    "fix": "Rename column to \"user_role\" or \"profile_role\""
+  },
+  {
+    "num": 55,
+    "category": "Security Definer Function",
+    "severity": "HIGH",
+    "table": "(function)",
+    "column": "exec_sql",
+    "description": "The \"exec_sql\" function is defined with SECURITY DEFINER, meaning it executes with the privileges of the function owner (typically a superuser). Although the current implementation only returns {\"success\": true} without executing the query, if someone modifies it to actually run SQL, it would be a critical security vulnerability \u2014 allowing any authenticated user to execute arbitrary SQL as a superuser.",
+    "fix": "Either:\n1. Remove the function entirely if not needed: DROP FUNCTION exec_sql(text);\n2. Change to SECURITY INVOKER to use caller's permissions\n3. Add proper authorization checks inside the function"
+  },
+  {
+    "num": 56,
+    "category": "Type Mismatch",
+    "severity": "MEDIUM",
+    "table": "google_calendar_connections",
+    "column": "user_id",
+    "description": "Column \"google_calendar_connections.user_id\" is TEXT type, but it references \"profiles.id\" which is UUID type. PostgreSQL may allow this with implicit casting, but it can cause performance issues and subtle bugs. The RLS policy also uses \"auth.uid()::text = user_id\" cast which prevents index usage on profiles.id.",
+    "fix": "ALTER TABLE google_calendar_connections ALTER COLUMN user_id TYPE uuid USING user_id::uuid;\nAlso update the RLS policy to use: auth.uid() = user_id (without ::text cast)"
+  },
+  {
+    "num": 57,
+    "category": "Exposed RPC Endpoint",
+    "severity": "MEDIUM",
+    "table": "(function)",
+    "column": "exec_sql",
+    "description": "The \"exec_sql\" function is exposed as a public RPC endpoint (/rest/v1/rpc/exec_sql). Even though it currently doesn't execute queries, its existence could be exploited if the function is later modified. It also reveals internal architecture to potential attackers.",
+    "fix": "Remove the exec_sql function if not needed, or restrict it using RLS:\nREVOKE ALL ON FUNCTION exec_sql(text) FROM anon, authenticated;\nGRANT EXECUTE ON FUNCTION exec_sql(text) TO service_role;"
+  },
+  {
+    "num": 58,
+    "category": "Exposed RPC Endpoint",
+    "severity": "LOW",
+    "table": "(function)",
+    "column": "rls_auto_enable",
+    "description": "The \"rls_auto_enable\" function is exposed as a public RPC endpoint (/rest/v1/rpc/rls_auto_enable). This function likely enables RLS on tables, which is a DDL operation. If callable by anon users, it could be used to disrupt database security settings.",
+    "fix": "Restrict access:\nREVOKE ALL ON FUNCTION rls_auto_enable() FROM anon, authenticated;\nGRANT EXECUTE ON FUNCTION rls_auto_enable() TO service_role;"
+  },
+  {
+    "num": 59,
+    "category": "Missing Unique Constraint",
+    "severity": "LOW",
+    "table": "tags",
+    "column": "name",
+    "description": "Table \"tags\" has no unique constraint on the \"name\" column. This allows duplicate tag names to be created (e.g., two \"VIP\" tags), which could cause confusion and data integrity issues.",
+    "fix": "CREATE UNIQUE INDEX tags_name_unique_idx ON tags (name);"
+  },
+  {
+    "num": 60,
+    "category": "Missing Unique Constraint",
+    "severity": "LOW",
+    "table": "deal_activities",
+    "column": "\u2014",
+    "description": "Table \"deal_activities\" has no unique constraint to prevent duplicate activity entries. Combined with no updated_at auto-update trigger, this could lead to duplicate records.",
+    "fix": "Consider adding a unique constraint on (deal_id, type, title, created_at) or implement upsert logic in the application layer."
+  },
+  {
+    "num": 61,
+    "category": "Missing Unique Constraint",
+    "severity": "LOW",
+    "table": "workflow_rules",
+    "column": "name",
+    "description": "Table \"workflow_rules\" has no unique constraint on the \"name\" column. Multiple rules with the same name could cause confusion in the UI and automation logic.",
+    "fix": "CREATE UNIQUE INDEX workflow_rules_name_unique_idx ON workflow_rules (name);"
+  }
+]

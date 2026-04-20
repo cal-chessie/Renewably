@@ -1,0 +1,579 @@
+
+// ============================================================================
+// ANIMATED COUNTER HOOK
+// ============================================================================
+function useAnimatedNumber(target: number, duration = 1200, enabled = true) {
+  const [display, setDisplay] = useState(0)
+  useEffect(() => {
+    if (!enabled || target === 0) { setDisplay(target); return }
+    let start = 0
+    const startTime = performance.now()
+    const step = (now: number) => {
+      const elapsed = now - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      start = Math.round(eased * target)
+      setDisplay(start)
+      if (progress < 1) requestAnimationFrame(step)
+    }
+    requestAnimationFrame(step)
+  }, [target, duration, enabled])
+  return display
+}
+
+// ============================================================================
+// FINANCIAL LOADING SKELETON
+// ============================================================================
+function FinancialLoadingSkeleton() {
+  const skeletonPulse: React.CSSProperties = {
+    background: CARD_BG,
+    borderRadius: CARD_RADIUS,
+    border: `1px solid ${BORDER}`,
+    animation: 'skeletonPulse 1.5s ease-in-out infinite',
+  }
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ height: 3, borderRadius: 2, background: `linear-gradient(90deg, ${GREEN}, ${YELLOW}, ${GREEN})`, backgroundSize: '200% 100%', animation: 'shimmerSlide 2s ease-in-out infinite' }} />
+      <div className="dash-kpi-grid">
+        {[...Array(5)].map((_, i) => <div key={i} style={{ height: 128, ...skeletonPulse }} />)}
+      </div>
+      <div className="dash-grid-60-40" style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: 20 }}>
+        <div style={{ height: 360, ...skeletonPulse }} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div style={{ height: 220, ...skeletonPulse }} />
+          <div style={{ height: 180, ...skeletonPulse, flex: 1 }} />
+        </div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+        <div style={{ height: 400, ...skeletonPulse }} />
+        <div style={{ height: 400, ...skeletonPulse }} />
+      </div>
+      <style>{`
+        @keyframes skeletonPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        @keyframes shimmerSlide { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+      `}</style>
+    </div>
+  )
+}
+
+// ============================================================================
+// FINANCIAL HEALTH GAUGE
+// ============================================================================
+function HealthGauge({ score, label }: { score: number; label: string }) {
+  const clampedScore = Math.max(0, Math.min(100, score))
+  const color = clampedScore >= 75 ? GREEN : clampedScore >= 50 ? YELLOW : RED
+  const circumference = 2 * Math.PI * 42
+  const dashOffset = circumference - (clampedScore / 100) * circumference
+  const animatedScore = useAnimatedNumber(clampedScore, 1400)
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+      <div style={{ position: 'relative', width: 100, height: 100, flexShrink: 0 }}>
+        <svg width={100} height={100} viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={6} />
+          <circle
+            cx="50" cy="50" r="42" fill="none"
+            stroke={color} strokeWidth={6} strokeLinecap="round"
+            strokeDasharray={circumference} strokeDashoffset={dashOffset}
+            style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease' }}
+          />
+        </svg>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
+          <span style={{ fontSize: 22, fontWeight: 700, color: TEXT_PRIMARY, lineHeight: 1 }}>{animatedScore}</span>
+          <span style={{ fontSize: 10, color: TEXT_TERTIARY, display: 'block', marginTop: 1 }}>/ 100</span>
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <span style={{ fontSize: 14, fontWeight: 600, color: TEXT_PRIMARY }}>{label}</span>
+        <span style={{ fontSize: 11, color: TEXT_SECONDARY, lineHeight: 1.4 }}>
+          {clampedScore >= 75 ? 'Excellent — strong revenue health with predictable growth' : clampedScore >= 50 ? 'Good — solid fundamentals, room to optimise' : 'Needs attention — focus on reducing churn and growing MRR'}
+        </span>
+        <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+          {[
+            { label: 'Growth', ok: clampedScore >= 50 },
+            { label: 'Retention', ok: clampedScore >= 65 },
+            { label: 'Predictability', ok: clampedScore >= 75 },
+          ].map(t => (
+            <div key={t.label} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', background: t.ok ? GREEN : 'rgba(255,255,255,0.15)', boxShadow: t.ok ? `0 0 4px ${GREEN}66` : 'none' }} />
+              <span style={{ fontSize: 9, color: t.ok ? TEXT_SECONDARY : TEXT_TERTIARY }}>{t.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ============================================================================
+// MRR WATERFALL BAR
+// ============================================================================
+function MRRWaterfallBar({ label, value, positive, color, index }: { label: string; value: number; positive: boolean; color: string; index: number }) {
+  const absVal = Math.abs(value)
+  const maxVal = 5000
+  const widthPercent = Math.max(8, (absVal / maxVal) * 100)
+  const animatedWidth = useAnimatedNumber(Math.round(widthPercent), 800)
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -12 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.3 + index * 0.1, duration: 0.4 }}
+      style={{ display: 'flex', flexDirection: 'column', gap: 6 }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: 12, color: TEXT_SECONDARY, fontWeight: 500 }}>{label}</span>
+        <span style={{ fontSize: 13, fontWeight: 700, color: positive ? GREEN : RED, fontFamily: 'monospace' }}>
+          {positive ? '+' : '-'}{formatCurrency(absVal)}
+        </span>
+      </div>
+      <div style={{ height: 22, borderRadius: 6, background: 'rgba(255,255,255,0.03)', overflow: 'hidden', position: 'relative' }}>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${animatedWidth}%` }}
+          transition={{ duration: 0.9, delay: 0.3 + index * 0.1, ease: [0.4, 0, 0.2, 1] }}
+          style={{
+            height: '100%',
+            borderRadius: 5,
+            background: `linear-gradient(90deg, ${color}25, ${color}55)`,
+            border: `1px solid ${color}30`,
+          }}
+        />
+      </div>
+    </motion.div>
+  )
+}
+
+// ============================================================================
+// INVOICE STAT PILL
+// ============================================================================
+function InvoiceStatPill({ label, value, color, icon: Icon, sub }: { label: string; value: string; color: string; icon: React.ElementType; sub?: string }) {
+  return (
+    <motion.div
+      variants={fadeUp}
+      whileHover={{ y: -2, borderColor: BORDER_HOVER }}
+      style={{
+        ...cardStyle,
+        padding: '16px 20px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 14,
+        cursor: 'default',
+      }}
+    >
+      <div style={{
+        width: 40, height: 40, borderRadius: 10,
+        background: `${color}12`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0,
+      }}>
+        <Icon size={18} style={{ color }} />
+      </div>
+      <div>
+        <p style={{ fontSize: 10, color: TEXT_TERTIARY, margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 500 }}>{label}</p>
+        <p style={{ fontSize: 18, fontWeight: 700, color: TEXT_PRIMARY, margin: '3px 0 0', lineHeight: 1.1 }}>{value}</p>
+        {sub && <p style={{ fontSize: 10, color: TEXT_TERTIARY, margin: '2px 0 0' }}>{sub}</p>}
+      </div>
+    </motion.div>
+  )
+}
+
+// ============================================================================
+// FINANCIAL TAB (CINEMATIC)
+// ============================================================================
+function FinancialTab() {
+  const [hoveredRow, setHoveredRow] = useState<number | null>(null)
+  const { data: finData, isLoading: finLoading } = useQuery({
+    queryKey: ['crm-financial'],
+    queryFn: () => fetch('/api/crm/financial').then(r => r.json()),
+    refetchInterval: 60000,
+  })
+
+  if (finLoading || !finData) return <FinancialLoadingSkeleton />
+
+  const {
+    kpis = {},
+    revenueBreakdown = [],
+    forecast = [],
+    byProduct = {},
+    mrrMovement = {},
+    clientRevenue = [],
+    invoices = {},
+  } = finData
+
+  const { arr = 0, mrr = 0, avgRevPerClient = 0, setupFeesCollected = 0, setupThisQuarter = 0, revGrowth = 0, winRate = 0 } = kpis
+  const { newMRR = 0, churnedMRR = 0, expansionMRR = 0, netNewMRR = 0 } = mrrMovement
+  const { totalInvoiced = 0, totalPaid = 0, outstanding = 0, overdueAmount = 0, paidThisMonth = 0, sentThisMonth = 0, draftCount = 0 } = invoices
+
+  const animARR = useAnimatedNumber(arr)
+  const animMRR = useAnimatedNumber(mrr)
+  const animAvgRev = useAnimatedNumber(avgRevPerClient)
+  const animSetup = useAnimatedNumber(setupFeesCollected)
+  const animGrowth = useAnimatedNumber(revGrowth)
+  const animNetMRR = useAnimatedNumber(netNewMRR)
+
+  const growthScore = Math.min(30, Math.max(0, revGrowth * 2))
+  const retentionScore = mrr > 0 && churnedMRR > 0 ? Math.min(35, Math.max(0, 35 - (churnedMRR / mrr) * 350)) : mrr > 0 ? 30 : 5
+  const predictScore = winRate >= 20 ? 35 : winRate >= 10 ? 25 : 15
+  const healthScore = Math.min(100, Math.round(growthScore + retentionScore + predictScore))
+
+  const finKPIs = [
+    { label: 'Annual Recurring Revenue', value: formatCurrency(animARR), delta: `${formatCurrency(animMRR)}/mo MRR`, positive: true, icon: DollarSign, accent: GREEN },
+    { label: 'Monthly Recurring Revenue', value: formatCurrency(animMRR), delta: `+${formatCurrency(animNetMRR)} net new`, positive: true, icon: Euro, accent: YELLOW },
+    { label: 'Avg Revenue / Client', value: formatCurrency(animAvgRev), delta: `${clientRevenue.length} active clients`, positive: true, icon: Users, accent: '#A78BFA' },
+    { label: 'Setup Fees Collected', value: formatCurrency(animSetup), delta: `${formatCurrency(setupThisQuarter)} this quarter`, positive: true, icon: Zap, accent: '#FB923C' },
+    { label: 'Revenue Growth', value: `${animGrowth}%`, positive: animGrowth >= 0, icon: TrendingUp, accent: '#60A5FA', delta: 'quarter over quarter' },
+  ]
+
+  const productEntries = Object.entries(byProduct)
+  const productTotalMRR = productEntries.reduce((s, [, d]) => s + d.mrr, 0)
+
+  return (
+    <motion.div
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+      style={{ display: 'flex', flexDirection: 'column', gap: 20 }}
+    >
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        style={{
+          height: 3,
+          borderRadius: 2,
+          background: `linear-gradient(90deg, ${GREEN} 0%, ${YELLOW} 50%, ${GREEN} 100%)`,
+          boxShadow: `0 0 20px ${GREEN}30, 0 0 40px ${YELLOW}15`,
+        }}
+      />
+
+      <motion.div variants={fadeUp} className="dash-kpi-grid">
+        {finKPIs.map((kpi, i) => (
+          <KPICard key={kpi.label} kpi={kpi} index={i} />
+        ))}
+      </motion.div>
+
+      <motion.div variants={fadeUp} className="dash-grid-60-40" style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: 20 }}>
+        <motion.div
+          style={{ ...cardStyle, padding: 26 }}
+          whileHover={{ borderColor: BORDER_HOVER, boxShadow: `0 0 40px ${GREEN}08` }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+            <div style={sectionTitle}>
+              <BarChart3 size={18} style={{ color: YELLOW }} />
+              Revenue by Product
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ width: 10, height: 10, borderRadius: 3, background: YELLOW }} />
+                <span style={{ fontSize: 11, color: TEXT_TERTIARY }}>SolarPilot</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ width: 10, height: 10, borderRadius: 3, background: '#A78BFA' }} />
+                <span style={{ fontSize: 11, color: TEXT_TERTIARY }}>AI Workforce</span>
+              </div>
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height={260}>
+            <AreaChart data={revenueBreakdown} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="solarGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={YELLOW} stopOpacity={0.35} />
+                  <stop offset="100%" stopColor={YELLOW} stopOpacity={0.02} />
+                </linearGradient>
+                <linearGradient id="aiGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#A78BFA" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#A78BFA" stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: TEXT_TERTIARY }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: TEXT_TERTIARY }} axisLine={false} tickLine={false} tickFormatter={(v) => `€${(v / 1000).toFixed(1)}k`} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={{ fontSize: 11, color: TEXT_TERTIARY, marginBottom: 4 }} itemStyle={{ fontSize: 12, color: TEXT_PRIMARY, fontWeight: 600 }} formatter={(value: number) => [formatCurrency(value)]} />
+              <Area type="monotone" dataKey="solarpilot" stackId="1" stroke={YELLOW} strokeWidth={2} fill="url(#solarGrad)" />
+              <Area type="monotone" dataKey="aiWorkforce" stackId="1" stroke="#A78BFA" strokeWidth={2} fill="url(#aiGrad)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </motion.div>
+
+        <motion.div variants={fadeUp} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div style={{ ...cardStyle, padding: 26 }}>
+            <div style={sectionTitle}>
+              <Gauge size={18} style={{ color: '#A78BFA' }} />
+              MRR by Product
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 16 }}>
+              <div style={{ position: 'relative', width: 100, height: 100, flexShrink: 0 }}>
+                <ResponsiveContainer width={100} height={100}>
+                  <PieChart>
+                    <Pie
+                      data={productEntries.map(([name, d]) => ({ name, value: d.mrr || 0 }))}
+                      cx="50%" cy="50%" innerRadius={30} outerRadius={44}
+                      paddingAngle={3} dataKey="value" strokeWidth={0}
+                    >
+                      {productEntries.map((entry, i) => {
+                        const c = productColors[entry[0].toLowerCase()] || TEXT_SECONDARY
+                        return <Cell key={i} fill={c} fillOpacity={0.85} />
+                      })}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: TEXT_PRIMARY }}>{productEntries.length}</span>
+                  <span style={{ fontSize: 9, color: TEXT_TERTIARY, display: 'block' }}>products</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+                {productEntries.map(([name, d]) => {
+                  const pColor = productColors[name.toLowerCase()] || TEXT_SECONDARY
+                  const pct = productTotalMRR > 0 ? Math.round((d.mrr / productTotalMRR) * 100) : 0
+                  return (
+                    <div key={name}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 3 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span style={{ width: 6, height: 6, borderRadius: '50%', background: pColor, flexShrink: 0 }} />
+                          <span style={{ fontSize: 11, color: TEXT_SECONDARY }}>{name}</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span style={{ fontSize: 12, fontWeight: 600, color: TEXT_PRIMARY, fontFamily: 'monospace' }}>{formatCurrency(d.mrr)}/mo</span>
+                          <span style={{ fontSize: 10, color: TEXT_TERTIARY }}>{pct}%</span>
+                        </div>
+                      </div>
+                      <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.04)' }}>
+                        <div style={{ height: '100%', borderRadius: 2, width: `${pct}%`, background: pColor, transition: 'width 0.8s ease' }} />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ ...cardStyle, padding: 26, flex: 1 }}>
+            <div style={sectionTitle}>
+              <Activity size={18} style={{ color: GREEN }} />
+              MRR Movement
+              <span style={{ marginLeft: 'auto', fontSize: 12, fontWeight: 700, color: netNewMRR >= 0 ? GREEN : RED, fontFamily: 'monospace' }}>
+                Net {netNewMRR >= 0 ? '+' : ''}{formatCurrency(netNewMRR)}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 18 }}>
+              <MRRWaterfallBar label="New MRR" value={newMRR} positive={true} color={GREEN} index={0} />
+              <MRRWaterfallBar label="Expansion MRR" value={expansionMRR} positive={true} color="#60A5FA" index={1} />
+              <MRRWaterfallBar label="Churned MRR" value={churnedMRR} positive={false} color={RED} index={2} />
+              <div style={{ height: 1, background: BORDER }} />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 0' }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: TEXT_PRIMARY }}>Net New MRR</span>
+                <span style={{ fontSize: 15, fontWeight: 700, color: netNewMRR >= 0 ? GREEN : RED, fontFamily: 'monospace' }}>
+                  {netNewMRR >= 0 ? '+' : ''}{formatCurrency(netNewMRR)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+
+      <motion.div variants={fadeUp} className="dash-grid-60-40" style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: 20 }}>
+        <motion.div
+          style={{ ...cardStyle, padding: 26 }}
+          whileHover={{ borderColor: BORDER_HOVER, boxShadow: `0 0 40px ${YELLOW}08` }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+            <div style={sectionTitle}>
+              <TrendingUp size={18} style={{ color: YELLOW }} />
+              Revenue Forecast
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <span style={{ width: 12, height: 2, background: GREEN, borderRadius: 1 }} />
+                <span style={{ fontSize: 10, color: TEXT_TERTIARY }}>Actual</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <span style={{ width: 12, height: 2, background: YELLOW, borderRadius: 1, opacity: 0.7 }} />
+                <span style={{ fontSize: 10, color: TEXT_TERTIARY }}>Projected</span>
+              </div>
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height={220}>
+            <AreaChart data={forecast} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="actualFG" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={GREEN} stopOpacity={0.25} />
+                  <stop offset="100%" stopColor={GREEN} stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="projectedFG" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={YELLOW} stopOpacity={0.15} />
+                  <stop offset="100%" stopColor={YELLOW} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: TEXT_TERTIARY }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: TEXT_TERTIARY }} axisLine={false} tickLine={false} tickFormatter={(v) => `€${(v / 1000).toFixed(0)}k`} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={{ fontSize: 11, color: TEXT_TERTIARY, marginBottom: 4 }} itemStyle={{ fontSize: 12, color: TEXT_PRIMARY, fontWeight: 600 }} formatter={(value: number) => [formatCurrency(value)]} />
+              <Area type="monotone" dataKey="actual" stroke={GREEN} strokeWidth={2.5} fill="url(#actualFG)" connectNulls={false} dot={{ fill: GREEN, r: 3, strokeWidth: 0 }} />
+              <Area type="monotone" dataKey="projected" stroke={YELLOW} strokeWidth={2} strokeDasharray="6 3" fill="url(#projectedFG)" connectNulls={false} dot={{ fill: YELLOW, r: 3, strokeWidth: 0 }} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </motion.div>
+
+        <motion.div variants={fadeUp} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div style={{ ...cardStyle, padding: 26, flex: 1 }}>
+            <div style={sectionTitle}>
+              <Target size={18} style={{ color: GREEN }} />
+              Financial Health
+            </div>
+            <div style={{ marginTop: 20 }}>
+              <HealthGauge score={healthScore} label="Revenue Health Score" />
+            </div>
+          </div>
+          <div style={{ ...cardStyle, padding: 26 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={sectionTitle}>
+                <Trophy size={18} style={{ color: YELLOW }} />
+                Win Rate
+              </div>
+              <span style={{ fontSize: 28, fontWeight: 700, color: winRate >= 25 ? GREEN : winRate >= 15 ? YELLOW : RED }}>
+                {winRate}%
+              </span>
+            </div>
+            <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.04)', marginTop: 16 }}>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${Math.min(100, winRate * 2)}%` }}
+                transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
+                style={{
+                  height: '100%',
+                  borderRadius: 3,
+                  background: `linear-gradient(90deg, ${winRate >= 25 ? GREEN : winRate >= 15 ? YELLOW : RED}, ${winRate >= 25 ? GREEN : YELLOW})`,
+                  boxShadow: `0 0 8px ${winRate >= 25 ? GREEN : YELLOW}44`,
+                }}
+              />
+            </div>
+            <p style={{ fontSize: 10, color: TEXT_TERTIARY, margin: '8px 0 0' }}>
+              {winRate >= 25 ? 'Strong conversion rate — pipeline quality is excellent' : winRate >= 15 ? 'Decent win rate — consider qualifying leads better' : 'Win rate needs improvement — review lead quality and sales process'}
+            </p>
+          </div>
+        </motion.div>
+      </motion.div>
+
+      <motion.div variants={fadeUp} className="dash-grid-60-40" style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: 20 }}>
+        <motion.div
+          style={{ ...cardStyle, padding: 26, display: 'flex', flexDirection: 'column' }}
+          whileHover={{ borderColor: BORDER_HOVER }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
+            <div style={sectionTitle}>
+              <Building2 size={18} style={{ color: '#60A5FA' }} />
+              Client Revenue
+            </div>
+            <span style={{ fontSize: 11, color: TEXT_TERTIARY, fontWeight: 500 }}>{clientRevenue.length} clients</span>
+          </div>
+          <div className="dash-scroll" style={{ overflow: 'auto', flex: 1, maxHeight: 380 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+              <thead>
+                <tr style={{ borderBottom: `1px solid ${BORDER}` }}>
+                  {['Client', 'Product', 'MRR', 'Setup Fee', 'LTV'].map((h) => (
+                    <th key={h} style={{ padding: '8px 10px', fontSize: 10, fontWeight: 600, color: TEXT_TERTIARY, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'left', whiteSpace: 'nowrap', position: 'sticky', top: 0, background: CARD_BG, zIndex: 1 }}>
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {clientRevenue.map((c: { name: string; product: string; mrr: number; setupFee: number; ltv: number; status: string }, i: number) => {
+                  const isHov = hoveredRow === i
+                  const pColor = productColors[c.product.toLowerCase()] || TEXT_SECONDARY
+                  const maxMRR = clientRevenue[0]?.mrr || 1
+                  const mrrPct = Math.round((c.mrr / maxMRR) * 100)
+                  return (
+                    <motion.tr
+                      key={c.name}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4 + i * 0.04, duration: 0.3 }}
+                      onMouseEnter={() => setHoveredRow(i)}
+                      onMouseLeave={() => setHoveredRow(null)}
+                      style={{ borderBottom: `1px solid ${BORDER}`, background: isHov ? 'rgba(255,255,255,0.02)' : 'transparent', transition: 'background 0.15s', cursor: 'default' }}
+                    >
+                      <td style={{ padding: '10px 10px', verticalAlign: 'middle' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: i < 3 ? YELLOW : TEXT_TERTIARY, fontFamily: 'monospace', width: 18, textAlign: 'center' }}>
+                            {i + 1}
+                          </span>
+                          <p style={{ margin: 0, fontSize: 12, fontWeight: 500, color: TEXT_PRIMARY }}>{c.name}</p>
+                        </div>
+                      </td>
+                      <td style={{ padding: '10px 10px', verticalAlign: 'middle' }}>
+                        <span style={{ fontSize: 10, fontWeight: 600, color: pColor, background: `${pColor}12`, padding: '3px 8px', borderRadius: 6, whiteSpace: 'nowrap' }}>{c.product}</span>
+                      </td>
+                      <td style={{ padding: '10px 10px', verticalAlign: 'middle' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                          <span style={{ fontSize: 11, fontWeight: 600, color: GREEN, fontFamily: 'monospace' }}>{formatCurrency(c.mrr)}</span>
+                          <div style={{ height: 2, borderRadius: 1, background: 'rgba(255,255,255,0.04)', width: 50 }}>
+                            <div style={{ height: '100%', borderRadius: 1, width: `${mrrPct}%`, background: GREEN, opacity: 0.5, transition: 'width 0.6s ease' }} />
+                          </div>
+                        </div>
+                      </td>
+                      <td style={{ padding: '10px 10px', verticalAlign: 'middle' }}>
+                        <span style={{ fontSize: 11, fontWeight: 600, color: TEXT_PRIMARY, fontFamily: 'monospace', whiteSpace: 'nowrap' }}>{c.setupFee > 0 ? formatCurrency(c.setupFee) : '—'}</span>
+                      </td>
+                      <td style={{ padding: '10px 10px', verticalAlign: 'middle' }}>
+                        <span style={{ fontSize: 11, fontWeight: 600, color: TEXT_SECONDARY, fontFamily: 'monospace', whiteSpace: 'nowrap' }}>{c.ltv > 0 ? formatCurrency(c.ltv) : '—'}</span>
+                      </td>
+                    </motion.tr>
+                  )
+                })}
+                {clientRevenue.length === 0 && (
+                  <tr>
+                    <td colSpan={5} style={{ padding: 40, textAlign: 'center', color: TEXT_TERTIARY, fontSize: 13 }}>
+                      No active clients yet
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+
+        <motion.div variants={fadeUp} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div style={{ ...cardStyle, padding: 26 }}>
+            <div style={sectionTitle}>
+              <Receipt size={18} style={{ color: YELLOW }} />
+              Invoice Summary
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 18 }}>
+              <InvoiceStatPill label="Total Invoiced" value={formatCurrency(totalInvoiced)} color={TEXT_PRIMARY} icon={FileText} />
+              <InvoiceStatPill label="Total Paid" value={formatCurrency(totalPaid)} color={GREEN} icon={CheckCircle2} sub={`${Math.round(totalInvoiced > 0 ? (totalPaid / totalInvoiced) * 100 : 0)}% collection rate`} />
+              <InvoiceStatPill label="Outstanding" value={formatCurrency(outstanding)} color={YELLOW} icon={Clock} />
+              <InvoiceStatPill label="Overdue" value={formatCurrency(overdueAmount)} color={RED} icon={AlertTriangle} />
+            </div>
+          </div>
+
+          <div style={{ ...cardStyle, padding: 26, flex: 1 }}>
+            <div style={sectionTitle}>
+              <ArrowRight size={18} style={{ color: '#60A5FA' }} />
+              This Month
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 18 }}>
+              {[
+                { label: 'Paid', value: formatCurrency(paidThisMonth), color: GREEN },
+                { label: 'Sent', value: `${sentThisMonth}`, color: '#60A5FA' },
+                { label: 'Drafts', value: `${draftCount}`, color: TEXT_TERTIARY },
+                { label: 'Win Rate', value: `${winRate}%`, color: YELLOW },
+              ].map((item) => (
+                <div key={item.label} style={{
+                  padding: '14px 16px',
+                  borderRadius: 12,
+                  background: `${item.color}08`,
+                  border: `1px solid ${item.color}15`,
+                }}>
+                  <p style={{ fontSize: 10, color: TEXT_TERTIARY, margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 500 }}>{item.label}</p>
+                  <p style={{ fontSize: 18, fontWeight: 700, color: item.color, margin: '4px 0 0' }}>{item.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  )
+}

@@ -1,0 +1,143 @@
+/* onboarding-styles.css — SolarPilot Onboarding Design System */
+
+.onboarding-root {
+  --bg: oklch(0.16 0.005 80);
+  --bg-1: oklch(0.20 0.006 80);
+  --bg-2: oklch(0.23 0.007 80);
+  --bg-3: oklch(0.27 0.008 80);
+  --line: oklch(0.32 0.008 80);
+  --line-soft: oklch(0.26 0.008 80);
+  --ink: oklch(0.97 0.008 85);
+  --ink-2: oklch(0.82 0.008 85);
+  --ink-3: oklch(0.62 0.008 85);
+  --ink-4: oklch(0.45 0.008 85);
+  --ink-5: oklch(0.35 0.008 85);
+  --solar: #F2CC2E;
+  --solar-soft: oklch(0.86 0.15 95 / 0.12);
+  --solar-ink: oklch(0.92 0.17 95);
+  --green: oklch(0.76 0.17 145);
+  --green-soft: oklch(0.76 0.17 145 / 0.12);
+  --red: oklch(0.70 0.19 25);
+  color-scheme: dark;
+}
+
+.onboarding-root * { box-sizing: border-box; }
+
+.onboarding-root,
+.onboarding-root html,
+.onboarding-root body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  font-smooth: always;
+  letter-spacing: -0.01em;
+}
+
+.onboarding-root .mono { font-family: 'Geist Mono', ui-monospace, monospace; font-feature-settings: 'zero'; }
+.onboarding-root .tabular { font-variant-numeric: tabular-nums; }
+
+.onboarding-root button { font-family: inherit; }
+.onboarding-root input, .onboarding-root textarea { font-family: inherit; }
+
+/* subtle background texture */
+.onboarding-root .app-bg {
+  background:
+    radial-gradient(1200px 600px at 50% -200px, oklch(0.86 0.15 95 / 0.07), transparent 60%),
+    radial-gradient(800px 500px at 100% 100%, oklch(0.70 0.12 60 / 0.04), transparent 60%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+/* scrollbar */
+.onboarding-root ::-webkit-scrollbar { width: 10px; height: 10px; }
+.onboarding-root ::-webkit-scrollbar-track { background: transparent; }
+.onboarding-root ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 10px; border: 2px solid var(--bg); }
+.onboarding-root ::-webkit-scrollbar-thumb:hover { background: var(--line-soft); }
+
+/* focus */
+.onboarding-root input:focus, .onboarding-root button:focus-visible {
+  outline: 2px solid var(--solar);
+  outline-offset: 1px;
+}
+
+/* checkboxes */
+.onboarding-root input[type="checkbox"] {
+  appearance: none;
+  width: 15px; height: 15px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg-1);
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  margin: 0;
+  transition: all 120ms ease;
+}
+.onboarding-root input[type="checkbox"]:hover { border-color: var(--ink-4); }
+.onboarding-root input[type="checkbox"]:checked {
+  background: var(--solar);
+  border-color: var(--solar);
+}
+.onboarding-root input[type="checkbox"]:checked::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--bg);
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0, 43% 62%);
+}
+
+.onboarding-root input[type="radio"] {
+  appearance: none;
+  width: 15px; height: 15px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg-1);
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  margin: 0;
+  transition: all 120ms ease;
+}
+.onboarding-root input[type="radio"]:checked { border-color: var(--solar); }
+.onboarding-root input[type="radio"]:checked::before {
+  content: '';
+  width: 7px; height: 7px;
+  background: var(--solar);
+  border-radius: 50%;
+}
+
+@keyframes obFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.onboarding-root .fade-up { animation: obFadeUp 320ms cubic-bezier(.2,.7,.2,1) both; }
+
+@keyframes obPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.onboarding-root .pulse { animation: obPulse 1.6s ease-in-out infinite; }
+
+/* striped placeholder */
+.onboarding-root .img-placeholder {
+  background-image:
+    repeating-linear-gradient(135deg, oklch(0.32 0.01 80) 0 2px, transparent 2px 10px);
+  background-color: var(--bg-2);
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: var(--ink-4);
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* range input */
+.onboarding-root input[type="range"] {
+  accent-color: var(--solar);
+}

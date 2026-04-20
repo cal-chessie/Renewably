@@ -1,0 +1,94 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+local-*
+.claude
+.z-ai-config
+*.log
+dev.log
+dev.out.log
+test
+prompt
+
+server.log
+# Skills directory
+/skills/
+
+# Local database files
+/db/custom.db
+/db/sessions.json
+prisma/dev.db
+prisma/db/custom.db
+
+# Generated docs, downloads, and uploads (regenerate as needed)
+/download/
+/upload/
+/worklog.md
+
+# Disabled files
+*.disabled
+
+# Agent context (subagent working files)
+/agent-ctx/
+
+# One-off scripts and tools
+/dark_polish.py
+/fixfile.py
+/generate_polish_report.py
+/financial_tab_new.txt
+/dashboard_backup.tsx
+
+# Mini-services (not used in main app)
+/mini-services/
+
+# Examples directory
+/examples/
+
+# Legacy build scripts
+/.zscripts/
+
+# Backup files
+*.bak
+
+# Next.js 16: middleware.ts is replaced by proxy.ts — never track the old file
+src/middleware.ts

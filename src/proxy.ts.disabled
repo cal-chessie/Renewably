@@ -1,0 +1,55 @@
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { parseCookie } from './lib/crm-session'
+import { getSession } from './lib/crm-session'
+
+const PUBLIC_CRM_PATHS = ['/crm/login']
+
+export default async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Only intercept CRM and CRM API routes
+  if (!pathname.startsWith('/crm') && !pathname.startsWith('/api/crm')) {
+    return NextResponse.next()
+  }
+
+  // Allow public CRM pages (login)
+  if (PUBLIC_CRM_PATHS.some(p => pathname === p || pathname.startsWith(p + '/'))) {
+    return NextResponse.next()
+  }
+
+  // Allow public API routes (auth endpoints)
+  if (pathname === '/api/crm/auth') {
+    return NextResponse.next()
+  }
+
+  // Check session via Prisma
+  const cookieHeader = request.headers.get('cookie') || ''
+  const token = parseCookie(cookieHeader, 'crm_session')
+
+  if (!token) {
+    if (pathname.startsWith('/api/crm')) {
+      return NextResponse.json({ error: 'Unauthenticated' }, { status: 401 })
+    }
+    const loginUrl = new URL('/crm/login', request.url)
+    loginUrl.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  const session = await getSession(token)
+
+  if (!session) {
+    if (pathname.startsWith('/api/crm')) {
+      return NextResponse.json({ error: 'Unauthenticated' }, { status: 401 })
+    }
+    const loginUrl = new URL('/crm/login', request.url)
+    loginUrl.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  return NextResponse.next()
+}
+
+export const config = {
+  matcher: ['/crm/:path*', '/api/crm/:path*'],
+}
