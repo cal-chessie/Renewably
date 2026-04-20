@@ -56,148 +56,461 @@ The application has two main sections:
 
 ```
 renewably/
-├── public/                          # Static assets
-│   ├── agents/                      # AI workforce agent photos
-│   ├── scripts/polyfills.js         # CSP-compliant polyfills
-│   ├── logo.svg                     # Brand logo
-│   └── manifest.json               # PWA manifest
+├── .env.example                     # Environment variable template (18 vars)
+├── .gitignore                       # Git ignore rules
+├── .next/                           # Build output (gitignored)
+├── Caddyfile                        # Reverse proxy — port 81 → localhost:3000
+├── components.json                  # shadcn/ui config (new-york theme)
+├── eslint.config.mjs                # ESLint config
+├── keep-alive.sh                    # Dev server keep-alive script (cron)
+├── next.config.ts                   # Next.js — CSP, security headers, standalone output
+├── package.json                     # Dependencies and scripts
+├── package-lock.json
+├── postcss.config.mjs               # PostCSS — @tailwindcss/postcss
+├── tailwind.config.ts               # Tailwind — CSS variables, shadcn/ui theme
+├── tsconfig.json                    # TypeScript — strict, ES2017, @/ alias
+└── vitest.config.ts                 # Vitest — node env, v8 coverage
 │
 ├── prisma/
-│   ├── schema.prisma                # Database schema (12 models)
+│   ├── schema.prisma                # Database schema — 12 models (SQLite)
+│   ├── seed.ts                      # Database seeder
 │   └── migrations/                  # SQL migrations (3)
+│       ├── 20260411225302_init/
+│       ├── 20260415201111_init/
+│       └── 20260419172238_add_installer_profile/
 │
-├── src/
-│   ├── app/                         # Next.js App Router
-│   │   ├── page.tsx                 # Homepage
-│   │   ├── about/page.tsx
-│   │   ├── blog/page.tsx
-│   │   ├── blog/[slug]/page.tsx
-│   │   ├── contact/page.tsx
-│   │   ├── onboarding/page.tsx      # Multi-step signup wizard
-│   │   ├── pricing/page.tsx
-│   │   ├── privacy/page.tsx
-│   │   ├── services/page.tsx
-│   │   ├── terms/page.tsx
-│   │   ├── workforce/page.tsx
-│   │   ├── crm/                     # CRM frontend (13 pages)
-│   │   │   ├── login/page.tsx
-│   │   │   ├── dashboard/page.tsx
-│   │   │   ├── companies/page.tsx
-│   │   │   ├── companies/[id]/page.tsx
-│   │   │   ├── contacts/page.tsx
-│   │   │   ├── contacts/[id]/page.tsx
-│   │   │   ├── pipeline/page.tsx
-│   │   │   ├── deals/page.tsx
-│   │   │   ├── activities/page.tsx
-│   │   │   ├── calendar/page.tsx
-│   │   │   ├── meetings/page.tsx
-│   │   │   ├── tasks/page.tsx
-│   │   │   ├── proposals/page.tsx
-│   │   │   ├── invoices/page.tsx
-│   │   │   ├── installers/page.tsx
-│   │   │   ├── reports/page.tsx
-│   │   │   ├── billing/page.tsx
-│   │   │   ├── settings/page.tsx
-│   │   │   └── workflows/page.tsx
-│   │   └── api/                     # API routes (~95 endpoints)
-│   │       ├── contact/route.ts     # Public contact form
-│   │       ├── chat-widget/route.ts # Public AI chat (lead capture)
-│   │       ├── ai-agent/route.ts    # AI agent content CRUD
-│   │       ├── onboarding/          # Onboarding progress + submit
-│   │       └── crm/                 # All CRM endpoints
-│   │           ├── auth/            # Login, logout, session, refresh
-│   │           ├── dashboard/       # KPIs and analytics
-│   │           ├── companies/       # Company CRUD + logo
-│   │           ├── contacts/        # Contact CRUD
-│   │           ├── deals/           # Deal pipeline + activities
-│   │           ├── pipeline/        # Pipeline stages
-│   │           ├── activities/      # Activity feed
-│   │           ├── calendar/        # Google Calendar OAuth + sync
-│   │           ├── meetings/        # Meeting CRUD + cancel/complete
-│   │           ├── tasks/           # Task CRUD
-│   │           ├── proposals/       # Proposals + PDF + send + templates
-│   │           ├── invoices/        # Invoices + PDF + payments + Stripe
-│   │           ├── installers/      # Installer management + performance
-│   │           ├── reports/         # Reports + export
-│   │           ├── billing/         # Stripe checkout/portal/webhook
-│   │           ├── ai/              # Claude AI assistant
-│   │           ├── email/           # Postmark sending + webhook
-│   │           ├── whatsapp/        # WhatsApp messaging
-│   │           ├── workflows/       # Workflow automation
-│   │           ├── integrations/    # Third-party integrations
-│   │           ├── settings/        # Profile, password, logo
-│   │           ├── analytics/       # Website analytics
-│   │           └── notes/           # CRM notes
-│   │
-│   ├── components/
-│   │   ├── crm/                     # CRM UI components (38)
-│   │   │   ├── CrmShell.tsx         # CRM layout (sidebar, nav)
-│   │   │   ├── CRMProvider.tsx      # Auth state provider (Zustand)
-│   │   │   ├── AIAssistant.tsx      # Floating Claude chat bubble
-│   │   │   ├── PipelineBoard.tsx    # Drag-and-drop Kanban
-│   │   │   ├── DashboardCharts.tsx  # Revenue & financial charts
-│   │   │   ├── CalendarView.tsx     # Calendar component
-│   │   │   ├── ReportsCharts.tsx    # Report visualisations
-│   │   │   └── ...                  # Page content + shared UI
-│   │   ├── ui/                      # shadcn/ui primitives (47)
-│   │   ├── onboarding/              # Onboarding wizard steps (13)
-│   │   ├── shared/                  # Reusable marketing sections
-│   │   ├── SiteShell.tsx            # Public site layout wrapper
-│   │   ├── ChatWidget.tsx           # Public AI chat (lead capture)
-│   │   ├── Header.tsx               # Site navigation
-│   │   ├── Footer.tsx               # Site footer
-│   │   ├── CookieBanner.tsx         # GDPR cookie consent
-│   │   └── *PageClient.tsx          # Marketing page components (11)
-│   │
-│   ├── lib/                         # Server-side utilities (27 files)
-│   │   ├── supabase.ts              # Supabase client factory
-│   │   ├── supabase-auth-helpers.ts # Cookie/token utilities
-│   │   ├── crm-auth.ts              # Auth middleware (requireAuth, requireAdmin)
-│   │   ├── crm-session.ts           # Session management
-│   │   ├── crm-schemas.ts           # Zod validation schemas
-│   │   ├── crm-validation.ts        # Input validation helpers
-│   │   ├── crm-route-helpers.ts     # Route utilities
-│   │   ├── crm-data.ts              # Data access helpers
-│   │   ├── crm-theme.ts             # CRM theme handling
-│   │   ├── claude.ts                # Claude AI integration
-│   │   ├── claude-context.ts        # CRM context builder for AI
-│   │   ├── db.ts                    # Prisma client singleton
-│   │   ├── auth.ts                  # PBKDF2 password hashing + rate limiting
-│   │   ├── sessions.ts              # Redis-backed session store
-│   │   ├── rate-limit.ts            # Rate limiting (Redis + in-memory fallback)
-│   │   ├── redis.ts                 # Redis connection
-│   │   ├── stripe.ts                # Stripe helpers
-│   │   ├── postmark.ts              # Postmark email client
-│   │   ├── logger.ts                # General logger
-│   │   ├── logger-crm.ts            # CRM-specific logger
-│   │   ├── sanitize.ts              # Input sanitization
-│   │   ├── format.ts                # Formatting utilities
-│   │   └── utils.ts                 # General utilities (cn, ClientOnly)
-│   │
-│   ├── data/                        # Static JSON data
-│   │   ├── blog.json                # Blog posts
-│   │   ├── services.json            # Service definitions
-│   │   ├── testimonials.json        # Customer testimonials
-│   │   └── faqs.json                # FAQ content
-│   │
-│   └── __tests__/                   # Test suites (7 files, 235+ tests)
-│       ├── auth.test.ts
-│       ├── crm-auth.test.ts
-│       ├── crm-core.test.ts
-│       ├── crm-integration.test.ts
-│       ├── crm-schemas.test.ts
-│       └── crm-security.test.ts
+├── public/                          # Static assets (served at /)
+│   ├── agents/                      # AI workforce agent photos (8)
+│   ├── scripts/
+│   │   └── polyfills.js             # CSP workaround for Turbopack + framer-motion
+│   ├── favicon.ico
+│   ├── apple-touch-icon.png         # iOS home screen icon
+│   ├── og-image.png                 # Open Graph social sharing image
+│   ├── logo.svg                     # Primary brand logo
+│   ├── logo-icon.png                # PWA icon (192 + 512 variants)
+│   ├── icon.png                     # Favicon (auto-generated)
+│   ├── manifest.json                # PWA manifest — standalone, dark theme
+│   └── robots.txt                   # Disallows /api/ and /crm/
 │
-├── .env.example                     # Environment variable template
-├── next.config.ts                   # Next.js config (CSP, headers, standalone)
-├── tailwind.config.ts               # Tailwind + shadcn/ui theme
-├── tsconfig.json                    # TypeScript config
-├── vitest.config.ts                 # Test runner config
-├── eslint.config.mjs                # ESLint config
-├── postcss.config.mjs               # PostCSS config
-├── components.json                  # shadcn/ui config
-├── Caddyfile                        # Reverse proxy config
-└── package.json                     # Dependencies and scripts
+└── src/
+    │
+    ├── proxy.ts                     # Auth middleware — JWT validation, rate limiting,
+    │                               #   public route exemptions (replaces middleware.ts)
+    │
+    ├── app/                         # Next.js App Router
+    │   ├── layout.tsx               # Root layout — globals.css, polyfills, Open Graph,
+    │   │                           #   JSON-LD, Sonner toaster, MotionProvider
+    │   ├── globals.css              # Tailwind base + CSS variable theme
+    │   ├── page.tsx                 # Homepage
+    │   ├── not-found.tsx            # Custom 404 page
+    │   ├── error.tsx                # Error boundary
+    │   ├── global-error.tsx         # Global error boundary
+    │   ├── loading.tsx              # Global loading state
+    │   ├── robots.ts                # Dynamic robots.txt (disallows /api/, /crm/)
+    │   ├── sitemap.ts               # Dynamic sitemap (9 pages + 9 blog posts)
+    │   │
+    │   ├── about/page.tsx           # About page
+    │   ├── blog/
+    │   │   ├── page.tsx             # Blog listing
+    │   │   └── [slug]/page.tsx      # Blog post (dynamic)
+    │   ├── contact/page.tsx         # Contact form
+    │   ├── pricing/page.tsx         # Pricing plans
+    │   ├── privacy/page.tsx         # Privacy policy
+    │   ├── services/page.tsx        # Service offerings
+    │   ├── terms/page.tsx           # Terms of service
+    │   ├── workforce/page.tsx       # AI workforce details
+    │   │
+    │   ├── onboarding/              # Public signup wizard (no auth required)
+    │   │   ├── layout.tsx           # Onboarding layout wrapper
+    │   │   ├── onboarding.css       # Wizard-specific styles
+    │   │   └── page.tsx             # Multi-step form (10 stages)
+    │   │
+    │   └── crm/                     # CRM dashboard (authenticated)
+    │       ├── layout.tsx           # CRM layout — sidebar, nav, auth provider
+    │       ├── page.tsx             # Redirects to /crm/dashboard
+    │       ├── error.tsx            # CRM error boundary
+    │       ├── loading.tsx          # CRM loading state
+    │       ├── login/page.tsx       # Login form (email + password)
+    │       ├── dashboard/page.tsx   # KPIs, charts, activity feed
+    │       ├── companies/
+    │       │   ├── page.tsx         # Company list
+    │       │   └── [id]/page.tsx    # Company detail + contacts + deals
+    │       ├── contacts/
+    │       │   ├── page.tsx         # Contact list
+    │       │   └── [id]/page.tsx    # Contact detail + inline editing
+    │       ├── deals/page.tsx       # Deal list
+    │       ├── pipeline/page.tsx    # Drag-and-drop Kanban (dnd-kit)
+    │       ├── activities/page.tsx  # Unified activity timeline
+    │       ├── calendar/page.tsx    # Google Calendar view
+    │       ├── meetings/page.tsx    # Meeting management
+    │       ├── tasks/page.tsx       # Task management
+    │       ├── proposals/page.tsx   # Proposal tracking
+    │       ├── invoices/page.tsx    # Invoice management
+    │       ├── installers/page.tsx  # Installer directory
+    │       ├── reports/page.tsx     # Revenue + pipeline reports
+    │       ├── billing/page.tsx     # Stripe subscription management
+    │       ├── settings/page.tsx    # Profile, branding, password
+    │       └── workflows/page.tsx   # Workflow automation
+    │
+    ├── api/                         # API route handlers (~95 endpoints)
+    │   │
+    │   ├── contact/route.ts         # POST — public contact form
+    │   │
+    │   ├── chat-widget/route.ts     # POST — AI chat (lead capture)
+    │   │                           #   Detects buying signals → creates Contact + Deal
+    │   │
+    │   ├── ai-agent/route.ts        # CRUD — blog/services/testimonials/FAQs
+    │   │                           #   Auth: AGENT_API_KEY header
+    │   │
+    │   ├── onboarding/
+    │   │   ├── progress/route.ts    # GET/PUT — save and resume progress
+    │   │   └── submit/route.ts      # POST — submit onboarding form
+    │   │
+    │   └── crm/                     # CRM endpoints (require auth)
+    │       │
+    │       ├── auth/
+    │       │   ├── route.ts         # POST login, GET validate, DELETE logout
+    │       │   ├── login/route.ts   # POST — email/password → Supabase JWT
+    │       │   ├── logout/route.ts  # POST — clear session
+    │       │   ├── me/route.ts      # GET — current user profile
+    │       │   └── refresh/route.ts # POST — refresh JWT tokens
+    │       │
+    │       ├── dashboard/route.ts   # GET — KPIs, funnel, revenue, activity
+    │       │
+    │       ├── companies/
+    │       │   ├── route.ts         # GET list, POST create
+    │       │   └── [id]/
+    │       │       ├── route.ts     # GET, PUT, DELETE
+    │       │       └── logo/route.ts # POST upload, DELETE remove
+    │       │
+    │       ├── contacts/
+    │       │   ├── route.ts         # GET list, POST create
+    │       │   └── [id]/route.ts    # GET, PUT, DELETE
+    │       │
+    │       ├── leads/
+    │       │   ├── route.ts         # GET list, POST create
+    │       │   └── [id]/
+    │       │       ├── route.ts     # GET, PATCH, DELETE
+    │       │       └── activities/route.ts # POST — log activity
+    │       │
+    │       ├── deals/
+    │       │   ├── route.ts         # GET list, POST create
+    │       │   └── [id]/
+    │       │       ├── route.ts     # GET, PATCH, DELETE
+    │       │       └── activities/route.ts # GET, POST
+    │       │
+    │       ├── pipeline/route.ts    # GET board data, PUT reorder
+    │       │
+    │       ├── activities/route.ts  # GET feed, POST log
+    │       ├── notes/route.ts       # GET list, POST create
+    │       ├── tags/route.ts        # GET, POST, DELETE
+    │       │
+    │       ├── calendar/
+    │       │   ├── route.ts         # GET — calendar events
+    │       │   └── google/          # OAuth2 integration (7 endpoints)
+    │       │       ├── auth-url/route.ts  # GET — OAuth consent URL
+    │       │       ├── callback/route.ts  # GET — exchange code for tokens
+    │       │       ├── status/route.ts    # GET — connection status
+    │       │       ├── events/route.ts    # GET — list Google events
+    │       │       ├── sync/route.ts      # POST — sync calendars
+    │       │       ├── push-event/route.ts # POST — push to Google
+    │       │       └── disconnect/route.ts # POST — revoke connection
+    │       │
+    │       ├── meetings/
+    │       │   ├── route.ts         # GET list, POST create
+    │       │   └── [id]/
+    │       │       ├── route.ts     # GET, PATCH, DELETE
+    │       │       ├── complete/route.ts # POST
+    │       │       └── cancel/route.ts   # POST
+    │       │
+    │       ├── tasks/
+    │       │   ├── route.ts         # GET list, POST create, PUT reorder
+    │       │   └── [id]/route.ts    # PUT update, DELETE
+    │       │
+    │       ├── proposals/
+    │       │   ├── route.ts         # GET list, POST create
+    │       │   ├── batch-status/route.ts # POST — bulk status update
+    │       │   ├── templates/route.ts # GET list, POST create
+    │       │   └── [id]/
+    │       │       ├── route.ts     # GET, PUT, DELETE
+    │       │       ├── pdf/route.ts     # GET — generate PDF
+    │       │       ├── send/route.ts    # POST — send via email
+    │       │       ├── duplicate/route.ts # POST
+    │       │       └── status/route.ts  # POST — update status
+    │       │
+    │       ├── invoices/
+    │       │   ├── route.ts         # GET list, POST create
+    │       │   ├── batch-status/route.ts # POST
+    │       │   ├── payments/route.ts # GET all payments
+    │       │   ├── stripe-webhook/route.ts # POST — Stripe payment intent
+    │       │   └── [id]/
+    │       │       ├── route.ts     # GET, PUT, DELETE
+    │       │       ├── pdf/route.ts     # GET — generate PDF
+    │       │       ├── send/route.ts    # POST — send via email
+    │       │       ├── duplicate/route.ts # POST
+    │       │       ├── mark-paid/route.ts # POST
+    │       │       ├── credit-note/route.ts # POST
+    │       │       ├── payment-link/route.ts # POST — Stripe link
+    │       │       └── payments/route.ts # POST — record payment
+    │       │
+    │       ├── installers/
+    │       │   ├── route.ts         # GET list, POST create
+    │       │   ├── stats/route.ts   # GET — aggregate stats
+    │       │   ├── export/route.ts  # GET — CSV download
+    │       │   ├── bulk/route.ts    # PUT update, DELETE remove
+    │       │   └── [id]/
+    │       │       ├── route.ts     # GET, PUT, DELETE
+    │       │       ├── performance/route.ts # GET
+    │       │       └── activities/route.ts # GET, POST
+    │       │
+    │       ├── reports/
+    │       │   ├── route.ts         # GET list, POST create
+    │       │   ├── export/route.ts  # GET — CSV/JSON export
+    │       │   ├── dashboard/route.ts # GET — dashboard data
+    │       │   └── [id]/route.ts    # PUT update, DELETE
+    │       │
+    │       ├── billing/
+    │       │   ├── plans/route.ts   # GET — available plans
+    │       │   ├── checkout/route.ts # POST — create Stripe checkout
+    │       │   ├── portal/route.ts  # POST — Stripe customer portal
+    │       │   ├── status/route.ts  # GET — current subscription
+    │       │   └── webhook/route.ts # POST — Stripe billing webhook
+    │       │
+    │       ├── ai/
+    │       │   ├── route.ts         # POST — Claude chat (8 action types)
+    │       │   ├── usage/route.ts   # GET — token usage stats
+    │       │   ├── validate/route.ts # POST — check API key validity
+    │       │   └── status/route.ts  # GET — AI availability
+    │       │
+    │       ├── email/
+    │       │   ├── route.ts         # GET list, POST send (Postmark)
+    │       │   └── webhook/route.ts # POST — Postmark delivery/bounce
+    │       │
+    │       ├── whatsapp/            # WhatsApp integration (5 endpoints)
+    │       │   ├── route.ts         # GET, POST
+    │       │   ├── messages/route.ts # GET
+    │       │   ├── send/route.ts    # POST
+    │       │   ├── webhook/route.ts # POST
+    │       │   └── config/route.ts  # GET, PUT
+    │       │
+    │       ├── workflows/
+    │       │   ├── route.ts         # GET list, POST create
+    │       │   ├── trigger/route.ts # POST — execute workflow
+    │       │   ├── executions/route.ts # GET — execution history
+    │       │   └── [id]/route.ts    # GET, PUT, DELETE
+    │       │
+    │       ├── settings/
+    │       │   ├── route.ts         # PATCH — update settings
+    │       │   ├── logo/route.ts    # POST — upload logo
+    │       │   ├── password/route.ts # PATCH — change password
+    │       │   └── overview-stats/route.ts # GET
+    │       │
+    │       ├── integrations/route.ts # GET, PUT, DELETE
+    │       ├── analytics/website/route.ts # GET — site metrics
+    │       ├── financial/route.ts   # GET — revenue/MRR summary
+    │       ├── stats/route.ts       # GET — aggregate stats
+    │       └── call/route.ts        # POST — AI-powered phone call
+    │
+    ├── components/
+    │   │
+    │   ├── SiteShell.tsx            # Public site layout — Header + Footer + ChatWidget
+    │   ├── Header.tsx               # Navigation bar (responsive)
+    │   ├── Footer.tsx               # Site footer
+    │   ├── ChatWidget.tsx           # Public AI chat bubble (lead capture)
+    │   ├── CookieBanner.tsx         # GDPR cookie consent banner
+    │   ├── ExitIntentPopup.tsx      # Exit-intent lead capture popup
+    │   ├── MotionProvider.tsx       # Framer Motion reduced-motion provider
+    │   ├── ScrollReveal.tsx         # Scroll-triggered reveal animations
+    │   ├── AnimatedCounter.tsx      # Animated number counter
+    │   ├── MagneticButton.tsx       # Magnetic hover effect button
+    │   ├── CustomCursor.tsx         # Custom cursor effect
+    │   ├── MiniDesktop.tsx          # Mini desktop preview component
+    │   ├── LoadingScreen.tsx        # Loading screen animation
+    │   │
+    │   │   # Marketing page components (11)
+    │   ├── HomePageClient.tsx       # Hero, features, agent cards, FAQ, pricing
+    │   ├── AboutPageClient.tsx      # Company story
+    │   ├── ServicesPageClient.tsx   # Service offerings
+    │   ├── WorkforcePageClient.tsx  # AI workforce deep-dive
+    │   ├── PricingPageClient.tsx    # Pricing plans
+    │   ├── BlogPageClient.tsx       # Blog listing
+    │   ├── BlogPostClient.tsx       # Blog post renderer
+    │   ├── ContactPageClient.tsx    # Contact form
+    │   ├── PrivacyPageClient.tsx    # Privacy policy
+    │   ├── TermsPageClient.tsx      # Terms of service
+    │   │
+    │   │   # Dashboard preview components (7)
+    │   ├── OperationsDashboard.tsx  # Ops dashboard showcase
+    │   ├── SupportDashboard.tsx     # Support dashboard showcase
+    │   ├── LogisticsDashboard.tsx   # Logistics dashboard showcase
+    │   ├── QADashboard.tsx          # QA dashboard showcase
+    │   ├── GrantsDashboard.tsx      # Grants dashboard showcase
+    │   ├── PermittingDashboard.tsx  # ESB permitting showcase
+    │   └── ReportingDashboard.tsx   # Reporting dashboard showcase
+    │   │
+    │   ├── crm/                     # CRM UI components (32)
+    │   │   ├── CRMProvider.tsx       # Auth state + React Query provider
+    │   │   ├── CrmShell.tsx         # CRM layout (sidebar, nav, metrics)
+    │   │   ├── PageTransition.tsx   # Animated page transitions
+    │   │   ├── AIAssistant.tsx      # Floating Claude chat bubble
+    │   │   ├── DashboardPageContent.tsx
+    │   │   ├── DashboardCharts.tsx  # Revenue, financial, web perf tabs
+    │   │   ├── RevenueChartCard.tsx
+    │   │   ├── FinancialTab.tsx
+    │   │   ├── WebPerformanceTab.tsx
+    │   │   ├── WebsiteAnalytics.tsx
+    │   │   ├── PipelineBoard.tsx    # Drag-and-drop Kanban (dnd-kit)
+    │   │   ├── PipelinePageContent.tsx
+    │   │   ├── CompaniesPageContent.tsx
+    │   │   ├── ContactsPageContent.tsx
+    │   │   ├── ContactDetailSheet.tsx
+    │   │   ├── DealsPageContent.tsx
+    │   │   ├── ActivitiesPageContent.tsx
+    │   │   ├── ActivityIcon.tsx
+    │   │   ├── CalendarView.tsx
+    │   │   ├── MeetingsPageContent.tsx
+    │   │   ├── TasksPageContent.tsx
+    │   │   ├── TaskDetailModal.tsx
+    │   │   ├── ProposalsPageContent.tsx
+    │   │   ├── InvoicesPageContent.tsx
+    │   │   ├── InstallersPageContent.tsx
+    │   │   ├── ReportsPageContent.tsx
+    │   │   ├── ReportsCharts.tsx
+    │   │   ├── SettingsPageContent.tsx
+    │   │   ├── WorkflowsPageContent.tsx
+    │   │   ├── StatCard.tsx
+    │   │   ├── StatusBadge.tsx
+    │   │   ├── PriorityBadge.tsx
+    │   │   └── InlineEdit.tsx
+    │   │
+    │   ├── onboarding/              # Onboarding wizard (16 files)
+    │   │   ├── Stepper.tsx          # Step indicator component
+    │   │   ├── Backdrop.tsx         # Modal backdrop
+    │   │   ├── book-demo.tsx        # Book a demo CTA
+    │   │   ├── ui.tsx               # Onboarding UI primitives
+    │   │   ├── data.tsx             # Step data + shared components
+    │   │   ├── data.ts              # Step configuration data
+    │   │   ├── onboarding-data.ts   # Form field definitions
+    │   │   ├── onboarding-styles.css # Wizard-specific CSS
+    │   │   ├── steps-landing.tsx    # Step 1 — overview
+    │   │   ├── steps-welcome.tsx    # Step 2 — intro
+    │   │   ├── steps-company.tsx    # Step 3 — company info
+    │   │   ├── steps-territory.tsx  # Step 4 — counties
+    │   │   ├── steps-finance.tsx    # Step 5 — revenue
+    │   │   ├── steps-tech.tsx       # Step 6 — software
+    │   │   ├── steps-tools.tsx      # Step 7 — equipment
+    │   │   ├── steps-legal.tsx      # Step 8 — compliance
+    │   │   ├── steps-account.tsx    # Step 9 — account create
+    │   │   └── steps-complete.tsx   # Step 10 — confirmation
+    │   │
+    │   ├── shared/                  # Reusable marketing sections
+    │   │   ├── AudienceSection.tsx
+    │   │   ├── BeforeAfterSection.tsx
+    │   │   └── HowItStartsSection.tsx
+    │   │
+    │   └── ui/                      # shadcn/ui components (47)
+    │       ├── accordion.tsx
+    │       ├── alert.tsx
+    │       ├── alert-dialog.tsx
+    │       ├── aspect-ratio.tsx
+    │       ├── avatar.tsx
+    │       ├── badge.tsx
+    │       ├── breadcrumb.tsx
+    │       ├── button.tsx
+    │       ├── calendar.tsx
+    │       ├── card.tsx
+    │       ├── carousel.tsx
+    │       ├── chart.tsx
+    │       ├── checkbox.tsx
+    │       ├── collapsible.tsx
+    │       ├── command.tsx
+    │       ├── context-menu.tsx
+    │       ├── dialog.tsx
+    │       ├── drawer.tsx
+    │       ├── dropdown-menu.tsx
+    │       ├── form.tsx
+    │       ├── hover-card.tsx
+    │       ├── input.tsx
+    │       ├── input-otp.tsx
+    │       ├── label.tsx
+    │       ├── menubar.tsx
+    │       ├── navigation-menu.tsx
+    │       ├── pagination.tsx
+    │       ├── popover.tsx
+    │       ├── progress.tsx
+    │       ├── radio-group.tsx
+    │       ├── resizable.tsx
+    │       ├── scroll-area.tsx
+    │       ├── select.tsx
+    │       ├── separator.tsx
+    │       ├── sheet.tsx
+    │       ├── sidebar.tsx
+    │       ├── skeleton.tsx
+    │       ├── slider.tsx
+    │       ├── sonner.tsx
+    │       ├── switch.tsx
+    │       ├── table.tsx
+    │       ├── tabs.tsx
+    │       ├── textarea.tsx
+    │       ├── toast.tsx
+    │       ├── toaster.tsx
+    │       ├── toggle.tsx
+    │       ├── toggle-group.tsx
+    │       ├── tooltip.tsx
+    │       └── visually-hidden.tsx
+    │
+    ├── lib/                         # Server-side utilities (26 files)
+    │   │
+    │   │   # Database & auth
+    │   ├── db.ts                    # Prisma client singleton
+    │   ├── supabase.ts              # Supabase client + service role client
+    │   ├── supabase-auth-helpers.ts # Cookie/token read/write utilities
+    │   ├── crm-auth.ts              # requireAuth(), requireAdmin() guards
+    │   ├── crm-session.ts           # JWT validation + profile fetch
+    │   ├── auth.ts                  # PBKDF2 password hashing + legacy SHA-256
+    │   ├── sessions.ts              # Redis session store (in-memory fallback)
+    │   ├── api-auth.ts              # withAuth() wrapper for API routes
+    │   │
+    │   │   # AI
+    │   ├── claude.ts                # Claude integration — 8 actions + streaming
+    │   └── claude-context.ts        # Real-time CRM context injection
+    │   │
+    │   │   # Integrations
+    │   ├── stripe.ts                # Stripe — checkout, portal, webhooks, plans
+    │   ├── postmark.ts              # Postmark — 4 templates + email logging
+    │   ├── redis.ts                 # Redis client (lazy connect)
+    │   │
+    │   │   # Security & validation
+    │   ├── rate-limit.ts            # Per-IP rate limiter (Redis + in-memory)
+    │   ├── sanitize.ts              # Input sanitization
+    │   ├── crm-schemas.ts           # Zod validation schemas
+    │   ├── crm-validation.ts        # Input validation helpers
+    │   │
+    │   │   # CRM utilities
+    │   ├── crm-data.ts              # Data access helpers
+    │   ├── crm-route-helpers.ts     # Route utility functions
+    │   ├── crm-theme.ts             # CRM theme handling
+    │   ├── logger.ts                # General structured logger
+    │   ├── logger-crm.ts            # CRM-specific logger
+    │   ├── format.ts                # Currency, date, number formatting
+    │   ├── utils.ts                 # cn() class merger, ClientOnly wrapper
+    │   ├── utils.tsx                # Utility React components
+    │   └── blog-data.ts             # 9 blog posts + getPostBySlug()
+    │
+    ├── data/                        # Static JSON content (AI agent CRUD target)
+    │   ├── blog.json                # Blog post metadata
+    │   ├── services.json            # 8 AI agent service definitions
+    │   ├── testimonials.json        # Customer testimonials
+    │   └── faqs.json                # FAQ entries
+    │
+    └── __tests__/                   # Test suites (6 suites, ~2,274 lines)
+        ├── setup.ts                 # Test environment setup
+        ├── auth.test.ts             # Password hashing, session tests
+        ├── crm-auth.test.ts         # CRM auth middleware tests
+        ├── crm-core.test.ts         # Core CRM logic tests (802 lines)
+        ├── crm-integration.test.ts  # Integration tests (518 lines)
+        ├── crm-schemas.test.ts      # Zod schema validation (462 lines)
+        └── crm-security.test.ts     # Security tests (181 lines)
 ```
 
 ---
