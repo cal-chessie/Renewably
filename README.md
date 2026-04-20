@@ -1,23 +1,95 @@
 # Renewably
 
-**AI workforce platform for solar installers in Ireland.**
-
-Renewably is a full-stack Next.js application that combines a public marketing website with a comprehensive CRM dashboard. It helps solar installation companies manage their entire operation — from lead generation and pipeline tracking to proposals, invoicing, billing, and customer communications — powered by AI agents that handle the repetitive work so installers can focus on what they do best.
-
----
-
-## Live
-
-**[renewably.ie](https://renewably.ie)**
+<p align="center">
+  <strong>AI workforce platform for solar installers in Ireland</strong><br>
+  <a href="https://renewably.ie">renewably.ie</a>
+</p>
 
 ---
 
-## Overview
+Renewably is a full-stack platform that helps solar installation companies run their entire business. It combines a conversion-optimised marketing website with a comprehensive CRM dashboard, both built on a single Next.js 16 codebase. The marketing site captures leads through an AI-powered chat widget and a multi-step onboarding wizard. The CRM manages the full lifecycle — companies, contacts, deals, pipeline, proposals, invoices, billing, calendar, and AI-assisted workflows — so installers can spend less time on admin and more time on rooftops.
 
-The application has two main sections:
+---
 
-1. **Marketing Website** (public) — Responsive pages built with Tailwind CSS 4, Framer Motion animations, and an AI-powered chat widget that captures leads directly into the CRM.
-2. **CRM Dashboard** (authenticated) — A full-featured business management system behind Supabase Auth, covering companies, contacts, deals, pipeline, proposals, invoices, calendar, AI assistance, and more.
+## Table of Contents
+
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Pages](#pages)
+- [Onboarding Wizard](#onboarding-wizard)
+- [API Reference](#api-reference)
+- [Database Schema](#database-schema)
+- [Authentication](#authentication)
+- [AI Features](#ai-features)
+- [Email System](#email-system)
+- [Environment Variables](#environment-variables)
+- [Getting Started](#getting-started)
+- [Security](#security)
+- [Deployment](#deployment)
+- [Stats](#stats)
+- [License](#license)
+
+---
+
+## Architecture
+
+```
+                        ┌─────────────────────────────┐
+                        │      renewably.ie (Caddy)      │
+                        │     Reverse proxy / HTTPS      │
+                        └──────────────┬───────────────┘
+                                       │
+                        ┌──────────────┴───────────────┐
+                        │   Next.js 16 (port 3000)       │
+                        │   ┌───────────────────────┐   │
+                        │   │   proxy.ts (auth)     │   │
+                        │   │   JWT → Supabase     │   │
+                        │   │   Rate limit: 10/min  │   │
+                        │   └───────────┬───────────┘   │
+                        │               │               │
+                        │   ┌───────────┴───────────┐   │
+                        │   │                      │   │
+                        │   │  Public (/)          │   │
+                        │   │  - Marketing pages   │   │
+                        │   │  - Blog              │   │
+                        │   │  - Chat widget       │   │
+                        │   │  - Onboarding        │   │
+                        │   │  - Contact form      │   │
+                        │   │                      │   │
+                        │   │  /crm (authenticated)│   │
+                        │   │  - Dashboard         │   │
+                        │   │  - Pipeline (Kanban) │   │
+                        │   │  - Companies        │   │
+                        │   │  - Deals / Invoices  │   │
+                        │   │  - AI Assistant     │   │
+                        │   │  - Calendar         │   │
+                        │   │  - Billing (Stripe)  │   │
+                        │   └──────────────────────┘   │
+                        └──────────────┬───────────────┘
+                                       │
+              ┌────────────────────────┼────────────────────────┐
+              │                        │                        │
+   ┌──────────┴──────────┐  ┌──────────┴──────────┐  ┌──────────┴──────────┐
+   │  Supabase (Postgres) │  │  SQLite (Prisma)   │  │  External APIs     │
+   │  - auth.users        │  │  - Companies        │  │  - Anthropic Claude │
+   │  - profiles          │  │  - Contacts         │  │  - Stripe          │
+   │  - email_logs        │  │  - Deals            │  │  - Postmark         │
+   │                      │  │  - Invoices         │  │  - Google Calendar │
+   │                      │  │  - Subscriptions    │  │                    │
+   │                      │  │  - Calendar tokens  │  │                    │
+   └─────────────────────┘  └─────────────────────┘  └─────────────────────┘
+```
+
+### How a request flows
+
+1. **Visitor hits `/`** — `proxy.ts` passes through (public route), Next.js renders the homepage
+2. **Visitor chats on the widget** — `POST /api/chat-widget` sends the message to Z-AI SDK, which detects buying signals and automatically creates a Contact + Deal in SQLite
+3. **User logs into CRM** — `POST /api/crm/auth` validates credentials against Supabase Auth, fetches the user's profile from the `profiles` table, and sets HttpOnly JWT cookies
+4. **User opens `/crm/dashboard`** — `proxy.ts` reads the JWT cookie, calls `supabase.auth.getUser()` to validate it, and either allows the request or redirects to `/crm/login`
+5. **User drags a deal on the pipeline** — `PUT /api/crm/pipeline` updates the deal stage, triggers a Postmark email to the assigned contact via `POST /api/crm/email`, and logs the activity
+6. **User creates an invoice** — `POST /api/crm/invoices` stores it in SQLite. `GET /api/crm/invoices/[id]/pdf` generates a PDF with `@react-pdf/renderer`. `POST /api/crm/invoices/[id]/send` emails it via Postmark
+7. **User asks the AI assistant** — `POST /api/crm/ai` fetches relevant CRM context (contacts, deals, tasks) from SQLite, injects it into a Claude prompt, and streams the response back
 
 ---
 
@@ -27,26 +99,26 @@ The application has two main sections:
 |-------|-----------|
 | Framework | Next.js 16 (App Router, standalone output) |
 | Language | TypeScript 5 |
-| Runtime | Bun |
+| Runtime | Bun (Node.js fallback) |
 | Styling | Tailwind CSS 4 + shadcn/ui (new-york theme, 47 primitives) |
 | Animations | Framer Motion 12 |
-| Database | Supabase (PostgreSQL) — user profiles, auth |
+| Database | Supabase (PostgreSQL) — auth, profiles, email logs |
 | Local DB | SQLite via Prisma ORM — CRM data, sessions |
-| Auth | Supabase Auth (primary) + custom PBKDF2 session fallback |
-| Email | Postmark (transactional email + webhooks) |
-| Payments | Stripe (checkout, portal, webhooks) |
-| Calendar | Google Calendar API (OAuth2, event sync) |
+| Auth | Supabase Auth (JWT + HttpOnly cookies) |
+| Email | Postmark (transactional email + delivery webhooks) |
+| Payments | Stripe (checkout sessions, customer portal, webhooks) |
+| Calendar | Google Calendar API (OAuth2, bidirectional event sync) |
 | AI | Anthropic Claude (`claude-sonnet-4-20250514`) + Z-AI SDK (public chat) |
 | Charts | Recharts |
-| State | Zustand + React Query |
+| State | React Query (TanStack Query 5) + React Context |
 | Tables | React Table (`@tanstack/react-table`) |
-| Forms | React Hook Form + Zod validation |
-| Drag & Drop | dnd-kit (pipeline Kanban) |
-| PDF Generation | @react-pdf/renderer |
-| Caching | Redis (optional, in-memory fallback for sessions + rate limiting) |
+| Forms | React Hook Form 7 + Zod 4 |
+| Drag & Drop | dnd-kit (pipeline Kanban board) |
+| PDF Generation | `@react-pdf/renderer` (invoices + proposals) |
+| Caching | Redis (optional — all features degrade to in-memory fallback) |
 | Toasts | Sonner |
 | Icons | Lucide React |
-| Testing | Vitest + Testing Library (7 test suites, 235+ tests) |
+| Testing | Vitest 4 + Testing Library (6 suites, 2,274 lines) |
 | Linting | ESLint 9 |
 | Reverse Proxy | Caddy (automatic HTTPS via Let's Encrypt) |
 
@@ -58,14 +130,12 @@ The application has two main sections:
 renewably/
 ├── .env.example                     # Environment variable template (18 vars)
 ├── .gitignore                       # Git ignore rules
-├── .next/                           # Build output (gitignored)
 ├── Caddyfile                        # Reverse proxy — port 81 → localhost:3000
 ├── components.json                  # shadcn/ui config (new-york theme)
 ├── eslint.config.mjs                # ESLint config
 ├── keep-alive.sh                    # Dev server keep-alive script (cron)
 ├── next.config.ts                   # Next.js — CSP, security headers, standalone output
 ├── package.json                     # Dependencies and scripts
-├── package-lock.json
 ├── postcss.config.mjs               # PostCSS — @tailwindcss/postcss
 ├── tailwind.config.ts               # Tailwind — CSS variables, shadcn/ui theme
 ├── tsconfig.json                    # TypeScript — strict, ES2017, @/ alias
@@ -75,20 +145,16 @@ renewably/
 │   ├── schema.prisma                # Database schema — 12 models (SQLite)
 │   ├── seed.ts                      # Database seeder
 │   └── migrations/                  # SQL migrations (3)
-│       ├── 20260411225302_init/
-│       ├── 20260415201111_init/
-│       └── 20260419172238_add_installer_profile/
 │
 ├── public/                          # Static assets (served at /)
 │   ├── agents/                      # AI workforce agent photos (8)
-│   ├── scripts/
-│   │   └── polyfills.js             # CSP workaround for Turbopack + framer-motion
-│   ├── favicon.ico
+│   ├── scripts/polyfills.js         # CSP workaround for Turbopack + framer-motion
+│   ├── favicon.ico                  # Favicon
 │   ├── apple-touch-icon.png         # iOS home screen icon
 │   ├── og-image.png                 # Open Graph social sharing image
 │   ├── logo.svg                     # Primary brand logo
-│   ├── logo-icon.png                # PWA icon (192 + 512 variants)
-│   ├── icon.png                     # Favicon (auto-generated)
+│   ├── logo-icon.png                # PWA icon (192 + 512)
+│   ├── icon.png                     # Auto-generated favicon
 │   ├── manifest.json                # PWA manifest — standalone, dark theme
 │   └── robots.txt                   # Disallows /api/ and /crm/
 │
@@ -102,17 +168,16 @@ renewably/
     │   │                           #   JSON-LD, Sonner toaster, MotionProvider
     │   ├── globals.css              # Tailwind base + CSS variable theme
     │   ├── page.tsx                 # Homepage
-    │   ├── not-found.tsx            # Custom 404 page
+    │   ├── not-found.tsx            # Custom 404
     │   ├── error.tsx                # Error boundary
     │   ├── global-error.tsx         # Global error boundary
     │   ├── loading.tsx              # Global loading state
     │   ├── robots.ts                # Dynamic robots.txt (disallows /api/, /crm/)
     │   ├── sitemap.ts               # Dynamic sitemap (9 pages + 9 blog posts)
     │   │
-    │   ├── about/page.tsx           # About page
-    │   ├── blog/
-    │   │   ├── page.tsx             # Blog listing
-    │   │   └── [slug]/page.tsx      # Blog post (dynamic)
+    │   ├── about/page.tsx           # About
+    │   ├── blog/page.tsx             # Blog listing
+    │   ├── blog/[slug]/page.tsx      # Blog post (dynamic)
     │   ├── contact/page.tsx         # Contact form
     │   ├── pricing/page.tsx         # Pricing plans
     │   ├── privacy/page.tsx         # Privacy policy
@@ -132,12 +197,8 @@ renewably/
     │       ├── loading.tsx          # CRM loading state
     │       ├── login/page.tsx       # Login form (email + password)
     │       ├── dashboard/page.tsx   # KPIs, charts, activity feed
-    │       ├── companies/
-    │       │   ├── page.tsx         # Company list
-    │       │   └── [id]/page.tsx    # Company detail + contacts + deals
-    │       ├── contacts/
-    │       │   ├── page.tsx         # Contact list
-    │       │   └── [id]/page.tsx    # Contact detail + inline editing
+    │       ├── companies/[id]/      # Company detail + contacts + deals
+    │       ├── contacts/[id]/       # Contact detail + inline editing
     │       ├── deals/page.tsx       # Deal list
     │       ├── pipeline/page.tsx    # Drag-and-drop Kanban (dnd-kit)
     │       ├── activities/page.tsx  # Unified activity timeline
@@ -153,363 +214,105 @@ renewably/
     │       └── workflows/page.tsx   # Workflow automation
     │
     ├── api/                         # API route handlers (~95 endpoints)
-    │   │
     │   ├── contact/route.ts         # POST — public contact form
-    │   │
     │   ├── chat-widget/route.ts     # POST — AI chat (lead capture)
-    │   │                           #   Detects buying signals → creates Contact + Deal
-    │   │
     │   ├── ai-agent/route.ts        # CRUD — blog/services/testimonials/FAQs
-    │   │                           #   Auth: AGENT_API_KEY header
-    │   │
-    │   ├── onboarding/
-    │   │   ├── progress/route.ts    # GET/PUT — save and resume progress
-    │   │   └── submit/route.ts      # POST — submit onboarding form
-    │   │
-    │   └── crm/                     # CRM endpoints (require auth)
-    │       │
-    │       ├── auth/
-    │       │   ├── route.ts         # POST login, GET validate, DELETE logout
-    │       │   ├── login/route.ts   # POST — email/password → Supabase JWT
-    │       │   ├── logout/route.ts  # POST — clear session
-    │       │   ├── me/route.ts      # GET — current user profile
-    │       │   └── refresh/route.ts # POST — refresh JWT tokens
-    │       │
-    │       ├── dashboard/route.ts   # GET — KPIs, funnel, revenue, activity
-    │       │
-    │       ├── companies/
-    │       │   ├── route.ts         # GET list, POST create
-    │       │   └── [id]/
-    │       │       ├── route.ts     # GET, PUT, DELETE
-    │       │       └── logo/route.ts # POST upload, DELETE remove
-    │       │
-    │       ├── contacts/
-    │       │   ├── route.ts         # GET list, POST create
-    │       │   └── [id]/route.ts    # GET, PUT, DELETE
-    │       │
-    │       ├── leads/
-    │       │   ├── route.ts         # GET list, POST create
-    │       │   └── [id]/
-    │       │       ├── route.ts     # GET, PATCH, DELETE
-    │       │       └── activities/route.ts # POST — log activity
-    │       │
-    │       ├── deals/
-    │       │   ├── route.ts         # GET list, POST create
-    │       │   └── [id]/
-    │       │       ├── route.ts     # GET, PATCH, DELETE
-    │       │       └── activities/route.ts # GET, POST
-    │       │
-    │       ├── pipeline/route.ts    # GET board data, PUT reorder
-    │       │
-    │       ├── activities/route.ts  # GET feed, POST log
-    │       ├── notes/route.ts       # GET list, POST create
-    │       ├── tags/route.ts        # GET, POST, DELETE
-    │       │
-    │       ├── calendar/
-    │       │   ├── route.ts         # GET — calendar events
-    │       │   └── google/          # OAuth2 integration (7 endpoints)
-    │       │       ├── auth-url/route.ts  # GET — OAuth consent URL
-    │       │       ├── callback/route.ts  # GET — exchange code for tokens
-    │       │       ├── status/route.ts    # GET — connection status
-    │       │       ├── events/route.ts    # GET — list Google events
-    │       │       ├── sync/route.ts      # POST — sync calendars
-    │       │       ├── push-event/route.ts # POST — push to Google
-    │       │       └── disconnect/route.ts # POST — revoke connection
-    │       │
-    │       ├── meetings/
-    │       │   ├── route.ts         # GET list, POST create
-    │       │   └── [id]/
-    │       │       ├── route.ts     # GET, PATCH, DELETE
-    │       │       ├── complete/route.ts # POST
-    │       │       └── cancel/route.ts   # POST
-    │       │
-    │       ├── tasks/
-    │       │   ├── route.ts         # GET list, POST create, PUT reorder
-    │       │   └── [id]/route.ts    # PUT update, DELETE
-    │       │
-    │       ├── proposals/
-    │       │   ├── route.ts         # GET list, POST create
-    │       │   ├── batch-status/route.ts # POST — bulk status update
-    │       │   ├── templates/route.ts # GET list, POST create
-    │       │   └── [id]/
-    │       │       ├── route.ts     # GET, PUT, DELETE
-    │       │       ├── pdf/route.ts     # GET — generate PDF
-    │       │       ├── send/route.ts    # POST — send via email
-    │       │       ├── duplicate/route.ts # POST
-    │       │       └── status/route.ts  # POST — update status
-    │       │
-    │       ├── invoices/
-    │       │   ├── route.ts         # GET list, POST create
-    │       │   ├── batch-status/route.ts # POST
-    │       │   ├── payments/route.ts # GET all payments
-    │       │   ├── stripe-webhook/route.ts # POST — Stripe payment intent
-    │       │   └── [id]/
-    │       │       ├── route.ts     # GET, PUT, DELETE
-    │       │       ├── pdf/route.ts     # GET — generate PDF
-    │       │       ├── send/route.ts    # POST — send via email
-    │       │       ├── duplicate/route.ts # POST
-    │       │       ├── mark-paid/route.ts # POST
-    │       │       ├── credit-note/route.ts # POST
-    │       │       ├── payment-link/route.ts # POST — Stripe link
-    │       │       └── payments/route.ts # POST — record payment
-    │       │
-    │       ├── installers/
-    │       │   ├── route.ts         # GET list, POST create
-    │       │   ├── stats/route.ts   # GET — aggregate stats
-    │       │   ├── export/route.ts  # GET — CSV download
-    │       │   ├── bulk/route.ts    # PUT update, DELETE remove
-    │       │   └── [id]/
-    │       │       ├── route.ts     # GET, PUT, DELETE
-    │       │       ├── performance/route.ts # GET
-    │       │       └── activities/route.ts # GET, POST
-    │       │
-    │       ├── reports/
-    │       │   ├── route.ts         # GET list, POST create
-    │       │   ├── export/route.ts  # GET — CSV/JSON export
-    │       │   ├── dashboard/route.ts # GET — dashboard data
-    │       │   └── [id]/route.ts    # PUT update, DELETE
-    │       │
-    │       ├── billing/
-    │       │   ├── plans/route.ts   # GET — available plans
-    │       │   ├── checkout/route.ts # POST — create Stripe checkout
-    │       │   ├── portal/route.ts  # POST — Stripe customer portal
-    │       │   ├── status/route.ts  # GET — current subscription
-    │       │   └── webhook/route.ts # POST — Stripe billing webhook
-    │       │
-    │       ├── ai/
-    │       │   ├── route.ts         # POST — Claude chat (8 action types)
-    │       │   ├── usage/route.ts   # GET — token usage stats
-    │       │   ├── validate/route.ts # POST — check API key validity
-    │       │   └── status/route.ts  # GET — AI availability
-    │       │
-    │       ├── email/
-    │       │   ├── route.ts         # GET list, POST send (Postmark)
-    │       │   └── webhook/route.ts # POST — Postmark delivery/bounce
-    │       │
-    │       ├── whatsapp/            # WhatsApp integration (5 endpoints)
-    │       │   ├── route.ts         # GET, POST
-    │       │   ├── messages/route.ts # GET
-    │       │   ├── send/route.ts    # POST
-    │       │   ├── webhook/route.ts # POST
-    │       │   └── config/route.ts  # GET, PUT
-    │       │
-    │       ├── workflows/
-    │       │   ├── route.ts         # GET list, POST create
-    │       │   ├── trigger/route.ts # POST — execute workflow
-    │       │   ├── executions/route.ts # GET — execution history
-    │       │   └── [id]/route.ts    # GET, PUT, DELETE
-    │       │
-    │       ├── settings/
-    │       │   ├── route.ts         # PATCH — update settings
-    │       │   ├── logo/route.ts    # POST — upload logo
-    │       │   ├── password/route.ts # PATCH — change password
-    │       │   └── overview-stats/route.ts # GET
-    │       │
-    │       ├── integrations/route.ts # GET, PUT, DELETE
-    │       ├── analytics/website/route.ts # GET — site metrics
-    │       ├── financial/route.ts   # GET — revenue/MRR summary
-    │       ├── stats/route.ts       # GET — aggregate stats
-    │       └── call/route.ts        # POST — AI-powered phone call
+    │   ├── onboarding/              # Progress + submit
+    │   └── crm/                     # All CRM endpoints (require auth)
+    │       ├── auth/                # Login, logout, session, refresh (5)
+    │       ├── dashboard/           # KPIs and analytics
+    │       ├── companies/           # CRUD + logo upload
+    │       ├── contacts/            # CRUD
+    │       ├── leads/               # CRUD + activities
+    │       ├── deals/               # CRUD + activities
+    │       ├── pipeline/            # Board data + reorder
+    │       ├── activities/          # Activity feed + notes + tags
+    │       ├── calendar/google/     # OAuth2 integration (7 endpoints)
+    │       ├── meetings/            # CRUD + cancel/complete
+    │       ├── tasks/               # CRUD
+    │       ├── proposals/           # CRUD + PDF + send + duplicate + templates
+    │       ├── invoices/            # CRUD + PDF + send + Stripe payments + credit notes
+    │       ├── installers/          # CRUD + performance + export + bulk
+    │       ├── reports/             # CRUD + export + dashboard
+    │       ├── billing/             # Stripe plans, checkout, portal, webhook
+    │       ├── ai/                  # Claude assistant + usage + validate
+    │       ├── email/                # Postmark sending + delivery webhook
+    │       ├── whatsapp/            # Messaging + webhook + config (5 endpoints)
+    │       ├── workflows/           # CRUD + trigger + executions
+    │       ├── settings/            # Profile, logo, password
+    │       ├── integrations/        # Third-party integrations
+    │       ├── analytics/website/   # Website metrics
+    │       ├── financial/           # Revenue/MRR summary
+    │       └── call/                # AI-powered phone call
     │
     ├── components/
-    │   │
     │   ├── SiteShell.tsx            # Public site layout — Header + Footer + ChatWidget
     │   ├── Header.tsx               # Navigation bar (responsive)
     │   ├── Footer.tsx               # Site footer
     │   ├── ChatWidget.tsx           # Public AI chat bubble (lead capture)
-    │   ├── CookieBanner.tsx         # GDPR cookie consent banner
-    │   ├── ExitIntentPopup.tsx      # Exit-intent lead capture popup
-    │   ├── MotionProvider.tsx       # Framer Motion reduced-motion provider
-    │   ├── ScrollReveal.tsx         # Scroll-triggered reveal animations
+    │   ├── CookieBanner.tsx         # GDPR cookie consent
+    │   ├── ExitIntentPopup.tsx      # Exit-intent lead capture
+    │   ├── MotionProvider.tsx       # Framer Motion provider
+    │   ├── ScrollReveal.tsx         # Scroll-triggered animations
     │   ├── AnimatedCounter.tsx      # Animated number counter
-    │   ├── MagneticButton.tsx       # Magnetic hover effect button
-    │   ├── CustomCursor.tsx         # Custom cursor effect
-    │   ├── MiniDesktop.tsx          # Mini desktop preview component
-    │   ├── LoadingScreen.tsx        # Loading screen animation
+    │   ├── MagneticButton.tsx       # Magnetic hover effect
+    │   ├── CustomCursor.tsx         # Custom cursor
+    │   ├── MiniDesktop.tsx          # Mini desktop preview
+    │   ├── LoadingScreen.tsx        # Loading screen
     │   │
-    │   │   # Marketing page components (11)
-    │   ├── HomePageClient.tsx       # Hero, features, agent cards, FAQ, pricing
-    │   ├── AboutPageClient.tsx      # Company story
-    │   ├── ServicesPageClient.tsx   # Service offerings
-    │   ├── WorkforcePageClient.tsx  # AI workforce deep-dive
-    │   ├── PricingPageClient.tsx    # Pricing plans
-    │   ├── BlogPageClient.tsx       # Blog listing
-    │   ├── BlogPostClient.tsx       # Blog post renderer
-    │   ├── ContactPageClient.tsx    # Contact form
-    │   ├── PrivacyPageClient.tsx    # Privacy policy
-    │   ├── TermsPageClient.tsx      # Terms of service
+    │   ├── *PageClient.tsx          # Marketing pages (11)
+    │   ├── *Dashboard.tsx           # Dashboard previews (7)
     │   │
-    │   │   # Dashboard preview components (7)
-    │   ├── OperationsDashboard.tsx  # Ops dashboard showcase
-    │   ├── SupportDashboard.tsx     # Support dashboard showcase
-    │   ├── LogisticsDashboard.tsx   # Logistics dashboard showcase
-    │   ├── QADashboard.tsx          # QA dashboard showcase
-    │   ├── GrantsDashboard.tsx      # Grants dashboard showcase
-    │   ├── PermittingDashboard.tsx  # ESB permitting showcase
-    │   └── ReportingDashboard.tsx   # Reporting dashboard showcase
-    │   │
-    │   ├── crm/                     # CRM UI components (32)
+    │   ├── crm/                     # CRM components (32)
     │   │   ├── CRMProvider.tsx       # Auth state + React Query provider
-    │   │   ├── CrmShell.tsx         # CRM layout (sidebar, nav, metrics)
-    │   │   ├── PageTransition.tsx   # Animated page transitions
-    │   │   ├── AIAssistant.tsx      # Floating Claude chat bubble
-    │   │   ├── DashboardPageContent.tsx
-    │   │   ├── DashboardCharts.tsx  # Revenue, financial, web perf tabs
-    │   │   ├── RevenueChartCard.tsx
-    │   │   ├── FinancialTab.tsx
-    │   │   ├── WebPerformanceTab.tsx
-    │   │   ├── WebsiteAnalytics.tsx
-    │   │   ├── PipelineBoard.tsx    # Drag-and-drop Kanban (dnd-kit)
-    │   │   ├── PipelinePageContent.tsx
-    │   │   ├── CompaniesPageContent.tsx
-    │   │   ├── ContactsPageContent.tsx
-    │   │   ├── ContactDetailSheet.tsx
-    │   │   ├── DealsPageContent.tsx
-    │   │   ├── ActivitiesPageContent.tsx
-    │   │   ├── ActivityIcon.tsx
-    │   │   ├── CalendarView.tsx
-    │   │   ├── MeetingsPageContent.tsx
-    │   │   ├── TasksPageContent.tsx
-    │   │   ├── TaskDetailModal.tsx
-    │   │   ├── ProposalsPageContent.tsx
-    │   │   ├── InvoicesPageContent.tsx
-    │   │   ├── InstallersPageContent.tsx
-    │   │   ├── ReportsPageContent.tsx
-    │   │   ├── ReportsCharts.tsx
-    │   │   ├── SettingsPageContent.tsx
-    │   │   ├── WorkflowsPageContent.tsx
-    │   │   ├── StatCard.tsx
-    │   │   ├── StatusBadge.tsx
-    │   │   ├── PriorityBadge.tsx
-    │   │   └── InlineEdit.tsx
+    │   │   ├── CrmShell.tsx         # CRM layout (sidebar, nav)
+    │   │   ├── AIAssistant.tsx      # Floating Claude chat
+    │   │   ├── PipelineBoard.tsx    # Drag-and-drop Kanban
+    │   │   ├── DashboardCharts.tsx  # Revenue, financial, web perf
+    │   │   ├── CalendarView.tsx     # Calendar
+    │   │   └── ...                  # Page content + shared UI
     │   │
     │   ├── onboarding/              # Onboarding wizard (16 files)
-    │   │   ├── Stepper.tsx          # Step indicator component
+    │   │   ├── steps-*.tsx          # 10 step components
+    │   │   ├── Stepper.tsx          # Step indicator
     │   │   ├── Backdrop.tsx         # Modal backdrop
-    │   │   ├── book-demo.tsx        # Book a demo CTA
-    │   │   ├── ui.tsx               # Onboarding UI primitives
-    │   │   ├── data.tsx             # Step data + shared components
-    │   │   ├── data.ts              # Step configuration data
-    │   │   ├── onboarding-data.ts   # Form field definitions
-    │   │   ├── onboarding-styles.css # Wizard-specific CSS
-    │   │   ├── steps-landing.tsx    # Step 1 — overview
-    │   │   ├── steps-welcome.tsx    # Step 2 — intro
-    │   │   ├── steps-company.tsx    # Step 3 — company info
-    │   │   ├── steps-territory.tsx  # Step 4 — counties
-    │   │   ├── steps-finance.tsx    # Step 5 — revenue
-    │   │   ├── steps-tech.tsx       # Step 6 — software
-    │   │   ├── steps-tools.tsx      # Step 7 — equipment
-    │   │   ├── steps-legal.tsx      # Step 8 — compliance
-    │   │   ├── steps-account.tsx    # Step 9 — account create
-    │   │   └── steps-complete.tsx   # Step 10 — confirmation
+    │   │   └── book-demo.tsx        # Book a demo CTA
     │   │
-    │   ├── shared/                  # Reusable marketing sections
-    │   │   ├── AudienceSection.tsx
-    │   │   ├── BeforeAfterSection.tsx
-    │   │   └── HowItStartsSection.tsx
+    │   ├── shared/                  # Reusable marketing sections (3)
     │   │
-    │   └── ui/                      # shadcn/ui components (47)
-    │       ├── accordion.tsx
-    │       ├── alert.tsx
-    │       ├── alert-dialog.tsx
-    │       ├── aspect-ratio.tsx
-    │       ├── avatar.tsx
-    │       ├── badge.tsx
-    │       ├── breadcrumb.tsx
-    │       ├── button.tsx
-    │       ├── calendar.tsx
-    │       ├── card.tsx
-    │       ├── carousel.tsx
-    │       ├── chart.tsx
-    │       ├── checkbox.tsx
-    │       ├── collapsible.tsx
-    │       ├── command.tsx
-    │       ├── context-menu.tsx
-    │       ├── dialog.tsx
-    │       ├── drawer.tsx
-    │       ├── dropdown-menu.tsx
-    │       ├── form.tsx
-    │       ├── hover-card.tsx
-    │       ├── input.tsx
-    │       ├── input-otp.tsx
-    │       ├── label.tsx
-    │       ├── menubar.tsx
-    │       ├── navigation-menu.tsx
-    │       ├── pagination.tsx
-    │       ├── popover.tsx
-    │       ├── progress.tsx
-    │       ├── radio-group.tsx
-    │       ├── resizable.tsx
-    │       ├── scroll-area.tsx
-    │       ├── select.tsx
-    │       ├── separator.tsx
-    │       ├── sheet.tsx
-    │       ├── sidebar.tsx
-    │       ├── skeleton.tsx
-    │       ├── slider.tsx
-    │       ├── sonner.tsx
-    │       ├── switch.tsx
-    │       ├── table.tsx
-    │       ├── tabs.tsx
-    │       ├── textarea.tsx
-    │       ├── toast.tsx
-    │       ├── toaster.tsx
-    │       ├── toggle.tsx
-    │       ├── toggle-group.tsx
-    │       ├── tooltip.tsx
-    │       └── visually-hidden.tsx
+    │   └── ui/                      # shadcn/ui primitives (47)
     │
     ├── lib/                         # Server-side utilities (26 files)
-    │   │
-    │   │   # Database & auth
-    │   ├── db.ts                    # Prisma client singleton
-    │   ├── supabase.ts              # Supabase client + service role client
-    │   ├── supabase-auth-helpers.ts # Cookie/token read/write utilities
-    │   ├── crm-auth.ts              # requireAuth(), requireAdmin() guards
+    │   ├── supabase.ts              # Supabase client + service role
+    │   ├── supabase-auth-helpers.ts # Cookie/token utilities
+    │   ├── crm-auth.ts              # requireAuth(), requireAdmin()
     │   ├── crm-session.ts           # JWT validation + profile fetch
-    │   ├── auth.ts                  # PBKDF2 password hashing + legacy SHA-256
-    │   ├── sessions.ts              # Redis session store (in-memory fallback)
-    │   ├── api-auth.ts              # withAuth() wrapper for API routes
-    │   │
-    │   │   # AI
-    │   ├── claude.ts                # Claude integration — 8 actions + streaming
-    │   └── claude-context.ts        # Real-time CRM context injection
-    │   │
-    │   │   # Integrations
-    │   ├── stripe.ts                # Stripe — checkout, portal, webhooks, plans
-    │   ├── postmark.ts              # Postmark — 4 templates + email logging
+    │   ├── db.ts                    # Prisma client singleton
+    │   ├── claude.ts                # Claude — 8 actions + streaming
+    │   ├── claude-context.ts        # Real-time CRM context injection
+    │   ├── stripe.ts                # Stripe checkout, portal, webhooks
+    │   ├── postmark.ts              # 4 email templates + logging
     │   ├── redis.ts                 # Redis client (lazy connect)
-    │   │
-    │   │   # Security & validation
-    │   ├── rate-limit.ts            # Per-IP rate limiter (Redis + in-memory)
+    │   ├── rate-limit.ts            # Per-IP rate limiter
     │   ├── sanitize.ts              # Input sanitization
     │   ├── crm-schemas.ts           # Zod validation schemas
     │   ├── crm-validation.ts        # Input validation helpers
-    │   │
-    │   │   # CRM utilities
-    │   ├── crm-data.ts              # Data access helpers
-    │   ├── crm-route-helpers.ts     # Route utility functions
-    │   ├── crm-theme.ts             # CRM theme handling
-    │   ├── logger.ts                # General structured logger
-    │   ├── logger-crm.ts            # CRM-specific logger
-    │   ├── format.ts                # Currency, date, number formatting
-    │   ├── utils.ts                 # cn() class merger, ClientOnly wrapper
-    │   ├── utils.tsx                # Utility React components
-    │   └── blog-data.ts             # 9 blog posts + getPostBySlug()
+    │   ├── logger.ts / logger-crm.ts # Structured logging
+    │   ├── blog-data.ts             # 9 blog posts + getPostBySlug()
+    │   └── utils.ts / utils.tsx / format.ts
     │
-    ├── data/                        # Static JSON content (AI agent CRUD target)
+    ├── data/                        # Static JSON (AI agent CRUD target)
     │   ├── blog.json                # Blog post metadata
-    │   ├── services.json            # 8 AI agent service definitions
+    │   ├── services.json            # 8 AI agent definitions
     │   ├── testimonials.json        # Customer testimonials
     │   └── faqs.json                # FAQ entries
     │
-    └── __tests__/                   # Test suites (6 suites, ~2,274 lines)
-        ├── setup.ts                 # Test environment setup
-        ├── auth.test.ts             # Password hashing, session tests
-        ├── crm-auth.test.ts         # CRM auth middleware tests
-        ├── crm-core.test.ts         # Core CRM logic tests (802 lines)
+    └── __tests__/                   # Test suites (6, ~2,274 lines)
+        ├── auth.test.ts             # Password hashing, sessions
+        ├── crm-auth.test.ts         # CRM auth middleware
+        ├── crm-core.test.ts         # Core CRM logic (802 lines)
         ├── crm-integration.test.ts  # Integration tests (518 lines)
-        ├── crm-schemas.test.ts      # Zod schema validation (462 lines)
+        ├── crm-schemas.test.ts      # Zod validation (462 lines)
         └── crm-security.test.ts     # Security tests (181 lines)
 ```
 
@@ -521,62 +324,66 @@ renewably/
 
 | Page | Route | Description |
 |------|-------|-------------|
-| Home | `/` | Cinematic hero, feature showcase, AI agent cards, FAQ, pricing, CTAs |
+| Home | `/` | Cinematic hero, feature showcase, 8 AI agent cards, FAQ, pricing, CTAs |
 | Services | `/services` | Solar-specific service offerings |
 | AI Workforce | `/workforce` | Detailed AI agent descriptions |
-| Pricing | `/pricing` | Subscription plans |
+| Pricing | `/pricing` | Subscription plans (Starter, Pro, Enterprise) |
 | About | `/about` | Company story and mission |
-| Blog | `/blog` | Blog listing (JSON-based) |
-| Blog Post | `/blog/[slug]` | Individual blog posts |
+| Blog | `/blog` | Blog listing (9 articles, JSON-based with full markdown content) |
+| Blog Post | `/blog/[slug]` | Individual blog posts rendered via react-markdown |
 | Contact | `/contact` | Contact form |
-| Onboarding | `/onboarding` | Multi-step signup wizard (9 steps) |
+| Onboarding | `/onboarding` | Multi-step signup wizard (10 stages) |
 | Privacy | `/privacy` | Privacy policy |
 | Terms | `/terms` | Terms of service |
-
-### Onboarding Wizard
-
-A multi-step public signup wizard at `/onboarding` (no auth required) that walks new solar installers through setting up their business profile. It collects company information, territory, financial details, tech stack, tools, and legal compliance. Submissions are stored in the database and can be resumed via progress tracking.
-
-**Steps (9 stages):**
-
-1. **Landing** — Introduction and value proposition
-2. **Welcome** — Company name and primary contact
-3. **Company Info** — Business type, SEAI registration, team size
-4. **Territory** — Service area and target counties
-5. **Finance** — Revenue range and pricing model
-6. **Tech Stack** — Current software and tools
-7. **Tools** — Hardware and equipment used
-8. **Legal** — Compliance and certifications
-9. **Account** — Email and password creation
-10. **Complete** — Confirmation and next steps
-
-**API Endpoints:**
-- `POST /api/onboarding/submit` — Submit onboarding form
-- `GET/PUT /api/onboarding/progress` — Track or resume progress
 
 ### CRM Dashboard (Authenticated)
 
 | Page | Route | Description |
 |------|-------|-------------|
 | Login | `/crm/login` | Email/password login (Supabase Auth) |
-| Dashboard | `/crm/dashboard` | KPIs, revenue charts, pipeline funnel, activity feed |
-| Companies | `/crm/companies` | Installer company profiles with search/filter/sort |
+| Dashboard | `/crm/dashboard` | KPIs, revenue charts, pipeline funnel, activity feed, onboarding progress |
+| Companies | `/crm/companies` | Installer profiles with search, filter, sort |
 | Company Detail | `/crm/companies/[id]` | Contacts, deals, activities, onboarding progress |
 | Contacts | `/crm/contacts` | Decision-maker directory |
-| Contact Detail | `/crm/contacts/[id]` | Contact details with inline editing |
-| Pipeline | `/crm/pipeline` | Drag-and-drop Kanban board (8 stages) |
+| Contact Detail | `/crm/contacts/[id]` | Inline editing, activity history |
+| Pipeline | `/crm/pipeline` | Drag-and-drop Kanban board (dnd-kit, 8 stages) |
 | Deals | `/crm/deals` | Deal list with filtering |
-| Activities | `/crm/activities` | Full activity feed |
-| Calendar | `/crm/calendar` | Google Calendar integration (OAuth2, event sync) |
-| Meetings | `/crm/meetings` | Scheduling with cancel/complete actions |
+| Activities | `/crm/activities` | Unified activity timeline across deals, contacts, companies |
+| Calendar | `/crm/calendar` | Google Calendar integration (OAuth2, bidirectional sync) |
+| Meetings | `/crm/meetings` | Scheduling with cancel/complete actions and calendar push |
 | Tasks | `/crm/tasks` | Task management with priorities and due dates |
 | Proposals | `/crm/proposals` | Create, send, duplicate, generate PDFs, manage templates |
-| Invoices | `/crm/invoices` | CRUD, PDF generation, Stripe payments, credit notes |
-| Installers | `/crm/installers` | Health scores, performance charts, bulk ops, CSV export |
+| Invoices | `/crm/invoices` | CRUD, PDF generation, Stripe payment links, credit notes |
+| Installers | `/crm/installers` | Health scores, performance charts, bulk operations, CSV export |
 | Reports | `/crm/reports` | Revenue reports, pipeline analytics, data export |
 | Billing | `/crm/billing` | Stripe subscription management (Starter/Pro/Enterprise) |
-| Settings | `/crm/settings` | Profile, password change, logo upload |
-| Workflows | `/crm/workflows` | Automation workflow engine with trigger/executions |
+| Settings | `/crm/settings` | Profile, branding, logo upload, password change |
+| Workflows | `/crm/workflows` | Automation engine with triggers, executions, and status tracking |
+
+---
+
+## Onboarding Wizard
+
+A multi-step public signup wizard at `/onboarding` (no auth required) that walks prospective solar installers through setting up their company profile. Submissions are stored in the database and can be resumed via progress tracking.
+
+| Step | Component | Description |
+|------|-----------|-------------|
+| 1 | `steps-landing.tsx` | Introduction and value proposition |
+| 2 | `steps-welcome.tsx` | Company name and primary contact |
+| 3 | `steps-company.tsx` | Business type, SEAI registration, team size |
+| 4 | `steps-territory.tsx` | Service area and target counties |
+| 5 | `steps-finance.tsx` | Revenue range and pricing model |
+| 6 | `steps-tech.tsx` | Current software and tools |
+| 7 | `steps-tools.tsx` | Hardware and equipment inventory |
+| 8 | `steps-legal.tsx` | Compliance and certifications |
+| 9 | `steps-account.tsx` | User account creation (name, email, password) |
+| 10 | `steps-complete.tsx` | Confirmation and next steps |
+
+**API Endpoints:**
+- `GET/PUT /api/onboarding/progress` — Save and resume progress
+- `POST /api/onboarding/submit` — Submit the completed form
+
+Submissions are stored in the `OnboardingSubmission` Prisma model with the form data as JSON and a status field for tracking.
 
 ---
 
@@ -587,8 +394,8 @@ A multi-step public signup wizard at `/onboarding` (no auth required) that walks
 | Endpoint | Methods | Description |
 |----------|---------|-------------|
 | `/api/contact` | POST | Contact form submission |
-| `/api/chat-widget` | POST | Public AI chat with lead capture |
-| `/api/ai-agent` | GET, POST, PUT, DELETE | AI agent content management (API key auth) |
+| `/api/chat-widget` | POST | AI chat with automatic lead capture (buying signal detection creates Contact + Deal) |
+| `/api/ai-agent` | GET, POST, PUT, DELETE | Content management for blog, services, testimonials, FAQs (auth: `AGENT_API_KEY` header) |
 | `/api/onboarding/progress` | GET, PUT | Onboarding progress tracking |
 | `/api/onboarding/submit` | POST | Onboarding form submission |
 
@@ -596,104 +403,104 @@ A multi-step public signup wizard at `/onboarding` (no auth required) that walks
 
 | Endpoint | Methods | Description |
 |----------|---------|-------------|
-| `/api/crm/auth` | POST, GET, DELETE | Login (Supabase), validate session, logout |
-| `/api/crm/auth/login` | POST | Login (delegates to Supabase Auth) |
-| `/api/crm/auth/logout` | POST | Logout |
+| `/api/crm/auth` | POST, GET, DELETE | Login (Supabase Auth), validate session, logout |
+| `/api/crm/auth/login` | POST | Email/password → JWT cookies |
+| `/api/crm/auth/logout` | POST | Clear session + cookies |
 | `/api/crm/auth/me` | GET | Current user profile |
-| `/api/crm/auth/refresh` | POST | Refresh access token |
+| `/api/crm/auth/refresh` | POST | Refresh JWT tokens |
 
 ### CRM Core Endpoints
 
 | Endpoint | Methods | Description |
 |----------|---------|-------------|
-| `/api/crm/dashboard` | GET | Dashboard KPIs and data |
+| `/api/crm/dashboard` | GET | KPIs, pipeline funnel, revenue, activity feed |
 | `/api/crm/stats` | GET | Aggregate statistics |
 | `/api/crm/companies` | GET, POST | Company list + create |
-| `/api/crm/companies/[id]` | GET, PUT, DELETE | Company detail/update/delete |
+| `/api/crm/companies/[id]` | GET, PUT, DELETE | Company detail |
 | `/api/crm/companies/[id]/logo` | POST, DELETE | Logo upload/delete |
 | `/api/crm/contacts` | GET, POST | Contact list + create |
-| `/api/crm/contacts/[id]` | GET, PUT, DELETE | Contact detail/update/delete |
+| `/api/crm/contacts/[id]` | GET, PUT, DELETE | Contact detail |
 | `/api/crm/leads` | GET, POST | Lead list + create |
-| `/api/crm/leads/[id]` | GET, PATCH, DELETE | Lead detail/update/delete |
-| `/api/crm/leads/[id]/activities` | POST | Add lead activity |
+| `/api/crm/leads/[id]` | GET, PATCH, DELETE | Lead detail |
+| `/api/crm/leads/[id]/activities` | POST | Log lead activity |
 | `/api/crm/deals` | GET, POST | Deal list + create |
-| `/api/crm/deals/[id]` | GET, PATCH, DELETE | Deal detail/update/delete |
+| `/api/crm/deals/[id]` | GET, PATCH, DELETE | Deal detail |
 | `/api/crm/deals/[id]/activities` | GET, POST | Deal activities |
-| `/api/crm/pipeline` | GET, PUT | Pipeline stages |
+| `/api/crm/pipeline` | GET, PUT | Pipeline board data + reorder |
 | `/api/crm/activities` | GET, POST | Activity feed |
 | `/api/crm/notes` | GET, POST | CRM notes |
 | `/api/crm/tags` | GET, POST, DELETE | Tag management |
-| `/api/crm/tasks` | GET, POST, PUT | Task CRUD |
-| `/api/crm/tasks/[id]` | PUT, DELETE | Task update/delete |
+| `/api/crm/tasks` | GET, POST, PUT | Task CRUD + reorder |
+| `/api/crm/tasks/[id]` | PUT, DELETE | Task detail |
 | `/api/crm/meetings` | GET, POST | Meeting list + create |
-| `/api/crm/meetings/[id]` | GET, PATCH, DELETE | Meeting detail/update/delete |
+| `/api/crm/meetings/[id]` | GET, PATCH, DELETE | Meeting detail |
+| `/api/crm/meetings/[id]/complete` | POST | Mark complete |
 | `/api/crm/meetings/[id]/cancel` | POST | Cancel meeting |
-| `/api/crm/meetings/[id]/complete` | POST | Complete meeting |
 
 ### CRM Proposal & Invoice Endpoints
 
 | Endpoint | Methods | Description |
 |----------|---------|-------------|
 | `/api/crm/proposals` | GET, POST | Proposal list + create |
-| `/api/crm/proposals/[id]` | GET, PUT, DELETE | Proposal detail/update/delete |
+| `/api/crm/proposals/[id]` | GET, PUT, DELETE | Proposal detail |
 | `/api/crm/proposals/[id]/pdf` | GET | Generate proposal PDF |
-| `/api/crm/proposals/[id]/send` | POST | Send proposal via email |
-| `/api/crm/proposals/[id]/duplicate` | POST | Duplicate proposal |
-| `/api/crm/proposals/[id]/status` | POST | Update proposal status |
+| `/api/crm/proposals/[id]/send` | POST | Send via email |
+| `/api/crm/proposals/[id]/duplicate` | POST | Duplicate |
+| `/api/crm/proposals/[id]/status` | POST | Update status |
 | `/api/crm/proposals/batch-status` | POST | Batch status update |
 | `/api/crm/proposals/templates` | GET, POST | Proposal templates |
 | `/api/crm/invoices` | GET, POST | Invoice list + create |
-| `/api/crm/invoices/[id]` | GET, PUT, DELETE | Invoice detail/update/delete |
+| `/api/crm/invoices/[id]` | GET, PUT, DELETE | Invoice detail |
 | `/api/crm/invoices/[id]/pdf` | GET | Generate invoice PDF |
-| `/api/crm/invoices/[id]/send` | POST | Send invoice via email |
-| `/api/crm/invoices/[id]/duplicate` | POST | Duplicate invoice |
+| `/api/crm/invoices/[id]/send` | POST | Send via email |
+| `/api/crm/invoices/[id]/duplicate` | POST | Duplicate |
 | `/api/crm/invoices/[id]/mark-paid` | POST | Mark as paid |
 | `/api/crm/invoices/[id]/credit-note` | POST | Create credit note |
 | `/api/crm/invoices/[id]/payment-link` | POST | Generate Stripe payment link |
 | `/api/crm/invoices/[id]/payments` | POST | Record payment |
 | `/api/crm/invoices/batch-status` | POST | Batch status update |
 | `/api/crm/invoices/payments` | GET | List all payments |
-| `/api/crm/invoices/stripe-webhook` | POST | Stripe payment webhook |
+| `/api/crm/invoices/stripe-webhook` | POST | Stripe payment intent webhook |
 
 ### CRM AI Endpoints
 
 | Endpoint | Methods | Description |
 |----------|---------|-------------|
-| `/api/crm/ai` | POST | Claude AI assistant (context-aware CRM chat) |
-| `/api/crm/ai/status` | GET | AI availability status |
-| `/api/crm/ai/usage` | GET | AI usage statistics |
+| `/api/crm/ai` | POST | Claude AI assistant — context-aware CRM chat (8 action types) |
+| `/api/crm/ai/status` | GET | AI availability |
+| `/api/crm/ai/usage` | GET | Token usage statistics |
 | `/api/crm/ai/validate` | POST | Validate Anthropic API key |
 
 ### CRM Billing Endpoints
 
 | Endpoint | Methods | Description |
 |----------|---------|-------------|
-| `/api/crm/billing/plans` | GET | Available subscription plans |
-| `/api/crm/billing/checkout` | POST | Create Stripe checkout session |
-| `/api/crm/billing/portal` | POST | Create Stripe customer portal session |
+| `/api/crm/billing/plans` | GET | Available plans (Starter, Pro, Enterprise) |
+| `/api/crm/billing/checkout` | POST | Create Stripe Checkout session |
+| `/api/crm/billing/portal` | POST | Create Stripe Customer Portal session |
 | `/api/crm/billing/status` | GET | Current subscription status |
 | `/api/crm/billing/webhook` | POST | Stripe billing webhook |
 
-### CRM Calendar Endpoints
+### CRM Calendar Endpoints (Google Calendar)
 
 | Endpoint | Methods | Description |
 |----------|---------|-------------|
 | `/api/crm/calendar` | GET | Calendar events |
-| `/api/crm/calendar/google/auth-url` | GET | Google OAuth consent URL |
-| `/api/crm/calendar/google/callback` | GET | Google OAuth callback |
-| `/api/crm/calendar/google/status` | GET | Google Calendar connection status |
-| `/api/crm/calendar/google/events` | GET | Fetch Google events |
-| `/api/crm/calendar/google/sync` | POST | Sync calendar |
+| `/api/crm/calendar/google/auth-url` | GET | OAuth consent URL |
+| `/api/crm/calendar/google/callback` | GET | OAuth callback — exchange code for tokens |
+| `/api/crm/calendar/google/status` | GET | Connection status |
+| `/api/crm/calendar/google/events` | GET | List Google events |
+| `/api/crm/calendar/google/sync` | POST | Sync calendars |
 | `/api/crm/calendar/google/push-event` | POST | Push event to Google Calendar |
-| `/api/crm/calendar/google/disconnect` | POST | Disconnect Google Calendar |
+| `/api/crm/calendar/google/disconnect` | POST | Revoke connection |
 
 ### CRM Installer Endpoints
 
 | Endpoint | Methods | Description |
 |----------|---------|-------------|
 | `/api/crm/installers` | GET, POST | Installer list + create |
-| `/api/crm/installers/[id]` | GET, PUT, DELETE | Installer detail/update/delete |
-| `/api/crm/installers/[id]/activities` | GET, POST | Installer activities |
+| `/api/crm/installers/[id]` | GET, PUT, DELETE | Installer detail |
+| `/api/crm/installers/[id]/activities` | GET, POST | Activity timeline |
 | `/api/crm/installers/[id]/performance` | GET | Performance metrics |
 | `/api/crm/installers/stats` | GET | Aggregate installer stats |
 | `/api/crm/installers/bulk` | PUT, DELETE | Bulk operations |
@@ -704,26 +511,26 @@ A multi-step public signup wizard at `/onboarding` (no auth required) that walks
 | Endpoint | Methods | Description |
 |----------|---------|-------------|
 | `/api/crm/reports` | GET, POST | Reports CRUD |
-| `/api/crm/reports/[id]` | PUT, DELETE | Report update/delete |
+| `/api/crm/reports/[id]` | PUT, DELETE | Report detail |
 | `/api/crm/reports/dashboard` | GET | Dashboard report data |
-| `/api/crm/reports/export` | GET | Export report |
-| `/api/crm/financial` | GET | Financial summary |
+| `/api/crm/reports/export` | GET | Export report (CSV/JSON) |
+| `/api/crm/financial` | GET | Revenue/MRR summary |
 | `/api/crm/email` | GET, POST | Send/list emails (Postmark) |
-| `/api/crm/email/webhook` | POST | Postmark delivery webhook |
+| `/api/crm/email/webhook` | POST | Postmark delivery/bounce webhook |
 | `/api/crm/whatsapp` | GET, POST | WhatsApp messaging |
-| `/api/crm/whatsapp/send` | POST | Send WhatsApp message |
-| `/api/crm/whatsapp/messages` | GET | WhatsApp message history |
+| `/api/crm/whatsapp/messages` | GET | Message history |
+| `/api/crm/whatsapp/send` | POST | Send message |
 | `/api/crm/whatsapp/webhook` | POST | WhatsApp webhook |
 | `/api/crm/whatsapp/config` | GET, PUT | WhatsApp configuration |
 | `/api/crm/workflows` | GET, POST | Workflow list + create |
-| `/api/crm/workflows/[id]` | GET, PUT, DELETE | Workflow detail/update/delete |
+| `/api/crm/workflows/[id]` | GET, PUT, DELETE | Workflow detail |
 | `/api/crm/workflows/trigger` | POST | Trigger workflow execution |
-| `/api/crm/workflows/executions` | GET | Workflow execution history |
+| `/api/crm/workflows/executions` | GET | Execution history |
 | `/api/crm/integrations` | GET, PUT, DELETE | Third-party integrations |
-| `/api/crm/settings` | PATCH | Update settings |
+| `/api/crm/settings` | PATCH | Update company settings |
 | `/api/crm/settings/logo` | POST | Upload company logo |
 | `/api/crm/settings/password` | PATCH | Change password |
-| `/api/crm/settings/overview-stats` | GET | Settings overview stats |
+| `/api/crm/settings/overview-stats` | GET | Account overview statistics |
 | `/api/crm/analytics/website` | GET | Website analytics |
 | `/api/crm/call` | POST | AI-powered phone call |
 
@@ -731,144 +538,147 @@ A multi-step public signup wizard at `/onboarding` (no auth required) that walks
 
 ## Database Schema
 
-The app uses **two databases**:
+The app uses two databases that serve different purposes:
 
 ### Supabase (PostgreSQL)
-Stores user authentication data and profiles:
 
-- **auth.users** — Supabase Auth managed table (email, password, metadata)
-- **profiles** — Extended user profiles (id, user_id, email, name, role, avatar, phone, is_active)
+Manages user authentication and profiles. Tables are created via the Supabase Dashboard SQL Editor.
+
+| Table | Description |
+|-------|-------------|
+| `auth.users` | Supabase Auth managed table — email, password, metadata |
+| `profiles` | Extended user profiles — id, user_id, email, name, role (admin/manager/user), avatar, phone, is_active |
+| `email_logs` | Email delivery log — message_id, recipients, subject, tag, deal_id, company_id, contact_id |
 
 ### Local SQLite (Prisma ORM)
-Stores all CRM business data via 12 models:
 
-| Model | Description |
-|-------|-------------|
-| `User` | CRM users with role-based access (admin, manager, user) |
-| `Session` | User session tokens with expiry |
-| `Company` | Solar installer companies with SEAI registration, status, territory |
-| `Contact` | Decision-makers at companies |
-| `Deal` | Sales deals with 8-stage pipeline, MRR, setup fees |
-| `DealActivity` | Activity log on deals (calls, emails, demos, proposals, notes) |
-| `Onboarding` | Per-company onboarding progress tracking |
-| `InstallerProfile` | Detailed installer profiles with billing and trial info |
-| `Subscription` | Stripe-powered subscriptions (trialing, active, past_due, cancelled) |
-| `InstallerDocument` | Signed legal documents |
-| `OnboardingSubmission` | Onboarding form submissions from the public wizard |
-| `GoogleCalendarConnection` | Google OAuth tokens for calendar integration |
+Stores all CRM business data. Schema is defined in `prisma/schema.prisma` with 12 models and 3 migrations.
 
----
-
-## Onboarding Wizard
-
-A multi-step public signup wizard at `/onboarding` that lets prospective solar installers walk through setting up their company profile before they're onboarded into the CRM. No auth required.
-
-### Steps (10)
-
-| Step | Component | Description |
-|------|-----------|-------------|
-| 1 | Landing | Overview of the onboarding process |
-| 2 | Welcome | Introduction and account creation intent |
-| 3 | Company Info | Company name, registration, team size, installation count |
-| 4 | Territory | Service area and county selection |
-| 5 | Finance | Revenue, billing preferences, pricing model |
-| 6 | Tech Stack | Existing software and integration preferences |
-| 7 | Tools | Tool and equipment inventory |
-| 8 | Legal | Compliance, insurance, and document signing |
-| 9 | Account | User account creation (name, email, password) |
-| 10 | Complete | Confirmation and next steps |
-
-### API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/onboarding/progress` | GET, PUT | Save and resume onboarding progress |
-| `/api/onboarding/submit` | POST | Submit the completed onboarding form |
-
-Submissions are stored in the `OnboardingSubmission` Prisma model with the form data as JSON and a status field for tracking.
+| Model | Key Fields | Description |
+|-------|------------|-------------|
+| `User` | email, role (admin/manager/user), isActive | CRM users |
+| `Session` | userId, token, expiresAt | User session tokens |
+| `Company` | name, counties, seaiReg, teamSize, status (prospect/active/inactive/churned), logoUrl | Solar installer companies |
+| `Contact` | companyId, name, email, phone, role, isDecisionMaker, status, source | Decision-makers at companies |
+| `Deal` | companyId, product (solarpilot/ai_workforce/both), mrr, setupFee, stage, value | Sales deals — 8-stage pipeline |
+| `DealActivity` | dealId, type (call/email/demo/proposal/note), title, content | Deal activity log |
+| `Onboarding` | companyId, solarpilotProgress, aiWorkforceProgress (0-100) | Per-company onboarding tracking |
+| `InstallerProfile` | companyName, vatNumber, serviceCounties, planId, billingCycle, trialStartAt/EndsAt | Detailed installer profiles |
+| `Subscription` | installerId, planId, status (trialing/active/past_due/cancelled), stripeSubscriptionId | Stripe subscriptions |
+| `InstallerDocument` | installerId, documentType, signedAt | Signed legal documents |
+| `OnboardingSubmission` | email, formData (JSON), status | Onboarding wizard submissions |
+| `GoogleCalendarConnection` | userId, accessToken, refreshToken, expiresAt, calendarId | Google OAuth tokens |
 
 ---
 
 ## Authentication
 
-The app uses a **dual auth system**:
+The app uses **Supabase Auth** as its primary authentication system:
 
-### Primary: Supabase Auth
-- Sign in via `supabase.auth.signInWithPassword()` with email/password
-- Session stored in HttpOnly cookies (`sb-access-token`, `sb-refresh-token`, 7-day expiry)
-- Token validation on every CRM request via `supabase.auth.getUser()`
-- Profile lookup in Supabase `profiles` table
-- Middleware: `requireAuth()` and `requireAdmin()` guards on CRM routes
-- Route protection via `src/proxy.ts` (Next.js 16 — **do not create `src/middleware.ts`**, it conflicts with `proxy.ts`)
+**Login flow:**
+1. User submits email + password to `POST /api/crm/auth`
+2. Server calls `supabase.auth.signInWithPassword()` to validate
+3. Server fetches the user's profile from the Supabase `profiles` table
+4. Server sets HttpOnly cookies: `sb-access-token` and `sb-refresh-token` (7-day expiry, Secure in production, SameSite=Lax)
+5. All subsequent CRM requests validate the JWT via `proxy.ts`
 
-### Fallback: Custom Session Auth
-- PBKDF2 password hashing (100k iterations, SHA-256) with legacy SHA-256 auto-upgrade
-- Redis-backed session storage with in-memory Map fallback
-- Per-IP rate limiting: 10 attempts per 15 minutes, 15-minute lockout
-- HttpOnly cookie: `crm_session` (7-day Max-Age, Secure in production)
+**Route protection:**
+- `src/proxy.ts` intercepts all requests to `/crm/*` and `/api/crm/*`
+- Reads the JWT from cookies and calls `supabase.auth.getUser(accessToken)` to validate
+- Public exemptions: `/crm/login`, `/api/crm/auth/*`, `/api/crm/billing/webhook`, `/api/crm/email/webhook`, `/api/contact`, `/api/chat-widget`, `/api/ai-agent`, `/onboarding`
+- Invalid or expired tokens redirect to `/crm/login`
+
+**Auth guards in code:**
+- `requireAuth()` — validates session and returns the user profile (used in API routes and pages)
+- `requireAdmin()` — validates session and checks role === 'admin'
+
+**Important:** This project uses `src/proxy.ts` instead of `src/middleware.ts` (Next.js 16 requirement). Do NOT create a `src/middleware.ts` file — it will conflict with `proxy.ts` and crash the server.
+
+**Legacy auth code** exists in `src/lib/auth.ts` (PBKDF2 password hashing) and `src/lib/sessions.ts` (Redis-backed sessions) but is not used by the active auth flow.
 
 ---
 
 ## AI Features
 
 ### Claude AI Assistant (CRM)
-A floating chat bubble in the CRM dashboard powered by Anthropic Claude (`claude-sonnet-4-20250514`). Supports 8 actions:
 
-- **chat** — General CRM questions
-- **draft_email** — Generate professional emails with CRM context
-- **call_script** — Create sales call scripts for specific contacts/deals
-- **summarize_contact** — Summarise a contact's full history
-- **deal_insights** — Analyse deal health and suggest next steps
-- **generate_proposal** — Draft proposal content from deal data
-- **next_actions** — Recommend follow-up actions
-- **objection_handling** — Prepare responses to common objections
+A floating chat bubble in the CRM dashboard powered by Anthropic Claude. Accessible from any CRM page. Supports streaming responses for real-time interaction.
 
-The assistant is context-aware — it injects relevant contact, deal, task, and company data into Claude's prompt to provide tailored responses.
+**8 action types:**
 
-### AI Chat Widget (Public)
-An AI-powered chat widget on the marketing site using the Z-AI SDK. Detects lead signals in conversation and automatically creates CRM contacts and deals when a visitor shows buying intent.
+| Action | What it does |
+|--------|--------------|
+| `chat` | General CRM questions |
+| `draft_email` | Generates professional emails with full CRM context injected (contact, deal, company data) |
+| `call_script` | Creates sales call scripts tailored to a specific contact or deal |
+| `summarize_contact` | Produces a full history summary of a contact's interactions |
+| `deal_insights` | Analyses deal health, identifies risks, and suggests next steps |
+| `generate_proposal` | Drafts proposal content pulled from deal data |
+| `next_actions` | Recommends the best follow-up actions based on pipeline state |
+| `objection_handling` | Prepares responses to common solar industry objections |
+
+**Context injection:** Before each Claude call, the system fetches relevant data from SQLite (contact details, deal info, task status, company profile) and injects it into the prompt so Claude has real-time CRM context without the user having to explain anything.
+
+### Public Chat Widget (Website)
+
+An AI-powered chat bubble on the marketing site using the Z-AI SDK. It monitors conversation for buying signals (intent to install solar, budget mentions, timeline questions) and automatically creates a Contact and Deal in the CRM when a visitor shows intent. An email notification is sent to `hello@renewably.ie` when a strong lead is captured. Rate limited to 20 messages per 15 minutes per IP.
 
 ### AI Agent API
-A dedicated REST API (`/api/ai-agent`) for managing AI agent content (blog posts, services, testimonials, FAQs) via CRUD operations, authenticated with an API key.
+
+A dedicated REST API at `/api/ai-agent` for managing static content (blog posts, services, testimonials, FAQs) via CRUD operations. Authenticated with an `AGENT_API_KEY` header. Content is stored as JSON files in `src/data/`.
+
+---
+
+## Email System
+
+Powered by **Postmark** with graceful degradation:
+
+- If `POSTMARK_SERVER_TOKEN` is configured, emails are sent via Postmark and logged to the Supabase `email_logs` table
+- If not configured, emails are logged to the `email_logs` table only (useful for development — no emails are actually sent)
+- Postmark delivery/bounce webhooks are received at `POST /api/crm/email/webhook`
+
+**Built-in email templates:**
+1. Deal stage change notification
+2. Welcome email (when a deal reaches Closed Won)
+3. Proposal sent notification
+4. Internal alerts (deal_stage, deal_won, deal_lost, new_lead, meeting, task)
 
 ---
 
 ## Environment Variables
 
-All variables are defined in `.env.example`:
+All variables are defined in `.env.example`. Only Supabase credentials are required — everything else is optional and degrades gracefully.
 
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous/public key |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Yes | Supabase service role key (admin access) |
-| `POSTMARK_SERVER_TOKEN` | No | Postmark API token for transactional email |
-| `POSTMARK_FROM_EMAIL` | No | Sender email address (default: hello@renewably.ie) |
+| `POSTMARK_SERVER_TOKEN` | No | Postmark API token (enables email sending) |
+| `POSTMARK_FROM_EMAIL` | No | Sender address (default: `hello@renewably.ie`) |
 | `POSTMARK_WEBHOOK_SIGNATURE` | No | Postmark webhook signature for delivery tracking |
-| `GOOGLE_CLIENT_ID` | No | Google OAuth client ID (calendar integration) |
+| `GOOGLE_CLIENT_ID` | No | Google OAuth client ID (enables calendar integration) |
 | `GOOGLE_CLIENT_SECRET` | No | Google OAuth client secret |
-| `NEXT_PUBLIC_APP_URL` | No | Public app URL (for redirects) |
-| `STRIPE_SECRET_KEY` | No | Stripe secret key (billing) |
+| `NEXT_PUBLIC_APP_URL` | No | Public app URL (for OAuth redirects) |
+| `STRIPE_SECRET_KEY` | No | Stripe secret key (enables billing) |
 | `STRIPE_WEBHOOK_SECRET` | No | Stripe webhook signing secret |
 | `STRIPE_PRICE_STARTER` | No | Stripe price ID for Starter plan |
 | `STRIPE_PRICE_PRO` | No | Stripe price ID for Pro plan |
 | `STRIPE_PRICE_ENTERPRISE` | No | Stripe price ID for Enterprise plan |
-| `REDIS_URL` | No | Redis connection URL (optional, in-memory fallback) |
-| `ANTHROPIC_API_KEY` | No | Anthropic API key (Claude AI assistant) |
+| `REDIS_URL` | No | Redis connection URL (optional — in-memory fallback) |
+| `ANTHROPIC_API_KEY` | No | Anthropic API key (enables Claude AI assistant) |
 | `AGENT_API_KEY` | No | API key for the AI agent content endpoint |
-| `LOG_LEVEL` | No | Logging level (defaults to info) |
+| `LOG_LEVEL` | No | Logging level (default: `info`) |
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
+
 - Bun (recommended) or Node.js 18+
 - A [Supabase](https://supabase.com) project with email auth enabled
-- A [Postmark](https://postmarkapp.com) account (for emails)
-- A [Stripe](https://stripe.com) account (for billing)
-- Google OAuth credentials (for calendar integration)
-- An [Anthropic](https://anthropic.com) API key (for AI assistant)
+- A `profiles` table in your Supabase database (create via SQL Editor)
 
 ### Install
 
@@ -878,24 +688,23 @@ cd Renewably
 bun install
 ```
 
-### Environment Setup
+### Configure
 
 ```bash
 cp .env.example .env
 ```
 
-Fill in your credentials. At minimum, you need the Supabase variables for auth to work.
+Fill in your Supabase credentials. The app will work without any other variables — Stripe, Postmark, Google Calendar, Redis, Anthropic, and all integrations degrade gracefully when not configured.
 
-### Database Setup
+### Database
 
 ```bash
 npx prisma migrate deploy
 npx prisma generate
+npx prisma db seed    # optional — populates sample data
 ```
 
-Make sure your Supabase project has a `profiles` table created (via the Supabase Dashboard SQL Editor or migrations).
-
-### Run Locally
+### Run
 
 ```bash
 bun run dev
@@ -903,58 +712,50 @@ bun run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-### Run Tests
+### Test
 
 ```bash
-bun run test
+bun run test           # single run
+bun run test:watch    # watch mode
 ```
 
-### Build for Production
+### Build
 
 ```bash
-bun run build
-bun run start
+bun run build          # next build + copy static assets into standalone output
+bun run start          # NODE_ENV=production bun .next/standalone/server.js
 ```
-
-The build outputs to `.next/standalone/` with static assets copied in, ready for portable deployment.
 
 ---
 
 ## Security
 
-- **Content Security Policy (CSP)** — Strict `script-src` in production, lenient in dev. Defined in `next.config.ts`.
-- **Rate Limiting** — Per-IP rate limits on all API endpoints (Redis-backed, in-memory fallback)
-- **Input Validation** — Zod schemas on all user inputs via `crm-schemas.ts`
-- **Auth Guard** — `proxy.ts` enforces authentication on all `/crm/*` routes
-- **HttpOnly Cookies** — Session tokens stored in HttpOnly, SameSite=Lax, Secure cookies
-- **Input Sanitization** — All user inputs sanitized via `sanitize.ts`
-- **Password Hashing** — PBKDF2 with 100k iterations + SHA-256
-- **Security Headers** — HSTS (1 year), X-Content-Type-Options, Referrer-Policy, Permissions-Policy (no camera/mic/geo)
+- **Content Security Policy** — Strict CSP in production (no `unsafe-eval`, `object-src 'none'`), lenient in dev for Turbopack HMR. Allows `js.stripe.com` scripts/frames for billing. Configured in `next.config.ts`.
+- **Security headers** — HSTS (1 year max-age, includeSubDomains), X-Content-Type-Options: nosniff, Referrer-Policy: strict-origin-when-cross-origin, Permissions-Policy (camera=(), microphone=(), geolocation=())
+- **Auth guard** — `proxy.ts` validates JWT on every CRM request. Unauthenticated requests redirect to `/crm/login`. Public routes are explicitly exempted.
+- **Rate limiting** — Login endpoint: 10 attempts per minute per IP (in-memory). Public chat: 20 messages per 15 minutes per IP. Both degrade to in-memory when Redis is not available.
+- **Input validation** — All user inputs validated via Zod schemas (`crm-schemas.ts`)
+- **Input sanitization** — All user inputs sanitized via `sanitize.ts`
+- **HttpOnly cookies** — Session tokens stored in HttpOnly, SameSite=Lax, Secure (in production) cookies
+- **Parameterized queries** — Supabase and Prisma both use parameterized queries, preventing SQL injection
+- **Webhook verification** — Postmark delivery webhooks and Stripe billing/payment webhooks verify signatures before processing
 
 ---
 
 ## Deployment
 
-The app is configured for **self-hosted deployment** using Bun and Caddy:
+The app is configured for self-hosted deployment:
 
-1. Build: `bun run build` — produces `.next/standalone/` with all assets
-2. Start: `NODE_ENV=production bun .next/standalone/server.js` — runs on port 3000
-3. Caddy sits in front on port 81 (or 443) and reverse-proxies to localhost:3000 with automatic HTTPS
+1. **Build:** `bun run build` — produces `.next/standalone/` with all static assets copied in
+2. **Start:** `NODE_ENV=production bun .next/standalone/server.js` — runs on port 3000
+3. **Reverse proxy:** Caddy (config in `Caddyfile`) proxies port 81 to localhost:3000 with automatic HTTPS via Let's Encrypt
 
-The `Caddyfile` is included at the project root.
-
----
-
-## Scripts
-
-| Command | Description |
-|---------|-------------|
-| `bun run dev` | Start dev server on port 3000 |
-| `bun run build` | Production build (standalone output) |
-| `bun run start` | Run production server with Bun |
-| `bun run lint` | Lint with ESLint |
-| `bun run test` | Run all tests once |
-| `bun run test:watch` | Run tests in watch mode |
+```
+┌─────────────┐       ┌──────────────┐       ┌──────────────┐
+│   Caddy      │──────▶│  Next.js     │──────▶│  Supabase    │
+│   (port 81)   │       │  (port 3000) │       │  (Postgres)   │
+└─────────────┘       └──────────────┘       └──────────────┘
+```
 
 ---
 
@@ -962,12 +763,17 @@ The `Caddyfile` is included at the project root.
 
 | Metric | Count |
 |--------|-------|
-| Pages | 33 |
-| API Endpoints | ~95 |
-| CRM Components | 38 |
-| UI Components (shadcn/ui) | 47 |
-| Onboarding Components | 13 |
-| Lib Files | 27 |
-| Test Suites | 7 |
-| Prisma Models | 12 |
-| Environment Variables | 18 |
+| Pages | 33 (11 public + 21 CRM + 1 onboarding) |
+| API endpoints | ~95 |
+| React components | ~138 (32 CRM + 47 shadcn/ui + 16 onboarding + 11 marketing + 7 dashboard previews + 15 shared) |
+| Server utilities | 26 |
+| Prisma models | 12 |
+| Test suites | 6 (2,274 lines total) |
+| Environment variables | 18 (3 required, 15 optional) |
+| Blog posts | 9 (full markdown content in `blog-data.ts`) |
+
+---
+
+## License
+
+Private — all rights reserved.
