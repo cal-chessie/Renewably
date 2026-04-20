@@ -282,7 +282,7 @@ function SidebarNav({ collapsed, onNavigate }: {
           padding: '16px 0', borderBottom: '1px solid rgba(255,255,255,0.06)',
           width: '100%', display: 'flex', justifyContent: 'center',
         }}>
-          <Image src="/logo-yellow.png" alt="Renewably" width={42} height={42} style={{ borderRadius: 12 }} />
+          <Image src="/logo-white.png" alt="Renewably" width={42} height={42} style={{ borderRadius: 12 }} />
         </div>
 
         {/* Nav icons */}
@@ -344,7 +344,7 @@ function SidebarNav({ collapsed, onNavigate }: {
       {/* Logo + brand */}
       <div style={{ padding: '20px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Image src="/logo-yellow.png" alt="Renewably" width={40} height={40} style={{ borderRadius: 12 }} />
+          <Image src="/logo-white.png" alt="Renewably" width={40} height={40} style={{ borderRadius: 12 }} />
           <div>
             <div style={{ color: '#FFF', fontWeight: 700, fontSize: 17, lineHeight: 1.2, letterSpacing: -0.2 }}>Renewably</div>
             <div style={{ color: 'rgba(255,255,255,0.55)', fontSize: 11, fontWeight: 500, letterSpacing: 0.3, textTransform: 'uppercase' }}>SolarPilot CRM</div>
