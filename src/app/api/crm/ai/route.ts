@@ -5,62 +5,157 @@ import { checkApiRateLimit, getClientIp, isValidUuid } from '@/lib/crm-validatio
 import ZAI from 'z-ai-web-dev-sdk'
 import { logger } from '@/lib/logger'
 
-function buildSystemPrompt(contextData?: {
-  contact?: Record<string, unknown>
-  deal?: Record<string, unknown>
-  task?: Record<string, unknown>
-}): string {
-  let prompt = `You are Renewably AI, an intelligent CRM assistant for Renewably — a renewable energy marketing agency based in Ireland. You help the sales and marketing team be more productive by providing intelligent, actionable assistance.
+// ============================================================================
+// ACTION-SPECIFIC SYSTEM PROMPTS
+// ============================================================================
 
-Your core capabilities:
-- **Drafting Emails**: Write professional, warm emails to clients and prospects. Use a friendly yet professional tone appropriate for the Irish renewable energy sector. Always include relevant context from the CRM data.
-- **Follow-up Suggestions**: Analyze deal pipelines and contact history to recommend next best actions. Consider deal stage, last contact date, and engagement patterns.
-- **Call Scripts**: Generate concise call scripts tailored to specific contacts or deal situations. Include talking points, potential objections, and responses.
-- **Contact Summaries**: Summarize a contact's full history including past interactions, open deals, and pending tasks into a clear brief.
-- **Pipeline Recommendations**: Provide strategic advice on deal progression, identify at-risk deals, suggest nurture sequences, and recommend resource allocation.
+const ACTION_PROMPTS: Record<string, string> = {
+  draft_email: `
+## Mode: Email Drafting
+Write the COMPLETE email with subject line, greeting, body, and sign-off.
+- Tone: warm but professional, appropriate for Irish business
+- Include specific CRM data (names, deal values, dates) when provided
+- Keep it concise — 3-5 short paragraphs max
+- End with a clear call-to-action
+- Close with "Kind regards,\nThe Renewably Team"`,
 
-Important guidelines:
-- Always reference specific data when context is provided (names, deal values, dates, etc.)
+  call_script: `
+## Mode: Call Script
+Generate a concise call script:
+1. **Opening** — friendly greeting, state who's calling
+2. **Key Talking Points** — 3-5 points based on deal/contact context
+3. **Value Proposition** — tailored to the specific prospect
+4. **Common Objections & Responses** — 2-3 objections with responses
+5. **Next Steps** — clear ask (meeting, follow-up, proposal review)
+Keep it scannable — use bullet points and bold headers. Readable in under 2 minutes.`,
+
+  summarize_contact: `
+## Mode: Contact Summary
+Provide a comprehensive but concise summary:
+1. **Profile Overview** — who they are, company, role
+2. **Engagement History** — key interactions and outcomes
+3. **Open Opportunities** — active deals, values and stages
+4. **Risk Assessment** — concerns or blockers
+5. **Recommended Next Actions** — 2-3 specific, prioritised actions`,
+
+  deal_insights: `
+## Mode: Deal Intelligence
+Analyse the deal and provide actionable intelligence:
+1. **Deal Health Score** — assess win probability based on stage, age, engagement
+2. **Risk Factors** — anything that could derail the deal
+3. **Competitive Positioning** — how to strengthen the proposal
+4. **Pricing Guidance** — recommend pricing strategies
+5. **Next Steps** — specific actions to move the deal forward
+6. **Timeline Assessment** — is the close date realistic?`,
+
+  generate_proposal: `
+## Mode: Proposal Content
+Generate professional proposal content:
+1. **Executive Summary** — why this solution, tailored to the prospect
+2. **Proposed Solution** — system size, equipment, key benefits
+3. **Financial Summary** — costs, SEAI grant eligibility, ROI estimate
+4. **Implementation Timeline** — realistic milestones
+5. **Why Renewably** — key differentiators
+6. **Terms & Conditions Summary** — key points
+Use specific CRM data when available. Format with clear headers and bullet points.`,
+
+  next_actions: `
+## Mode: Next Best Actions
+Recommend the most impactful next actions, prioritised by:
+1. **Urgency** — time-sensitive opportunities first
+2. **Impact** — highest value deals get priority
+3. **Effort** — quick wins before complex tasks
+4. **Sequence** — logical order of execution
+Provide 3-5 specific recommendations. Each should include WHO should do it, WHAT to do, and WHY it matters.`,
+
+  objection_handling: `
+## Mode: Objection Handling
+Generate tailored objection responses:
+1. **Price** — "It's too expensive"
+2. **Timeline** — "We're not ready yet"
+3. **Competitors** — "Another company quoted less"
+4. **ROI** — "I'm not sure it's worth it"
+5. **Authority** — "I need to discuss with my partner/board"
+For each: customer's words, empathetic acknowledgement, data-backed response, bridging question.`,
+}
+
+// ============================================================================
+// SYSTEM PROMPT BUILDER
+// ============================================================================
+
+function buildSystemPrompt(
+  contextData?: Record<string, unknown>,
+  action?: string
+): string {
+  let prompt = `You are Renewably AI, an intelligent CRM assistant for Renewably — a renewable energy platform built specifically for Irish solar PV installers. You help the sales and marketing team be more productive.
+
+## Brand & Tone
+- Warm, professional, concise — match Irish business culture
+- Use EUR (\u20AC) for currency, "solar PV" not "solar panels"
+- British/Irish English spelling (organisation, colour, summarise)
+- Never robotic — be genuinely helpful and specific
+- Reference actual CRM data when provided
+
+## Core Capabilities
+- Draft professional emails to clients and prospects
+- Generate call scripts with talking points and objection handling
+- Summarise contact histories and deal pipelines
+- Provide deal progression recommendations
+- Generate proposal content and next-best-action suggestions
+- Handle common sales objections with data-backed responses
+
+## Formatting
 - Keep responses concise and actionable — salespeople are busy
-- Use EUR for currency (Renewably is Ireland-based)
-- Be warm and professional — match Irish business culture
-- Format responses with clear structure: bullet points, numbered lists, or short paragraphs
-- When drafting emails, provide the complete email ready to send
-- When suggesting actions, prioritize by urgency and impact
-- If you don't have enough context, ask for clarification`
+- Use clear structure: bullet points, numbered lists, short paragraphs
+- Bold key terms and values
+- When drafting emails, write the complete email ready to send
+- When suggesting actions, prioritise by urgency and impact`
 
+  // Append action-specific prompt
+  if (action && ACTION_PROMPTS[action]) {
+    prompt += ACTION_PROMPTS[action]
+  }
+
+  // Inject CRM context
   if (contextData) {
-    prompt += '\n\n--- Current Context ---\n'
+    prompt += '\n\n--- Current CRM Context ---\n'
 
     if (contextData.contact) {
       const c = contextData.contact
-      prompt += `\n**Contact Information:**
-- Name: ${c.name || 'Unknown'}
+      prompt += `\n**Contact:** ${c.name || 'Unknown'}
 - Email: ${c.email || 'Not provided'}
 - Phone: ${c.phone || 'Not provided'}
 - Role: ${c.role || 'Not provided'}
 - Company: ${c.companyName || 'Not provided'}
 - Decision Maker: ${c.isDecisionMaker ? 'Yes' : 'No'}`
+      if (c.recentDeals?.length) {
+        prompt += `\n- Recent Deals: ${c.recentDeals.map((d: Record<string, unknown>) =>
+          `"${d.title}" \u2014 \u20AC${Number(d.value || 0).toLocaleString()} (${d.stage})`
+        ).join('; ')}`
+      }
     }
 
     if (contextData.deal) {
       const d = contextData.deal
-      prompt += `\n**Deal Information:**
+      prompt += `\n**Deal:** ${d.title || 'Unknown'}
 - Stage: ${d.stage || 'Unknown'}
-- Value: EUR ${Number(d.value || 0).toLocaleString()}
-- MRR: EUR ${Number(d.mrr || 0).toLocaleString()}
+- Value: \u20AC${Number(d.value || 0).toLocaleString()}
+- MRR: \u20AC${Number(d.mrr || 0).toLocaleString()}
 - Product: ${d.product || 'Not specified'}
 - Company: ${d.companyName || 'Not specified'}
 - Created: ${d.createdAt || 'Unknown'}`
+      if (d.recentActivities?.length) {
+        prompt += `\n- Recent Activity: ${d.recentActivities.map((a: Record<string, unknown>) =>
+          `${a.type}: ${a.title}`
+        ).join('; ')}`
+      }
     }
 
     if (contextData.task) {
       const t = contextData.task
-      prompt += `\n**Task Information:**
-- Title: ${t.title}
+      prompt += `\n**Task:** ${t.title}
 - Type: ${t.type}
 - Status: ${t.status || 'Not set'}
-- Created: ${t.createdAt || 'Unknown'}
 - Description: ${t.content || 'None'}`
     }
 
@@ -70,46 +165,54 @@ Important guidelines:
   return prompt
 }
 
+// ============================================================================
+// POST — Chat with AI (supports action types + conversation history)
+// ============================================================================
+
 export async function POST(request: NextRequest) {
   try {
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
     const ip = getClientIp(request)
-    const rateCheck = checkApiRateLimit(`ai:${ip}`, { maxAttempts: 15, windowMs: 60_000 })
+    const rateCheck = checkApiRateLimit(`ai:${ip}`, {
+      maxAttempts: 15,
+      windowMs: 60_000,
+    })
     if (!rateCheck.allowed) {
-      return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rateCheck.retryAfterMs / 1000)) } })
+      return NextResponse.json(
+        { error: 'Too many requests. Try again later.' },
+        {
+          status: 429,
+          headers: { 'Retry-After': String(Math.ceil(rateCheck.retryAfterMs / 1000)) },
+        }
+      )
     }
 
     const body = await request.json()
-    const { message, context } = body
+    const { message, context, action, conversationHistory } = body
 
     if (!message || typeof message !== 'string') {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 })
     }
 
-    // Fetch context data if provided — using Supabase
-    const contextData: {
-      contact?: Record<string, unknown>
-      deal?: Record<string, unknown>
-      task?: Record<string, unknown>
-    } = {}
+    // Validate context IDs
+    if (context) {
+      if (context.contactId && !isValidUuid(context.contactId))
+        return NextResponse.json({ error: 'Invalid contactId format' }, { status: 400 })
+      if (context.dealId && !isValidUuid(context.dealId))
+        return NextResponse.json({ error: 'Invalid dealId format' }, { status: 400 })
+      if (context.taskId && !isValidUuid(context.taskId))
+        return NextResponse.json({ error: 'Invalid taskId format' }, { status: 400 })
+    }
+
+    // Fetch CRM context from Supabase
+    const contextData: Record<string, unknown> = {}
 
     if (context) {
-      if (context.contactId && !isValidUuid(context.contactId)) {
-        return NextResponse.json({ error: 'Invalid contactId format' }, { status: 400 })
-      }
-      if (context.dealId && !isValidUuid(context.dealId)) {
-        return NextResponse.json({ error: 'Invalid dealId format' }, { status: 400 })
-      }
-      if (context.taskId && !isValidUuid(context.taskId)) {
-        return NextResponse.json({ error: 'Invalid taskId format' }, { status: 400 })
-      }
-
       const supabase = createServiceClient()
       const promises: Promise<void>[] = []
 
-      // Fetch contact context
       if (context.contactId) {
         promises.push(
           supabase
@@ -120,7 +223,6 @@ export async function POST(request: NextRequest) {
             .then(async ({ data: contact }) => {
               if (contact) {
                 const companyRow = contact.company as Array<{ id: string; name: string }> | null
-                // Get recent activities for this contact via deals
                 const { data: deals } = await supabase
                   .from('deals')
                   .select('id, stage, value, mrr, product, company:companies(name)')
@@ -146,7 +248,6 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Fetch deal context
       if (context.dealId) {
         promises.push(
           supabase
@@ -157,7 +258,6 @@ export async function POST(request: NextRequest) {
             .then(async ({ data: deal }) => {
               if (deal) {
                 const companyRow = deal.company as Array<{ id: string; name: string }> | null
-                // Get activities for this deal
                 const { data: activities } = await supabase
                   .from('deal_activities')
                   .select('id, type, title, content, created_at')
@@ -181,7 +281,6 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      // Fetch task context (from deal_activities with type='task')
       if (context.taskId) {
         promises.push(
           supabase
@@ -208,25 +307,50 @@ export async function POST(request: NextRequest) {
       await Promise.all(promises)
     }
 
-    // Build system prompt with context
+    // Build system prompt
     const systemPrompt = buildSystemPrompt(
-      Object.keys(contextData).length > 0 ? contextData : undefined
+      Object.keys(contextData).length > 0 ? contextData : undefined,
+      action
     )
 
-    // Get AI response via z-ai-web-dev-sdk
+    // Build messages array with conversation history
+    const messages: Array<{ role: string; content: string }> = [
+      { role: 'system', content: systemPrompt },
+    ]
+
+    // Add conversation history (last 10 messages to conserve tokens)
+    if (Array.isArray(conversationHistory)) {
+      const recent = conversationHistory.slice(-10)
+      for (const msg of recent) {
+        if (msg.role === 'user' || msg.role === 'assistant') {
+          messages.push({ role: msg.role, content: msg.content })
+        }
+      }
+    }
+
+    // Add current message
+    messages.push({ role: 'user', content: message })
+
+    // Call AI
     const zai = await ZAI.create()
-    const completion = await zai.chat.completions.create({
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: message },
-      ],
+    const completion = await zai.chat.completions.create({ messages })
+    const reply =
+      completion.choices[0]?.message?.content ||
+      "Sorry, I couldn't generate a response. Please try again."
+
+    return NextResponse.json({
+      reply,
+      action: action || 'chat',
+      timestamp: new Date().toISOString(),
     })
-
-    const reply = completion.choices[0]?.message?.content || 'Sorry, I couldn\'t generate a response. Please try again.'
-
-    return NextResponse.json({ reply })
   } catch (error) {
-    logger.error('AI Assistant error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
-    return NextResponse.json({ error: 'Failed to generate AI response' }, { status: 500 })
+    logger.error('AI Assistant error', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
+    return NextResponse.json(
+      { error: 'Failed to generate AI response' },
+      { status: 500 }
+    )
   }
 }
