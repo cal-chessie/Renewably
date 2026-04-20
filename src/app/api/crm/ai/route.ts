@@ -111,12 +111,10 @@ function buildSystemPrompt(
 - When drafting emails, write the complete email ready to send
 - When suggesting actions, prioritise by urgency and impact`
 
-  // Append action-specific prompt
   if (action && ACTION_PROMPTS[action]) {
     prompt += ACTION_PROMPTS[action]
   }
 
-  // Inject CRM context
   if (contextData) {
     prompt += '\n\n--- Current CRM Context ---\n'
 
@@ -166,7 +164,7 @@ function buildSystemPrompt(
 }
 
 // ============================================================================
-// POST — Chat with AI (supports SSE streaming, action types, conversation history)
+// POST — SSE streaming AI chat
 // ============================================================================
 
 export async function POST(request: NextRequest) {
@@ -190,13 +188,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { message, context, action, conversationHistory, stream } = body
+    const { message, context, action, conversationHistory } = body
 
     if (!message || typeof message !== 'string') {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 })
     }
 
-    // Validate context IDs
     if (context) {
       if (context.contactId && !isValidUuid(context.contactId))
         return NextResponse.json({ error: 'Invalid contactId format' }, { status: 400 })
@@ -318,7 +315,6 @@ export async function POST(request: NextRequest) {
       { role: 'system', content: systemPrompt },
     ]
 
-    // Add conversation history (last 10 messages to conserve tokens)
     if (Array.isArray(conversationHistory)) {
       const recent = conversationHistory.slice(-10)
       for (const msg of recent) {
@@ -328,86 +324,98 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Add current message
     messages.push({ role: 'user', content: message })
 
-    // ============================================================================
-    // SSE STREAMING MODE
-    // ============================================================================
-    if (stream) {
-      const zai = await ZAI.create()
-      const streamBody = await zai.chat.completions.create({
-        messages,
-        stream: true,
-      })
+    // Create SSE stream
+    const stream = new ReadableStream({
+      async start(controller) {
+        const encoder = new TextEncoder()
+        const sendEvent = (data: object | string) => {
+          const payload = typeof data === 'string' ? data : JSON.stringify(data)
+          controller.enqueue(encoder.encode(`data: ${payload}\n\n`))
+        }
 
-      // The SDK returns a ReadableStream when stream: true
-      if (!(streamBody instanceof ReadableStream)) {
-        // Fallback: return as JSON if stream not supported
-        return NextResponse.json({
-          reply: typeof streamBody === 'object' && streamBody?.choices?.[0]?.message?.content
-            ? streamBody.choices[0].message.content
-            : 'Sorry, streaming is not available.',
-          action: action || 'chat',
-          timestamp: new Date().toISOString(),
-        })
-      }
+        try {
+          const zai = await ZAI.create()
 
-      // Create a TransformStream to parse SSE from the SDK and re-emit
-      const encoder = new TextEncoder()
-      const decoder = new TextDecoder()
+          // Attempt real streaming
+          let usedStreaming = false
+          try {
+            const zaiStream = await zai.chat.completions.create({
+              messages,
+              stream: true,
+            })
 
-      const transformStream = new TransformStream({
-        async transform(chunk, controller) {
-          const text = decoder.decode(chunk, { stream: true })
-          // The SDK returns OpenAI-format SSE: data: {"choices":[{"delta":{"content":"..."}}]}
-          const lines = text.split('\n')
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const data = line.slice(6).trim()
-              if (data === '[DONE]') {
-                controller.enqueue(encoder.encode('data: [DONE]\n\n'))
-                return
-              }
-              try {
-                const parsed = JSON.parse(data)
-                const content = parsed.choices?.[0]?.delta?.content
-                if (content) {
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`))
+            // ZAI returns a ReadableStream with numeric-keyed chunks (raw SSE bytes)
+            if (zaiStream && Symbol.asyncIterator in Object(zaiStream)) {
+              usedStreaming = true
+              let sseBuffer = ''
+
+              for await (const chunk of zaiStream as AsyncIterable<Record<number, number>>) {
+                // Convert numeric-keyed object to string (raw SSE bytes)
+                const rawChars = Object.values(chunk)
+                  .map((v) => String.fromCharCode(Number(v)))
+                  .join('')
+                sseBuffer += rawChars
+
+                // Process complete SSE lines
+                const lines = sseBuffer.split('\n')
+                sseBuffer = lines.pop() || ''
+
+                for (const line of lines) {
+                  if (!line.startsWith('data: ')) continue
+                  const dataStr = line.slice(6).trim()
+
+                  if (dataStr === '[DONE]') {
+                    sendEvent('[DONE]')
+                    controller.close()
+                    return
+                  }
+
+                  try {
+                    const parsed = JSON.parse(dataStr)
+                    const token = parsed.choices?.[0]?.delta?.content
+                    if (token) {
+                      sendEvent({ token })
+                    }
+                  } catch {
+                    // Skip unparseable chunks
+                  }
                 }
-              } catch {
-                // Skip malformed JSON lines
               }
             }
+          } catch (streamErr) {
+            logger.warn('AI streaming failed, falling back to non-streaming', {
+              error: streamErr instanceof Error ? streamErr.message : String(streamErr),
+            })
           }
-        },
-      })
 
-      const readable = streamBody.pipeThrough(transformStream)
+          // Non-streaming fallback
+          if (!usedStreaming) {
+            const completion = await zai.chat.completions.create({ messages })
+            const reply =
+              completion.choices?.[0]?.message?.content ||
+              "Sorry, I couldn't generate a response."
+            sendEvent({ reply })
+          }
 
-      return new Response(readable, {
-        headers: {
-          'Content-Type': 'text/event-stream',
-          'Cache-Control': 'no-cache, no-transform',
-          'Connection': 'keep-alive',
-          'X-Accel-Buffering': 'no',
-        },
-      })
-    }
+          sendEvent('[DONE]')
+          controller.close()
+        } catch (err) {
+          const errorMsg = err instanceof Error ? err.message : 'Unknown error'
+          sendEvent({ error: errorMsg })
+          controller.close()
+        }
+      },
+    })
 
-    // ============================================================================
-    // NON-STREAMING (fallback / legacy)
-    // ============================================================================
-    const zai = await ZAI.create()
-    const completion = await zai.chat.completions.create({ messages })
-    const reply =
-      completion.choices?.[0]?.message?.content ||
-      "Sorry, I couldn't generate a response. Please try again."
-
-    return NextResponse.json({
-      reply,
-      action: action || 'chat',
-      timestamp: new Date().toISOString(),
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache, no-transform',
+        'Connection': 'keep-alive',
+        'X-Accel-Buffering': 'no',
+      },
     })
   } catch (error) {
     logger.error('AI Assistant error', {
