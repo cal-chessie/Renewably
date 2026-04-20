@@ -282,7 +282,7 @@ function SidebarNav({ collapsed, onNavigate }: {
           padding: '16px 0', borderBottom: '1px solid rgba(255,255,255,0.06)',
           width: '100%', display: 'flex', justifyContent: 'center',
         }}>
-          <Image src="/logo-yellow.png" alt="Renewably" width={36} height={36} style={{ borderRadius: 10 }} />
+          <Image src="/logo-white.png" alt="Renewably" width={36} height={36} style={{ borderRadius: 10 }} />
         </div>
 
         {/* Nav icons */}
@@ -348,7 +348,7 @@ function SidebarNav({ collapsed, onNavigate }: {
             width: 40, height: 40, borderRadius: 12, overflow: 'hidden', flexShrink: 0,
             background: `${YELLOW}15`, display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <Image src="/logo-yellow.png" alt="Renewably" width={28} height={28} style={{ borderRadius: 6 }} />
+            <Image src="/logo-white.png" alt="Renewably" width={28} height={28} style={{ borderRadius: 6 }} />
           </div>
           <div>
             <div style={{ color: '#FFF', fontWeight: 700, fontSize: 17, lineHeight: 1.2, letterSpacing: -0.2 }}>Renewably</div>

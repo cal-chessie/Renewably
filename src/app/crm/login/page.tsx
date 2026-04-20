@@ -119,7 +119,7 @@ export default function LoginPage() {
             marginBottom: 20,
           }}>
             <Image
-              src="/logo-transparent.png"
+              src="/logo-white.png"
               alt="Renewably"
               width={36}
               height={36}

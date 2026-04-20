@@ -47,7 +47,7 @@ export default function Footer() {
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <img
-              src="/logo-transparent.png"
+              src="/logo-white.png"
               alt="Renewably logo"
               width={36}
               height={36}

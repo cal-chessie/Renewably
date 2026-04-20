@@ -32,7 +32,7 @@ export default function LoadingScreen() {
     >
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
         <Image
-          src="/logo-transparent.png"
+          src="/logo-white.png"
           alt="Renewably"
           width={80}
           height={80}

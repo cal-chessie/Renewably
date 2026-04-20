@@ -525,7 +525,7 @@ export default function ChatWidget() {
                   }}
                 >
                   <Image
-                    src="/logo-yellow.png"
+                    src="/logo-white.png"
                     alt=""
                     width={44}
                     height={44}
