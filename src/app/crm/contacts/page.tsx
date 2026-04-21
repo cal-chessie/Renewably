@@ -75,6 +75,9 @@ interface ContactDetail extends ContactRow {
     id: string; content: string; createdAt: string
     user: { id: string; name: string; avatar: string | null } | null
   }>
+  proposals: Array<{
+    id: string; title: string; totalAmount: number; status: string
+  }> | null
 }
 
 interface CompanyRow {
@@ -309,7 +312,7 @@ function CreateTaskDialog({ contact, dealOptions, open, onOpenChange }: { contac
               </Select>
             </div>
           )}
-          <Button onClick={() => { if (!title) { toast.error('Title is required'); return } mutation.mutate({ title, description, priority, dueDate: dueDate || undefined, contactId: contact.id, dealId: dealId || undefined }) }} disabled={mutation.isPending} className="bg-[#374151] hover:bg-[#1F2937] text-white">
+          <Button onClick={() => { if (!title) { toast.error('Title is required'); return } mutation.mutate({ title, description, priority, dueDate: dueDate || undefined, contactId: contact.id, dealId: dealId || undefined } as Record<string, string>) }} disabled={mutation.isPending} className="bg-[#374151] hover:bg-[#1F2937] text-white">
             {mutation.isPending ? 'Creating...' : 'Create Task'}
           </Button>
         </div>
@@ -740,18 +743,18 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
           )}
 
           {/* Proposals */}
-          {contact.proposals && (contact.proposals as unknown[]).length > 0 && (
+          {contact.proposals && contact.proposals.length > 0 && (
             <div className="p-5">
               <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Proposals</h3>
               <div className="space-y-2">
-                {(contact.proposals as Array<Record<string, unknown>>).map((p: Record<string, unknown>) => (
-                  <div key={p.id as string} className="flex items-center justify-between p-2.5 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
+                {contact.proposals.map((p) => (
+                  <div key={p.id} className="flex items-center justify-between p-2.5 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
                     <div className="min-w-0 flex-1">
-                      <p style={{ color: '#FFFFFF' }} className="text-sm font-medium truncate">{p.title as string}</p>
+                      <p style={{ color: '#FFFFFF' }} className="text-sm font-medium truncate">{p.title}</p>
                     </div>
                     <div className="flex items-center gap-2 ml-2">
-                      <span style={{ color: '#FFFFFF' }} className="text-sm font-bold">{formatCurrency(p.totalAmount as number)}</span>
-                      <StatusBadge status={p.status as string} />
+                      <span style={{ color: '#FFFFFF' }} className="text-sm font-bold">{formatCurrency(p.totalAmount)}</span>
+                      <StatusBadge status={p.status} />
                     </div>
                   </div>
                 ))}

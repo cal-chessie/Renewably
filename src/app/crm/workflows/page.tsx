@@ -201,7 +201,7 @@ function parseJSON<T>(str: string | null | undefined, fallback: T): T {
 function formatTriggerDescription(triggerType: string, triggerConfig: Record<string, unknown>): string {
   switch (triggerType) {
     case 'deal_stage_change':
-      return `When deal moves to "${STAGE_LABELS[triggerConfig.stage || ''] || triggerConfig.stage || 'any'}" stage`
+      return `When deal moves to "${STAGE_LABELS[String(triggerConfig.stage || '')] || triggerConfig.stage || 'any'}" stage`
     case 'deal_created':
       return 'When a new deal is created'
     case 'new_contact':
@@ -246,11 +246,11 @@ function formatActionDescription(actionType: string, actionConfig: Record<string
     case 'update_field':
       return `Update ${actionConfig.field || 'field'} to "${actionConfig.value || ''}"`
     case 'add_note':
-      return `Add note "${(actionConfig.text || '').substring(0, 40)}"`
+      return `Add note "${String(actionConfig.text || '').substring(0, 40)}"`
     case 'create_note':
-      return `Create note "${(actionConfig.text || '').substring(0, 40)}"`
+      return `Create note "${String(actionConfig.text || '').substring(0, 40)}"`
     case 'notify':
-      return `Notify ${actionConfig.user || 'team'}: "${(actionConfig.message || '').substring(0, 40)}"`
+      return `Notify ${actionConfig.user || 'team'}: "${String(actionConfig.message || '').substring(0, 40)}"`
     default:
       return actionType
   }
