@@ -48,8 +48,9 @@ function getAllowedOrigins(): Set<string> {
     } catch { /* ignore */ }
   }
 
-  // Dev proxy domains
+  // Dev environments
   if (process.env.NODE_ENV !== 'production') {
+    origins.add('http://localhost:3000')
     origins.add('https://space.chatglm.site')
     origins.add('https://space.z.ai')
   }
