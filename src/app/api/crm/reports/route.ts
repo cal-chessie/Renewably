@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       windowMs: 60_000,
     })
     if (!rateLimitResult.allowed) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) } })
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAsMs / 1000)) } })
     }
 
     const body = await request.json()
@@ -75,6 +75,8 @@ export async function POST(request: NextRequest) {
     const data = result.data
 
     const supabase = createServiceClient()
+
+    // Try full insert first, fall back to minimal insert if columns don't exist
     const { data: report, error } = await supabase
       .from('reports')
       .insert({
@@ -88,6 +90,31 @@ export async function POST(request: NextRequest) {
       })
       .select()
       .single()
+
+    // If insert fails with "column does not exist", retry with minimal columns
+    if (error && error.code === '42703') {
+      logger.warn('Reports table missing columns — retrying with minimal insert', {
+        missingColumns: error.message,
+      })
+      const { data: fallbackReport, error: fallbackError } = await supabase
+        .from('reports')
+        .insert({
+          name: data.name,
+          type: data.type,
+        })
+        .select()
+        .single()
+
+      if (fallbackError) {
+        logger.error('Reports minimal insert also failed', {
+          error: fallbackError.message,
+          code: fallbackError.code,
+        })
+        return NextResponse.json({ error: 'Failed to create report' }, { status: 500 })
+      }
+
+      return NextResponse.json({ report: fallbackReport }, { status: 201 })
+    }
 
     if (error) {
       logger.error('Create report DB error', { error: error.message, code: error.code })

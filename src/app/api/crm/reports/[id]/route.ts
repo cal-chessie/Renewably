@@ -88,12 +88,32 @@ export async function PUT(
 
     const supabase = createServiceClient()
 
-    const { data: report, error } = await supabase
+    let { data: report, error } = await supabase
       .from('reports')
       .update(updates)
       .eq('id', id)
       .select('*')
       .single()
+
+    // If update fails with "column does not exist", retry with safe columns only
+    if (error && error.code === '42703') {
+      logger.warn('Reports table missing columns — retrying with safe columns only', {
+        missingColumns: error.message,
+        id,
+      })
+      const safeUpdates: Record<string, unknown> = {}
+      if (name) safeUpdates.name = name
+      if (type) safeUpdates.type = type
+
+      const retry = await supabase
+        .from('reports')
+        .update(safeUpdates)
+        .eq('id', id)
+        .select('*')
+        .single()
+      report = retry.data
+      error = retry.error
+    }
 
     if (error) {
       logger.error('Update report error from Supabase', { error: error.message, code: error.code, id })
