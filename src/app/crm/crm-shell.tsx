@@ -470,7 +470,7 @@ function SidebarNav({ collapsed, onNavigate }: {
                 icon={TrendingUp}
               />
               <ExpandedStatCard
-                value={mrr !== null ? fmtCompact(mrr) : '—'}
+                value={mrr != null ? fmtCompact(mrr) : '—'}
                 label="MRR"
                 color={BLUE}
                 icon={Euro}
