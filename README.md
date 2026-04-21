@@ -77,7 +77,7 @@ The CRM tracks **SolarPilot** deals — SolarPilot is the commercial CRM product
   │                    │    │                     │    │                     │
   │  auth.users        │    │  Companies          │    │  Anthropic Claude   │
   │  profiles          │    │  Contacts           │    │  Stripe             │
-  │  email_logs        │    │  Deals (8 stages)   │    │  Postmark           │
+  │  email_logs        │    │  Deals (9 stages)   │    │  Postmark           │
   │                    │    │  Invoices           │    │  Google Calendar    │
   │                    │    │  Subscriptions      │    │  Z-AI SDK           │
   │                    │    │  Installer profiles │    │                     │
@@ -178,7 +178,7 @@ Auth lives in Supabase because it provides battle-tested JWT management, passwor
 | **Caching** | Redis | Optional — all features degrade to in-memory |
 | **Toasts** | Sonner | Notifications |
 | **Icons** | Lucide React | Consistent iconography |
-| **Testing** | Vitest 4 + Testing Library | 6 suites, 2,274 lines of tests |
+| **Testing** | Vitest 4 + Testing Library | 6 suites, 263 tests (261 passed, 2 skipped) |
 | **Linting** | ESLint 9 | Flat config |
 | **Reverse Proxy** | Caddy | Automatic HTTPS via Let's Encrypt |
 
@@ -190,6 +190,13 @@ Auth lives in Supabase because it provides battle-tested JWT management, passwor
 renewably/
 │
 ├── .env.example                     # Environment variable template (18 vars)
+├── .env.production                  # Production environment template (with real Supabase URL)
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml                # GitHub Actions — build, test, lint, deploy
+├── Dockerfile                       # Multi-stage Docker build (Node 20 Alpine)
+├── docker-compose.production.yml    # Production services (app + redis + caddy)
+├── Caddyfile.production             # Production Caddy reverse proxy config
 ├── .gitignore                       # Git ignore rules (.env* excluded)
 ├── Caddyfile                        # Reverse proxy — port 81 → localhost:3000
 ├── components.json                  # shadcn/ui config (new-york theme)
@@ -288,7 +295,7 @@ renewably/
     │       ├── companies/[id]/      # Company detail — contacts, deals, activities
     │       ├── contacts/[id]/       # Contact detail — inline editing, activity history
     │       ├── deals/page.tsx       # Deal list with filtering
-    │       ├── pipeline/page.tsx    # Drag-and-drop Kanban board (dnd-kit, 8 stages)
+    │       ├── pipeline/page.tsx    # Drag-and-drop Kanban board (dnd-kit, 9 stages)
     │       ├── activities/page.tsx  # Unified activity timeline (deals, contacts, companies)
     │       ├── calendar/page.tsx    # Google Calendar view (OAuth2)
     │       ├── meetings/page.tsx    # Meeting management — cancel/complete + calendar push
@@ -562,7 +569,7 @@ These pages are only accessible to authenticated Renewably team members. This is
 | Company Detail | `/crm/companies/[id]` | Company profile with contacts, deals, activities, onboarding progress |
 | Contacts | `/crm/contacts` | Decision-maker directory |
 | Contact Detail | `/crm/contacts/[id]` | Inline editing, activity history |
-| Pipeline | `/crm/pipeline` | Drag-and-drop Kanban board (dnd-kit, 8 stages) |
+| Pipeline | `/crm/pipeline` | Drag-and-drop Kanban board (dnd-kit, 9 stages) |
 | Deals | `/crm/deals` | Deal list with filtering (products: SolarPilot, AI Workforce, Both) |
 | Activities | `/crm/activities` | Unified activity timeline across deals, contacts, companies |
 | Calendar | `/crm/calendar` | Google Calendar integration (OAuth2, bidirectional sync) |
@@ -903,6 +910,8 @@ All variables are defined in `.env.example`. Only the three Supabase credentials
 | `ANTHROPIC_API_KEY` | No | — | Anthropic API key (enables Claude AI assistant) |
 | `AGENT_API_KEY` | No | — | API key for the AI agent content management endpoint |
 | `LOG_LEVEL` | No | `info` | Logging level |
+| `NEXT_PUBLIC_BASE_URL` | No | — | Public base URL (for password reset, OAuth redirects) |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | No | — | Stripe publishable key (enables client-side Stripe) |
 
 ---
 
@@ -974,33 +983,82 @@ bun run start    # NODE_ENV=production bun .next/standalone/server.js
 - **HttpOnly cookies** — JWT tokens stored in HttpOnly, SameSite=Lax, Secure (in production) cookies
 - **Parameterized queries** — Supabase and Prisma both use parameterized queries, preventing SQL injection
 - **Webhook verification** — Postmark delivery webhooks and Stripe billing/payment webhooks verify cryptographic signatures before processing
+- **CSRF protection** — Origin/Referer validation on all mutation endpoints (POST/PUT/PATCH/DELETE). `requireAuth()` in `crm-auth.ts` validates the request origin against the allowed domain list. Public mutation routes (`/api/contact`, `/api/onboarding/*`, `/api/chat-widget`) have explicit CSRF checks via `validateCsrfOrigin()` in `crm-route-helpers.ts`
 
 ---
 
 ## Deployment
 
-The app is configured for self-hosted deployment behind a Caddy reverse proxy with automatic HTTPS.
+The app supports two deployment methods: Docker (recommended for production) and manual deployment behind a reverse proxy.
+
+### Architecture
 
 ```
 ┌──────────────┐      ┌──────────────────┐      ┌──────────────┐
 │    Caddy      │─────▶│    Next.js       │─────▶│   Supabase   │
-│  (port 81)    │      │  (port 3000)     │      │  (Postgres)   │
+│  (port 443)   │      │  (port 3000)     │      │  (Postgres)   │
 │  auto HTTPS   │      │  standalone      │      │              │
-└──────────────┘      └──────────────────┘      └──────────────┘
+└──────────────┘      └──────┬───────────┘      └──────────────┘
+                              │
+                     ┌────────┴────────┐
+                     │     Redis       │
+                     │  (port 6379)    │
+                     │  rate limiting  │
+                     └─────────────────┘
 ```
 
-### Steps
+### Option 1: Docker (Recommended)
+
+The production setup uses Docker Compose to orchestrate three services: the Next.js app, Redis for rate limiting and caching, and Caddy for automatic HTTPS termination via Let's Encrypt.
+
+```bash
+# 1. Clone and configure
+git clone <repo-url> && cd Renewably
+cp .env.production .env
+# Fill in your secrets (Stripe, Postmark, Anthropic, etc.)
+
+# 2. Build and start
+docker compose -f docker-compose.production.yml up -d --build
+
+# 3. Run database migrations
+docker compose -f docker-compose.production.yml exec app npx prisma migrate deploy
+```
+
+**Services:**
+| Service | Port | Purpose |
+|---------|------|---------|
+| `app` | 3000 (internal) | Next.js standalone server (Node 20 Alpine) |
+| `redis` | 6379 (internal) | Rate limiting and optional caching |
+| `caddy` | 80, 443 | Reverse proxy with automatic HTTPS |
+
+The `Dockerfile` uses a multi-stage build: dependencies install in a CI stage, then the production image copies only what's needed. The `Caddyfile.production` handles TLS certificates and proxies all traffic to the Next.js app.
+
+### Option 2: Manual Deployment
+
+For bare-metal or VPS deployments without Docker:
 
 1. **Set environment variables** on the server (`.env` file in the project root — not git-tracked)
 2. **Install dependencies:** `bun install`
 3. **Apply database migrations:** `npx prisma migrate deploy && npx prisma generate`
 4. **Build:** `bun run build` — produces `.next/standalone/` with all static assets copied in
 5. **Start:** `NODE_ENV=production bun .next/standalone/server.js` — runs on port 3000
-6. **Reverse proxy:** Caddy (config in `Caddyfile`) proxies port 81 to localhost:3000 with automatic HTTPS via Let's Encrypt
+6. **Reverse proxy:** Caddy (config in `Caddyfile`) proxies traffic to localhost:3000 with automatic HTTPS
+
+### CI/CD (GitHub Actions)
+
+The `.github/workflows/ci-cd.yml` pipeline runs on every push to `main`:
+
+1. **Lint** — ESLint check
+2. **Test** — Vitest runs all 263 tests (must pass)
+3. **Type check** — TypeScript strict mode validation
+4. **Build** — `next build` with `ignoreBuildErrors: false`
+5. **Deploy** — SSH into the production server, pull latest, rebuild Docker containers
+
+Secrets are stored in GitHub Actions environment variables. The pipeline fails fast on any step.
 
 ### Process management
 
-Use `keep-alive.sh` with a cron job to keep the dev server alive during development. For production, use `systemd`, `pm2`, or any process manager to ensure the server restarts automatically.
+Use `keep-alive.sh` with a cron job to keep the dev server alive during development. For production, the Docker Compose setup uses `restart: unless-stopped` on all services. For manual deployments, use `systemd`, `pm2`, or any process manager to ensure the server restarts automatically.
 
 ---
 
@@ -1015,11 +1073,11 @@ Use `keep-alive.sh` with a cron job to keep the dev server alive during developm
 | Prisma models | 12 |
 | SQL migrations | 3 |
 | Test suites | 6 (2,274 lines total) |
-| Environment variables | 18 (3 required, 15 optional) |
+| Environment variables | 20 (3 required, 17 optional) |
 | Blog posts | 9 (full markdown content in `blog-data.ts`) |
 | Email templates | 4 |
 | AI assistant actions | 8 |
-| Pipeline stages | 8 |
+| Pipeline stages | 9 |
 | Deal product types | 3 (SolarPilot, AI Workforce, Both) |
 | Subscription plans | 3 (Starter, Pro, Enterprise) |
 

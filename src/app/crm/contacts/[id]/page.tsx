@@ -448,8 +448,8 @@ export default function ContactDetailPage() {
                           <p className={`text-sm font-medium ${task.status === 'completed' ? 'line-through' : ''}`} style={{ color: task.status === 'completed' ? '#666666' : '#FFFFFF' }}>
                             {task.title as string}
                           </p>
-                          {task.description && (
-                            <p style={{ color: '#666666' }} className="text-xs mt-0.5">{task.description as string}</p>
+                          {task.description != null && (
+                            <p style={{ color: '#666666' }} className="text-xs mt-0.5">{String(task.description)}</p>
                           )}
                         </div>
                         <div className="flex items-center gap-2">
