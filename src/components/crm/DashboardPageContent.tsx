@@ -931,7 +931,6 @@ export default function DashboardPageContent() {
               icon={Sun}
               trend={{ value: installers.total > 0 ? 12 : 0, positive: true }}
               delay={0}
-              href="/crm/installers"
             />
             <StatCard
               title="Monthly Recurring"
@@ -947,7 +946,6 @@ export default function DashboardPageContent() {
               icon={DollarSign}
               trend={{ value: pipelineTrend, positive: pipelineTrend >= 0 }}
               delay={0.1}
-              href="/crm/pipeline"
             />
             <StatCard
               title="Win Rate"
@@ -955,7 +953,6 @@ export default function DashboardPageContent() {
               subtitle={`${kpis.wonDealsThisMonth || 0} won this month`}
               icon={TrendingUp}
               delay={0.15}
-              href="/crm/reports"
             />
             <StatCard
               title="Activities"
@@ -963,7 +960,6 @@ export default function DashboardPageContent() {
               subtitle="this week"
               icon={Activity}
               delay={0.2}
-              href="/crm/activities"
             />
             <StatCard
               title="CSAT Score"
