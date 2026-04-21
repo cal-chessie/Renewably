@@ -656,13 +656,15 @@ export function AIAssistant() {
       setIsListening(false)
       return
     }
-    const SpeechRecognition = (window as unknown as Record<string, unknown>).SpeechRecognition || (window as unknown as Record<string, unknown>).webkitSpeechRecognition
-    if (!SpeechRecognition) return
-    const recognition = new (SpeechRecognition as new () => SpeechRecognition)()
+    const SpeechRecognitionCtor = (window as unknown as Record<string, unknown>).SpeechRecognition || (window as unknown as Record<string, unknown>).webkitSpeechRecognition
+    if (!SpeechRecognitionCtor) return
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const recognition = new (SpeechRecognitionCtor as any)()
     recognition.continuous = false
     recognition.interimResults = false
     recognition.lang = 'en-IE'
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript
       setInput(prev => prev ? `${prev} ${transcript}` : transcript)
       setIsListening(false)

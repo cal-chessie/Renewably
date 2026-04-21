@@ -236,8 +236,7 @@ function NewActivityForm({ onClose, onSuccess, prefillDate }: { onClose: () => v
                     type="button"
                     onClick={() => setType(t)}
                     style={{
-                      padding: '6px 12px', borderRadius: 8, border: 'none',
-                      background: isActive ? `${cfg.color}20` : 'rgba(255,255,255,0.03)',
+                      padding: '6px 12px', borderRadius: 8,
                       color: isActive ? cfg.color : TEXT_TERTIARY,
                       fontSize: 12, fontWeight: isActive ? 600 : 500,
                       cursor: 'pointer', fontFamily: 'inherit',
