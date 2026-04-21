@@ -58,10 +58,26 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Use the access_token from the reset link to set the new password
+    // Use the access_token from the reset link to set the session, then update password
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-    const { data, error } = await supabase.auth.updateUser(accessToken, {
+    // Set the recovery session so updateUser has the right auth context
+    const { error: sessionError } = await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: '',
+    })
+
+    if (sessionError) {
+      logger.warn('Reset password: failed to set session', {
+        error: sessionError.message,
+      })
+      return NextResponse.json(
+        { error: 'This reset link has expired or is invalid. Please request a new one.' },
+        { status: 400 }
+      )
+    }
+
+    const { data, error } = await supabase.auth.updateUser({
       password: newPassword,
     })
 

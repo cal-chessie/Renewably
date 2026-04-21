@@ -268,9 +268,9 @@ export default function ActivitiesPage() {
                           <p className="text-sm font-medium" style={{ color: '#FFFFFF' }}>
                             {activity.subject as string}
                           </p>
-                          {activity.description && (
+                          {Boolean(activity.description) && (
                             <p className="text-sm mt-1 line-clamp-2" style={{ color: '#A0A0A0' }}>
-                              {activity.description as string}
+                              {String(activity.description)}
                             </p>
                           )}
                         </div>
@@ -278,7 +278,7 @@ export default function ActivitiesPage() {
                           <p className="text-xs" style={{ color: '#666666' }}>
                             {timeAgo(activity.createdAt as string)}
                           </p>
-                          {activity.status && activity.status !== 'completed' && (
+                          {Boolean(activity.status) && activity.status !== 'completed' && (
                             <Badge variant="secondary" className="text-xs mt-1 capitalize">
                               {activity.status as string}
                             </Badge>
@@ -289,19 +289,19 @@ export default function ActivitiesPage() {
                         <span className="text-xs font-medium uppercase" style={{ color: '#666666' }}>
                           {activity.type as string}
                         </span>
-                        {activity.contact && (
+                        {Boolean(activity.contact) && (
                           <span className="text-xs" style={{ color: '#A0A0A0' }}>
                             with {(activity.contact as Record<string, string>).firstName} {(activity.contact as Record<string, string>).lastName}
                           </span>
                         )}
-                        {activity.deal && (
+                        {Boolean(activity.deal) && (
                           <span className="text-xs" style={{ color: '#F3D840' }}>
                             📋 {(activity.deal as Record<string, string>).title}
                           </span>
                         )}
-                        {activity.duration && (
+                        {Boolean(activity.duration) && (
                           <span className="text-xs" style={{ color: '#666666' }}>
-                            ⏱ {activity.duration}min
+                            ⏱ {String(activity.duration)}min
                           </span>
                         )}
                       </div>

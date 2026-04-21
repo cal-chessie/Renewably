@@ -320,7 +320,7 @@ export default function ContactDetailPage() {
                           <p style={{ color: '#FFFFFF' }} className="text-sm font-semibold">
                             {formatCurrency(deal.value as number)}
                           </p>
-                          {deal.closeDate && (
+                          {Boolean(deal.closeDate) && (
                             <p style={{ color: '#666666' }} className="text-xs">
                               Close: {format(new Date(deal.closeDate as string), 'MMM d, yyyy')}
                             </p>

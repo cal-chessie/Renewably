@@ -1388,8 +1388,8 @@ export default function CompanyDetailPage() {
                   <a href={`https://${company.website.replace(/^https?:\/\//, '')}`}
                     target="_blank" rel="noopener noreferrer"
                     style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}
-                    onMouseEnter={(e) => { e.currentTarget.querySelector('span:last-of-type')!.style.color = DS.BLUE }}
-                    onMouseLeave={(e) => { e.currentTarget.querySelector('span:last-of-type')!.style.color = DS.TEXT2 }}>
+                    onMouseEnter={(e) => { (e.currentTarget.querySelector('span:last-of-type') as HTMLElement | null)!.style.color = DS.BLUE }}
+                    onMouseLeave={(e) => { (e.currentTarget.querySelector('span:last-of-type') as HTMLElement | null)!.style.color = DS.TEXT2 }}>
                     <div style={{ width: 30, height: 30, borderRadius: 8, flexShrink: 0,
                       background: `${DS.BLUE}10`, border: `1px solid ${DS.BLUE}16`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
