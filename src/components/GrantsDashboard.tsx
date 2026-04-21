@@ -179,8 +179,7 @@ export default function GrantsDashboard() {
 
         // Calculate total grant value from approved applications
         const totalGrantValue = parseFloat(
-          next.filter((a) => a.status === "approved").reduce((sum, a) => sum + a.amount, 0) / 1000
-            .toFixed(2)
+          (next.filter((a) => a.status === "approved").reduce((sum, a) => sum + a.amount, 0) / 1000).toFixed(2)
         );
 
         // Update stats

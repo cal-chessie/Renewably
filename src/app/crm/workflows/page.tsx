@@ -1649,11 +1649,8 @@ export default function WorkflowsPage() {
 
       {/* Delete Dialog */}
       <DeleteDialog
-        open={!!deleteRule}
-        onOpenChange={(open) => !open && setDeleteRule(null)}
-        ruleName={deleteRule?.name || ''}
-        onConfirm={() => deleteRule && deleteMutation.mutate(deleteRule.id)}
-        loading={deleteMutation.isPending}
+        rule={deleteRule}
+        onDelete={() => setDeleteRule(null)}
       />
     </div>
   )

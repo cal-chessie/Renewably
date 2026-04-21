@@ -135,12 +135,12 @@ function TableOfContents({ blocks }: { blocks: string[] }) {
               onMouseEnter={(e) => {
                 e.currentTarget.style.color = YELLOW;
                 e.currentTarget.style.borderLeftColor = YELLOW;
-                e.currentTarget.style.paddingLeft = 16;
+                e.currentTarget.style.paddingLeft = '16';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.color = "#535353";
                 e.currentTarget.style.borderLeftColor = "rgba(26,26,26,0.08)";
-                e.currentTarget.style.paddingLeft = 12;
+                e.currentTarget.style.paddingLeft = '12';
               }}
             >
               {h}

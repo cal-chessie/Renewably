@@ -99,8 +99,7 @@ function TypingIndicator() {
       {/* Dots bubble */}
       <div style={{
         background: "#F5F5F5",
-        borderRadius: 16,
-        borderRadiusBottomRight: 4,
+        borderRadius: '16px 16px 4px 16px',
         padding: "12px 16px",
         display: "flex",
         alignItems: "center",
