@@ -3,6 +3,7 @@
 // ============================================================================
 
 import postmark from 'postmark'
+import { LinkTrackingOptions } from 'postmark/dist/client/models/message/SupportingTypes'
 import { createServiceClient } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 
@@ -353,7 +354,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
         Tag: options.tag || 'crm-email',
         Metadata: options.metadata || {},
         TrackOpens: true,
-        TrackLinks: 'HtmlAndText' as const,
+        TrackLinks: LinkTrackingOptions.HtmlAndText,
         MessageStream: 'outbound',
       })
       messageId = result.MessageID

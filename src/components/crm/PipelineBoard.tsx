@@ -836,12 +836,13 @@ function DealDetailPanel({ dealId, onClose }: { dealId: string | null; onClose: 
   const advanceMutation = useMutation({
     mutationFn: async () => {
       if (!deal) return
-      const idx = ALL_STAGE_KEYS.indexOf(deal.stage)
+      const idx = ALL_STAGE_KEYS.indexOf(deal.stage as typeof ALL_STAGE_KEYS[number])
       if (idx < 0 || idx >= ALL_STAGE_KEYS.length - 1) return
+      const nextStage = ALL_STAGE_KEYS[idx + 1]
       const r = await fetch('/api/crm/pipeline', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dealId: deal.id, stage: ALL_STAGE_KEYS[idx + 1] }),
+        body: JSON.stringify({ dealId: deal.id, stage: nextStage }),
       })
       if (!r.ok) throw new Error('Failed')
       return r.json()
@@ -931,7 +932,7 @@ function DealDetailPanel({ dealId, onClose }: { dealId: string | null; onClose: 
   if (!deal) return null
 
   const color = STAGE_COLOR_MAP[deal.stage] || '#666'
-  const stageIdx = ALL_STAGE_KEYS.indexOf(deal.stage)
+  const stageIdx = ALL_STAGE_KEYS.indexOf(deal.stage as typeof ALL_STAGE_KEYS[number])
   const canAdvance = stageIdx >= 0 && stageIdx < ALL_STAGE_KEYS.length - 1
   const nextName = canAdvance ? STAGE_NAME_MAP[ALL_STAGE_KEYS[stageIdx + 1]] : null
   const dm = deal.company?.contacts?.find((c) => c.isDecisionMaker) || deal.company?.contacts?.[0]
@@ -1530,7 +1531,7 @@ function DealDetailPanel({ dealId, onClose }: { dealId: string | null; onClose: 
                 </p>
                 <InlineEdit
                   mode="select"
-                  value={(deal as Record<string, unknown>).demoOutcome as string || ''}
+                  value={(deal as unknown as Record<string, unknown>).demoOutcome as string || ''}
                   onSave={async (v) => {
                     await updateMutation.mutateAsync({ demoOutcome: String(v) })
                   }}
@@ -1568,7 +1569,7 @@ function DealDetailPanel({ dealId, onClose }: { dealId: string | null; onClose: 
                 </p>
                 <InlineEdit
                   mode="select"
-                  value={(deal as Record<string, unknown>).closeReason as string || ''}
+                  value={(deal as unknown as Record<string, unknown>).closeReason as string || ''}
                   onSave={async (v) => {
                     await updateMutation.mutateAsync({ closeReason: String(v) })
                   }}
@@ -2668,9 +2669,10 @@ export function PipelineBoard() {
   // ── Advance deal ──────────────────────────────────────────────
   const advanceDeal = useCallback(
     (deal: Deal) => {
-      const idx = ALL_STAGE_KEYS.indexOf(deal.stage)
+      const idx = ALL_STAGE_KEYS.indexOf(deal.stage as typeof ALL_STAGE_KEYS[number])
       if (idx < 0 || idx >= ALL_STAGE_KEYS.length - 1) return
-      moveMutation.mutate({ dealId: deal.id, stage: ALL_STAGE_KEYS[idx + 1] })
+      const nextStage = ALL_STAGE_KEYS[idx + 1]
+      moveMutation.mutate({ dealId: deal.id, stage: nextStage })
     },
     [moveMutation]
   )

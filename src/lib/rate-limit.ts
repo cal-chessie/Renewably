@@ -56,13 +56,13 @@ export async function checkRateLimit(
   try {
     if (await isRedisReady()) {
       const { redis } = await import('./redis');
-      const countStr = await redis.incr(key);
+      const countResult = await redis.incr(key);
 
-      if (parseInt(countStr, 10) === 1) {
-        await redis.pexpire(key, windowMs);
+      if (countResult === 1) {
+        await redis.pexpire(key, String(windowMs));
       }
 
-      const count = parseInt(countStr, 10);
+      const count = countResult;
       const ttl = await redis.pttl(key);
 
       if (count > maxRequests) {

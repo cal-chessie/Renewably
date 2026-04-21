@@ -16,7 +16,7 @@ export const supabase: SupabaseClient = new Proxy({} as SupabaseClient, {
       if (!url || !anonKey) throw new Error('NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set')
       _supabase = createClient(url, anonKey)
     }
-    return (_supabase as Record<string | symbol, unknown>)[prop]
+    return (_supabase as unknown as Record<string | symbol, unknown>)[prop]
   },
 })
 

@@ -79,7 +79,7 @@ export function StepTerritory({ onNext, onBack, initialData }: StepTerritoryProp
           </div>
         </Card>
 
-        <Card tone="solar" className="ob-territory-reach" style={{ width: 200, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <Card tone="solar" style={{ width: 200, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div className="mono" style={{ fontSize: 9.5, color: 'var(--solar-ink)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
             Est. reach
           </div>

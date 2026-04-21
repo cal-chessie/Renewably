@@ -139,7 +139,7 @@ export async function refreshSession(refreshToken: string): Promise<{
       accessToken: data.session.access_token,
       refreshToken: data.session.refresh_token,
       expiresIn: data.session.expires_in,
-      expiresAt: data.session.expires_at,
+      expiresAt: data.session.expires_at ?? Math.floor(Date.now() / 1000) + data.session.expires_in,
     }
   } catch {
     return null

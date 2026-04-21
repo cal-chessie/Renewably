@@ -47,7 +47,7 @@ interface InlineEditProps {
   /** Placeholder when value is empty */
   placeholder?: string
   /** Callback to save the new value. Receives the new value. Returns a promise. */
-  onSave: (value: string | number) => Promise<void>
+  onSave: (value: string | number) => void | Promise<void>
   /** Format the number for display (e.g. currency) */
   formatValue?: (value: number) => string
   /** Color accent for the edit state */
@@ -278,7 +278,7 @@ export function InlineEdit({
           >
             {mode === 'select' ? (
               <select
-                ref={inputRef as React.RefObject<HTMLSelectElement>}
+                ref={inputRef as unknown as React.RefObject<HTMLSelectElement>}
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -422,7 +422,7 @@ export function InlineEdit({
 // ═══════════════════════════════════════════════════════════════════
 interface CardInlineNumberProps {
   value: number | null
-  onSave: (value: number) => Promise<void>
+  onSave: (value: number) => void | Promise<void>
   /** Format function for display */
   format?: (v: number) => string
   accentColor?: string
@@ -607,7 +607,7 @@ export function CardInlineNumber({ value, onSave, format, accentColor = DS.GREEN
 // ═══════════════════════════════════════════════════════════════════
 interface ProductCyclerProps {
   product: string
-  onSave: (product: string) => Promise<void>
+  onSave: (product: string) => void | Promise<void>
 }
 
 export function ProductCycler({ product, onSave }: ProductCyclerProps) {

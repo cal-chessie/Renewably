@@ -232,7 +232,7 @@ function AddCompanyDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
 
   // Reset form when dialog opens
   useEffect(() => {
-    if (open) setForm({ ...emptyForm }) // eslint-disable-line react-hooks/set-state-in-effect
+    if (open) setForm({ ...emptyForm })  
   }, [open])
 
   const mutation = useMutation({
@@ -291,7 +291,7 @@ function EditCompanyDialog({ open, onOpenChange, company }: {
   // Sync form state when company changes (handles opening dialog with different company)
   useEffect(() => {
     if (company) {
-      setForm({ // eslint-disable-line react-hooks/set-state-in-effect
+      setForm({  
         name: company.name || '',
         counties: company.counties || '',
         seaiReg: company.seaiReg || '',

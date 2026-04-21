@@ -130,9 +130,9 @@ function ActivityIcon({ type }: { type: ActivityItem['type'] }) {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 function LoadingSkeleton() {
-  const bar = (width: string, height = 12) => (
+  const bar = (width: string | number, height = 12) => (
     <div style={{
-      width, height, borderRadius: 6,
+      width: String(width), height, borderRadius: 6,
       background: `linear-gradient(90deg, ${DARK3} 25%, ${BORDER} 50%, ${DARK3} 75%)`,
       backgroundSize: '200% 100%',
       animation: 'skeletonShimmer 1.5s ease-in-out infinite',

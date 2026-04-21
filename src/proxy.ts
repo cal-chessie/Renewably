@@ -175,7 +175,8 @@ async function validateSupabaseToken(
 // ── Proxy Handler ──────────────────────────────────────────────────────────
 
 export function proxy(request: NextRequest) {
-  const { pathname, method } = request.nextUrl
+  const { pathname } = request.nextUrl
+  const method = request.method
   const start = Date.now()
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
 

@@ -57,7 +57,7 @@ export const createDealSchema = z.object({
   mrr: currency.optional().default(0),
   setupFee: currency.optional().default(0),
   stage: z.enum(['new_lead', 'contacted', 'discovery_call', 'demo_booked', 'demo_done', 'proposal_sent', 'negotiation', 'closed_won', 'closed_lost']),
-  qualifiedAnswers: z.record(z.unknown()).nullable().optional().default(null),
+  qualifiedAnswers: z.record(z.string(), z.unknown()).nullable().optional().default(null),
   demoOutcome: z.enum(['positive', 'neutral', 'negative', '']).optional().default(''),
   closeReason: z.string().max(500).optional().default(''),
   assignedToId: z.string().nullable().optional().default(null),
@@ -71,7 +71,7 @@ export const updateDealSchema = z.object({
   setupFee: currency.optional(),
   notes: notes.optional(),
   assignedToId: z.string().optional(),
-  qualifiedAnswers: z.record(z.unknown()).optional(),
+  qualifiedAnswers: z.record(z.string(), z.unknown()).optional(),
   demoOutcome: z.enum(['positive', 'neutral', 'negative', '']).optional(),
   closeReason: z.string().max(500).optional(),
   value: currency.optional(),
@@ -257,7 +257,7 @@ export const createInstallerSchema = z.object({
   billingCounty: z.string().max(200).optional().default(''),
   billingEircode: z.string().max(50).optional().default(''),
   stripeCustomerId: z.string().max(200).optional().default(''),
-  integrations: z.union([z.record(z.unknown()), z.string()]).optional().default('[]'),
+  integrations: z.union([z.record(z.string(), z.unknown()), z.string()]).optional().default('[]'),
   securityFeatures: z.union([z.array(z.string()), z.string()]).optional().default('[]'),
   yearsInBusiness: z.number().int().min(0).max(200).optional(),
   publicLiability: z.number().min(0).optional(),
@@ -294,7 +294,7 @@ export const createInstallerSchema = z.object({
 // Workflow
 export const workflowActionSchema = z.object({
   type: z.enum(['create_task', 'send_email', 'update_field', 'add_note', 'notify', 'create_meeting', 'create_proposal', 'create_invoice', 'create_note']),
-  config: z.record(z.unknown()).optional(),
+  config: z.record(z.string(), z.unknown()).optional(),
 })
 
 export const createWorkflowSchema = z.object({
@@ -306,7 +306,7 @@ export const createWorkflowSchema = z.object({
     'meeting_created', 'meeting_completed', 'meeting_cancelled',
     'invoice_created', 'invoice_overdue', 'payment_received',
   ]),
-  triggerConfig: z.record(z.unknown()).optional().default({}),
+  triggerConfig: z.record(z.string(), z.unknown()).optional().default({}),
   actions: z.array(workflowActionSchema).min(1, 'At least one action is required'),
   isActive: z.boolean().optional().default(true),
 })
@@ -316,7 +316,7 @@ export const createReportSchema = z.object({
   name: z.string().min(1, 'Name is required').max(300),
   description: z.string().max(2000).optional().default(''),
   type: z.string().min(1, 'Report type is required').max(100),
-  config: z.record(z.unknown()).optional().default({}),
+  config: z.record(z.string(), z.unknown()).optional().default({}),
   isScheduled: z.boolean().optional().default(false),
   schedule: z.string().max(500).optional().default(''),
 })
@@ -382,7 +382,7 @@ export const updateWorkflowSchema = z.object({
     'meeting_created', 'meeting_completed', 'meeting_cancelled',
     'invoice_created', 'invoice_overdue', 'payment_received',
   ]).optional(),
-  triggerConfig: z.record(z.unknown()).optional(),
+  triggerConfig: z.record(z.string(), z.unknown()).optional(),
   actions: z.array(workflowActionSchema).min(1, 'At least one action is required').optional(),
   isActive: z.boolean().optional(),
 })
@@ -392,7 +392,7 @@ export const updateReportSchema = z.object({
   name: z.string().min(1).max(300).optional(),
   description: z.string().max(2000).optional(),
   type: z.string().min(1).max(100).optional(),
-  config: z.record(z.unknown()).optional(),
+  config: z.record(z.string(), z.unknown()).optional(),
   isScheduled: z.boolean().optional(),
   schedule: z.string().max(500).optional(),
 })

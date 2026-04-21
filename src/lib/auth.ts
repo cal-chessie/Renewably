@@ -6,7 +6,7 @@
 // Secure cookie flags in production. Redis-backed rate limiter with in-memory fallback.
 // ============================================================================
 
-import { createSession, getSession, deleteSession } from './sessions'
+import { createSession, getSession, deleteSession, type SessionData } from './sessions'
 
 // ─── Rate Limiter (Redis first, in-memory fallback, per IP) ───
 // Prevents brute-force attacks on the login endpoint.
@@ -40,13 +40,13 @@ export async function checkRateLimit(ip: string): Promise<{ allowed: boolean; re
     if (await isRedisReady()) {
       const { redis } = await import('./redis')
       const key = `crm:ratelimit:${ip}`
-      const countStr = await redis.incr(key)
+      const countResult = await redis.incr(key)
 
-      if (parseInt(countStr, 10) === 1) {
-        await redis.pexpire(key, LOGIN_WINDOW_MS)
+      if (countResult === 1) {
+        await redis.pexpire(key, String(LOGIN_WINDOW_MS))
       }
 
-      const count = parseInt(countStr, 10)
+      const count = countResult
       const ttlMs = await redis.pttl(key)
 
       if (count >= MAX_LOGIN_ATTEMPTS) {
@@ -110,7 +110,7 @@ function encodeBase64(buffer: ArrayBuffer): string {
 }
 
 function decodeBase64(str: string): ArrayBuffer {
-  return Buffer.from(str, 'base64')
+  return Buffer.from(str, 'base64').buffer as ArrayBuffer
 }
 
 async function pbkdf2Hash(password: string, salt: string): Promise<string> {
@@ -152,7 +152,7 @@ async function sha256(message: string): Promise<string> {
 }
 
 export async function hashPassword(password: string): Promise<string> {
-  const salt = crypto.getRandomValues(new Uint8Array(16)).toString('hex')
+  const salt = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString('hex')
   return pbkdf2Hash(password, salt)
 }
 
@@ -211,4 +211,3 @@ export function createLogoutCookie(): string {
 }
 
 export { createSession, deleteSession }
-export type { SessionData }

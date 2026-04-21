@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { STEPS } from './onboarding-data';
-import { IconCheck } from './ui/icons';
+import { Icon } from './ui';
 
 export default function Stepper({ step }: { step: number }) {
   return (
@@ -43,10 +43,9 @@ export default function Stepper({ step }: { step: number }) {
                   color: done ? 'var(--bg)' : cur ? 'var(--solar)' : 'var(--ink-5)',
                   transition: 'all 320ms ease',
                   boxShadow: cur ? '0 0 0 4px oklch(0.85 0.17 95 / 0.12)' : 'none',
-                  role: cur ? 'presentation' : undefined,
                 }}>
                   {done
-                    ? <IconCheck size={11} />
+                    ? <Icon.Check size={11} />
                     : cur
                       ? <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--solar)' }} />
                       : <span className="mono" style={{ fontSize: 10, fontWeight: 500 }}>{num}</span>

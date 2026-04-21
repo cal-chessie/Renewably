@@ -665,7 +665,7 @@ function mapError(err: unknown): ClaudeError {
     return createError('Could not connect to Claude API. Check your network connection.', 'server', true);
   }
 
-  if (err instanceof Anthropic.APITimeoutError) {
+  if (err instanceof Error && err.name === 'TimeoutError') {
     return createError('Claude API request timed out. Please try again.', 'timeout', true);
   }
 

@@ -284,7 +284,7 @@ export default function OnboardingPage() {
         setRestoring(false);
         setMounted(true);
       });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);  
 
   // ─── Save progress to server (debounced) ──────────────────────────────
   const saveProgressToServer = useCallback((currentStep: number, currentData: FormData) => {

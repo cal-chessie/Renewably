@@ -1438,7 +1438,7 @@ export default function InvoicesPageContent() {
                             <FileText className="h-4 w-4" style={{ color: isCredit ? '#8B5CF6' : BRAND_MUTED }} />
                             <span className="text-sm font-semibold" style={{ color: '#FFFFFF' }}>{inv.invoiceNumber}</span>
                             {inv.stripePaymentIntent && <Zap className="h-3 w-3" style={{ color: '#6366f1' }} />}
-                            {inv.isRecurring && <Repeat className="h-3 w-3" style={{ color: BRAND_YELLOW }} title="Recurring" />}
+                            {inv.isRecurring && <Repeat className="h-3 w-3" style={{ color: BRAND_YELLOW }} />}
                           </div>
                         </td>
                         <td className="px-4 py-3">
@@ -1466,7 +1466,7 @@ export default function InvoicesPageContent() {
                               <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" style={{ color: BRAND_SUBTLE }}><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuItem onClick={() => handleOpenDetail(inv)}><Eye className="h-3.5 w-3.5 mr-2" />View Details</DropdownMenuItem>
-                                {showPayBtn && <DropdownMenuItem onClick={() => { setSelectedInvoice(inv); setDetailOpen(true) }} style={{ color: '#059669' }}><CreditCard className="h-3.5 w-3.5 mr-2" />Record Payment</DropdownMenuItem>}
+                                {!['paid', 'cancelled', 'void'].includes(inv.status) && <DropdownMenuItem onClick={() => { setSelectedInvoice(inv); setDetailOpen(true) }} style={{ color: '#059669' }}><CreditCard className="h-3.5 w-3.5 mr-2" />Record Payment</DropdownMenuItem>}
                                 <DropdownMenuItem onClick={() => handleOpenEdit(inv)}><Edit3 className="h-3.5 w-3.5 mr-2" />Edit</DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => window.open(`/api/crm/invoices/${inv.id}/pdf`, '_blank')}><Download className="h-3.5 w-3.5 mr-2" />Download PDF</DropdownMenuItem>
                                 <DropdownMenuSeparator />

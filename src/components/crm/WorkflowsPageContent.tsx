@@ -201,7 +201,7 @@ function parseJSON<T>(str: string | null | undefined, fallback: T): T {
 function formatTriggerDescription(triggerType: string, triggerConfig: Record<string, unknown>): string {
   switch (triggerType) {
     case 'deal_stage_change':
-      return `When deal moves to "${STAGE_LABELS[triggerConfig.stage || ''] || triggerConfig.stage || 'any'}" stage`
+      return `When deal moves to "${STAGE_LABELS[triggerConfig.stage as string || ''] || triggerConfig.stage || 'any'}" stage`
     case 'deal_created':
       return 'When a new deal is created'
     case 'new_contact':
@@ -1651,11 +1651,8 @@ export default function WorkflowsPageContent() {
 
       {/* Delete Dialog */}
       <DeleteDialog
-        open={!!deleteRule}
-        onOpenChange={(open) => !open && setDeleteRule(null)}
-        ruleName={deleteRule?.name || ''}
-        onConfirm={() => deleteRule && deleteMutation.mutate(deleteRule.id)}
-        loading={deleteMutation.isPending}
+        rule={deleteRule}
+        onDelete={() => deleteRule && deleteMutation.mutate(deleteRule.id)}
       />
     </div>
   )
