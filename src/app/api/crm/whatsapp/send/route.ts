@@ -99,6 +99,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Save the outbound message to database
+    // NOTE: whatsapp_messages table may not exist yet in Supabase.
+    // The insert is best-effort — if the table is missing, the message was
+    // still sent to Twilio and we return success.
     const { data: storedMessage, error: insertError } = await supabase
       .from('whatsapp_messages')
       .insert({

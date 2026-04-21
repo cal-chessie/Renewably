@@ -35,6 +35,8 @@ export async function POST(request: NextRequest) {
       if (validStatuses.includes(effectiveStatus!)) {
         const mappedStatus = effectiveStatus === 'undelivered' ? 'failed' : effectiveStatus
 
+        // NOTE: whatsapp_messages table may not exist yet in Supabase.
+        // Best-effort update — errors are silently ignored.
         await supabase
           .from('whatsapp_messages')
           .update({
@@ -126,6 +128,8 @@ export async function POST(request: NextRequest) {
       .single()
 
     // Store the inbound message
+    // NOTE: whatsapp_messages table may not exist yet in Supabase.
+    // Best-effort insert — errors are silently ignored.
     await supabase.from('whatsapp_messages').insert({
       installer_id: installerId,
       contact_id: contact?.id || null,

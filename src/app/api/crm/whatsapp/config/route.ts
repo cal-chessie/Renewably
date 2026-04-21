@@ -37,6 +37,8 @@ export async function GET(request: NextRequest) {
     const whatsappNumber = twilioConfig?.whatsappNumber || twilioConfig?.phoneNumber
 
     // Fetch message stats in parallel
+    // NOTE: whatsapp_messages table may not exist yet in Supabase.
+    // If the queries fail, we return zero counts / empty list.
     const [totalRes, inboundRes, outboundRes, recentRes] = await Promise.all([
       supabase
         .from('whatsapp_messages')
@@ -58,7 +60,12 @@ export async function GET(request: NextRequest) {
         .eq('installer_id', installer.id)
         .order('created_at', { ascending: false })
         .limit(10),
-    ])
+    ]).catch(() => [
+      { count: null, error: true, data: null },
+      { count: null, error: true, data: null },
+      { count: null, error: true, data: null },
+      { error: true, data: null },
+    ] as unknown as [typeof totalRes, typeof inboundRes, typeof outboundRes, typeof recentRes])
 
     const totalMessages = totalRes.count ?? 0
     const inboundCount = inboundRes.count ?? 0

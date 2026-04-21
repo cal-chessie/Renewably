@@ -33,6 +33,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // NOTE: whatsapp_messages table may not exist yet in Supabase.
     // Build query — always scope to installer
     let query = supabase
       .from('whatsapp_messages')
@@ -54,6 +55,11 @@ export async function GET(request: NextRequest) {
     const { data: messages, error: messagesError, count } = await query
 
     if (messagesError) {
+      // Gracefully handle missing whatsapp_messages table — return empty result
+      const isMissingTable = messagesError.message?.includes('does not exist')
+      if (isMissingTable) {
+        return NextResponse.json({ messages: [], total: 0, limit, offset })
+      }
       console.error('WhatsApp messages query error:', messagesError.message)
       return NextResponse.json(
         { error: 'Failed to fetch WhatsApp messages.' },

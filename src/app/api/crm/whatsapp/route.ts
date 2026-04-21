@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // NOTE: whatsapp_messages table may not exist yet in Supabase.
     // Build query
     let query = supabase
       .from('whatsapp_messages')
@@ -50,6 +51,11 @@ export async function GET(request: NextRequest) {
     const { data: messages, error: messagesError, count } = await query
 
     if (messagesError) {
+      // Gracefully handle missing whatsapp_messages table — return empty result
+      const isMissingTable = messagesError.message?.includes('does not exist')
+      if (isMissingTable) {
+        return NextResponse.json({ messages: [], total: 0, filters: { contactId, direction } })
+      }
       console.error('WhatsApp messages query error:', messagesError.message)
       return NextResponse.json(
         { error: 'Failed to fetch WhatsApp messages.' },
@@ -167,6 +173,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Save the outbound message
+    // NOTE: whatsapp_messages table may not exist yet in Supabase.
+    // The insert is best-effort — if the table is missing, the message was
+    // still sent to Twilio and we return success.
     const { data: storedMessage, error: insertError } = await supabase
       .from('whatsapp_messages')
       .insert({
