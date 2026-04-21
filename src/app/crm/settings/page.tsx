@@ -714,7 +714,7 @@ export default function SettingsPage() {
     if (!main) return
     const handleScroll = () => {
       const midPoint = main.scrollTop + main.clientHeight * 0.35
-      let active = SETTINGS_NAV[0].id
+      let active: SectionId = SETTINGS_NAV[0].id
       for (const item of SETTINGS_NAV) {
         const el = document.getElementById(`section-${item.id}`)
         if (el && el.offsetTop <= midPoint) active = item.id

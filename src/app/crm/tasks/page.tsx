@@ -1024,11 +1024,14 @@ export default function TasksPage() {
       return
     }
     createMutation.mutate({
-      ...newTask,
-      dueDate: newTask.dueDate || undefined as string | undefined,
-      contactId: newTask.contactId || undefined as string | undefined,
-      assigneeId: newTask.assigneeId || undefined as string | undefined,
-    })
+      title: newTask.title,
+      description: newTask.description,
+      priority: newTask.priority,
+      status: newTask.status,
+      dueDate: newTask.dueDate,
+      contactId: newTask.contactId,
+      assigneeId: newTask.assigneeId,
+    } as Record<string, string>)
   }, [newTask, createMutation])
 
   return (
