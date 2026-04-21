@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer'
 
@@ -272,12 +272,12 @@ function InvoiceDocument({
     'Client'
   const clientEmail = invoice.contact?.email || ''
   const clientAddress = invoice.company?.address || ''
-  const clientCity = invoice.company?.city || ''
-  const clientCountry = invoice.company?.country || ''
+  const clientCity = (invoice.company as any)?.city || ''
+  const clientCountry = (invoice.company as any)?.country || ''
 
   const fromCompany = invoice.company?.name || 'Your Company'
-  const fromEmail = invoice.company?.email || ''
-  const fromPhone = invoice.company?.phone || ''
+  const fromEmail = (invoice.company as any)?.email || ''
+  const fromPhone = (invoice.company as any)?.phone || ''
 
   const remainingAmount = invoice.totalAmount - paidAmount
   const sc = statusColour(invoice.status)
@@ -478,36 +478,64 @@ export async function GET(
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
+    const supabase = createServiceClient()
     const { id } = await params
-    const invoice = await db.invoice.findUnique({
-      where: { id },
-      include: {
-        contact: true,
-        company: true,
-        deal: true,
-        proposal: true,
-        lineItems: { orderBy: { sortOrder: 'asc' } },
-        payments: { orderBy: { paidAt: 'desc' } },
-      },
-    })
 
-    if (!invoice) {
+    const { data: invoice, error } = await supabase
+      .from('invoices')
+      .select('*, contact:contacts(*), company:companies(*), deal:deals(*), proposal:proposals(*), invoice_line_items(*), payments(*)')
+      .eq('id', id)
+      .single()
+
+    if (error || !invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
     }
 
-    const paidAmount = invoice.payments
-      .filter((p) => p.status === 'completed')
-      .reduce((sum, p) => sum + p.amount, 0)
+    // Calculate paid amount
+    const paidAmount = (invoice.payments || [])
+      .filter((p: any) => p.status === 'completed')
+      .reduce((sum: number, p: any) => sum + (p.amount || 0), 0)
+
+    // Transform data for PDF component compatibility
+    const mappedInvoice = {
+      ...invoice,
+      invoiceNumber: invoice.invoice_number,
+      totalAmount: invoice.total_amount,
+      createdAt: invoice.created_at,
+      updatedAt: invoice.updated_at,
+      dueDate: invoice.due_date,
+      paidAt: invoice.paid_at,
+      lineItems: (invoice.invoice_line_items || []).map((item: any) => ({
+        ...item,
+        name: item.description,
+        total: item.amount,
+        unitPrice: item.unit_price,
+        sortOrder: item.sort_order,
+      })).sort((a: any, b: any) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)),
+      contact: invoice.contact ? {
+        ...invoice.contact,
+        firstName: '',
+        lastName: invoice.contact.name,
+      } : null,
+      deal: invoice.deal ? {
+        ...invoice.deal,
+        title: invoice.deal.product,
+      } : null,
+      payments: invoice.payments || [],
+      taxRate: invoice.subtotal_amount > 0 ? (invoice.tax_amount / invoice.subtotal_amount * 100) : 0,
+      subtotal: invoice.subtotal_amount,
+      taxAmount: invoice.tax_amount,
+    }
 
     // Generate real PDF
     const pdfBytes = await pdf(
-      <InvoiceDocument invoice={invoice} paidAmount={paidAmount} />
+      <InvoiceDocument invoice={mappedInvoice} paidAmount={paidAmount} />
     ).toBuffer()
 
     return new NextResponse(pdfBytes as any, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `inline; filename="${invoice.invoiceNumber}.pdf"`,
+        'Content-Disposition': `inline; filename="${invoice.invoice_number}.pdf"`,
       },
     })
   } catch (error) {

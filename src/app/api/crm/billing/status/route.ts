@@ -29,8 +29,9 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch the subscription for this installer
-    const subscription = await db.subscription.findUnique({
+    const subscription = await db.subscription.findFirst({
       where: { installerId },
+      orderBy: { createdAt: 'desc' },
     })
 
     if (!subscription) {
@@ -49,8 +50,6 @@ export async function GET(request: NextRequest) {
         billingCycle: subscription.billingCycle,
         currentPeriodStart: subscription.currentPeriodStart,
         currentPeriodEnd: subscription.currentPeriodEnd,
-        cancelledAt: subscription.cancelledAt,
-        createdAt: subscription.createdAt,
       },
       isActive: subscription.status === 'active' || subscription.status === 'trialing',
     })

@@ -1,10 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { z } from 'zod'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { checkApiRateLimit, getClientIp, isValidUuid } from '@/lib/crm-validation'
-import { updateContactSchema, formatZodError } from '@/lib/crm-schemas'
 import { logger } from '@/lib/logger'
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+/** Convert a flat object's keys from snake_case to camelCase */
+function keysToCamel(row: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {}
+  for (const [k, v] of Object.entries(row)) {
+    const camel = k.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase())
+    out[camel] = v
+  }
+  return out
+}
+
+/**
+ * Map camelCase body fields to snake_case columns for the contacts table.
+ * Fields that don't exist in the DB (linkedin, country, description) are excluded.
+ */
+const CONTACT_FIELD_MAP: Record<string, string> = {
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  jobTitle: 'job_title',
+  source: 'source',
+  status: 'status',
+  address: 'address',
+  city: 'city',
+  companyId: 'company_id',
+  notes: 'notes',
+}
 
 // GET: Single contact
 export async function GET(
@@ -20,19 +47,37 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    const contact = await db.contact.findUnique({
-      where: { id },
-      include: {
-        company: { select: { id: true, name: true, status: true } },
-        tags: { include: { tag: { select: { id: true, name: true, color: true } } } },
-      },
-    })
+    const supabase = createServiceClient()
 
-    if (!contact) {
+    const { data: contact, error } = await supabase
+      .from('contacts')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (error || !contact) {
       return NextResponse.json({ error: 'Contact not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ contact })
+    const result = keysToCamel(contact as Record<string, unknown>)
+
+    // Fetch company info if contact has a company_id
+    if (contact.company_id) {
+      const { data: company } = await supabase
+        .from('companies')
+        .select('id, name, status')
+        .eq('id', contact.company_id)
+        .single()
+
+      if (company) {
+        result.company = keysToCamel(company as Record<string, unknown>)
+      }
+    }
+
+    // Tags not yet available — return empty array (junction tables may not exist)
+    result.tags = []
+
+    return NextResponse.json({ contact: result })
   } catch (error) {
     logger.error('Contact detail error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -59,36 +104,62 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const updateData: Record<string, unknown> = {}
+    const supabase = createServiceClient()
 
-    if (body.name !== undefined) updateData.name = String(body.name)
-    if (body.email !== undefined) updateData.email = String(body.email)
-    if (body.phone !== undefined) updateData.phone = String(body.phone)
-    if (body.jobTitle !== undefined) updateData.jobTitle = String(body.jobTitle)
-    if (body.linkedin !== undefined) updateData.linkedin = String(body.linkedin)
-    if (body.source !== undefined) updateData.source = String(body.source)
-    if (body.status !== undefined) updateData.status = String(body.status)
-    if (body.address !== undefined) updateData.address = String(body.address)
-    if (body.city !== undefined) updateData.city = String(body.city)
-    if (body.country !== undefined) updateData.country = String(body.country)
-    if (body.description !== undefined) updateData.description = String(body.description)
-    if (body.companyId !== undefined) updateData.companyId = body.companyId || null
-    if (body.notes !== undefined) updateData.notes = String(body.notes)
+    // Build snake_case update payload, only including fields present in the body
+    // Fields not in CONTACT_FIELD_MAP (linkedin, country, description) are silently skipped
+    const updateData: Record<string, unknown> = {}
+    for (const [camelKey, snakeKey] of Object.entries(CONTACT_FIELD_MAP)) {
+      const value = (body as Record<string, unknown>)[camelKey]
+      if (value !== undefined) {
+        if (camelKey === 'companyId') {
+          // companyId can be null (unset) or a string
+          updateData[snakeKey] = value || null
+        } else {
+          updateData[snakeKey] = String(value)
+        }
+      }
+    }
 
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
     }
 
-    const contact = await db.contact.update({
-      where: { id },
-      data: updateData,
-      include: {
-        company: { select: { id: true, name: true, status: true } },
-        tags: { include: { tag: { select: { id: true, name: true, color: true } } } },
-      },
-    })
+    const { data: contact, error } = await supabase
+      .from('contacts')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single()
 
-    return NextResponse.json({ contact })
+    if (error) {
+      logger.error('Update contact DB error', { error: error.message, code: error.code })
+      return NextResponse.json({ error: 'Failed to update contact' }, { status: 500 })
+    }
+
+    if (!contact) {
+      return NextResponse.json({ error: 'Contact not found' }, { status: 404 })
+    }
+
+    const result = keysToCamel(contact as Record<string, unknown>)
+
+    // Fetch company info if contact has a company_id
+    if (contact.company_id) {
+      const { data: company } = await supabase
+        .from('companies')
+        .select('id, name, status')
+        .eq('id', contact.company_id)
+        .single()
+
+      if (company) {
+        result.company = keysToCamel(company as Record<string, unknown>)
+      }
+    }
+
+    // Tags not yet available — return empty array
+    result.tags = []
+
+    return NextResponse.json({ contact: result })
   } catch (error) {
     logger.error('Update contact error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -114,7 +185,17 @@ export async function DELETE(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    await db.contact.delete({ where: { id } })
+    const supabase = createServiceClient()
+
+    const { error } = await supabase
+      .from('contacts')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      logger.error('Delete contact DB error', { error: error.message, code: error.code })
+      return NextResponse.json({ error: 'Failed to delete contact' }, { status: 500 })
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {

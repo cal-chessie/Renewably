@@ -47,9 +47,8 @@ export async function POST(request: NextRequest) {
 
     // Optionally fetch the profile to return user info
     // We need to validate the new access token to get the user ID
-    const adminClient = createAdminClient()
-    const userClient = adminClient.auth // Use admin to verify the new token
-    // Actually, let's use the user client pattern to get the user from the new token
+    const adminClient = await createAdminClient()
+    // Use user client pattern to get the user from the new token
     const { createClient } = await import('@supabase/supabase-js')
     const anonClient = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -63,15 +62,15 @@ export async function POST(request: NextRequest) {
 
     const { data: { user }, error: userError } = await anonClient.auth.getUser(tokens.accessToken)
 
-    let profile = null
+    let profile: Record<string, unknown> | null = null
     if (user && !userError) {
-      const { data } = await adminClient
+      const { data, error: profileError } = await adminClient
         .from('profiles')
         .select('id, user_id, email, name, role, avatar, phone, is_active')
         .eq('user_id', user.id)
         .eq('is_active', true)
         .single()
-      profile = data
+      if (data && !profileError) profile = data as Record<string, unknown>
     }
 
     const response = NextResponse.json({

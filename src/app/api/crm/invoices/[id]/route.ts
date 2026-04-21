@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { updateInvoiceSchema, formatZodError } from '@/lib/crm-schemas'
 import { logger } from '@/lib/logger'
 
-// GET: Single invoice
+// GET: Single invoice with line items, payments, and related entities
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -20,31 +20,34 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    const invoice = await db.invoice.findUnique({
-      where: { id },
-      include: {
-        contact: { select: { id: true, firstName: true, lastName: true, email: true, phone: true } },
-        company: { select: { id: true, name: true, city: true, country: true, address: true } },
-        deal: { select: { id: true, title: true, value: true } },
-        proposal: { select: { id: true, title: true } },
-        lineItems: { orderBy: { sortOrder: 'asc' } },
-        payments: { orderBy: { paidAt: 'desc' } },
-      },
-    })
+    const supabase = createServiceClient()
 
-    if (!invoice) {
+    const { data: invoice, error } = await supabase
+      .from('invoices')
+      .select('*, contact:contacts(id, name, email, phone), company:companies(id, name, address), deal:deals(id, product, value), proposal:proposals(id, title), invoice_line_items(*), payments(*)')
+      .eq('id', id)
+      .single()
+
+    if (error || !invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
     }
 
-    // Calculate paid amount
-    const paidAmount = invoice.payments
-      .filter(p => p.status === 'completed')
-      .reduce((sum, p) => sum + p.amount, 0)
+    // Calculate paid amount from completed payments
+    const paidAmount = (invoice.payments || [])
+      .filter((p: any) => p.status === 'completed')
+      .reduce((sum: number, p: any) => sum + (p.amount || 0), 0)
+
+    // Map invoice_line_items → lineItems for frontend compatibility
+    const mappedInvoice = {
+      ...invoice,
+      lineItems: (invoice.invoice_line_items || []).sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0)),
+      invoice_line_items: undefined,
+    }
 
     return NextResponse.json({
-      invoice,
+      invoice: mappedInvoice,
       paidAmount,
-      remainingAmount: invoice.totalAmount - paidAmount,
+      remainingAmount: invoice.total_amount - paidAmount,
     })
   } catch (error) {
     logger.error('Get invoice error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
@@ -52,7 +55,7 @@ export async function GET(
   }
 }
 
-// PUT: Update invoice
+// PUT: Update invoice (optionally replace line items)
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -71,6 +74,9 @@ export async function PUT(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
+    const supabase = createServiceClient()
+
+    // Validate request body
     let body: z.infer<typeof updateInvoiceSchema>
     try {
       body = updateInvoiceSchema.parse(await request.json())
@@ -91,65 +97,90 @@ export async function PUT(
       lineItems,
     } = body
 
-    const existing = await db.invoice.findUnique({ where: { id } })
-    if (!existing) {
+    // Fetch existing invoice
+    const { data: existing, error: fetchError } = await supabase
+      .from('invoices')
+      .select('*')
+      .eq('id', id)
+      .single()
+    if (fetchError || !existing) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
     }
 
-    let subtotal = existing.subtotal
-    let taxAmount = existing.taxAmount
-    let totalAmount = existing.totalAmount
+    let subtotalAmount = existing.subtotal_amount || 0
+    let taxAmount = existing.tax_amount || 0
+    let totalAmount = existing.total_amount || 0
 
+    // If line items provided, delete existing and re-insert
     if (lineItems && Array.isArray(lineItems)) {
-      await db.invoiceLineItem.deleteMany({ where: { invoiceId: id } })
-      subtotal = lineItems.reduce((sum: number, item: { quantity: number; unitPrice: number }) => sum + (item.quantity * item.unitPrice), 0)
-      const newTaxRate = taxRate ?? existing.taxRate
-      taxAmount = subtotal * (newTaxRate / 100)
-      totalAmount = subtotal + taxAmount
+      // Delete existing line items
+      const { error: deleteLiError } = await supabase.from('invoice_line_items').delete().eq('invoice_id', id)
+      if (deleteLiError) {
+        logger.error('Delete line items failed', { error: deleteLiError.message })
+      }
+
+      // Recalculate amounts (no tax_rate column — compute tax_amount directly)
+      subtotalAmount = lineItems.reduce((sum: number, item: { quantity: number; unitPrice: number }) => sum + (item.quantity * item.unitPrice), 0)
+      const newTaxRate = taxRate ?? 0
+      taxAmount = subtotalAmount * (newTaxRate / 100)
+      totalAmount = subtotalAmount + taxAmount
+
+      // Insert new line items (map item.name → description, no 'name' column)
+      const lineItemsData = lineItems.map((item: { name: string; description?: string; quantity: number; unitPrice: number; total: number; sortOrder: number }, index: number) => ({
+        invoice_id: id,
+        description: item.name,
+        quantity: item.quantity || 1,
+        unit_price: item.unitPrice || 0,
+        amount: item.total || (item.quantity * item.unitPrice),
+        sort_order: item.sortOrder ?? index,
+      }))
+
+      const { error: liError } = await supabase.from('invoice_line_items').insert(lineItemsData)
+      if (liError) {
+        logger.error('Update line items failed', { error: liError.message })
+      }
     }
 
-    const invoice = await db.invoice.update({
-      where: { id },
-      data: {
-        contactId: contactId !== undefined ? contactId || null : existing.contactId,
-        companyId: companyId !== undefined ? companyId || null : existing.companyId,
-        dealId: dealId !== undefined ? dealId || null : existing.dealId,
-        taxRate: taxRate !== undefined ? taxRate : existing.taxRate,
-        subtotal,
-        taxAmount,
-        totalAmount,
-        dueDate: dueDate ? new Date(dueDate) : existing.dueDate,
-        notes: notes !== undefined ? notes : existing.notes,
-        status: status !== undefined ? status : existing.status,
-        lineItems: lineItems ? {
-          create: lineItems.map((item: { name: string; description?: string; quantity: number; unitPrice: number; total: number; sortOrder: number }, index: number) => ({
-            name: item.name,
-            description: item.description || null,
-            quantity: item.quantity || 1,
-            unitPrice: item.unitPrice || 0,
-            total: item.total || (item.quantity * item.unitPrice),
-            sortOrder: item.sortOrder ?? index,
-          })),
-        } : undefined,
-      },
-      include: {
-        contact: { select: { id: true, firstName: true, lastName: true, email: true } },
-        company: { select: { id: true, name: true } },
-        deal: { select: { id: true, title: true } },
-        proposal: { select: { id: true, title: true } },
-        lineItems: { orderBy: { sortOrder: 'asc' } },
-        payments: true,
-      },
-    })
+    // Build update data (snake_case columns, no tax_rate, no sent_at)
+    const updateData: Record<string, unknown> = {
+      subtotal_amount: subtotalAmount,
+      tax_amount: taxAmount,
+      total_amount: totalAmount,
+    }
 
-    return NextResponse.json({ invoice })
+    if (contactId !== undefined) updateData.contact_id = contactId || null
+    if (companyId !== undefined) updateData.company_id = companyId || null
+    if (dealId !== undefined) updateData.deal_id = dealId || null
+    if (dueDate !== undefined) updateData.due_date = dueDate ? new Date(dueDate).toISOString() : null
+    if (notes !== undefined) updateData.notes = notes
+    if (status !== undefined) updateData.status = status
+
+    const { data: invoice, error: updateError } = await supabase
+      .from('invoices')
+      .update(updateData)
+      .eq('id', id)
+      .select('*, contact:contacts(id, name, email), company:companies(id, name), deal:deals(id, product), proposal:proposals(id, title), invoice_line_items(*), payments(*)')
+      .single()
+
+    if (updateError) {
+      logger.error('Update invoice failed', { error: updateError.message })
+      return NextResponse.json({ error: 'Failed to update invoice' }, { status: 500 })
+    }
+
+    const mappedInvoice = {
+      ...invoice,
+      lineItems: (invoice.invoice_line_items || []).sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0)),
+      invoice_line_items: undefined,
+    }
+
+    return NextResponse.json({ invoice: mappedInvoice })
   } catch (error) {
     logger.error('Update invoice error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
-// DELETE: Delete invoice
+// DELETE: Delete invoice (cascade line items + payments)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -168,12 +199,20 @@ export async function DELETE(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    const existing = await db.invoice.findUnique({ where: { id } })
-    if (!existing) {
-      return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
-    }
+    const supabase = createServiceClient()
 
-    await db.invoice.delete({ where: { id } })
+    // Delete line items first
+    await supabase.from('invoice_line_items').delete().eq('invoice_id', id)
+    // Delete payments first (no notes column in payments)
+    await supabase.from('payments').delete().eq('invoice_id', id)
+
+    // Delete invoice
+    const { error } = await supabase.from('invoices').delete().eq('id', id)
+
+    if (error) {
+      logger.error('Delete invoice failed', { error: error.message })
+      return NextResponse.json({ error: 'Failed to delete invoice' }, { status: 500 })
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {

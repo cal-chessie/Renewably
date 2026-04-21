@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { escapeHtml as esc, isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { logger } from '@/lib/logger'
 
-// GET: Generate branded PDF invoice
+// GET: Generate branded PDF invoice HTML
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -23,25 +23,23 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    const invoice = await db.invoice.findUnique({
-      where: { id },
-      include: {
-        contact: true,
-        company: true,
-        deal: true,
-        proposal: true,
-        lineItems: { orderBy: { sortOrder: 'asc' } },
-        payments: { orderBy: { paidAt: 'desc' } },
-      },
-    })
+    const supabase = createServiceClient()
 
-    if (!invoice) {
+    // Fetch invoice with all relations (Supabase snake_case columns)
+    const { data: invoice, error } = await supabase
+      .from('invoices')
+      .select('*, contact:contacts(id, name, email, phone), company:companies(id, name, address, city, country), deal:deals(id, product, value), proposal:proposals(id, title), invoice_line_items(*), payments(*)')
+      .eq('id', id)
+      .single()
+
+    if (error || !invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
     }
 
-    const paidAmount = invoice.payments
-      .filter(p => p.status === 'completed')
-      .reduce((sum, p) => sum + p.amount, 0)
+    // Calculate paid amount from completed payments
+    const paidAmount = (invoice.payments || [])
+      .filter((p: any) => p.status === 'completed')
+      .reduce((sum: number, p: any) => sum + (p.amount || 0), 0)
 
     // Generate HTML for the PDF
     const html = generateInvoiceHtml(invoice, paidAmount)
@@ -49,7 +47,7 @@ export async function GET(
     return new NextResponse(html, {
       headers: {
         'Content-Type': 'text/html',
-        'Content-Disposition': `inline; filename="${invoice.invoiceNumber}.html"`,
+        'Content-Disposition': `inline; filename="${invoice.invoice_number}.html"`,
       },
     })
   } catch (error) {
@@ -57,6 +55,8 @@ export async function GET(
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
+
+// ─── Helper functions ─────────────────────────────────────────────────────
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat('en-IE', {
@@ -77,21 +77,44 @@ function formatDate(date: Date | string | null | undefined): string {
 }
 
 function generateInvoiceHtml(invoice: any, paidAmount: number): string {
-  const clientName = esc(invoice.company?.name ||
-    `${invoice.contact?.firstName || ''} ${invoice.contact?.lastName || ''}`.trim() || 'Client')
-  const clientEmail = esc(invoice.contact?.email || '')
-  const clientAddress = esc(invoice.company?.address || invoice.company?.city || '')
-  const clientCity = esc(invoice.company?.city || '')
-  const clientCountry = esc(invoice.company?.country || '')
+  // Map snake_case Supabase fields to the template
+  const contact = invoice.contact || {}
+  const company = invoice.company || {}
+  const proposal = invoice.proposal || {}
 
-  const remainingAmount = invoice.totalAmount - paidAmount
+  const clientName = esc(
+    company.name ||
+    contact.name ||
+    'Client'
+  )
+  const clientEmail = esc(contact.email || '')
+  const clientAddress = esc(company.address || '')
+  const clientCity = esc(company.city || '')
+  const clientCountry = esc(company.country || '')
+
+  // Sort line items by sort_order
+  const lineItems = (invoice.invoice_line_items || [])
+    .sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+
+  // Compute tax rate from tax_amount / subtotal_amount (no tax_rate column)
+  const subtotal = invoice.subtotal_amount || 0
+  const taxAmount = invoice.tax_amount || 0
+  const totalAmount = invoice.total_amount || 0
+  const taxRate = subtotal > 0 ? (taxAmount / subtotal) * 100 : 0
+
+  const remainingAmount = totalAmount - paidAmount
+
+  // Sort payments by paid_at desc
+  const payments = (invoice.payments || [])
+    .filter((p: any) => p.status === 'completed')
+    .sort((a: any, b: any) => new Date(b.paid_at).getTime() - new Date(a.paid_at).getTime())
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invoice ${invoice.invoiceNumber}</title>
+  <title>Invoice ${esc(invoice.invoice_number)}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a1a1a; line-height: 1.6; }
@@ -147,7 +170,7 @@ function generateInvoiceHtml(invoice: any, paidAmount: number): string {
         <p>+353 873958424</p>
       </div>
       <div class="invoice-badge">
-        <h2>${invoice.invoiceNumber}</h2>
+        <h2>${esc(invoice.invoice_number)}</h2>
         <span class="status status-${invoice.status}">${invoice.status.replace(/_/g, ' ')}</span>
       </div>
     </div>
@@ -163,9 +186,9 @@ function generateInvoiceHtml(invoice: any, paidAmount: number): string {
       </div>
       <div class="detail-box">
         <h3>Invoice Details</h3>
-        <p><strong>Date:</strong> ${formatDate(invoice.createdAt)}</p>
-        <p><strong>Due Date:</strong> ${formatDate(invoice.dueDate)}</p>
-        ${invoice.proposal ? `<p><strong>Proposal:</strong> ${esc(invoice.proposal.title)}</p>` : ''}
+        <p><strong>Date:</strong> ${formatDate(invoice.created_at)}</p>
+        <p><strong>Due Date:</strong> ${formatDate(invoice.due_date)}</p>
+        ${proposal ? `<p><strong>Proposal:</strong> ${esc(proposal.title)}</p>` : ''}
       </div>
     </div>
 
@@ -179,34 +202,33 @@ function generateInvoiceHtml(invoice: any, paidAmount: number): string {
         </tr>
       </thead>
       <tbody>
-        ${invoice.lineItems.map((item: any) => `
+        ${lineItems.map((item: any) => `
         <tr>
           <td>
-            <strong>${esc(item.name)}</strong>
-            ${item.description ? `<br><span style="color:#9ca3af;font-size:12px">${esc(item.description)}</span>` : ''}
+            <strong>${esc(item.description)}</strong>
           </td>
           <td class="text-right">${item.quantity}</td>
-          <td class="text-right">${formatCurrency(item.unitPrice)}</td>
-          <td class="text-right"><strong>${formatCurrency(item.total)}</strong></td>
+          <td class="text-right">${formatCurrency(item.unit_price)}</td>
+          <td class="text-right"><strong>${formatCurrency(item.amount)}</strong></td>
         </tr>
         `).join('')}
       </tbody>
     </table>
 
     <div class="totals">
-      <div class="row"><span>Subtotal</span><span>${formatCurrency(invoice.subtotal)}</span></div>
-      ${invoice.taxRate > 0 ? `<div class="row"><span>Tax (${invoice.taxRate}%)</span><span>${formatCurrency(invoice.taxAmount)}</span></div>` : ''}
-      <div class="row total"><span>Total</span><span>${formatCurrency(invoice.totalAmount)}</span></div>
+      <div class="row"><span>Subtotal</span><span>${formatCurrency(subtotal)}</span></div>
+      ${taxRate > 0 ? `<div class="row"><span>Tax (${taxRate.toFixed(1)}%)</span><span>${formatCurrency(taxAmount)}</span></div>` : ''}
+      <div class="row total"><span>Total</span><span>${formatCurrency(totalAmount)}</span></div>
       ${paidAmount > 0 ? `<div class="row" style="color:#22c55e;font-weight:600"><span>Paid</span><span>-${formatCurrency(paidAmount)}</span></div>` : ''}
       ${remainingAmount > 0 && paidAmount > 0 ? `<div class="row" style="color:#f59e0b;font-weight:600"><span>Remaining</span><span>${formatCurrency(remainingAmount)}</span></div>` : ''}
     </div>
 
-    ${invoice.payments.length > 0 ? `
+    ${payments.length > 0 ? `
     <div class="payment-section">
       <h3>Payment History</h3>
-      ${invoice.payments.filter((p: any) => p.status === 'completed').map((p: any) => `
+      ${payments.map((p: any) => `
       <div class="payment-item">
-        <span>${formatDate(p.paidAt)} - ${esc(p.method.replace(/_/g, ' '))}${p.reference ? ` (${esc(p.reference)})` : ''}</span>
+        <span>${formatDate(p.paid_at)} - ${esc(p.method.replace(/_/g, ' '))}${p.reference ? ` (${esc(p.reference)})` : ''}</span>
         <span style="font-weight:600">${formatCurrency(p.amount)}</span>
       </div>
       `).join('')}

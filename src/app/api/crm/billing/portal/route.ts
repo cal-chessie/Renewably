@@ -44,17 +44,15 @@ export async function POST(request: NextRequest) {
     // Look up the installer profile
     const installer = await db.installerProfile.findUnique({
       where: { id: installerId },
-      select: {
-        id: true,
-        stripeCustomerId: true,
-      },
     })
 
     if (!installer) {
       return NextResponse.json({ error: 'Installer profile not found' }, { status: 404 })
     }
 
-    if (!installer.stripeCustomerId) {
+    const stripeCustomerId = (installer as Record<string, unknown>).stripeCustomerId as string | undefined
+
+    if (!stripeCustomerId) {
       return NextResponse.json(
         { error: 'No billing account found for this installer. Please complete checkout first.' },
         { status: 400 },
@@ -67,7 +65,7 @@ export async function POST(request: NextRequest) {
 
     // Create the portal session
     const session = await createPortalSession({
-      customerId: installer.stripeCustomerId,
+      customerId: stripeCustomerId,
       returnUrl,
     })
 

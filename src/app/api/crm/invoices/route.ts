@@ -1,12 +1,12 @@
 import { z } from 'zod'
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { clampPagination, sanitizeSearchQuery, checkApiRateLimit, getClientIp, isValidUuid } from '@/lib/crm-validation'
 import { createInvoiceSchema } from '@/lib/crm-schemas'
 import { logger } from '@/lib/logger'
 
-// GET: List invoices
+// GET: List invoices with stats
 export async function GET(request: NextRequest) {
   try {
     const user = await requireAuth(request)
@@ -17,6 +17,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) } })
     }
 
+    const supabase = createServiceClient()
+
     const { searchParams } = new URL(request.url)
     const search = sanitizeSearchQuery(searchParams.get('search'))
     const status = searchParams.get('status') || ''
@@ -26,72 +28,75 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = clampPagination(parseInt(searchParams.get('limit')), 50)
 
-    const where: Record<string, unknown> = {}
-
-    if (search) {
-      where.OR = [
-        { invoiceNumber: { contains: search } },
-        { company: { name: { contains: search } } },
-      ]
-    }
+    // Build query
+    let query = supabase
+      .from('invoices')
+      .select('*, company:companies(id, name), deal:deals(id, stage, product), payments(id, amount), invoice_line_items(count)', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range((page - 1) * limit, page * limit - 1)
 
     if (status) {
-      where.status = status
+      query = query.eq('status', status)
     }
 
     if (contactId) {
       if (!isValidUuid(contactId)) {
         return NextResponse.json({ error: 'Invalid contactId format' }, { status: 400 })
       }
-      where.contactId = contactId
+      query = query.eq('contact_id', contactId)
     }
 
-    if (startDate || endDate) {
-      where.createdAt = {}
-      if (startDate) (where.createdAt as Record<string, unknown>).gte = new Date(startDate)
-      if (endDate) (where.createdAt as Record<string, unknown>).lte = new Date(endDate)
+    if (startDate) {
+      query = query.gte('created_at', new Date(startDate).toISOString())
+    }
+    if (endDate) {
+      query = query.lte('created_at', new Date(endDate).toISOString())
     }
 
-    const [invoices, total] = await Promise.all([
-      db.invoice.findMany({
-        where,
-        include: {
-          company: { select: { id: true, name: true } },
-          deal: { select: { id: true, stage: true, product: true } },
-          payments: { select: { id: true, amount: true } },
-          _count: { select: { lineItems: true, payments: true } },
-        },
-        orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-      db.invoice.count({ where }),
-    ])
+    if (search) {
+      query = query.or(`invoice_number.ilike.%${search}%`)
+    }
 
-    // Stats — use aggregate instead of loading all invoices into memory
+    const { data: invoices, count: total, error: invoicesError } = await query
+
+    if (invoicesError) {
+      logger.error('Invoices list query failed', { error: invoicesError.message })
+      return NextResponse.json({ error: 'Failed to fetch invoices' }, { status: 500 })
+    }
+
+    // If search term provided, also filter by company name in JS since PostgREST
+    // can't easily do cross-table ilike in a single query
+    let filteredInvoices = invoices || []
+    if (search) {
+      filteredInvoices = filteredInvoices.filter((inv: any) =>
+        inv.company?.name?.toLowerCase().includes(search.toLowerCase())
+      )
+    }
+
+    // Stats calculations — fetch all rows and compute in JS
     const now = new Date()
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
 
-    const [totalAgg, paidAgg, overdueAgg, paidThisMonthAgg] = await Promise.all([
-      db.invoice.aggregate({ _sum: { totalAmount: true } }),
-      db.payment.aggregate({ _sum: { amount: true }, where: { status: 'completed' } }),
-      db.invoice.aggregate({ _sum: { totalAmount: true }, where: { status: 'overdue' } }),
-      db.invoice.aggregate({ _sum: { totalAmount: true }, where: { paidAt: { gte: startOfMonth } } }),
+    const [totalRes, paidRes, overdueRes, paidThisMonthRes] = await Promise.all([
+      supabase.from('invoices').select('total_amount'),
+      supabase.from('payments').select('amount').eq('status', 'completed'),
+      supabase.from('invoices').select('total_amount').eq('status', 'overdue'),
+      supabase.from('invoices').select('total_amount').gte('paid_at', startOfMonth),
     ])
 
-    const totalInvoiced = totalAgg._sum.totalAmount || 0
-    const totalPaid = paidAgg._sum.amount || 0
+    const totalInvoiced = (totalRes.data || []).reduce((sum: number, r: any) => sum + (r.total_amount || 0), 0)
+    const totalPaid = (paidRes.data || []).reduce((sum: number, r: any) => sum + (r.amount || 0), 0)
     const outstanding = totalInvoiced - totalPaid
-    const overdueAmount = overdueAgg._sum.totalAmount || 0
-    const paidThisMonth = paidThisMonthAgg._sum.totalAmount || 0
+    const overdueAmount = (overdueRes.data || []).reduce((sum: number, r: any) => sum + (r.total_amount || 0), 0)
+    const paidThisMonth = (paidThisMonthRes.data || []).reduce((sum: number, r: any) => sum + (r.total_amount || 0), 0)
 
     return NextResponse.json({
-      invoices,
+      invoices: filteredInvoices,
       pagination: {
         page,
         limit,
-        total,
-        totalPages: Math.ceil(total / limit),
+        total: total || 0,
+        totalPages: Math.ceil((total || 0) / limit),
       },
       stats: {
         totalInvoiced,
@@ -107,7 +112,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST: Create invoice
+// POST: Create invoice + line items
 export async function POST(request: NextRequest) {
   try {
     const user = await requireAuth(request)
@@ -119,8 +124,9 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
+    const supabase = createServiceClient()
 
-    // Validate with Zod (allow contactId to come from proposal)
+    // Validate with Zod — allow contactId/companyId/dealId to come from proposal
     const relaxedInvoiceSchema = createInvoiceSchema.extend({
       contactId: z.string().optional(),
       companyId: z.string().optional(),
@@ -135,73 +141,100 @@ export async function POST(request: NextRequest) {
     }
     const { proposalId, contactId, companyId, dealId, taxRate, dueDate, notes, lineItems } = result.data
 
+    // Compute amounts (no tax_rate column — only store tax_amount)
     const subtotal = lineItems.reduce((sum: number, item: { quantity: number; unitPrice: number }) => sum + (item.quantity * item.unitPrice), 0)
     const taxAmount = subtotal * ((taxRate || 0) / 100)
     const totalAmount = subtotal + taxAmount
 
-    // Generate invoice number
+    // Generate invoice number: INV-YYYY-NNN
     const year = new Date().getFullYear()
-    const count = await db.invoice.count({
-      where: {
-        createdAt: {
-          gte: new Date(year, 0, 1),
-          lt: new Date(year + 1, 0, 1),
-        },
-      },
-    })
-    const invoiceNumber = `INV-${year}-${String(count + 1).padStart(3, '0')}`
+    const { count } = await supabase
+      .from('invoices')
+      .select('*', { count: 'exact', head: true })
+      .gte('created_at', `${year}-01-01T00:00:00Z`)
+      .lt('created_at', `${year + 1}-01-01T00:00:00Z`)
 
-    // If proposalId is provided, load contact/company/deal from proposal
+    const invoiceNumber = `INV-${year}-${String((count || 0) + 1).padStart(3, '0')}`
+
+    // If proposalId is provided, load contact/company/deal from proposals table
     let finalContactId = contactId || null
     let finalCompanyId = companyId || null
     let finalDealId = dealId || null
 
     if (proposalId) {
-      const proposal = await db.proposal.findUnique({
-        where: { id: proposalId },
-        select: { contactId: true, companyId: true, dealId: true },
-      })
-      if (proposal) {
-        finalContactId = finalContactId || proposal.contactId
-        finalCompanyId = finalCompanyId || proposal.companyId
-        finalDealId = finalDealId || proposal.dealId
+      try {
+        const { data: proposal } = await supabase
+          .from('proposals')
+          .select('contact_id, company_id, deal_id')
+          .eq('id', proposalId)
+          .single()
+        if (proposal) {
+          finalContactId = finalContactId || proposal.contact_id
+          finalCompanyId = finalCompanyId || proposal.company_id
+          finalDealId = finalDealId || proposal.deal_id
+        }
+      } catch (err) {
+        logger.warn('Failed to load proposal for invoice creation', { proposalId, error: err instanceof Error ? err.message : String(err) })
       }
     }
 
-    const invoice = await db.invoice.create({
-      data: {
-        invoiceNumber,
-        proposalId: proposalId || null,
-        contactId: finalContactId,
-        companyId: finalCompanyId,
-        dealId: finalDealId,
+    // Insert invoice (no tax_rate column, no sent_at column)
+    const { data: invoice, error: insertError } = await supabase
+      .from('invoices')
+      .insert({
+        invoice_number: invoiceNumber,
+        proposal_id: proposalId || null,
+        contact_id: finalContactId,
+        company_id: finalCompanyId,
+        deal_id: finalDealId,
         status: 'draft',
-        subtotal,
-        taxRate: taxRate || 0,
-        taxAmount,
-        totalAmount,
-        dueDate: dueDate ? new Date(dueDate) : null,
+        subtotal_amount: subtotal,
+        tax_amount: taxAmount,
+        total_amount: totalAmount,
+        due_date: dueDate ? new Date(dueDate).toISOString() : null,
         notes: notes || null,
-        lineItems: {
-          create: lineItems.map((item: { name: string; description?: string; quantity: number; unitPrice: number; total: number; sortOrder: number }, index: number) => ({
-            name: item.name,
-            description: item.description || null,
-            quantity: item.quantity || 1,
-            unitPrice: item.unitPrice || 0,
-            total: item.total || (item.quantity * item.unitPrice),
-            sortOrder: item.sortOrder ?? index,
-          })),
-        },
-      },
-      include: {
-        company: { select: { id: true, name: true } },
-        deal: { select: { id: true, stage: true, product: true } },
-        lineItems: { orderBy: { sortOrder: 'asc' } },
-        payments: true,
-      },
-    })
+      })
+      .select('*, company:companies(id, name), deal:deals(id, stage, product)')
+      .single()
 
-    return NextResponse.json({ invoice }, { status: 201 })
+    if (insertError || !invoice) {
+      logger.error('Create invoice failed', { error: insertError?.message })
+      return NextResponse.json({ error: 'Failed to create invoice' }, { status: 500 })
+    }
+
+    // Insert line items (map item.name → description column, no 'name' column in Supabase)
+    if (lineItems && lineItems.length > 0) {
+      const lineItemsData = lineItems.map((item: { name: string; description?: string; quantity: number; unitPrice: number; total: number; sortOrder: number }, index: number) => ({
+        invoice_id: invoice.id,
+        description: item.name,
+        quantity: item.quantity || 1,
+        unit_price: item.unitPrice || 0,
+        amount: item.total || (item.quantity * item.unitPrice),
+        sort_order: item.sortOrder ?? index,
+      }))
+
+      const { error: lineItemsError } = await supabase.from('invoice_line_items').insert(lineItemsData)
+      if (lineItemsError) {
+        logger.error('Create line items failed', { error: lineItemsError.message })
+      }
+    }
+
+    // Fetch the complete invoice with all relations
+    const { data: completeInvoice } = await supabase
+      .from('invoices')
+      .select(
+        '*, contact:contacts(id, name, email), company:companies(id, name), deal:deals(id, stage, product), proposal:proposals(id, title), invoice_line_items(*), payments(*)'
+      )
+      .eq('id', invoice.id)
+      .single()
+
+    const mappedInvoice = {
+      ...(completeInvoice || invoice),
+      lineItems: ((completeInvoice || invoice).invoice_line_items || []),
+      invoice_line_items: undefined,
+    }
+
+    return NextResponse.json({ invoice: mappedInvoice }, { status: 201 })
   } catch (error) {
     logger.error('Create invoice failed', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

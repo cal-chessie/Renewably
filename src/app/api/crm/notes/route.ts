@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { createNoteSchema, formatZodError } from '@/lib/crm-schemas'
 import { checkApiRateLimit, getClientIp, clampPagination, isValidUuid } from '@/lib/crm-validation'
@@ -24,41 +24,40 @@ export async function GET(request: NextRequest) {
     const companyId = searchParams.get('companyId') || ''
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
     const limit = clampPagination(parseInt(searchParams.get('limit')), 50)
-    const skip = (page - 1) * limit
 
-    const where: Record<string, unknown> = {}
-
-    if (contactId) {
-      if (!isValidUuid(contactId)) {
-        return NextResponse.json({ error: 'Invalid contactId format' }, { status: 400 })
-      }
-      where.contactId = contactId
+    if (contactId && !isValidUuid(contactId)) {
+      return NextResponse.json({ error: 'Invalid contactId format' }, { status: 400 })
     }
-    if (dealId) {
-      if (!isValidUuid(dealId)) {
-        return NextResponse.json({ error: 'Invalid dealId format' }, { status: 400 })
-      }
-      where.dealId = dealId
+    if (dealId && !isValidUuid(dealId)) {
+      return NextResponse.json({ error: 'Invalid dealId format' }, { status: 400 })
     }
-    if (companyId) {
-      if (!isValidUuid(companyId)) {
-        return NextResponse.json({ error: 'Invalid companyId format' }, { status: 400 })
-      }
-      where.companyId = companyId
+    if (companyId && !isValidUuid(companyId)) {
+      return NextResponse.json({ error: 'Invalid companyId format' }, { status: 400 })
     }
 
-    const [notes, total] = await Promise.all([
-      db.note.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        take: limit,
-        skip,
-      }),
-      db.note.count({ where }),
-    ])
+    const supabase = createServiceClient()
+
+    let query = supabase
+      .from('notes')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range((page - 1) * limit, page * limit - 1)
+
+    if (contactId) query = query.eq('contact_id', contactId)
+    if (dealId) query = query.eq('deal_id', dealId)
+    if (companyId) query = query.eq('company_id', companyId)
+
+    const { data: notes, error, count } = await query
+
+    if (error) {
+      logger.error('Notes list query failed', { error: error.message })
+      return NextResponse.json({ error: 'Failed to fetch notes' }, { status: 500 })
+    }
+
+    const total = count ?? 0
 
     return NextResponse.json({
-      notes,
+      notes: notes ?? [],
       pagination: { page, limit, total, pages: Math.ceil(total / limit) },
     })
   } catch (error) {
@@ -89,15 +88,24 @@ export async function POST(request: NextRequest) {
       throw error
     }
 
-    const note = await db.note.create({
-      data: {
+    const supabase = createServiceClient()
+
+    const { data: note, error } = await supabase
+      .from('notes')
+      .insert({
         content: body.content,
-        contactId: body.contactId || null,
-        dealId: body.dealId || null,
-        companyId: body.companyId || null,
-        userId: user.id,
-      },
-    })
+        contact_id: body.contactId || null,
+        deal_id: body.dealId || null,
+        company_id: body.companyId || null,
+        user_id: user.id,
+      })
+      .select()
+      .single()
+
+    if (error) {
+      logger.error('Create note DB error', { error: error.message, code: error.code })
+      return NextResponse.json({ error: 'Failed to create note', details: error.message }, { status: 400 })
+    }
 
     return NextResponse.json({ note }, { status: 201 })
   } catch (error) {

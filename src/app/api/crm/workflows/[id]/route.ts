@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { updateWorkflowSchema, formatZodError } from '@/lib/crm-schemas'
@@ -20,23 +20,48 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    const rule = await db.workflowRule.findUnique({
-      where: { id },
-      include: {
-        executions: {
-          orderBy: { executedAt: 'desc' },
-          take: 20,
-        },
-      },
-    })
+    const supabase = createServiceClient()
+
+    // Fetch rule with its executions via the foreign key relationship.
+    // Supabase nested selects don't support ordering/limiting, so we
+    // fetch all related executions and trim in JS.
+    const { data: rule, error } = await supabase
+      .from('workflow_rules')
+      .select('*, workflow_executions(*)')
+      .eq('id', id)
+      .single()
+
+    if (error) {
+      logger.error('Get workflow rule query failed', { error: error.message, code: error.code, id })
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Rule not found' }, { status: 404 })
+      }
+      return NextResponse.json({ error: 'Failed to fetch workflow rule' }, { status: 500 })
+    }
 
     if (!rule) {
       return NextResponse.json({ error: 'Rule not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ rule })
+    // Sort executions by executed_at desc and take only the 20 most recent
+    const executions = (rule.workflow_executions || [])
+      .sort(
+        (a: { executed_at: string }, b: { executed_at: string }) =>
+          new Date(b.executed_at).getTime() - new Date(a.executed_at).getTime()
+      )
+      .slice(0, 20)
+
+    return NextResponse.json({
+      rule: {
+        ...rule,
+        executions,
+      },
+    })
   } catch (error) {
-    logger.error('Get workflow rule error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
+    logger.error('Get workflow rule error', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -52,7 +77,10 @@ export async function PUT(
 
     const rateLimitResult = checkApiRateLimit(`workflows_update:${getClientIp(request)}`, { maxAttempts: 20, windowMs: 60_000 })
     if (!rateLimitResult.allowed) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) } })
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) } }
+      )
     }
 
     const { id } = await params
@@ -70,28 +98,47 @@ export async function PUT(
       throw error
     }
 
-    const existing = await db.workflowRule.findUnique({ where: { id } })
-    if (!existing) {
+    const supabase = createServiceClient()
+
+    // Check if rule exists
+    const { data: existing, error: findError } = await supabase
+      .from('workflow_rules')
+      .select('id')
+      .eq('id', id)
+      .single()
+
+    if (findError || !existing) {
       return NextResponse.json({ error: 'Rule not found' }, { status: 404 })
     }
 
+    // Build update payload — only include fields that were provided
     const updateData: Record<string, unknown> = {}
 
     if (body.name !== undefined) updateData.name = body.name
     if (body.description !== undefined) updateData.description = body.description || null
-    if (body.isActive !== undefined) updateData.isActive = body.isActive
-    if (body.triggerType !== undefined) updateData.triggerType = body.triggerType
-    if (body.triggerConfig !== undefined) updateData.triggerConfig = JSON.stringify(body.triggerConfig)
-    if (body.actions !== undefined) updateData.actions = JSON.stringify(body.actions)
+    if (body.isActive !== undefined) updateData.is_active = body.isActive
+    if (body.triggerType !== undefined) updateData.trigger_type = body.triggerType
+    if (body.triggerConfig !== undefined) updateData.conditions = body.triggerConfig
+    if (body.actions !== undefined) updateData.actions = body.actions
 
-    const rule = await db.workflowRule.update({
-      where: { id },
-      data: updateData,
-    })
+    const { data: rule, error } = await supabase
+      .from('workflow_rules')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      logger.error('Update workflow rule DB error', { error: error.message, code: error.code, id })
+      return NextResponse.json({ error: 'Failed to update workflow rule', details: error.message }, { status: 400 })
+    }
 
     return NextResponse.json({ rule })
   } catch (error) {
-    logger.error('Update workflow rule error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
+    logger.error('Update workflow rule error', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -107,7 +154,10 @@ export async function DELETE(
 
     const rateLimitResult = checkApiRateLimit(`workflows_delete:${getClientIp(request)}`, { maxAttempts: 20, windowMs: 60_000 })
     if (!rateLimitResult.allowed) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) } })
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) } }
+      )
     }
 
     const { id } = await params
@@ -115,16 +165,36 @@ export async function DELETE(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    const existing = await db.workflowRule.findUnique({ where: { id } })
-    if (!existing) {
+    const supabase = createServiceClient()
+
+    // Check if rule exists
+    const { data: existing, error: findError } = await supabase
+      .from('workflow_rules')
+      .select('id')
+      .eq('id', id)
+      .single()
+
+    if (findError || !existing) {
       return NextResponse.json({ error: 'Rule not found' }, { status: 404 })
     }
 
-    await db.workflowRule.delete({ where: { id } })
+    // Delete rule — cascade on the FK should handle workflow_executions rows
+    const { error } = await supabase
+      .from('workflow_rules')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      logger.error('Delete workflow rule DB error', { error: error.message, code: error.code, id })
+      return NextResponse.json({ error: 'Failed to delete workflow rule' }, { status: 400 })
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    logger.error('Delete workflow rule error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
+    logger.error('Delete workflow rule error', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

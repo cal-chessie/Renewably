@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { logger } from '@/lib/logger'
 
@@ -7,7 +7,7 @@ import { logger } from '@/lib/logger'
  * Returns the Google OAuth consent screen URL for the authenticated user.
  * If GOOGLE_CLIENT_ID is not set, returns a mock URL for demo mode.
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const user = await requireAuth(request)
     if (!user) return unauthorized()

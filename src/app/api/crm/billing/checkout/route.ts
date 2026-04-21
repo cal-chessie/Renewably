@@ -50,8 +50,7 @@ export async function POST(request: NextRequest) {
       where: { id: installerId },
       include: {
         user: { select: { id: true, email: true, name: true } },
-        contact: { select: { email: true } },
-        subscription: true,
+        subscriptions: true,
       },
     })
 
@@ -60,20 +59,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Get or create a Stripe customer
-    const customerEmail = installer.billingEmail || installer.contact?.email || installer.user.email
+    const customerEmail = installer.billingEmail || installer.user.email
     const customerName = installer.contactName || installer.user.name
 
     const customer = await getOrCreateCustomer({
       email: customerEmail,
       name: customerName,
-      existingStripeId: installer.stripeCustomerId,
+      existingStripeId: (installer as Record<string, unknown>).stripeCustomerId as string | undefined,
     })
 
     // Persist the Stripe customer ID on the installer profile if new
-    if (!installer.stripeCustomerId || installer.stripeCustomerId !== customer.id) {
+    const stripeId = (installer as Record<string, unknown>).stripeCustomerId as string | undefined
+    if (!stripeId || stripeId !== customer.id) {
       await db.installerProfile.update({
         where: { id: installer.id },
-        data: { stripeCustomerId: customer.id },
+        data: { stripeCustomerId: customer.id } as any,
       })
     }
 

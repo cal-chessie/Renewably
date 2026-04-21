@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
+import { isValidUuid } from '@/lib/crm-validation'
 import { getStripe, getOrCreateCustomer } from '@/lib/stripe'
+import { logger } from '@/lib/logger'
 
 // POST /api/crm/invoices/[id]/payment-link
 export async function POST(
@@ -12,32 +14,36 @@ export async function POST(
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
+    const supabase = createServiceClient()
     const { id } = await params
-    const invoice = await db.invoice.findUnique({
-      where: { id },
-      include: {
-        contact: { select: { id: true, firstName: true, lastName: true, email: true } },
-        company: { select: { name: true } },
-        payments: { select: { amount: true } },
-      },
-    })
 
-    if (!invoice) {
+    if (!isValidUuid(id)) {
+      return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
+    }
+
+    // Fetch invoice with contact info and payments
+    const { data: invoice, error: fetchError } = await supabase
+      .from('invoices')
+      .select('*, contact:contacts(id, name, email), company:companies(name), payments(amount)')
+      .eq('id', id)
+      .single()
+
+    if (fetchError || !invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
     }
 
-    const ic = invoice.contact as Record<string, unknown> | null
+    const contact = invoice.contact as Record<string, unknown> | null
 
-    if (!ic?.email) {
+    if (!contact?.email) {
       return NextResponse.json(
         { error: 'Contact has no email — required for Stripe payment link' },
         { status: 400 }
       )
     }
 
-    // Calculate remaining amount
-    const paidAmount = invoice.payments.reduce((sum, p) => sum + p.amount, 0)
-    const remainingAmount = Math.max(0, invoice.totalAmount - paidAmount)
+    // Calculate remaining amount from existing payments
+    const paidAmount = (invoice.payments || []).reduce((sum: number, p: any) => sum + (p.amount || 0), 0)
+    const remainingAmount = Math.max(0, invoice.total_amount - paidAmount)
 
     if (remainingAmount <= 0) {
       return NextResponse.json({ error: 'Invoice already paid in full' }, { status: 400 })
@@ -45,30 +51,22 @@ export async function POST(
 
     const stripe = getStripe()
     const customer = await getOrCreateCustomer({
-      email: ic.email as string,
-      name: `${ic.firstName} ${ic.lastName}`.trim(),
-      existingStripeId: (ic.stripeCustomerId as string) || null,
+      email: contact.email as string,
+      name: (contact.name as string) || '',
+      existingStripeId: null,
     })
 
-    // Update contact with Stripe customer ID if new
-    if (!ic.stripeCustomerId) {
-      await db.contact.update({
-        where: { id: ic.id as string },
-        data: { stripeCustomerId: customer.id } as any,
-      })
-    }
-
-    // Create a PaymentIntent
+    // Create a Stripe PaymentIntent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(remainingAmount * 100), // Convert to cents
       currency: 'eur',
       customer: customer.id,
       metadata: {
         invoiceId: id,
-        invoiceNumber: invoice.invoiceNumber,
+        invoiceNumber: invoice.invoice_number,
       },
-      description: `Invoice ${invoice.invoiceNumber}`,
-      receipt_email: ic.email as string,
+      description: `Invoice ${invoice.invoice_number}`,
+      receipt_email: contact.email as string,
     })
 
     return NextResponse.json({
@@ -77,7 +75,7 @@ export async function POST(
       amount: remainingAmount,
     })
   } catch (error) {
-    console.error('Create payment link error:', error)
+    logger.error('Create payment link error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
     if ((error as Error).message?.includes('STRIPE_SECRET_KEY')) {
       return NextResponse.json(
         { error: 'Stripe not configured — missing API key' },

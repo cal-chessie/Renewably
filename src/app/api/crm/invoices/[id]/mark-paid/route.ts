@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { logger } from '@/lib/logger'
@@ -18,67 +18,81 @@ export async function POST(
       return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) } })
     }
 
+    const supabase = createServiceClient()
     const { id } = await params
+
     if (!isValidUuid(id)) {
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    const invoice = await db.invoice.findUnique({
-      where: { id },
-      include: { payments: true },
-    })
+    // Fetch invoice with payments
+    const { data: invoice, error: fetchError } = await supabase
+      .from('invoices')
+      .select('*, payments(*)')
+      .eq('id', id)
+      .single()
 
-    if (!invoice) {
+    if (fetchError || !invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
     }
 
-    const paidAmount = invoice.payments
-      .filter(p => p.status === 'completed')
-      .reduce((sum, p) => sum + p.amount, 0)
-    const remaining = invoice.totalAmount - paidAmount
+    // Calculate remaining amount from completed payments
+    const paidAmount = (invoice.payments || [])
+      .filter((p: any) => p.status === 'completed')
+      .reduce((sum: number, p: any) => sum + (p.amount || 0), 0)
+    const remaining = invoice.total_amount - paidAmount
 
-    // If not fully paid, create a payment for the remaining amount
+    // If not fully paid, create a manual payment for the remaining amount
     if (remaining > 0) {
-      await db.payment.create({
-        data: {
-          invoiceId: id,
-          amount: remaining,
-          method: 'manual',
-          status: 'completed',
-          notes: 'Remaining balance marked as paid',
-        },
+      const { error: paymentError } = await supabase.from('payments').insert({
+        invoice_id: id,
+        amount: remaining,
+        method: 'manual',
+        status: 'completed',
+        paid_at: new Date().toISOString(),
       })
+      if (paymentError) {
+        logger.error('Mark paid: failed to create payment', { error: paymentError.message })
+      }
     }
 
-    const updated = await db.invoice.update({
-      where: { id },
-      data: { status: 'paid', paidAt: new Date() },
-      include: {
-        contact: { select: { id: true, firstName: true, lastName: true, email: true } },
-        company: { select: { id: true, name: true } },
-        deal: { select: { id: true, title: true } },
-        proposal: { select: { id: true, title: true } },
-        lineItems: { orderBy: { sortOrder: 'asc' } },
-        payments: { orderBy: { paidAt: 'desc' } },
-      },
-    })
+    // Update invoice status to 'paid'
+    const { data: updated, error: updateError } = await supabase
+      .from('invoices')
+      .update({ status: 'paid', paid_at: new Date().toISOString() })
+      .eq('id', id)
+      .select('*, contact:contacts(id, name, email), company:companies(id, name), deal:deals(id, product), proposal:proposals(id, title), invoice_line_items(*), payments(*)')
+      .single()
 
-    // Log activity
-    await db.activity.create({
-      data: {
-        type: 'system',
-        subject: `Invoice ${invoice.invoiceNumber} marked as paid`,
-        description: `Invoice for €${invoice.totalAmount} marked as fully paid`,
-        invoiceId: id,
-        contactId: invoice.contactId,
-        companyId: invoice.companyId,
-        dealId: invoice.dealId,
-        userId: user.id,
-        status: 'completed',
-      },
-    })
+    if (updateError) {
+      logger.error('Mark paid invoice update failed', { error: updateError.message })
+      return NextResponse.json({ error: 'Failed to update invoice' }, { status: 500 })
+    }
 
-    return NextResponse.json({ invoice: updated })
+    // Log activity via deal_activities — only if deal_id exists
+    // Columns: deal_id, user_id, type, title, content, created_at
+    if (invoice.deal_id) {
+      try {
+        await supabase.from('deal_activities').insert({
+          deal_id: invoice.deal_id,
+          user_id: user.id,
+          type: 'system',
+          title: `Invoice ${invoice.invoice_number} marked as paid`,
+          content: `Invoice for €${invoice.total_amount} marked as fully paid`,
+          created_at: new Date().toISOString(),
+        })
+      } catch (err) {
+        logger.warn('Failed to log mark-paid activity', { error: err instanceof Error ? err.message : String(err) })
+      }
+    }
+
+    const mappedInvoice = {
+      ...updated,
+      lineItems: (updated.invoice_line_items || []),
+      invoice_line_items: undefined,
+    }
+
+    return NextResponse.json({ invoice: mappedInvoice })
   } catch (error) {
     logger.error('Mark paid invoice error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

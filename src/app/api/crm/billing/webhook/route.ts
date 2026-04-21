@@ -58,28 +58,35 @@ export async function POST(request: NextRequest) {
         const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId)
 
         // Upsert the Subscription record
-        await db.subscription.upsert({
-          where: { installerId },
-          update: {
-            status: mapSubscriptionStatus(stripeSubscription.status),
-            currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
-            billingCycle: stripeSubscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
-          },
-          create: {
-            installerId,
-            planId: stripeSubscription.metadata?.planId || 'pro',
-            status: mapSubscriptionStatus(stripeSubscription.status),
-            billingCycle: stripeSubscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
-            currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
-          },
-        })
+        const sub = stripeSubscription as any
+        const existing = await db.subscription.findFirst({ where: { installerId } })
+        if (existing) {
+          await db.subscription.update({
+            where: { id: existing.id },
+            data: {
+              status: mapSubscriptionStatus(sub.status),
+              currentPeriodStart: new Date(sub.current_period_start * 1000),
+              currentPeriodEnd: new Date(sub.current_period_end * 1000),
+              billingCycle: sub.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
+            },
+          })
+        } else {
+          await db.subscription.create({
+            data: {
+              installerId,
+              planId: sub.metadata?.planId || 'pro',
+              status: mapSubscriptionStatus(sub.status),
+              billingCycle: sub.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
+              currentPeriodStart: new Date(sub.current_period_start * 1000),
+              currentPeriodEnd: new Date(sub.current_period_end * 1000),
+            },
+          })
+        }
 
         // Save the Stripe customer ID on the installer profile
         await db.installerProfile.update({
           where: { id: installerId },
-          data: { stripeCustomerId },
+          data: { stripeCustomerId } as any,
         })
 
         break
@@ -89,32 +96,34 @@ export async function POST(request: NextRequest) {
       // Subscription updated — sync status and period dates
       // ---------------------------------------------------------------
       case 'customer.subscription.updated': {
-        const subscription = event.data.object as Stripe.Subscription
+        const subscription = event.data.object as any
         const installerId = subscription.metadata?.installerId
 
         if (!installerId) break
 
-        await db.subscription.upsert({
-          where: { installerId },
-          update: {
-            status: mapSubscriptionStatus(subscription.status),
-            currentPeriodStart: new Date(subscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-            billingCycle: subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
-            // If cancel_at_period_end was set, record the cancellation
-            cancelledAt: subscription.cancel_at_period_end
-              ? new Date(subscription.current_period_end * 1000)
-              : null,
-          },
-          create: {
-            installerId,
-            planId: subscription.metadata?.planId || 'pro',
-            status: mapSubscriptionStatus(subscription.status),
-            billingCycle: subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
-            currentPeriodStart: new Date(subscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-          },
-        })
+        const existing = await db.subscription.findFirst({ where: { installerId } })
+        if (existing) {
+          await db.subscription.update({
+            where: { id: existing.id },
+            data: {
+              status: mapSubscriptionStatus(subscription.status),
+              currentPeriodStart: new Date(subscription.current_period_start * 1000),
+              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+              billingCycle: subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
+            },
+          })
+        } else {
+          await db.subscription.create({
+            data: {
+              installerId,
+              planId: subscription.metadata?.planId || 'pro',
+              status: mapSubscriptionStatus(subscription.status),
+              billingCycle: subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
+              currentPeriodStart: new Date(subscription.current_period_start * 1000),
+              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            },
+          })
+        }
 
         break
       }
@@ -123,27 +132,29 @@ export async function POST(request: NextRequest) {
       // Subscription deleted — mark as cancelled
       // ---------------------------------------------------------------
       case 'customer.subscription.deleted': {
-        const subscription = event.data.object as Stripe.Subscription
+        const subscription = event.data.object as any
         const installerId = subscription.metadata?.installerId
 
         if (!installerId) break
 
-        await db.subscription.upsert({
-          where: { installerId },
-          update: {
-            status: 'canceled',
-            cancelledAt: new Date(),
-          },
-          create: {
-            installerId,
-            planId: subscription.metadata?.planId || 'pro',
-            status: 'canceled',
-            billingCycle: subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
-            currentPeriodStart: new Date(subscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-            cancelledAt: new Date(),
-          },
-        })
+        const existing = await db.subscription.findFirst({ where: { installerId } })
+        if (existing) {
+          await db.subscription.update({
+            where: { id: existing.id },
+            data: { status: 'canceled' },
+          })
+        } else {
+          await db.subscription.create({
+            data: {
+              installerId,
+              planId: subscription.metadata?.planId || 'pro',
+              status: 'canceled',
+              billingCycle: subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
+              currentPeriodStart: new Date(subscription.current_period_start * 1000),
+              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            },
+          })
+        }
 
         break
       }
@@ -152,7 +163,7 @@ export async function POST(request: NextRequest) {
       // Invoice payment failed — mark as past_due
       // ---------------------------------------------------------------
       case 'invoice.payment_failed': {
-        const invoice = event.data.object as Stripe.Invoice
+        const invoice = event.data.object as any
         const subscriptionId = invoice.subscription as string | null
 
         if (!subscriptionId) break
@@ -163,7 +174,7 @@ export async function POST(request: NextRequest) {
         // need to find the matching subscription. The most reliable way is
         // to look at the invoice's customer and then the linked installer.
         const stripe = (await import('@/lib/stripe')).getStripe()
-        const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId)
+        const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId) as any
         const installerId = stripeSubscription.metadata?.installerId
 
         if (!installerId) break
@@ -180,13 +191,13 @@ export async function POST(request: NextRequest) {
       // Invoice payment succeeded — mark as active
       // ---------------------------------------------------------------
       case 'invoice.payment_succeeded': {
-        const invoice = event.data.object as Stripe.Invoice
+        const invoice = event.data.object as any
         const subscriptionId = invoice.subscription as string | null
 
         if (!subscriptionId) break
 
         const stripe = (await import('@/lib/stripe')).getStripe()
-        const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId)
+        const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId) as any
         const installerId = stripeSubscription.metadata?.installerId
 
         if (!installerId) break

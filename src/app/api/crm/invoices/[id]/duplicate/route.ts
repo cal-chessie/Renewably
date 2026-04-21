@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
+import { isValidUuid } from '@/lib/crm-validation'
+import { logger } from '@/lib/logger'
 
 // POST: Duplicate an invoice as a new draft
 export async function POST(
@@ -11,74 +13,107 @@ export async function POST(
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
+    const supabase = createServiceClient()
     const { id } = await params
-    const original = await db.invoice.findUnique({
-      where: { id },
-      include: { lineItems: { orderBy: { sortOrder: 'asc' } } },
-    })
 
-    if (!original) {
+    if (!isValidUuid(id)) {
+      return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
+    }
+
+    // Fetch original invoice with line items
+    const { data: original, error: fetchError } = await supabase
+      .from('invoices')
+      .select('*, invoice_line_items(*)')
+      .eq('id', id)
+      .single()
+
+    if (fetchError || !original) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
     }
 
+    // Generate new invoice number
     const year = new Date().getFullYear()
-    const count = await db.invoice.count({
-      where: { createdAt: { gte: new Date(year, 0, 1), lt: new Date(year + 1, 0, 1) } },
-    })
-    const invoiceNumber = `INV-${year}-${String(count + 1).padStart(3, '0')}`
+    const { count } = await supabase
+      .from('invoices')
+      .select('*', { count: 'exact', head: true })
+      .gte('created_at', `${year}-01-01T00:00:00Z`)
+      .lt('created_at', `${year + 1}-01-01T00:00:00Z`)
+
+    const invoiceNumber = `INV-${year}-${String((count || 0) + 1).padStart(3, '0')}`
+
+    // Set due date 30 days from now
     const dueDate = new Date()
     dueDate.setDate(dueDate.getDate() + 30)
 
-    const duplicate = await db.invoice.create({
-      data: {
-        invoiceNumber,
-        proposalId: original.proposalId,
-        contactId: original.contactId,
-        companyId: original.companyId,
-        dealId: original.dealId,
+    // Create the duplicate invoice
+    const { data: duplicate, error: insertError } = await supabase
+      .from('invoices')
+      .insert({
+        invoice_number: invoiceNumber,
+        proposal_id: original.proposal_id,
+        contact_id: original.contact_id,
+        company_id: original.company_id,
+        deal_id: original.deal_id,
         status: 'draft',
-        subtotal: original.subtotal,
-        taxRate: original.taxRate,
-        taxAmount: original.taxAmount,
-        totalAmount: original.totalAmount,
-        dueDate,
-        notes: original.notes ? `[Duplicated from ${original.invoiceNumber}]\n${original.notes}` : `Duplicated from ${original.invoiceNumber}`,
-        lineItems: {
-          create: original.lineItems.map(item => ({
-            name: item.name,
-            description: item.description,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            total: item.total,
-            sortOrder: item.sortOrder,
-          })),
-        },
-      },
-      include: {
-        contact: { select: { id: true, firstName: true, lastName: true, email: true } },
-        company: { select: { id: true, name: true } },
-        deal: { select: { id: true, title: true } },
-        proposal: { select: { id: true, title: true } },
-        lineItems: { orderBy: { sortOrder: 'asc' } },
-      },
-    })
+        subtotal_amount: original.subtotal_amount,
+        tax_amount: original.tax_amount,
+        total_amount: original.total_amount,
+        due_date: dueDate.toISOString(),
+        notes: original.notes
+          ? `[Duplicated from ${original.invoice_number}]\n${original.notes}`
+          : `Duplicated from ${original.invoice_number}`,
+      })
+      .select('*, contact:contacts(id, name, email), company:companies(id, name), deal:deals(id, product), proposal:proposals(id, title), invoice_line_items(*)')
+      .single()
 
-    await db.activity.create({
-      data: {
-        type: 'system',
-        subject: `Invoice duplicated: ${original.invoiceNumber} → ${duplicate.invoiceNumber}`,
-        description: `Created draft ${duplicate.invoiceNumber}`,
-        invoiceId: duplicate.id,
-        contactId: original.contactId,
-        companyId: original.companyId,
-        userId: user.id,
-        status: 'completed',
-      },
-    })
+    if (insertError || !duplicate) {
+      logger.error('Duplicate invoice failed', { error: insertError?.message })
+      return NextResponse.json({ error: 'Failed to duplicate invoice' }, { status: 500 })
+    }
 
-    return NextResponse.json({ invoice: duplicate }, { status: 201 })
+    // Clone line items (description column, no name column)
+    if (original.invoice_line_items && original.invoice_line_items.length > 0) {
+      const lineItemsData = original.invoice_line_items.map((item: any) => ({
+        invoice_id: duplicate.id,
+        description: item.description,
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        amount: item.amount,
+        sort_order: item.sort_order,
+      }))
+
+      const { error: liError } = await supabase.from('invoice_line_items').insert(lineItemsData)
+      if (liError) {
+        logger.error('Duplicate line items failed', { error: liError.message })
+      }
+    }
+
+    // Log activity via deal_activities — only if deal_id exists
+    // Columns: deal_id, user_id, type, title, content, created_at
+    if (original.deal_id) {
+      try {
+        await supabase.from('deal_activities').insert({
+          deal_id: original.deal_id,
+          user_id: user.id,
+          type: 'system',
+          title: `Invoice duplicated: ${original.invoice_number} → ${duplicate.invoice_number}`,
+          content: `Created draft ${duplicate.invoice_number}`,
+          created_at: new Date().toISOString(),
+        })
+      } catch (err) {
+        logger.warn('Failed to log duplicate activity', { error: err instanceof Error ? err.message : String(err) })
+      }
+    }
+
+    const mappedInvoice = {
+      ...duplicate,
+      lineItems: (duplicate.invoice_line_items || []),
+      invoice_line_items: undefined,
+    }
+
+    return NextResponse.json({ invoice: mappedInvoice }, { status: 201 })
   } catch (error) {
-    console.error('Duplicate invoice error:', error)
+    logger.error('Duplicate invoice error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
+import { logger } from '@/lib/logger'
 
 // POST: Batch update invoice statuses
 export async function POST(request: NextRequest) {
@@ -8,6 +9,7 @@ export async function POST(request: NextRequest) {
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
+    const supabase = createServiceClient()
     const { ids, status } = await request.json()
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
@@ -19,28 +21,43 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` }, { status: 400 })
     }
 
-    const result = await db.invoice.updateMany({
-      where: { id: { in: ids } },
-      data: {
-        status,
-        ...(status === 'sent' ? { sentAt: new Date() } : {}),
-        ...(status === 'paid' ? { paidAt: new Date() } : {}),
-      },
-    })
+    // Update invoices in bulk
+    const { data: updatedInvoices, error: updateError } = await supabase
+      .from('invoices')
+      .update({ status })
+      .in('id', ids)
+      .select('id, deal_id')
 
-    await db.activity.create({
-      data: {
-        type: 'system',
-        subject: `Batch status update: ${result.count} invoices → ${status}`,
-        description: `Updated ${result.count} invoice(s) to "${status}"`,
-        userId: user.id,
-        status: 'completed',
-      },
-    })
+    if (updateError) {
+      logger.error('Batch status update failed', { error: updateError.message })
+      return NextResponse.json({ error: 'Failed to update invoice statuses' }, { status: 500 })
+    }
 
-    return NextResponse.json({ updated: result.count, status })
+    const updatedCount = (updatedInvoices || []).length
+
+    // Log activity per deal — only for invoices that have a deal_id
+    // deal_activities columns: deal_id, user_id, type, title, content, created_at
+    const invoicesWithDeals = (updatedInvoices || []).filter((inv: any) => inv.deal_id)
+    const uniqueDealIds = [...new Set(invoicesWithDeals.map((inv: any) => inv.deal_id))]
+
+    for (const dealId of uniqueDealIds) {
+      try {
+        await supabase.from('deal_activities').insert({
+          deal_id: dealId,
+          user_id: user.id,
+          type: 'system',
+          title: `Batch status update: ${updatedCount} invoices → ${status}`,
+          content: `Updated ${updatedCount} invoice(s) to "${status}"`,
+          created_at: new Date().toISOString(),
+        })
+      } catch (err) {
+        logger.warn('Failed to log batch status activity', { dealId, error: err instanceof Error ? err.message : String(err) })
+      }
+    }
+
+    return NextResponse.json({ updated: updatedCount, status })
   } catch (error) {
-    console.error('Batch status update error:', error)
+    logger.error('Batch status update error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

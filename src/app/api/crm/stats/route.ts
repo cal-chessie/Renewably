@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth } from '@/lib/crm-auth'
 import { checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { logger } from '@/lib/logger'
@@ -15,45 +15,50 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) } })
     }
 
-    const now = new Date()
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+    const supabase = createServiceClient()
+
+    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
+
+    const pipelineStages = ['new_lead', 'contacted', 'discovery_call', 'demo_booked', 'demo_done', 'proposal_sent', 'negotiation']
 
     const [
-      totalDeals,
-      pipelineDeals,
-      wonThisMonth,
-      stageGroups,
-      pipelineValue,
-      wonValue,
+      totalRes,
+      pipelineRes,
+      wonThisMonthRes,
+      allDealsRes,
+      pipelineValueRes,
+      wonValueRes,
     ] = await Promise.all([
-      db.deal.count(),
-      db.deal.count({ where: { stage: { in: ['new_lead', 'contacted', 'discovery_call', 'demo_booked', 'demo_done', 'proposal_sent', 'negotiation'] } } }),
-      db.deal.count({ where: { stage: 'closed_won', createdAt: { gte: startOfMonth } } }),
-      db.deal.groupBy({
-        by: ['stage'],
-        _count: true,
-      }),
-      db.deal.aggregate({
-        _sum: { value: true },
-        where: { stage: { in: ['new_lead', 'contacted', 'discovery_call', 'demo_booked', 'demo_done', 'proposal_sent', 'negotiation'] } },
-      }),
-      db.deal.aggregate({
-        _sum: { value: true },
-        where: { stage: 'closed_won', createdAt: { gte: startOfMonth } },
-      }),
+      supabase.from('deals').select('id', { count: 'exact', head: true }),
+      supabase.from('deals').select('id', { count: 'exact', head: true }).in('stage', pipelineStages),
+      supabase.from('deals').select('id', { count: 'exact', head: true }).eq('stage', 'closed_won').gte('created_at', startOfMonth),
+      supabase.from('deals').select('stage'),
+      supabase.from('deals').select('value').in('stage', pipelineStages),
+      supabase.from('deals').select('value').eq('stage', 'closed_won').gte('created_at', startOfMonth),
     ])
 
-    const stageCounts = Object.fromEntries(stageGroups.map(g => [g.stage, g._count]))
+    const totalDeals = totalRes.count ?? 0
+    const pipelineDeals = pipelineRes.count ?? 0
+    const wonThisMonth = wonThisMonthRes.count ?? 0
+
+    // Group by stage
+    const stageCounts: Record<string, number> = {}
+    for (const d of allDealsRes.data || []) {
+      stageCounts[d.stage] = (stageCounts[d.stage] || 0) + 1
+    }
     const wonDeals = stageCounts['closed_won'] || 0
     const conversionRate = totalDeals > 0 ? Math.round((wonDeals / totalDeals) * 100) : 0
+
+    const pipelineValue = (pipelineValueRes.data || []).reduce((sum: number, d: any) => sum + (d.value || 0), 0)
+    const wonValue = (wonValueRes.data || []).reduce((sum: number, d: any) => sum + (d.value || 0), 0)
 
     return NextResponse.json({
       totalLeads: totalDeals,
       activePipeline: pipelineDeals,
       wonThisMonth,
       conversionRate,
-      pipelineValue: pipelineValue._sum.value || 0,
-      wonValue: wonValue._sum.value || 0,
+      pipelineValue,
+      wonValue,
     })
   } catch (error) {
     logger.error('Stats error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })

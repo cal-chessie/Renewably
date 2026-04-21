@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { createTaskSchema, updateTaskSchema, formatZodError } from '@/lib/crm-schemas'
-import { clampPagination, sanitizeSearchQuery, isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
+import { clampPagination, isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { logger } from '@/lib/logger'
 
 // GET: List tasks
@@ -21,57 +21,56 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = clampPagination(parseInt(searchParams.get('limit')), 50)
 
-    const where: Record<string, unknown> = {}
+    const supabase = createServiceClient()
+
+    let query = supabase
+      .from('tasks')
+      .select('*, deals!deal_id(id, stage, product)', { count: 'exact' })
+      .order('status', { ascending: true })
+      .order('priority', { ascending: false })
+      .order('due_date', { ascending: true })
+      .range((page - 1) * limit, page * limit - 1)
 
     if (priority) {
-      where.priority = priority
+      query = query.eq('priority', priority)
     }
 
     if (status) {
-      where.status = status
+      query = query.eq('status', status)
     }
 
     if (assigneeId) {
       if (!isValidUuid(assigneeId)) {
         return NextResponse.json({ error: 'Invalid assigneeId format' }, { status: 400 })
       }
-      where.assigneeId = assigneeId
+      query = query.eq('assignee_id', assigneeId)
     }
 
     if (contactId) {
       if (!isValidUuid(contactId)) {
         return NextResponse.json({ error: 'Invalid contactId format' }, { status: 400 })
       }
-      where.contactId = contactId
+      query = query.eq('contact_id', contactId)
     }
 
     if (dealId) {
       if (!isValidUuid(dealId)) {
         return NextResponse.json({ error: 'Invalid dealId format' }, { status: 400 })
       }
-      where.dealId = dealId
+      query = query.eq('deal_id', dealId)
     }
 
-    const [tasks, total] = await Promise.all([
-      db.task.findMany({
-        where,
-        include: {
-          company: { select: { id: true, name: true } },
-          deal: { select: { id: true, stage: true, product: true } },
-        },
-        orderBy: [
-          { status: 'asc' },
-          { priority: 'desc' },
-          { dueDate: 'asc' },
-        ],
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-      db.task.count({ where }),
-    ])
+    const { data: tasks, error, count } = await query
+
+    if (error) {
+      logger.error('Tasks list query failed', { error: error.message })
+      return NextResponse.json({ error: 'Failed to fetch tasks' }, { status: 500 })
+    }
+
+    const total = count ?? 0
 
     return NextResponse.json({
-      tasks,
+      tasks: tasks ?? [],
       pagination: {
         page,
         limit,
@@ -106,19 +105,24 @@ export async function POST(request: NextRequest) {
       throw error
     }
 
-    const task = await db.task.create({
-      data: {
+    const supabase = createServiceClient()
+
+    const { data: task, error } = await supabase
+      .from('tasks')
+      .insert({
         title: body.title,
         description: body.description || null,
         priority: body.priority,
         status: 'todo',
-        dueDate: body.dueDate ? new Date(body.dueDate) : null,
-      },
-      include: {
-        company: { select: { id: true, name: true } },
-        deal: { select: { id: true, stage: true, product: true } },
-      },
-    })
+        due_date: body.dueDate ? new Date(body.dueDate).toISOString() : null,
+      })
+      .select('*, deals!deal_id(id, stage, product)')
+      .single()
+
+    if (error) {
+      logger.error('Create task DB error', { error: error.message, code: error.code })
+      return NextResponse.json({ error: 'Failed to create task', details: error.message }, { status: 400 })
+    }
 
     return NextResponse.json({ task }, { status: 201 })
   } catch (error) {
@@ -127,7 +131,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT: Bulk update task status (for drag & drop)
+// PUT: Update single task by id (used for drag & drop / bulk status updates)
 export async function PUT(request: NextRequest) {
   try {
     const user = await requireAuth(request)
@@ -152,23 +156,44 @@ export async function PUT(request: NextRequest) {
     }
     const validated = validationResult.data
 
-    const task = await db.task.update({
-      where: { id: taskId },
-      data: {
-        ...(validated.status !== undefined && { status: validated.status }),
-        ...(validated.status === 'completed' && { completedAt: new Date() }),
-        ...(validated.status !== undefined && validated.status !== 'completed' && { completedAt: null }),
-        ...(validated.completed !== undefined && { completed: validated.completed, ...(validated.completed && { completedAt: new Date() }) }),
-        ...(validated.title !== undefined && { title: validated.title }),
-        ...(validated.description !== undefined && { description: validated.description || null }),
-        ...(validated.priority !== undefined && { priority: validated.priority }),
-        ...(validated.dueDate !== undefined && { dueDate: validated.dueDate ? new Date(validated.dueDate) : null }),
-      },
-      include: {
-        company: { select: { id: true, name: true } },
-        deal: { select: { id: true, stage: true, product: true } },
-      },
-    })
+    const supabase = createServiceClient()
+
+    const patch: Record<string, unknown> = {}
+
+    if (validated.title !== undefined) patch.title = validated.title
+    if (validated.description !== undefined) patch.description = validated.description || null
+    if (validated.priority !== undefined) patch.priority = validated.priority
+    if (validated.dueDate !== undefined) patch.due_date = validated.dueDate ? new Date(validated.dueDate).toISOString() : null
+
+    // Handle completed boolean → status + completed_at mapping
+    if (validated.completed !== undefined) {
+      if (validated.completed) {
+        patch.status = 'done'
+        patch.completed_at = new Date().toISOString()
+      } else {
+        patch.status = 'todo'
+        patch.completed_at = null
+      }
+    }
+
+    const { data: task, error } = await supabase
+      .from('tasks')
+      .update(patch)
+      .eq('id', taskId)
+      .select('*, deals!deal_id(id, stage, product)')
+      .single()
+
+    if (error) {
+      logger.error('Update task DB error', { error: error.message, code: error.code, taskId })
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Task not found' }, { status: 404 })
+      }
+      return NextResponse.json({ error: 'Failed to update task', details: error.message }, { status: 400 })
+    }
+
+    if (!task) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 })
+    }
 
     return NextResponse.json({ task })
   } catch (error) {
