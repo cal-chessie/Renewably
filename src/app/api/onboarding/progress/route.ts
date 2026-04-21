@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
 import { sanitizeObject } from '@/lib/sanitize'
 import { logger } from '@/lib/logger'
+import { validateCsrfOrigin } from '@/lib/crm-route-helpers'
 
 // GET /api/onboarding/progress?email=xxx — load saved onboarding progress
 export async function GET(request: NextRequest) {
@@ -55,6 +56,10 @@ export async function GET(request: NextRequest) {
 // PUT /api/onboarding/progress — save incremental onboarding progress
 export async function PUT(request: NextRequest) {
   try {
+    if (!validateCsrfOrigin(request)) {
+      return NextResponse.json({ error: 'Invalid request origin' }, { status: 403 })
+    }
+
     let body: unknown
     try {
       body = await request.json()

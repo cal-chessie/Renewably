@@ -13,6 +13,7 @@ import { createServiceClient } from "@/lib/supabase";
 import { sendEmail } from "@/lib/postmark";
 import { checkRateLimit, getClientIp, CHAT_RATE_LIMIT } from "@/lib/rate-limit";
 import { escapeHtml } from "@/lib/crm-validation";
+import { validateCsrfOrigin } from "@/lib/crm-route-helpers";
 
 const SYSTEM_PROMPT = `You are the Renewably AI Assistant — the friendly, knowledgeable face of renewably.ie, Ireland's leading AI-as-a-Service platform for solar PV installers.
 
@@ -90,6 +91,10 @@ interface ChatMessage {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!validateCsrfOrigin(request)) {
+      return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
+    }
+
     // Rate limiting: max 20 messages per 15 minutes per IP
     const clientIp = getClientIp(request);
     const { allowed, retryAfterMs } = await checkRateLimit(clientIp, CHAT_RATE_LIMIT);

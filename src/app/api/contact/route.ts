@@ -12,6 +12,7 @@ import { createServiceClient } from "@/lib/supabase";
 import { sendEmail, isPostmarkConfigured, getFromEmail } from "@/lib/postmark";
 import { logger } from "@/lib/logger";
 import { sanitizeSearchQuery, escapeHtml } from "@/lib/crm-validation";
+import { validateCsrfOrigin } from "@/lib/crm-route-helpers";
 
 // ============================================================================
 // TYPES
@@ -70,6 +71,10 @@ function getClientIp(request: Request): string {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!validateCsrfOrigin(request)) {
+      return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
+    }
+
     // Rate limiting: max 5 submissions per 15 minutes per IP
     const clientIp = getClientIp(request);
     const { allowed, retryAfterMs } = checkContactRateLimit(clientIp);

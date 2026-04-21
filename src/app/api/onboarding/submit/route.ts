@@ -4,11 +4,16 @@ import { createSession, createSessionCookie } from '@/lib/auth'
 import { sanitizeObject } from '@/lib/sanitize'
 import { onboardingSubmitSchema, formatZodError } from '@/lib/crm-schemas'
 import { logger } from '@/lib/logger'
+import { validateCsrfOrigin } from '@/lib/crm-route-helpers'
 
 export async function POST(request: NextRequest) {
   const supabase = createServiceClient()
 
   try {
+    if (!validateCsrfOrigin(request)) {
+      return NextResponse.json({ error: 'Invalid request origin' }, { status: 403 })
+    }
+
     // 1. Parse request body
     let body: unknown
     try {
