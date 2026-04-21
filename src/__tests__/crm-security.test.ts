@@ -4,13 +4,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 // Mock modules BEFORE imports — but for unit tests of the actual functions,
 // we import the REAL parseCookie, getSessionCookie, etc. and only mock the db.
 // ═══════════════════════════════════════════════════════════════════
-vi.mock('@/lib/db', () => ({
-  db: {
-    session: { create: vi.fn().mockResolvedValue({ id: 'sess-1', userId: 'user-1' }) },
-    user: { findUnique: vi.fn() },
-  },
-}))
-
 vi.mock('@/lib/auth', () => ({
   hashPassword: vi.fn().mockResolvedValue('$2b$10$hashed'),
   verifyPassword: vi.fn().mockResolvedValue(true),
