@@ -3,8 +3,17 @@ import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
-import { updateReportSchema, formatZodError } from '@/lib/crm-schemas'
 import { logger } from '@/lib/logger'
+
+// Minimal schema — camelCase from frontend, converted to snake_case for Supabase
+const updateBodySchema = z.object({
+  name: z.string().min(1).max(300).optional(),
+  description: z.string().max(2000).optional(),
+  type: z.string().min(1).max(100).optional(),
+  config: z.record(z.unknown()).optional(),
+  isScheduled: z.boolean().optional(),
+  schedule: z.string().max(500).optional(),
+})
 
 // GET: Fetch a single report by ID
 export async function GET(
@@ -66,53 +75,60 @@ export async function PUT(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    let body: z.infer<typeof updateReportSchema>
-    try {
-      body = updateReportSchema.parse(await request.json())
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return NextResponse.json({ error: 'Validation failed', details: formatZodError(error) }, { status: 400 })
-      }
-      throw error
+    const body = await request.json()
+    const parsed = updateBodySchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: parsed.error.issues.map((e) => ({ field: e.path.join('.'), message: e.message })) },
+        { status: 400 },
+      )
     }
-    const { name, description, type, config, isScheduled, schedule } = body
+    const { name, description, type, config, isScheduled, schedule } = parsed.data
 
-    // Build update data with snake_case column names for Supabase
-    const updates: Record<string, unknown> = {}
-    if (name) updates.name = name
-    if (description !== undefined) updates.description = description
-    if (type) updates.type = type
-    if (config !== undefined) updates.config = config
-    if (isScheduled !== undefined) updates.is_scheduled = isScheduled
-    if (schedule !== undefined) updates.schedule = schedule
+    // Build full updates map (camelCase → snake_case)
+    const fullUpdates: Record<string, unknown> = {}
+    if (name) fullUpdates.name = name
+    if (description !== undefined) fullUpdates.description = description
+    if (type) fullUpdates.type = type
+    if (config !== undefined) fullUpdates.config = config
+    if (isScheduled !== undefined) fullUpdates.is_scheduled = isScheduled
+    if (schedule !== undefined) fullUpdates.schedule = schedule
+
+    // Build minimal updates map (only columns that definitely exist)
+    const minimalUpdates: Record<string, unknown> = {}
+    if (name) minimalUpdates.name = name
+    if (type) minimalUpdates.type = type
 
     const supabase = createServiceClient()
 
-    let { data: report, error } = await supabase
+    // Try full update first
+    let report, error
+
+    const fullResult = await supabase
       .from('reports')
-      .update(updates)
+      .update(fullUpdates)
       .eq('id', id)
       .select('*')
       .single()
 
-    // If update fails with "column does not exist", retry with safe columns only
-    if (error && error.code === '42703') {
-      logger.warn('Reports table missing columns — retrying with safe columns only', {
-        missingColumns: error.message,
+    if (fullResult.error && (fullResult.error.code === '42703' || fullResult.error.message?.includes('column'))) {
+      // Column doesn't exist — fall back to minimal update
+      logger.warn('Reports table missing optional columns, falling back to minimal update', {
+        code: fullResult.error.code,
+        message: fullResult.error.message,
         id,
       })
-      const safeUpdates: Record<string, unknown> = {}
-      if (name) safeUpdates.name = name
-      if (type) safeUpdates.type = type
-
-      const retry = await supabase
+      const minimalResult = await supabase
         .from('reports')
-        .update(safeUpdates)
+        .update(minimalUpdates)
         .eq('id', id)
         .select('*')
         .single()
-      report = retry.data
-      error = retry.error
+      report = minimalResult.data
+      error = minimalResult.error
+    } else {
+      report = fullResult.data
+      error = fullResult.error
     }
 
     if (error) {
