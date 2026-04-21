@@ -349,7 +349,7 @@ function StatsBar({ summary }: { summary: PipelineSummary | undefined }) {
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${s.pct}%` }}
-                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] as const, delay: 0.3 }}
                 style={{
                   height: '100%', borderRadius: 2,
                   background: `linear-gradient(90deg, ${s.color}, ${s.color}80)`,
@@ -605,7 +605,7 @@ function PipelineColumn({
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.4, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] as const }}
       className="flex flex-col shrink-0 rounded-2xl overflow-hidden transition-shadow duration-300"
       style={{
         minWidth: 280,
@@ -738,7 +738,7 @@ function PipelineColumn({
                 >
                   <motion.div
                     animate={{ opacity: [0.35, 0.55, 0.35], scale: [1, 1.05, 1] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
                   >
                     <Inbox className="h-8 w-8" style={{ color: `${color}40` }} />
                   </motion.div>
@@ -1186,7 +1186,7 @@ function DealDetailPanel({ dealId, onClose }: { dealId: string | null; onClose: 
                             `0 0 0 0 ${sColor}00`,
                           ],
                         } : {}}
-                        transition={isActive ? { duration: 2, repeat: Infinity, ease: 'easeInOut' } : {}}
+                        transition={isActive ? { duration: 2, repeat: Infinity, ease: 'easeInOut' as const } : {}}
                       >
                         {isActive && (
                           <div
@@ -2771,7 +2771,7 @@ export function PipelineBoard() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
       >
         {/* Gradient accent bar at top */}
         <div style={{

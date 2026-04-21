@@ -347,7 +347,7 @@ function StatsDashboard({ stages }: { stages: Stage[] }) {
             key={kpi.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.07, duration: 0.4, ease: 'easeOut' }}
+            transition={{ delay: i * 0.07, duration: 0.4, ease: 'easeOut' as const }}
             whileHover={{ y: -2, boxShadow: `0 8px 30px rgba(0,0,0,0.3)` }}
             style={{
               backgroundColor: C.surface,
@@ -442,7 +442,7 @@ function ForecastBar({ stages }: { stages: Stage[] }) {
               key={s.id}
               initial={{ width: 0 }}
               animate={{ width: `${pct}%` }}
-              transition={{ delay: 0.5 + i * 0.08, duration: 0.6, ease: 'easeOut' }}
+              transition={{ delay: 0.5 + i * 0.08, duration: 0.6, ease: 'easeOut' as const }}
               title={`${s.name}: ${formatCurrency(s.totalValue)} (${pct.toFixed(1)}%)`}
               style={{
                 height: '100%',
@@ -1466,7 +1466,7 @@ function EmptyState({ onCreateDeal }: { onCreateDeal: () => void }) {
     >
       <motion.div
         animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
-        transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
+        transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' as const }}
         style={{ marginBottom: '24px' }}
       >
         <svg width="80" height="80" viewBox="0 0 80 80" fill="none">

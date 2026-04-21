@@ -88,7 +88,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           initial={{ opacity: 0, x: isReversed ? 40 : -40 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
           className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
         >
           <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 16, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
@@ -175,7 +175,7 @@ function PricingSection() {
           ref={totalRef}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={totalInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
           style={{ backgroundColor: '#F3D840', borderRadius: 16, padding: 'clamp(20px, 4vw, 40px) clamp(16px, 3vw, 48px)', textAlign: 'center', marginBottom: 'clamp(12px, 2vw, 16px)' }}
         >
           <p style={{ color: '#1A1A1A', fontSize: 'clamp(1.25rem, 4vw, 2.5rem)', fontWeight: 800, lineHeight: 1.2 }}>
@@ -249,7 +249,7 @@ export default function ServicesPageClient() {
               <motion.h1
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
                 style={{ fontSize: 'clamp(2rem, 6vw, 3.75rem)', fontWeight: 800, color: '#fff', lineHeight: 1.08, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}
               >
                 AI Workforce That Runs Your Solar Company, On Autopilot

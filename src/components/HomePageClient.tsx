@@ -122,7 +122,7 @@ function HeroSection() {
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
           style={{
             fontSize: 'clamp(17px, 3.5vw, 30px)',
             fontWeight: 500,
@@ -138,7 +138,7 @@ function HeroSection() {
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ delay: 0.7, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
           style={{
             fontSize: 'clamp(28px, 7vw, 72px)',
             fontWeight: 800,
@@ -254,7 +254,7 @@ function ProblemSection() {
           ref={calloutRef}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={calloutInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
           className="bg-[#F3D840] rounded-2xl"
           style={{ padding: 'clamp(20px, 4vw, 32px) clamp(16px, 3vw, 32px)' }}
         >
@@ -801,7 +801,7 @@ function FAQSection() {
                       height: isOpen ? 'auto' : 0,
                       opacity: isOpen ? 1 : 0,
                     }}
-                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
                     style={{ overflow: 'hidden' }}
                   >
                     <p style={{

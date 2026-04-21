@@ -257,7 +257,7 @@ function HeroSection() {
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
             style={{
               fontSize: "clamp(40px, 6vw, 72px)",
               fontWeight: 800,
@@ -478,7 +478,7 @@ function StorySection() {
                             height: "auto",
                           }}
                           exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
                           style={{
                             fontSize: 'clamp(14px, 2vw, 15px)',
                             lineHeight: 1.7,
@@ -723,7 +723,7 @@ function ProblemsSection() {
                           exit={{ opacity: 0, height: 0 }}
                           transition={{
                             duration: 0.4,
-                            ease: [0.22, 1, 0.36, 1],
+                            ease: [0.22, 1, 0.36, 1] as const,
                           }}
                           style={{
                             fontSize: 'clamp(14px, 2vw, 15px)',

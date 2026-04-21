@@ -719,7 +719,7 @@ function ProposalAnalytics({ proposals }: { proposals: Proposal[] }) {
             <div key={status} className="flex items-center gap-3">
               <span className="text-xs w-20 text-right" style={{ color: BRAND_MUTED }}>{cfg?.label || status}</span>
               <div className="flex-1 h-4 rounded-full overflow-hidden" style={{ backgroundColor: '#F3F4F6' }}>
-                <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.6, ease: 'easeOut' }} className="h-full rounded-full" style={{ backgroundColor: barColours[status] || '#9CA3AF' }} />
+                <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.6, ease: 'easeOut' as const }} className="h-full rounded-full" style={{ backgroundColor: barColours[status] || '#9CA3AF' }} />
               </div>
               <span className="text-xs font-medium w-6" style={{ color: BRAND_DARK }}>{count}</span>
             </div>

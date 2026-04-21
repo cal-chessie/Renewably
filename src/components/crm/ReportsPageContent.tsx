@@ -287,7 +287,7 @@ const container = {
 
 const item = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' as const } },
 }
 
 // ===== SKELETON LOADERS =====
@@ -1125,7 +1125,7 @@ export default function ReportsPageContent() {
                               <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${width}%` }}
-                                transition={{ duration: 0.8, delay: index * 0.1, ease: 'easeOut' }}
+                                transition={{ duration: 0.8, delay: index * 0.1, ease: 'easeOut' as const }}
                                 className="absolute inset-y-0 left-0 rounded-lg"
                                 style={{ backgroundColor: color, opacity: 0.75 }}
                               />

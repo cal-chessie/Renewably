@@ -1318,7 +1318,7 @@ function EmptyState() {
     >
       <motion.div
         animate={{ y: [0, -8, 0], rotate: [0, 2, -2, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
         style={{
           width: 72, height: 72, borderRadius: 18,
           background: C.yellowMuted, display: 'flex', alignItems: 'center',

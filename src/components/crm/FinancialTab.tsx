@@ -307,7 +307,7 @@ export function FinancialTab() {
       <motion.div
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] as const }}
         style={{ height: 3, borderRadius: 2, marginBottom: 24,
           background: 'linear-gradient(90deg, #10B981, #F3D840, #A78BFA, #60A5FA)',
           transformOrigin: 'left',
@@ -618,7 +618,7 @@ export function FinancialTab() {
                               </div>
                               <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.04)', marginTop: 6, overflow: 'hidden' }}>
                                 <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }}
-                                  transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                                  transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
                                   style={{ height: '100%', borderRadius: 2, background: p.color }} />
                               </div>
                             </motion.div>

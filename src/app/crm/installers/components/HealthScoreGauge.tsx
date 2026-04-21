@@ -46,7 +46,7 @@ export function HealthScoreGauge({ score, size = 72, strokeWidth = 6, showLabel 
             strokeDasharray={circumference}
             initial={{ strokeDashoffset: circumference }}
             animate={{ strokeDashoffset: offset }}
-            transition={{ duration: 1, ease: 'easeOut' }}
+            transition={{ duration: 1, ease: 'easeOut' as const }}
           />
         </svg>
         <div style={{

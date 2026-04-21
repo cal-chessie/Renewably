@@ -66,7 +66,7 @@ export const InstallerCard = memo(function InstallerCard({ installer, index, onV
       key={installer.id}
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1.0 }}
-      transition={{ delay: index * 0.04, duration: 0.35, ease: 'easeOut' }}
+      transition={{ delay: index * 0.04, duration: 0.35, ease: 'easeOut' as const }}
       whileHover={{ y: -4 }}
       style={{ height: '100%' }}
     >
@@ -230,7 +230,7 @@ export const InstallerCard = memo(function InstallerCard({ installer, index, onV
                 }}
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPercent}%` }}
-                transition={{ duration: 0.7, delay: index * 0.04 + 0.2, ease: 'easeOut' }}
+                transition={{ duration: 0.7, delay: index * 0.04 + 0.2, ease: 'easeOut' as const }}
               />
             </div>
           </div>

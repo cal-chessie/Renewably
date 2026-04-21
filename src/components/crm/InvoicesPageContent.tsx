@@ -190,7 +190,7 @@ function InvoiceAgingSummary({ invoices }: { invoices: Invoice[] }) {
           const pct = total > 0 ? (bucket.amount / total) * 100 : 0
           if (pct === 0) return null
           return (
-            <motion.div key={bucket.label} initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.8, delay: i * 0.15, ease: 'easeOut' }}
+            <motion.div key={bucket.label} initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.8, delay: i * 0.15, ease: 'easeOut' as const }}
               className="h-full relative group" style={{ backgroundColor: bucket.color, minWidth: bucket.amount > 0 ? '6px' : '0' }}
               title={`${bucket.label}: ${formatCurrency(bucket.amount)} (${bucket.count} invoices)`}>
               {pct > 10 && (
@@ -237,7 +237,7 @@ function OverdueSummaryCard({ invoices }: { invoices: Invoice[] }) {
           className="absolute inset-0 rounded-full"
           style={{ border: '2px solid rgba(239,68,68,0.4)' }}
           animate={{ scale: [1, 1.4, 1], opacity: [0.6, 0, 0.6] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
         />
       </div>
       <div className="flex-1 min-w-0">
@@ -297,7 +297,7 @@ function PaymentSchedule({ invoice, paidAmount }: { invoice: Invoice; paidAmount
       </div>
       {/* Progress bar */}
       <div className="h-3 rounded-full overflow-hidden mb-3" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}>
-        <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.8, ease: 'easeOut' }}
+        <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.8, ease: 'easeOut' as const }}
           className="h-full rounded-full" style={{ backgroundColor: pct >= 100 ? '#059669' : BRAND_YELLOW }} />
       </div>
       <div className="flex justify-between text-xs mb-4" style={{ color: BRAND_SUBTLE }}>
@@ -1390,7 +1390,7 @@ export default function InvoicesPageContent() {
                       </div>
                     </div>
                     <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
-                      <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.6, ease: 'easeOut' }} className="h-full rounded-full" style={{ backgroundColor: bucket.color, minWidth: bucket.amount > 0 ? '4px' : '0' }} />
+                      <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 0.6, ease: 'easeOut' as const }} className="h-full rounded-full" style={{ backgroundColor: bucket.color, minWidth: bucket.amount > 0 ? '4px' : '0' }} />
                     </div>
                   </div>
                 )

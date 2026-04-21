@@ -496,7 +496,7 @@ function FinancialTab() {
       <motion.div
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] as const }}
         style={{ height: 3, borderRadius: 2, marginBottom: 24,
           background: 'linear-gradient(90deg, #10B981, #F3D840, #A78BFA, #60A5FA)',
           transformOrigin: 'left',
@@ -506,21 +506,21 @@ function FinancialTab() {
       {/* AMBIENT BACKGROUND LAYER */}
       <motion.div
         animate={{ x: [0, 30, -20, 10, 0], y: [0, -20, 15, -10, 0] }}
-        transition={{ duration: 25, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+        transition={{ duration: 25, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' as const }}
         style={{ position: 'absolute', top: -120, left: -100, width: 500, height: 500, borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, rgba(16,185,129,0.02) 40%, transparent 70%)',
           pointerEvents: 'none', zIndex: 0 }}
       />
       <motion.div
         animate={{ x: [0, -25, 15, -30, 0], y: [0, 25, -15, 20, 0] }}
-        transition={{ duration: 30, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+        transition={{ duration: 30, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' as const }}
         style={{ position: 'absolute', top: '28%', right: -150, width: 400, height: 400, borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(243,216,64,0.06) 0%, rgba(243,216,64,0.01) 40%, transparent 70%)',
           pointerEvents: 'none', zIndex: 0 }}
       />
       <motion.div
         animate={{ x: [0, 20, -30, 10, 0], y: [0, -15, 25, -20, 0] }}
-        transition={{ duration: 22, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+        transition={{ duration: 22, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' as const }}
         style={{ position: 'absolute', bottom: -100, left: '38%', width: 450, height: 450, borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(16,185,129,0.06) 0%, rgba(16,185,129,0.01) 40%, transparent 70%)',
           pointerEvents: 'none', zIndex: 0 }}
@@ -819,7 +819,7 @@ function FinancialTab() {
                               </div>
                               <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.04)', marginTop: 6, overflow: 'hidden' }}>
                                 <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }}
-                                  transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                                  transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
                                   style={{ height: '100%', borderRadius: 2, background: p.color }} />
                               </div>
                             </motion.div>

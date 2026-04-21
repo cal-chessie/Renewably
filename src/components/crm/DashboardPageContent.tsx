@@ -437,7 +437,7 @@ function SidebarNav({ collapsed, onToggle }: { collapsed: boolean; onToggle: () 
     <motion.div
       initial={false}
       animate={{ width: collapsed ? 52 : 200 }}
-      transition={{ duration: 0.25, ease: 'easeInOut' }}
+      transition={{ duration: 0.25, ease: 'easeInOut' as const }}
       style={{
         height: '100%',
         background: C.card,

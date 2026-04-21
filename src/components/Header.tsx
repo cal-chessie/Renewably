@@ -64,7 +64,7 @@ export default function Header() {
       {/* Header */}
       <motion.header
         animate={{ y: hidden ? -100 : 0 }}
-        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] as const }}
         style={{
           position: 'fixed',
           top: 0,
@@ -181,7 +181,7 @@ export default function Header() {
                       top: mobileOpen ? 9 : 0,
                       rotate: mobileOpen ? 45 : 0,
                     }}
-                    transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                    transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] as const }}
                   />
                   <motion.span
                     className="absolute left-0 top-[9px] w-full h-[2px] rounded-full bg-white"
@@ -189,7 +189,7 @@ export default function Header() {
                       opacity: mobileOpen ? 0 : 1,
                       scaleX: mobileOpen ? 0 : 1,
                     }}
-                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] as const }}
                   />
                   <motion.span
                     className="absolute left-0 w-full h-[2px] rounded-full bg-white"
@@ -197,7 +197,7 @@ export default function Header() {
                       top: mobileOpen ? 9 : 18,
                       rotate: mobileOpen ? -45 : 0,
                     }}
-                    transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                    transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] as const }}
                   />
                 </div>
               </button>
@@ -293,7 +293,7 @@ export default function Header() {
                         transition={{
                           delay: 0.08 + index * 0.04,
                           duration: 0.35,
-                          ease: [0.22, 1, 0.36, 1],
+                          ease: [0.22, 1, 0.36, 1] as const,
                         }}
                         onMouseEnter={() => setHoveredLink(link.href)}
                         onMouseLeave={() => setHoveredLink(null)}
@@ -354,7 +354,7 @@ export default function Header() {
                                 scaleX: isHovered || isActive ? 1 : 0,
                                 originX: 0,
                               }}
-                              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
                               style={{
                                 position: 'absolute',
                                 bottom: -2,

@@ -190,7 +190,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
     >
       <motion.div
         animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' as const }}
         style={{
           width: 96, height: 96, borderRadius: '50%', marginBottom: 32,
           background: 'radial-gradient(circle, rgba(243,216,64,0.25) 0%, rgba(243,216,64,0.05) 70%, transparent 100%)',
@@ -871,7 +871,7 @@ function InstallerCard({ installer, index, onView }: { installer: InstallerRow; 
   const healthScore = computeHealthScore(installer)
 
   return (
-    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.04, duration: 0.35, ease: 'easeOut' }} whileHover={{ y: -4 }} style={{ height: '100%' }}>
+    <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: index * 0.04, duration: 0.35, ease: 'easeOut' as const }} whileHover={{ y: -4 }} style={{ height: '100%' }}>
       <div
         onClick={onView} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
         style={{
@@ -917,7 +917,7 @@ function InstallerCard({ installer, index, onView }: { installer: InstallerRow; 
             </div>
             <div style={{ height: 5, width: '100%', backgroundColor: '#222222', borderRadius: 100, overflow: 'hidden' }}>
               <motion.div style={{ height: '100%', borderRadius: 100, background: installer.onboardingComplete ? 'linear-gradient(90deg, #10B981, #34D399)' : 'linear-gradient(90deg, #F3D840, #FACC15)' }}
-                initial={{ width: 0 }} animate={{ width: `${progressPercent}%` }} transition={{ duration: 0.7, delay: index * 0.04 + 0.2, ease: 'easeOut' }} />
+                initial={{ width: 0 }} animate={{ width: `${progressPercent}%` }} transition={{ duration: 0.7, delay: index * 0.04 + 0.2, ease: 'easeOut' as const }} />
             </div>
           </div>
 

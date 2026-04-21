@@ -378,7 +378,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
     >
       <motion.div
         animate={{ y: [0, -10, 0], scale: [1, 1.03, 1] }}
-        transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
+        transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' as const }}
         style={{
           width: 96, height: 96, borderRadius: '50%',
           background: `linear-gradient(135deg, ${C.yellow}18, ${C.yellow}08)`,
@@ -483,7 +483,7 @@ function ContactCard({
     <motion.div
       initial={{ opacity: 0, y: 24, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.4, delay: Math.min(index * 0.04, 0.8), ease: [0.25, 0.46, 0.45, 0.94] }}
+      transition={{ duration: 0.4, delay: Math.min(index * 0.04, 0.8), ease: [0.25, 0.46, 0.45, 0.94] as const }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={onSelect}

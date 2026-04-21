@@ -25,7 +25,7 @@ export function OnboardingTracker({ currentStep, isComplete }: OnboardingTracker
             }}
             initial={{ width: 0 }}
             animate={{ width: `${(currentStep / 10) * 100}%` }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
+            transition={{ duration: 0.8, ease: 'easeOut' as const }}
           />
         </div>
         <span style={{ fontSize: 12, fontWeight: 600, color: isComplete ? '#4ADE80' : '#D1D5DB', flexShrink: 0 }}>
