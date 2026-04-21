@@ -141,6 +141,7 @@ export function isValidCompanyStatus(v: unknown): boolean {
 
 // ─── Extended Rate Limiting (configurable limits) ───
 
+// In-memory fallback (always available, per-process only)
 const rateLimitStore = new Map<string, { count: number; expiresAt: number }>()
 
 // Clean up expired entries every 60 seconds
@@ -155,6 +156,7 @@ if (typeof globalThis !== 'undefined') {
 
 /**
  * Check rate limit with configurable max attempts and window duration.
+ * Uses in-memory store. For multi-process deployments, prefer checkRateLimitRedis().
  * Returns { allowed, retryAfterMs }.
  */
 export function checkApiRateLimit(
@@ -176,6 +178,43 @@ export function checkApiRateLimit(
   }
 
   return { allowed: true, retryAfterMs: 0 }
+}
+
+/**
+ * Redis-backed rate limiter for multi-process deployments.
+ * Falls back to in-memory if Redis is unavailable.
+ * Returns { allowed, retryAfterMs }.
+ */
+export async function checkRateLimitRedis(
+  key: string,
+  options: { maxAttempts?: number; windowMs?: number } = {}
+): Promise<{ allowed: boolean; retryAfterMs: number }> {
+  const { maxAttempts = 10, windowMs = 60_000 } = options
+  const windowSec = Math.ceil(windowMs / 1000)
+
+  try {
+    const { redis } = await import('@/lib/redis')
+    const redisKey = `rl:${key}`
+
+    // Use Redis pipeline: INCR + EXPIRE in one round-trip
+    const pipeline = redis.pipeline()
+    pipeline.incr(redisKey)
+    pipeline.expire(redisKey, windowSec)
+    const results = await pipeline.exec()
+
+    const count = (results?.[0]?.[1] as number) ?? 1
+
+    if (count > maxAttempts) {
+      // Get remaining TTL for retry-after
+      const ttl = await redis.ttl(redisKey)
+      return { allowed: false, retryAfterMs: Math.max(0, (ttl ?? 0) * 1000) }
+    }
+
+    return { allowed: true, retryAfterMs: 0 }
+  } catch {
+    // Redis unavailable — fall back to in-memory
+    return checkApiRateLimit(key, options)
+  }
 }
 
 // ─── Number Validation ───

@@ -82,15 +82,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create a new client instance (not the service role one) because
-    // resetPasswordForEmail needs the anon key to respect RLS and email templates
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://renewably.ie'}/crm/reset-password`,
-      },
-    })
+    // Create a new client instance (anon key) for password reset email
+    // which respects Supabase email templates and redirect config
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase())
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+      redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://renewably.ie'}/crm/reset-password`,
+    })
 
     if (error) {
       logger.warn('Forgot password: Supabase returned error', {
