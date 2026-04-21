@@ -416,11 +416,11 @@ export default function ContactDetailPage() {
                             <p style={{ color: '#FFFFFF' }} className="text-sm font-medium">
                               {activity.subject as string}
                             </p>
-                            {activity.description && (
+                            {activity.description ? (
                               <p style={{ color: '#A0A0A0' }} className="text-sm mt-0.5">
-                                {activity.description as string}
+                                {String(activity.description)}
                               </p>
-                            )}
+                            ) : null}
                             <p style={{ color: '#666666' }} className="text-xs mt-1">
                               {timeAgo(activity.createdAt as string)}
                             </p>
