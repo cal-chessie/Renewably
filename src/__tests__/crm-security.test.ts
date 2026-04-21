@@ -11,10 +11,15 @@ vi.mock('@/lib/db', () => ({
   },
 }))
 
+vi.mock('@/lib/auth', () => ({
+  hashPassword: vi.fn().mockResolvedValue('$2b$10$hashed'),
+  verifyPassword: vi.fn().mockResolvedValue(true),
+}))
+
 // Import the REAL functions for testing (not mocked)
 // We can't easily test the real rate limiter due to module-level state,
 // so we test parseCookie, session cookie, and the logger directly.
-import { parseCookie, getSessionCookie, getLogoutCookie } from '@/lib/crm-session'
+import { parseCookie, getSessionCookie, getLogoutCookie, hashPassword, verifyPassword } from '@/lib/crm-session'
 import { logger } from '@/lib/logger'
 
 // ═══════════════════════════════════════════════════════════════════
@@ -69,7 +74,7 @@ describe('getSessionCookie', () => {
 describe('getLogoutCookie', () => {
   it('returns cookie that clears session', () => {
     const cookie = getLogoutCookie()
-    expect(cookie).toContain('crm_session=')
+    expect(cookie).toContain('sb-access-token=')
     expect(cookie).toContain('Max-Age=0')
     expect(cookie).toContain('Path=/')
   })
@@ -91,7 +96,8 @@ describe('verifyPassword', () => {
   })
 
   it('returns false for wrong password', async () => {
-    vi.mocked(await import('@/lib/crm-session')).verifyPassword.mockResolvedValueOnce(false)
+    const { verifyPassword: vp } = await import('@/lib/auth')
+    vi.mocked(vp).mockResolvedValueOnce(false)
     const result = await verifyPassword('wrong', 'hash')
     expect(result).toBe(false)
   })
@@ -175,7 +181,7 @@ describe('HTML escaping', () => {
     expect(escapeHtml('')).toBe('')
     expect(escapeHtml('"quoted"')).toBe('&quot;quoted&quot;')
     expect(escapeHtml("it's")).toBe("it&#039;s")
-    expect(escapeHtml('a < b')).toBe('a &lt; b'))
-    expect(escapeHtml('a & b')).toBe('a &amp; b'))
+    expect(escapeHtml('a < b')).toBe('a &lt; b')
+    expect(escapeHtml('a & b')).toBe('a &amp; b')
   })
 })

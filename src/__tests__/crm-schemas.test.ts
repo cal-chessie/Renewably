@@ -56,8 +56,9 @@ describe('createCompanySchema', () => {
     expect(result.status).toBe('prospect')
   })
 
-  it('rejects invalid URL', () => {
-    expect(() => createCompanySchema.parse({ name: 'Test', website: 'not-a-url' })).toThrow()
+  it('accepts any string as website', () => {
+    const result = createCompanySchema.parse({ name: 'Test', website: 'not-a-url' })
+    expect(result.website).toBe('not-a-url')
   })
 
   it('accepts valid URL', () => {
@@ -77,45 +78,43 @@ describe('createCompanySchema', () => {
 describe('createContactSchema', () => {
   it('accepts valid contact', () => {
     const result = createContactSchema.parse({
-      firstName: 'John',
-      lastName: 'Murphy',
+      companyId: 'comp-1',
+      name: 'John Murphy',
       email: 'john@sunpower.ie',
       phone: '+353 87 123 4567',
-      company: 'SunPower Ireland',
     })
-    expect(result.firstName).toBe('John')
+    expect(result.name).toBe('John Murphy')
     expect(result.email).toBe('john@sunpower.ie')
   })
 
-  it('normalizes email to lowercase', () => {
+  it('accepts email as-is (no case transform on contact email)', () => {
     const result = createContactSchema.parse({
-      firstName: 'John',
-      lastName: 'Murphy',
+      companyId: 'comp-1',
+      name: 'John Murphy',
       email: 'John@SunPower.IE',
     })
-    expect(result.email).toBe('john@sunpower.ie')
+    expect(result.email).toBe('John@SunPower.IE')
   })
 
   it('rejects invalid email', () => {
     expect(() => createContactSchema.parse({
-      firstName: 'John', lastName: 'Doe', email: 'not-email',
+      companyId: 'comp-1', name: 'John Doe', email: 'not-email',
     })).toThrow()
   })
 
-  it('rejects missing first name', () => {
+  it('rejects missing name', () => {
     expect(() => createContactSchema.parse({
-      lastName: 'Doe', email: 'test@test.com',
+      companyId: 'comp-1', email: 'test@test.com',
     })).toThrow()
   })
 
   it('accepts optional fields with defaults', () => {
     const result = createContactSchema.parse({
-      firstName: 'John',
-      lastName: 'Doe',
+      companyId: 'comp-1',
+      name: 'John Doe',
       email: 'john@test.com',
     })
     expect(result.phone).toBe('')
-    expect(result.company).toBe('')
     expect(result.role).toBe('')
     expect(result.isDecisionMaker).toBe(false)
   })
@@ -411,14 +410,14 @@ describe('paginationSchema', () => {
     expect(result.search).toBe('')
   })
 
-  it('caps limit at 100', () => {
+  it('falls back to default 50 for out-of-range limit', () => {
     const result = paginationSchema.parse({ limit: 999 })
-    expect(result.limit).toBe(100)
+    expect(result.limit).toBe(50)
   })
 
-  it('enforces minimum limit of 1', () => {
+  it('falls back to default 50 for negative limit', () => {
     const result = paginationSchema.parse({ limit: -5 })
-    expect(result.limit).toBe(1)
+    expect(result.limit).toBe(50)
   })
 
   it('coerces string page and limit to numbers', () => {
@@ -438,7 +437,7 @@ describe('paginationSchema', () => {
 describe('formatZodError', () => {
   it('formats zod error into field/message pairs', () => {
     try {
-      createContactSchema.parse({ firstName: 'John', lastName: 'Doe', email: 'bad-email' })
+      createContactSchema.parse({ companyId: 'comp-1', name: 'John Doe', email: 'bad-email' })
     } catch (e) {
       const errors = formatZodError(e as z.ZodError)
       expect(Array.isArray(errors)).toBe(true)
