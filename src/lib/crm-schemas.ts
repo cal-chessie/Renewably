@@ -334,7 +334,7 @@ export const pipelineMoveSchema = z.object({
   dealId: z.string().min(1, 'Deal ID is required'),
   stage: z.enum([
     'new_lead', 'contacted', 'discovery_call', 'demo_booked',
-    'demo_done', 'proposal_sent', 'negotiation', 'closed_won',
+    'demo_done', 'proposal_sent', 'negotiation', 'closed_won', 'closed_lost',
   ]),
 })
 

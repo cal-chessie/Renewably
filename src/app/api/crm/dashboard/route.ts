@@ -25,6 +25,7 @@ const STAGE_LABELS: Record<string, string> = {
   proposal_sent: 'Proposal Sent',
   negotiation: 'Negotiation',
   closed_won: 'Closed Won',
+  closed_lost: 'Closed Lost',
 }
 
 const ACTIVE_STAGES = PIPELINE_STAGES.slice(0, 7) // everything except closed_won

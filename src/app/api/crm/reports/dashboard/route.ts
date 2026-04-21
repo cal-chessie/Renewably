@@ -13,6 +13,7 @@ const STAGE_LABELS: Record<string, string> = {
   proposal_sent: 'Proposal Sent',
   negotiation: 'Negotiation',
   closed_won: 'Closed Won',
+  closed_lost: 'Closed Lost',
 }
 
 export async function GET(request: NextRequest) {

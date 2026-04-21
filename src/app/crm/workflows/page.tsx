@@ -150,7 +150,23 @@ const ACTION_TYPES = [
   { value: 'notify', label: 'Send Notification', icon: Zap },
 ] as const
 
-const PIPELINE_STAGES = ['Lead', 'Qualified', 'Proposal', 'Negotiation', 'Won', 'Lost']
+const PIPELINE_STAGES = [
+  'new_lead', 'contacted', 'discovery_call', 'demo_booked',
+  'demo_done', 'proposal_sent', 'negotiation', 'closed_won', 'closed_lost',
+] as const
+
+const STAGE_LABELS: Record<string, string> = {
+  new_lead: 'New Lead',
+  contacted: 'Contacted',
+  discovery_call: 'Discovery',
+  demo_booked: 'Demo Booked',
+  demo_done: 'Demo Done',
+  proposal_sent: 'Proposal Sent',
+  negotiation: 'Negotiation',
+  closed_won: 'Closed Won',
+  closed_lost: 'Closed Lost',
+}
+
 const PROPOSAL_STATUSES = ['draft', 'sent', 'viewed', 'accepted', 'rejected', 'expired']
 const TASK_PRIORITIES = ['low', 'medium', 'high', 'urgent']
 
@@ -185,7 +201,7 @@ function parseJSON<T>(str: string | null | undefined, fallback: T): T {
 function formatTriggerDescription(triggerType: string, triggerConfig: Record<string, unknown>): string {
   switch (triggerType) {
     case 'deal_stage_change':
-      return `When deal moves to "${triggerConfig.stage || 'any'}" stage`
+      return `When deal moves to "${STAGE_LABELS[triggerConfig.stage || ''] || triggerConfig.stage || 'any'}" stage`
     case 'deal_created':
       return 'When a new deal is created'
     case 'new_contact':
@@ -455,7 +471,7 @@ function TriggerBuilder({
         // Reset config for new trigger type
         switch (v) {
           case 'deal_stage_change':
-            onConfigChange({ stage: 'Qualified' })
+            onConfigChange({ stage: 'closed_won' })
             break
           case 'deal_created':
             onConfigChange({})
@@ -532,7 +548,7 @@ function TriggerBuilder({
               </SelectTrigger>
               <SelectContent>
                 {PIPELINE_STAGES.map((stage) => (
-                  <SelectItem key={stage} value={stage}>{stage}</SelectItem>
+                  <SelectItem key={stage} value={stage}>{STAGE_LABELS[stage]}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

@@ -16,6 +16,7 @@ const PIPELINE_STAGES = [
   { stageKey: 'proposal_sent', stageName: 'Proposal Sent' },
   { stageKey: 'negotiation', stageName: 'Negotiation' },
   { stageKey: 'closed_won', stageName: 'Closed Won' },
+  { stageKey: 'closed_lost', stageName: 'Closed Lost' },
 ] as const
 
 function computeDaysInStage(updatedAt: Date): number {
@@ -201,7 +202,7 @@ export async function GET(request: NextRequest) {
 
     const pipelineStageKeys = includeClosed
       ? PIPELINE_STAGES.map(s => s.stageKey)
-      : PIPELINE_STAGES.filter(s => s.stageKey !== 'closed_won').map(s => s.stageKey)
+      : PIPELINE_STAGES.filter(s => s.stageKey !== 'closed_won' && s.stageKey !== 'closed_lost').map(s => s.stageKey)
 
     let query = supabase
       .from('deals')
@@ -237,7 +238,7 @@ export async function GET(request: NextRequest) {
 
     const visibleStages = includeClosed
       ? PIPELINE_STAGES
-      : PIPELINE_STAGES.filter(s => s.stageKey !== 'closed_won')
+      : PIPELINE_STAGES.filter(s => s.stageKey !== 'closed_won' && s.stageKey !== 'closed_lost')
 
     const stages = visibleStages.map(stageDef => ({
       stageKey: stageDef.stageKey,
