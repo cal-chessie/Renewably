@@ -37,16 +37,17 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
-      // Static assets — no-cache in dev so browser always gets fresh Turbopack chunks
+      // Static assets — aggressive cache in production (content-hashed filenames),
+      // no-cache in dev so browser always gets fresh Turbopack chunks
       {
         source: '/_next/static/:path*',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'no-store, no-cache, must-revalidate, proxy-revalidate',
+            value: process.env.NODE_ENV === 'development'
+              ? 'no-store, no-cache, must-revalidate, proxy-revalidate'
+              : 'public, max-age=31536000, immutable',
           },
-          { key: 'Pragma', value: 'no-cache' },
-          { key: 'Expires', value: '0' },
         ],
       },
       // Turbopack dev chunks — must never be cached (hot-reloading breaks otherwise)
@@ -61,13 +62,15 @@ const nextConfig: NextConfig = {
           { key: 'Expires', value: '0' },
         ],
       },
-      // Next.js image optimization — 1 day cache (images revalidate via next/image)
+      // Next.js image optimization — long cache in production, short in dev
       {
         source: '/_next/image/:path*',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=86400, stale-while-revalidate=31536000',
+            value: process.env.NODE_ENV === 'development'
+              ? 'public, max-age=60, stale-while-revalidate=300'
+              : 'public, max-age=86400, stale-while-revalidate=31536000',
           },
         ],
       },
