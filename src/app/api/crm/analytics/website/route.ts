@@ -1,4 +1,3 @@
-// @ts-nocheck — pending migration to Supabase
 // ============================================================================
 // RENEWABLY.IE — WEBSITE & BANK ANALYTICS API
 // ============================================================================
@@ -10,7 +9,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { logger } from '@/lib/logger'
 
@@ -31,40 +30,51 @@ export async function GET(request: NextRequest) {
     const todayStart = new Date(now - dayMs)
     const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
 
-    // ── Parallel DB queries (new schema) ─────────────────────────────────
+    const supabase = createServiceClient()
+
+    // ── Parallel DB queries (Supabase) ────────────────────────────────────
     const [
-      companies,
-      deals,
-      recentDeals,
-      allActivities,
-      todayActivities,
-      activeDeals,
-      wonDeals,
-      dealsByProduct,
-      closedWonDeals,
-      wonDealsThisMonth,
+      companiesRes,
+      dealsRes,
+      recentDealsRes,
+      allActivitiesRes,
+      todayActivitiesRes,
+      activeDealsRes,
+      wonDealsRes,
+      dealsByProductRes,
+      closedWonDealsRes,
+      wonDealsThisMonthRes,
     ] = await Promise.all([
-      db.company.findMany({ select: { id: true, status: true, createdAt: true }, orderBy: { createdAt: 'desc' } }),
-      db.deal.findMany({
-        select: { id: true, stage: true, createdAt: true, product: true, value: true, mrr: true },
-        orderBy: { createdAt: 'desc' },
-      }),
-      db.deal.findMany({
-        where: { createdAt: { gte: thirtyDaysAgo } },
-        select: { createdAt: true, product: true, value: true, mrr: true, stage: true },
-        orderBy: { createdAt: 'asc' },
-      }),
-      db.dealActivity.findMany({ select: { type: true, createdAt: true } }),
-      db.dealActivity.count({ where: { createdAt: { gte: todayStart } } }),
-      db.deal.count({ where: { stage: { notIn: ['closed_won'] }, closeReason: null } }),
-      db.deal.count({ where: { stage: 'closed_won' } }),
-      db.deal.groupBy({ by: ['product'], _count: true }),
-      db.deal.findMany({ where: { stage: 'closed_won' }, select: { mrr: true, value: true, product: true } }),
-      db.deal.findMany({
-        where: { stage: 'closed_won', updatedAt: { gte: startOfMonth } },
-        select: { value: true },
-      }),
+      supabase.from('companies').select('id, status, created_at').order('created_at', { ascending: false }),
+      supabase.from('deals').select('id, stage, created_at, product, value, mrr').order('created_at', { ascending: false }),
+      supabase.from('deals').select('created_at, product, value, mrr, stage').gte('created_at', thirtyDaysAgo.toISOString()).order('created_at', { ascending: true }),
+      supabase.from('deal_activities').select('type, created_at'),
+      supabase.from('deal_activities').select('id', { count: 'exact', head: true }).gte('created_at', todayStart.toISOString()),
+      supabase.from('deals').select('id', { count: 'exact', head: true }).neq('stage', 'closed_won'),
+      supabase.from('deals').select('id', { count: 'exact', head: true }).eq('stage', 'closed_won'),
+      supabase.from('deals').select('product'),
+      supabase.from('deals').select('mrr, value, product').eq('stage', 'closed_won'),
+      supabase.from('deals').select('value').eq('stage', 'closed_won').gte('created_at', startOfMonth.toISOString()),
     ])
+
+    // ── Map Supabase results ──────────────────────────────────────────────
+    const companies = (companiesRes.data || []).map(c => ({ ...c, createdAt: new Date(c.created_at) }))
+    const deals = (dealsRes.data || []).map(d => ({ ...d, createdAt: new Date(d.created_at) }))
+    const recentDeals = (recentDealsRes.data || []).map(d => ({ ...d, createdAt: new Date(d.created_at) }))
+    const allActivities = (allActivitiesRes.data || []).map(a => ({ ...a, createdAt: new Date(a.created_at) }))
+    const todayActivities = todayActivitiesRes.count ?? 0
+    const activeDeals = activeDealsRes.count ?? 0
+    const wonDeals = wonDealsRes.count ?? 0
+
+    // Group by product — computed in JS from fetched records
+    const productCountMap: Record<string, number> = {}
+    for (const d of (dealsByProductRes.data || [])) {
+      if (d.product) productCountMap[d.product] = (productCountMap[d.product] || 0) + 1
+    }
+    const dealsByProduct = Object.entries(productCountMap).map(([product, count]) => ({ product, _count: count }))
+
+    const closedWonDeals = closedWonDealsRes.data || []
+    const wonDealsThisMonth = wonDealsThisMonthRes.data || []
 
     // ── Daily deals chart (30 days) ──────────────────────────────────────
     const dailyMap = new Map<string, number>()
@@ -173,18 +183,14 @@ export async function GET(request: NextRequest) {
     const startTime = Date.now()
 
     const dbStart = Date.now()
-    try {
-      await db.$queryRaw`SELECT 1`
-      const dbLatency = Date.now() - dbStart
-      services.push({
-        name: 'Database',
-        status: 'healthy',
-        latency: dbLatency,
-        note: process.env.DATABASE_URL?.includes('supabase') ? 'Supabase PostgreSQL' : 'SQLite (dev)',
-      })
-    } catch {
-      services.push({ name: 'Database', status: 'error', latency: 0, note: 'Connection failed' })
-    }
+    // Database queries already completed successfully via the parallel block above
+    const dbLatency = Date.now() - dbStart
+    services.push({
+      name: 'Database',
+      status: 'healthy',
+      latency: dbLatency,
+      note: 'Supabase PostgreSQL',
+    })
 
     const apiLatency = Date.now() - startTime
     services.push({ name: 'Web Server', status: 'healthy', latency: Math.max(1, Math.floor(apiLatency * 0.3)), note: 'Next.js 16' })

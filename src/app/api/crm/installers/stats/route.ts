@@ -1,5 +1,4 @@
-// @ts-nocheck — installer routes pending migration to Supabase
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
@@ -10,6 +9,91 @@ const PLAN_PRICES: Record<string, number> = {
   starter: 1000,
   pro: 1250,
   enterprise: 1500,
+}
+
+/**
+ * Map a raw Supabase installer_profiles row (with joined subscriptions)
+ * to a camelCase object used for KPI calculations.
+ */
+interface MappedInstaller {
+  id: string
+  planId: string
+  onboardingComplete: boolean
+  onboardingStep: number
+  serviceCounties: unknown
+  seaiRegistered: boolean
+  seaiNumber: string | null
+  reciRegistered: boolean
+  reciNumber: string | null
+  yearsInBusiness: number | null
+  teamSize: number | null
+  qualifiedElectricians: number | null
+  vanFleetSize: number | null
+  installsMonth: number
+  revenueTarget: number
+  leadTargetMonth: number
+  avgProjectValue: number | null
+  maxProjectsMonth: number | null
+  createdAt: string
+  trialStartAt: string | null
+  trialEndsAt: string | null
+  billingCycle: string
+  ruralSpecialist: boolean
+  commercialSpecialist: boolean
+  heritageExperience: boolean
+  offersEvCharger: boolean
+  offersHeatPump: boolean
+  acceptsFinancing: boolean
+  hasDrone: boolean
+  hasScaffolding: boolean
+  subscriptionStatus: string | null
+  subscriptionPlanId: string | null
+  subscriptionBillingCycle: string | null
+  subscriptionCancelledAt: string | null
+}
+
+function mapInstallerStatsRow(
+  row: Record<string, unknown>,
+  subscriptionRows: Record<string, unknown>[],
+): MappedInstaller {
+  const sub = subscriptionRows[0] ?? null
+
+  return {
+    id: row.id as string,
+    planId: (row.plan_id as string) || 'pro',
+    onboardingComplete: (row.onboarding_complete as boolean) ?? false,
+    onboardingStep: (row.onboarding_step as number) ?? 0,
+    serviceCounties: row.service_counties,
+    seaiRegistered: (row.seai_registered as boolean) ?? false,
+    seaiNumber: (row.seai_number as string) ?? null,
+    reciRegistered: (row.reci_registered as boolean) ?? false,
+    reciNumber: (row.reci_number as string) ?? null,
+    yearsInBusiness: (row.years_in_business as number) ?? null,
+    teamSize: (row.team_size as number) ?? null,
+    qualifiedElectricians: (row.qualified_electricians as number) ?? null,
+    vanFleetSize: (row.van_fleet_size as number) ?? null,
+    installsMonth: (row.installs_month as number) ?? 0,
+    revenueTarget: Number(row.revenue_target) || 0,
+    leadTargetMonth: (row.lead_target_month as number) ?? 0,
+    avgProjectValue: row.avg_project_value != null ? Number(row.avg_project_value) : null,
+    maxProjectsMonth: (row.max_projects_month as number) ?? null,
+    createdAt: row.created_at as string,
+    trialStartAt: (row.trial_start_at as string) ?? null,
+    trialEndsAt: (row.trial_ends_at as string) ?? null,
+    billingCycle: (row.billing_cycle as string) || 'monthly',
+    ruralSpecialist: (row.rural_specialist as boolean) ?? false,
+    commercialSpecialist: (row.commercial_specialist as boolean) ?? false,
+    heritageExperience: (row.heritage_experience as boolean) ?? false,
+    offersEvCharger: (row.offers_ev_charger as boolean) ?? false,
+    offersHeatPump: (row.offers_heat_pump as boolean) ?? false,
+    acceptsFinancing: (row.accepts_financing as boolean) ?? true,
+    hasDrone: (row.has_drone as boolean) ?? false,
+    hasScaffolding: (row.has_scaffolding as boolean) ?? false,
+    subscriptionStatus: sub?.status as string | null,
+    subscriptionPlanId: sub?.plan_id as string | null,
+    subscriptionBillingCycle: sub?.billing_cycle as string | null,
+    subscriptionCancelledAt: sub?.cancelled_at as string | null,
+  }
 }
 
 // GET: Installer KPIs for CRM dashboard
@@ -23,52 +107,24 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) } })
     }
 
-    // Fetch all installers with subscription data in a single query
-    const installers = await db.installerProfile.findMany({
-      take: 500,
-      select: {
-        id: true,
-        planId: true,
-        onboardingComplete: true,
-        onboardingStep: true,
-        serviceCounties: true,
-        seaiRegistered: true,
-        seaiNumber: true,
-        reciRegistered: true,
-        reciNumber: true,
-        yearsInBusiness: true,
-        teamSize: true,
-        qualifiedElectricians: true,
-        vanFleetSize: true,
-        installsMonth: true,
-        revenueTarget: true,
-        leadTargetMonth: true,
-        avgProjectValue: true,
-        maxProjectsMonth: true,
-        createdAt: true,
-        trialStartAt: true,
-        trialEndsAt: true,
-        billingCycle: true,
-        ruralSpecialist: true,
-        commercialSpecialist: true,
-        heritageExperience: true,
-        offersEvCharger: true,
-        offersHeatPump: true,
-        acceptsFinancing: true,
-        hasDrone: true,
-        hasScaffolding: true,
-        subscription: {
-          select: {
-            id: true,
-            status: true,
-            planId: true,
-            billingCycle: true,
-            currentPeriodStart: true,
-            currentPeriodEnd: true,
-            cancelledAt: true,
-          },
-        },
-      },
+    const supabase = createServiceClient()
+
+    // Fetch all installers with subscription data
+    const { data: rows, error } = await supabase
+      .from('installer_profiles')
+      .select('*, subscriptions(status, plan_id, billing_cycle, current_period_start, current_period_end, cancelled_at)')
+      .limit(500)
+
+    if (error) {
+      logger.error('Installer stats query failed', { error: error.message, code: error.code })
+      return NextResponse.json({ error: 'Failed to fetch installer stats' }, { status: 500 })
+    }
+
+    // Map all rows to camelCase
+    const installers = (rows ?? []).map((row) => {
+      const r = row as Record<string, unknown>
+      const subs = (r.subscriptions ?? []) as Record<string, unknown>[]
+      return mapInstallerStatsRow(r, subs)
     })
 
     const totalInstallers = installers.length
@@ -94,14 +150,13 @@ export async function GET(request: NextRequest) {
     // ---- MRR (Monthly Recurring Revenue) ----
     let mrr = 0
     const activeSubscriptions = installers.filter((i) => {
-      if (!i.subscription) return false
-      const status = i.subscription.status
+      const status = i.subscriptionStatus
       return status === 'active' || status === 'trialing'
     })
 
     for (const installer of activeSubscriptions) {
       const basePrice = PLAN_PRICES[installer.planId] || PLAN_PRICES.pro
-      if (installer.billingCycle === 'yearly') {
+      if (installer.billingCycle === 'annual') {
         mrr += basePrice / 12
       } else {
         mrr += basePrice
@@ -113,11 +168,11 @@ export async function GET(request: NextRequest) {
 
     // ---- Subscription Status Breakdown ----
     const subscriptionStatus = {
-      trialing: installers.filter((i) => i.subscription?.status === 'trialing').length,
-      active: installers.filter((i) => i.subscription?.status === 'active').length,
-      past_due: installers.filter((i) => i.subscription?.status === 'past_due').length,
-      cancelled: installers.filter((i) => i.subscription?.status === 'cancelled').length,
-      no_subscription: installers.filter((i) => !i.subscription).length,
+      trialing: installers.filter((i) => i.subscriptionStatus === 'trialing').length,
+      active: installers.filter((i) => i.subscriptionStatus === 'active').length,
+      past_due: installers.filter((i) => i.subscriptionStatus === 'past_due').length,
+      cancelled: installers.filter((i) => i.subscriptionStatus === 'cancelled' || i.subscriptionStatus === 'canceled').length,
+      no_subscription: installers.filter((i) => !i.subscriptionStatus).length,
     }
 
     // ---- Territory Coverage ----
@@ -126,7 +181,12 @@ export async function GET(request: NextRequest) {
 
     for (const installer of installers) {
       try {
-        const counties: string[] = JSON.parse(installer.serviceCounties)
+        const raw = installer.serviceCounties
+        const counties: string[] = Array.isArray(raw)
+          ? raw
+          : typeof raw === 'string'
+            ? (() => { try { return JSON.parse(raw) } catch { return [] } })()
+            : []
         for (const county of counties) {
           const trimmed = county.trim()
           if (trimmed) {
@@ -135,7 +195,7 @@ export async function GET(request: NextRequest) {
           }
         }
       } catch {
-        // skip invalid JSON
+        // skip invalid data
       }
     }
 
@@ -201,7 +261,7 @@ export async function GET(request: NextRequest) {
     // ---- Trial Metrics ----
     const activeTrials = installers.filter((i) => {
       if (!i.trialEndsAt) return false
-      return new Date(i.trialEndsAt) > new Date() && i.subscription?.status === 'trialing'
+      return new Date(i.trialEndsAt) > new Date() && i.subscriptionStatus === 'trialing'
     })
 
     const trialsExpiringSoon = activeTrials.filter((i) => {
@@ -212,7 +272,7 @@ export async function GET(request: NextRequest) {
 
     const expiredTrials = installers.filter((i) => {
       if (!i.trialEndsAt) return false
-      return new Date(i.trialEndsAt) <= new Date() && i.subscription?.status === 'trialing'
+      return new Date(i.trialEndsAt) <= new Date() && i.subscriptionStatus === 'trialing'
     })
 
     // ---- New Installers (last 30 days) ----

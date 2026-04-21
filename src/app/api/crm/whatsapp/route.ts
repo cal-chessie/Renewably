@@ -1,6 +1,5 @@
-// @ts-nocheck — pending migration to Supabase
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 
 // ============================================================================
@@ -11,49 +10,56 @@ export async function GET(request: NextRequest) {
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
+    const supabase = createServiceClient()
+
     const { searchParams } = new URL(request.url)
     const contactId = searchParams.get('contactId')
     const direction = searchParams.get('direction')
-    const limit = parseInt(searchParams.get('limit') || '50', 10)
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50', 10), 200)
     const offset = parseInt(searchParams.get('offset') || '0', 10)
 
     // Look up installer profile
-    const installer = await db.installerProfile.findUnique({
-      where: { userId: user.id },
-      select: { id: true },
-    })
+    const { data: installer, error: installerError } = await supabase
+      .from('installer_profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single()
 
-    if (!installer) {
+    if (installerError || !installer) {
       return NextResponse.json(
         { error: 'Installer profile not found.' },
         { status: 404 }
       )
     }
 
-    const where: Record<string, unknown> = {
-      installerId: installer.id,
-    }
-    if (contactId) where.contactId = contactId
-    if (direction) where.direction = direction
+    // Build query
+    let query = supabase
+      .from('whatsapp_messages')
+      .select('*, contacts!whatsapp_messages_contact_id_fkey(id, name)', { count: 'exact' })
+      .eq('installer_id', installer.id)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1)
 
-    const [messages, total] = await Promise.all([
-      db.whatsAppMessage.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        take: Math.min(limit, 200),
-        skip: offset,
-        include: {
-          contact: {
-            select: { id: true, firstName: true, lastName: true },
-          },
-        },
-      }),
-      db.whatsAppMessage.count({ where }),
-    ])
+    if (contactId) {
+      query = query.eq('contact_id', contactId)
+    }
+    if (direction) {
+      query = query.eq('direction', direction)
+    }
+
+    const { data: messages, error: messagesError, count } = await query
+
+    if (messagesError) {
+      console.error('WhatsApp messages query error:', messagesError.message)
+      return NextResponse.json(
+        { error: 'Failed to fetch WhatsApp messages.' },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json({
-      messages,
-      total,
+      messages: messages ?? [],
+      total: count ?? 0,
       filters: { contactId, direction },
     })
   } catch (error) {
@@ -73,8 +79,15 @@ export async function POST(request: NextRequest) {
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
+    const supabase = createServiceClient()
+
     const body = await request.json()
-    const { to, body: messageBody, contactId, companyId } = body
+    const { to, body: messageBody, contactId, companyId } = body as {
+      to: string
+      body: string
+      contactId?: string
+      companyId?: string
+    }
 
     // Validate required fields
     if (!to || !messageBody?.trim()) {
@@ -92,29 +105,22 @@ export async function POST(request: NextRequest) {
     }
 
     // Look up the installer profile
-    const installer = await db.installerProfile.findUnique({
-      where: { userId: user.id },
-      select: { id: true, integrations: true, companyId: true },
-    })
+    const { data: installer, error: installerError } = await supabase
+      .from('installer_profiles')
+      .select('id, integrations, company_id')
+      .eq('user_id', user.id)
+      .single()
 
-    if (!installer) {
+    if (installerError || !installer) {
       return NextResponse.json(
         { error: 'Installer profile not found.' },
         { status: 404 }
       )
     }
 
-    // Parse integrations JSON for Twilio config
-    let integrations: Record<string, unknown>[] = []
-    try {
-      integrations = JSON.parse(installer.integrations || '[]')
-    } catch {
-      integrations = []
-    }
-
-    const twilioConfig = integrations.find(
-      (i) => i.type === 'twilio' || i.provider === 'twilio'
-    ) as { accountSid?: string; authToken?: string; whatsappNumber?: string; phoneNumber?: string } | undefined
+    // Parse integrations JSONB for Twilio config
+    const integrations = parseIntegrations(installer.integrations as string | Record<string, unknown>[] | null)
+    const twilioConfig = findTwilioConfig(integrations)
 
     const accountSid = twilioConfig?.accountSid
     const authToken = twilioConfig?.authToken
@@ -133,7 +139,7 @@ export async function POST(request: NextRequest) {
       ? whatsappNumber
       : `whatsapp:+${whatsappNumber.replace(/[^0-9]/g, '')}`
 
-    // Send via Twilio REST API using fetch (no SDK)
+    // Send via Twilio REST API using fetch
     const twilioEndpoint = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`
     const basicAuth = Buffer.from(`${accountSid}:${authToken}`).toString('base64')
 
@@ -161,50 +167,50 @@ export async function POST(request: NextRequest) {
     }
 
     // Save the outbound message
-    const storedMessage = await db.whatsAppMessage.create({
-      data: {
-        installerId: installer.id,
-        contactId: contactId || null,
-        companyId: companyId || installer.companyId || null,
+    const { data: storedMessage, error: insertError } = await supabase
+      .from('whatsapp_messages')
+      .insert({
+        installer_id: installer.id,
+        contact_id: contactId || null,
+        company_id: companyId || installer.company_id || null,
         direction: 'outbound',
         from: formattedFrom,
         to: formattedTo,
         body: messageBody.trim(),
         status: (twilioData.status as string) || 'queued',
-        twilioSid: (twilioData.sid as string) || null,
-        twilioStatus: (twilioData.status as string) || null,
-      },
-      include: {
-        contact: {
-          select: { id: true, firstName: true, lastName: true },
-        },
-      },
-    })
+        twilio_sid: (twilioData.sid as string) || null,
+        twilio_status: (twilioData.status as string) || null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .select('*, contacts!whatsapp_messages_contact_id_fkey(id, name)')
+      .single()
+
+    if (insertError) {
+      console.error('Failed to save WhatsApp message:', insertError.message)
+      // Message was sent to Twilio but we couldn't save it — still return success
+    }
 
     // Update contact's lastContactAt
     if (contactId) {
-      await db.contact.update({
-        where: { id: contactId },
-        data: { lastContactAt: new Date() },
-      }).catch(() => {})
+      await supabase
+        .from('contacts')
+        .update({ last_contact_at: new Date().toISOString() })
+        .eq('id', contactId)
     }
 
-    // Log activity
-    const contactName = storedMessage.contact
-      ? `${storedMessage.contact.firstName} ${storedMessage.contact.lastName}`
+    // Log activity in deal_activities
+    const contactName = storedMessage?.contacts
+      ? (storedMessage.contacts as { name?: string }).name || 'Unknown Contact'
       : 'Unknown Contact'
 
-    await db.activity.create({
-      data: {
-        type: 'whatsapp',
-        subject: `WhatsApp message sent to ${contactName}`,
-        description: messageBody.trim().substring(0, 500),
-        status: 'completed',
-        completedAt: new Date(),
-        contactId: contactId || null,
-        userId: user.id,
-      },
-    }).catch(() => {})
+    await supabase.from('deal_activities').insert({
+      type: 'whatsapp',
+      title: `WhatsApp message sent to ${contactName}`,
+      content: messageBody.trim().substring(0, 500),
+      user_id: user.id,
+      created_at: new Date().toISOString(),
+    })
 
     return NextResponse.json({ success: true, message: storedMessage })
   } catch (error) {
@@ -212,4 +218,33 @@ export async function POST(request: NextRequest) {
     const errorMessage = error instanceof Error ? error.message : 'Failed to send WhatsApp message.'
     return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
+}
+
+// ============================================================================
+// Helpers
+// ============================================================================
+interface TwilioConfig {
+  accountSid?: string
+  authToken?: string
+  whatsappNumber?: string
+  phoneNumber?: string
+}
+
+function parseIntegrations(raw: string | Record<string, unknown>[] | null): Record<string, unknown>[] {
+  if (Array.isArray(raw)) return raw
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw)
+      return Array.isArray(parsed) ? parsed : []
+    } catch {
+      return []
+    }
+  }
+  return []
+}
+
+function findTwilioConfig(integrations: Record<string, unknown>[]): TwilioConfig | undefined {
+  return integrations.find(
+    (i) => i.type === 'twilio' || i.provider === 'twilio'
+  ) as TwilioConfig | undefined
 }

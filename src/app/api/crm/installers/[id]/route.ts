@@ -1,57 +1,120 @@
-// @ts-nocheck — installer routes pending migration to Supabase
-import { db } from '@/lib/db'
+import { supabase } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { validString, isValidEmail, isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { logger } from '@/lib/logger'
 
-// Helper to parse JSON string fields on an installer record
+// ── Helpers ────────────────────────────────────────────────────────────────────
+
+function toCamel(str: string): string {
+  return str.replace(/_([a-z])/g, (_, c) => c.toUpperCase())
+}
+
+function toSnake(str: string): string {
+  return str.replace(/[A-Z]/g, c => '_' + c.toLowerCase())
+}
+
+/** Convert a flat snake_case DB row to camelCase */
+function toCamelRow(row: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {}
+  for (const [k, v] of Object.entries(row)) out[toCamel(k)] = v
+  return out
+}
+
+/** Parse text fields that may still be stored as JSON strings */
 function parseJsonFields(installer: Record<string, unknown>) {
   try {
     if (typeof installer.serviceCounties === 'string') {
-      installer.serviceCounties = JSON.parse(installer.serviceCounties)
-    }
-  } catch { /* keep as-is */ }
-  try {
-    if (typeof installer.integrations === 'string') {
-      installer.integrations = JSON.parse(installer.integrations)
-    }
-  } catch { /* keep as-is */ }
-  try {
-    if (typeof installer.securityFeatures === 'string') {
-      installer.securityFeatures = JSON.parse(installer.securityFeatures)
+      installer.serviceCounties = JSON.parse(installer.serviceCounties as string)
     }
   } catch { /* keep as-is */ }
   return installer
 }
 
-// Helper to stringify JSON fields before storing
-function stringifyJsonFields(fields: Record<string, unknown>) {
-  if (fields.serviceCounties !== undefined && !Array.isArray(fields.serviceCounties)) {
-    fields.serviceCounties = JSON.stringify(fields.serviceCounties)
+/** Fetch relations for a single installer and assemble the full response object */
+async function fetchInstallerWithRelations(id: string) {
+  const { data: installer, error } = await supabase
+    .from('installer_profiles')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error || !installer) return null
+
+  // Fetch relations in parallel
+  const [profilesRes, contactRes, companyRes, docsRes, subsRes] = await Promise.all([
+    installer.user_id
+      ? supabase.from('profiles').select('user_id, email, name, avatar, role, is_active').eq('user_id', installer.user_id).single()
+      : Promise.resolve({ data: null }),
+    installer.contact_id
+      ? supabase.from('contacts').select('id, first_name, last_name, email, phone, status, source').eq('id', installer.contact_id).single()
+      : Promise.resolve({ data: null }),
+    installer.company_id
+      ? supabase.from('companies').select('id, name, industry, phone, website, address, city, country').eq('id', installer.company_id).single()
+      : Promise.resolve({ data: null }),
+    supabase.from('installer_documents').select('*').eq('installer_id', id).order('created_at', { ascending: false }),
+    supabase.from('subscriptions').select('*').eq('installer_id', id),
+  ])
+
+  const mapped = parseJsonFields(toCamelRow(installer as Record<string, unknown>))
+
+  const profile = profilesRes.data
+  const contact = contactRes.data
+  const company = companyRes.data
+
+  return {
+    ...mapped,
+    user: profile
+      ? {
+          id: profile.user_id,
+          email: profile.email,
+          name: profile.name,
+          avatar: profile.avatar,
+          role: profile.role,
+          isActive: profile.is_active,
+        }
+      : installer.user_id
+        ? { id: installer.user_id, email: mapped.email || null, name: mapped.contactName || null, avatar: null, role: null, isActive: null }
+        : null,
+    contact: contact
+      ? {
+          id: contact.id,
+          firstName: contact.first_name,
+          lastName: contact.last_name,
+          email: contact.email,
+          phone: contact.phone,
+          status: contact.status,
+          source: contact.source,
+        }
+      : null,
+    company: company
+      ? {
+          id: company.id,
+          name: company.name,
+          industry: company.industry,
+          phone: company.phone,
+          website: company.website,
+          address: company.address,
+          city: company.city,
+          country: company.country,
+        }
+      : null,
+    // equipment table doesn't exist — return empty array
+    equipment: [],
+    // signedDocuments from installer_documents table
+    signedDocuments: (docsRes.data ?? []).map((r: Record<string, unknown>) => toCamelRow(r)),
+    // subscription (singular) — first subscription
+    subscription: subsRes.data && subsRes.data.length > 0
+      ? toCamelRow(subsRes.data[0] as Record<string, unknown>)
+      : null,
   }
-  if (Array.isArray(fields.serviceCounties)) {
-    fields.serviceCounties = JSON.stringify(fields.serviceCounties)
-  }
-  if (fields.integrations !== undefined && !Array.isArray(fields.integrations)) {
-    fields.integrations = JSON.stringify(fields.integrations)
-  }
-  if (Array.isArray(fields.integrations)) {
-    fields.integrations = JSON.stringify(fields.integrations)
-  }
-  if (fields.securityFeatures !== undefined && !Array.isArray(fields.securityFeatures)) {
-    fields.securityFeatures = JSON.stringify(fields.securityFeatures)
-  }
-  if (Array.isArray(fields.securityFeatures)) {
-    fields.securityFeatures = JSON.stringify(fields.securityFeatures)
-  }
-  return fields
 }
 
-// GET: Single installer with full details including equipment, documents, subscription
+// ── GET: Single installer with full details ────────────────────────────────────
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const user = await requireAuth(request)
@@ -62,39 +125,23 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    const installer = await db.installerProfile.findUnique({
-      where: { id },
-      include: {
-        user: { select: { id: true, email: true, name: true, avatar: true, role: true, isActive: true } },
-        contact: { select: { id: true, firstName: true, lastName: true, email: true, phone: true, status: true, source: true } },
-        company: { select: { id: true, name: true, industry: true, phone: true, website: true, address: true, city: true, country: true } },
-        equipment: {
-          orderBy: { createdAt: 'desc' },
-        },
-        signedDocuments: {
-          orderBy: { createdAt: 'desc' },
-        },
-        subscription: true,
-      },
-    })
-
+    const installer = await fetchInstallerWithRelations(id)
     if (!installer) {
       return NextResponse.json({ error: 'Installer not found' }, { status: 404 })
     }
 
-    const parsedInstaller = parseJsonFields(installer as unknown as Record<string, unknown>)
-
-    return NextResponse.json({ installer: parsedInstaller })
+    return NextResponse.json({ installer })
   } catch (error) {
     logger.error('Installer detail error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
-// PUT: Update installer profile
+// ── PUT: Update installer profile ──────────────────────────────────────────────
+
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const user = await requireAuth(request)
@@ -113,12 +160,16 @@ export async function PUT(
     const body = await request.json()
 
     // Verify installer exists
-    const existing = await db.installerProfile.findUnique({ where: { id } })
-    if (!existing) {
+    const { data: existing, error: findError } = await supabase
+      .from('installer_profiles')
+      .select('id')
+      .eq('id', id)
+      .single()
+    if (findError || !existing) {
       return NextResponse.json({ error: 'Installer not found' }, { status: 404 })
     }
 
-    // Explicit allowlist of safe-to-update fields — prevents mass assignment
+    // Explicit allowlist of safe-to-update fields
     const ALLOWED_STRING_FIELDS = [
       'companyName', 'companyDescription', 'serviceCounties', 'integrations', 'securityFeatures',
       'vatNumber', 'seaiNumber', 'reciNumber', 'eircode', 'website',
@@ -142,60 +193,60 @@ export async function PUT(
         if (v !== null) {
           if (ALLOWED_JSON_FIELDS.includes(key)) {
             try {
-              updateData[key] = JSON.parse(value)
+              updateData[toSnake(key)] = JSON.parse(value)
             } catch {
-              updateData[key] = value
+              updateData[toSnake(key)] = value
             }
           } else {
-            updateData[key] = v
+            updateData[toSnake(key)] = v
           }
         }
       } else if (ALLOWED_NUMBER_FIELDS.includes(key) && typeof value === 'number') {
-        updateData[key] = value >= 0 ? value : 0
+        updateData[toSnake(key)] = value >= 0 ? value : 0
       } else if (ALLOWED_BOOLEAN_FIELDS.includes(key) && typeof value === 'boolean') {
-        updateData[key] = value
+        updateData[toSnake(key)] = value
       } else if (key === 'businessEmail' && typeof value === 'string') {
         if (!isValidEmail(value)) {
           return NextResponse.json({ error: 'Invalid email format' }, { status: 400 })
         }
-        updateData[key] = value
+        updateData.business_email = value
       }
-      // All other keys (id, userId, contactId, companyId, user, contact, company,
-      // equipment, signedDocuments, subscription, createdAt, updatedAt, stripeCustomerId,
-      // planId, billingEmail, isActive, subscriptionId, trialStartAt, trialEndsAt)
-      // are silently ignored
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
     }
 
     // Update the installer profile
-    const installer = await db.installerProfile.update({
-      where: { id },
-      data: updateData,
-      include: {
-        user: { select: { id: true, email: true, name: true, avatar: true } },
-        contact: { select: { id: true, firstName: true, lastName: true, email: true, phone: true } },
-        company: { select: { id: true, name: true, industry: true } },
-        subscription: true,
-        equipment: true,
-        signedDocuments: true,
-      },
-    })
+    const { data: updated, error: updateError } = await supabase
+      .from('installer_profiles')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single()
 
-    const parsedInstaller = parseJsonFields(installer as unknown as Record<string, unknown>)
+    if (updateError) {
+      logger.error('Update installer failed', { error: updateError.message })
+      if (updateError.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Installer not found' }, { status: 404 })
+      }
+      return NextResponse.json({ error: 'Failed to update installer' }, { status: 500 })
+    }
 
-    return NextResponse.json({ installer: parsedInstaller })
+    const installer = await fetchInstallerWithRelations(id)
+
+    return NextResponse.json({ installer })
   } catch (error: unknown) {
     logger.error('Update installer error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
-    if (error && typeof error === 'object' && 'code' in error && (error as { code: string }).code === 'P2025') {
-      return NextResponse.json({ error: 'Installer not found' }, { status: 404 })
-    }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
-// DELETE: Delete installer profile (cascades to equipment, documents, subscription)
+// ── DELETE: Delete installer profile ───────────────────────────────────────────
+
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const user = await requireAuth(request)
@@ -212,31 +263,33 @@ export async function DELETE(
     }
 
     // Verify installer exists before deleting
-    const existing = await db.installerProfile.findUnique({
-      where: { id },
-      select: { id: true, companyName: true, contactId: true, companyId: true },
-    })
+    const { data: existing, error: findError } = await supabase
+      .from('installer_profiles')
+      .select('id, company_name, contact_id, company_id')
+      .eq('id', id)
+      .single()
 
-    if (!existing) {
+    if (findError || !existing) {
       return NextResponse.json({ error: 'Installer not found' }, { status: 404 })
     }
 
-    // Delete the installer profile (cascade will handle equipment, documents, subscription)
-    await db.installerProfile.delete({ where: { id } })
+    // Delete the installer profile
+    const { error: deleteError } = await supabase
+      .from('installer_profiles')
+      .delete()
+      .eq('id', id)
 
-    // Optionally clean up the linked contact and company if they are no longer referenced
-    // (contact.companyId is nullable, but the Company and Contact may be shared elsewhere)
-    // We leave them in place since they may have other CRM relationships (deals, notes, etc.)
+    if (deleteError) {
+      logger.error('Delete installer failed', { error: deleteError.message })
+      return NextResponse.json({ error: 'Failed to delete installer' }, { status: 500 })
+    }
 
     return NextResponse.json({
       success: true,
-      message: `Installer "${existing.companyName}" deleted successfully`,
+      message: `Installer "${existing.company_name}" deleted successfully`,
     })
   } catch (error: unknown) {
     logger.error('Delete installer error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
-    if (error && typeof error === 'object' && 'code' in error && (error as { code: string }).code === 'P2025') {
-      return NextResponse.json({ error: 'Installer not found' }, { status: 404 })
-    }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

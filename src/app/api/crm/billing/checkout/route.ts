@@ -1,4 +1,3 @@
-// @ts-nocheck — pending migration to Supabase
 // ============================================================================
 // RENEWABLY.IE — CRM BILLING: CHECKOUT SESSION
 // ============================================================================
@@ -9,7 +8,7 @@
 // ============================================================================
 
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { checkApiRateLimit, getClientIp, isValidUuid } from '@/lib/crm-validation'
 import { getOrCreateCustomer, createCheckoutSession, getPriceIdForPlan } from '@/lib/stripe'
@@ -47,35 +46,34 @@ export async function POST(request: NextRequest) {
     }
 
     // Look up the installer profile from the database
-    const installer = await db.installerProfile.findUnique({
-      where: { id: installerId },
-      include: {
-        user: { select: { id: true, email: true, name: true } },
-        subscriptions: true,
-      },
-    })
+    const supabase = createServiceClient()
+    const { data: installer, error: fetchError } = await supabase
+      .from('installer_profiles')
+      .select('*')
+      .eq('id', installerId)
+      .single()
 
-    if (!installer) {
+    if (fetchError || !installer) {
       return NextResponse.json({ error: 'Installer profile not found' }, { status: 404 })
     }
 
     // Get or create a Stripe customer
-    const customerEmail = installer.billingEmail || installer.user.email
-    const customerName = installer.contactName || installer.user.name
+    const customerEmail = installer.email
+    const customerName = installer.contact_name
 
     const customer = await getOrCreateCustomer({
       email: customerEmail,
       name: customerName,
-      existingStripeId: (installer as Record<string, unknown>).stripeCustomerId as string | undefined,
+      existingStripeId: installer.stripe_customer_id as string | undefined,
     })
 
     // Persist the Stripe customer ID on the installer profile if new
-    const stripeId = (installer as Record<string, unknown>).stripeCustomerId as string | undefined
+    const stripeId = installer.stripe_customer_id as string | undefined
     if (!stripeId || stripeId !== customer.id) {
-      await db.installerProfile.update({
-        where: { id: installer.id },
-        data: { stripeCustomerId: customer.id } as any,
-      })
+      await supabase
+        .from('installer_profiles')
+        .update({ stripe_customer_id: customer.id })
+        .eq('id', installer.id)
     }
 
     // Map planId to Stripe price ID

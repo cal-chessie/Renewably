@@ -1,4 +1,3 @@
-// @ts-nocheck — pending migration to Supabase
 // ============================================================================
 // RENEWABLY.IE — CRM BILLING: CUSTOMER PORTAL
 // ============================================================================
@@ -10,7 +9,7 @@
 // ============================================================================
 
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { createPortalSession } from '@/lib/stripe'
@@ -43,15 +42,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Look up the installer profile
-    const installer = await db.installerProfile.findUnique({
-      where: { id: installerId },
-    })
+    const supabase = createServiceClient()
+    const { data: installer, error: fetchError } = await supabase
+      .from('installer_profiles')
+      .select('*')
+      .eq('id', installerId)
+      .single()
 
-    if (!installer) {
+    if (fetchError || !installer) {
       return NextResponse.json({ error: 'Installer profile not found' }, { status: 404 })
     }
 
-    const stripeCustomerId = (installer as Record<string, unknown>).stripeCustomerId as string | undefined
+    const stripeCustomerId = installer.stripe_customer_id as string | undefined
 
     if (!stripeCustomerId) {
       return NextResponse.json(

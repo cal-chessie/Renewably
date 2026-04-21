@@ -1,6 +1,5 @@
-// @ts-nocheck — pending migration to Supabase
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { sanitizeObject } from '@/lib/sanitize'
 import { logger } from '@/lib/logger'
 
@@ -13,19 +12,23 @@ export async function GET(request: NextRequest) {
     }
 
     const normalizedEmail = email.toLowerCase().trim()
+    const supabase = createServiceClient()
 
-    const submission = await db.onboardingSubmission.findUnique({
-      where: { email: normalizedEmail },
-    })
+    const { data: submission, error } = await supabase
+      .from('onboarding_submissions')
+      .select('*')
+      .eq('email', normalizedEmail)
+      .single()
 
-    if (!submission || submission.status === 'completed') {
+    if (error || !submission || submission.status === 'completed') {
       return NextResponse.json({ found: false })
     }
 
     let formData: Record<string, unknown> = {}
     let savedStep = 0
     try {
-      const parsed = JSON.parse(submission.formData || '{}')
+      const rawFormData = submission.form_data as Record<string, unknown> | string | null
+      const parsed = typeof rawFormData === 'string' ? JSON.parse(rawFormData || '{}') : (rawFormData || {})
       formData = parsed
       savedStep = typeof parsed.__step === 'number' ? parsed.__step : 0
     } catch {
@@ -71,19 +74,56 @@ export async function PUT(request: NextRequest) {
 
     const normalizedEmail = email.toLowerCase().trim()
     const payload = { ...formData, __step: step }
+    const supabase = createServiceClient()
 
-    await db.onboardingSubmission.upsert({
-      where: { email: normalizedEmail },
-      create: {
-        email: normalizedEmail,
-        formData: JSON.stringify(payload),
-        status: 'in_progress',
-      },
-      update: {
-        formData: JSON.stringify(payload),
-        updatedAt: new Date(),
-      },
-    })
+    // Check for existing record
+    const { data: existing, error: fetchError } = await supabase
+      .from('onboarding_submissions')
+      .select('id')
+      .eq('email', normalizedEmail)
+      .single()
+
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      // PGRST116 = no rows returned (not found), which is fine
+      logger.error('Failed to check existing onboarding submission', {
+        error: fetchError.message,
+      })
+      return NextResponse.json({ error: 'Failed to save progress' }, { status: 500 })
+    }
+
+    if (existing) {
+      // Update existing record
+      const { error: updateError } = await supabase
+        .from('onboarding_submissions')
+        .update({
+          form_data: payload,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', existing.id)
+
+      if (updateError) {
+        logger.error('Failed to update onboarding progress', {
+          error: updateError.message,
+        })
+        return NextResponse.json({ error: 'Failed to save progress' }, { status: 500 })
+      }
+    } else {
+      // Insert new record
+      const { error: insertError } = await supabase
+        .from('onboarding_submissions')
+        .insert({
+          email: normalizedEmail,
+          form_data: payload,
+          status: 'in_progress',
+        })
+
+      if (insertError) {
+        logger.error('Failed to insert onboarding progress', {
+          error: insertError.message,
+        })
+        return NextResponse.json({ error: 'Failed to save progress' }, { status: 500 })
+      }
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {

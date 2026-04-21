@@ -1,5 +1,4 @@
-// @ts-nocheck — installer routes pending migration to Supabase
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -20,37 +19,65 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Valid action type is required' }, { status: 400 })
     }
 
-    const updateData: Record<string, unknown> = {}
+    const supabase = createServiceClient()
 
     switch (action.type) {
-      case 'change_plan':
+      case 'change_plan': {
         if (!['starter', 'pro', 'enterprise'].includes(action.value)) {
           return NextResponse.json({ error: 'Invalid plan value' }, { status: 400 })
         }
-        updateData.planId = action.value
-        break
-      case 'set_onboarding':
+        const { error } = await supabase
+          .from('installer_profiles')
+          .update({ plan_id: action.value })
+          .in('id', ids)
+        if (error) {
+          console.error('Bulk change_plan error:', error)
+          return NextResponse.json({ error: 'Failed to update installers' }, { status: 500 })
+        }
+        return NextResponse.json({
+          success: true,
+          updated: ids.length,
+          message: `Updated plan to "${action.value}" for ${ids.length} installer(s)`,
+        })
+      }
+      case 'set_onboarding': {
         const step = parseInt(action.value as string)
         if (isNaN(step) || step < 0 || step > 10) {
           return NextResponse.json({ error: 'Onboarding step must be 0-10' }, { status: 400 })
         }
-        updateData.onboardingStep = step
-        updateData.onboardingComplete = step === 10
-        break
+        const { error } = await supabase
+          .from('installer_profiles')
+          .update({
+            onboarding_step: step,
+            onboarding_complete: step === 10,
+          })
+          .in('id', ids)
+        if (error) {
+          console.error('Bulk set_onboarding error:', error)
+          return NextResponse.json({ error: 'Failed to update installers' }, { status: 500 })
+        }
+        return NextResponse.json({
+          success: true,
+          updated: ids.length,
+          message: `Updated onboarding step to ${step} for ${ids.length} installer(s)`,
+        })
+      }
       case 'set_status': {
-        // Update subscription status
-        const { value: status, installerIds } = action as { value: string; installerIds: string[] }
+        const { value: status } = action as { value: string; installerIds: string[] }
         if (!['active', 'trialing', 'past_due', 'cancelled'].includes(status)) {
           return NextResponse.json({ error: 'Invalid subscription status' }, { status: 400 })
         }
-        // Update subscription records for these installers
-        await db.subscription.updateMany({
-          where: { installerId: { in: ids } },
-          data: {
+        const { error } = await supabase
+          .from('subscriptions')
+          .update({
             status,
-            ...(status === 'cancelled' ? { cancelledAt: new Date() } : {}),
-          },
-        })
+            ...(status === 'cancelled' ? { cancelled_at: new Date().toISOString() } : {}),
+          })
+          .in('installer_id', ids)
+        if (error) {
+          console.error('Bulk set_status error:', error)
+          return NextResponse.json({ error: 'Failed to update subscriptions' }, { status: 500 })
+        }
         return NextResponse.json({
           success: true,
           updated: ids.length,
@@ -58,17 +85,6 @@ export async function PUT(request: NextRequest) {
         })
       }
     }
-
-    const result = await db.installerProfile.updateMany({
-      where: { id: { in: ids } },
-      data: updateData,
-    })
-
-    return NextResponse.json({
-      success: true,
-      updated: result.count,
-      message: `Updated ${result.count} installer(s)`,
-    })
   } catch (error) {
     console.error('Bulk update error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -88,15 +104,22 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Installer IDs are required' }, { status: 400 })
     }
 
-    // Delete installers (cascade handles equipment, documents, subscription)
-    const result = await db.installerProfile.deleteMany({
-      where: { id: { in: ids } },
-    })
+    const supabase = createServiceClient()
+
+    const { error, count } = await supabase
+      .from('installer_profiles')
+      .delete({ count: 'exact' })
+      .in('id', ids)
+
+    if (error) {
+      console.error('Bulk delete error:', error)
+      return NextResponse.json({ error: 'Failed to delete installers' }, { status: 500 })
+    }
 
     return NextResponse.json({
       success: true,
-      deleted: result.count,
-      message: `Deleted ${result.count} installer(s)`,
+      deleted: count ?? ids.length,
+      message: `Deleted ${count ?? ids.length} installer(s)`,
     })
   } catch (error) {
     console.error('Bulk delete error:', error)

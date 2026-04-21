@@ -9,7 +9,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import ZAI from "z-ai-web-dev-sdk";
-import { db } from "@/lib/db";
+import { createServiceClient } from "@/lib/supabase";
 import { sendEmail } from "@/lib/postmark";
 import { checkRateLimit, getClientIp, CHAT_RATE_LIMIT } from "@/lib/rate-limit";
 
@@ -70,7 +70,6 @@ Renewably provides an AI-powered workforce of 8 specialised agents (with a 9th �
 - Always be encouraging and positive about solar energy and the future of renewables in Ireland.`;
 
 // ─── Lead Signal Detection ───
-// Patterns that indicate a visitor is a potential lead worth capturing
 
 const LEAD_SIGNALS = [
   /\b(demo|book.*call|get.*started|sign.*up|trial|interested|pricing|quote|how much|cost|price|want.*to.*buy|looking.*for)\b/i,
@@ -116,7 +115,6 @@ export async function POST(request: NextRequest) {
 
     const zai = await ZAI.create();
 
-    // Build the full message history with system prompt
     const systemMessage: ChatMessage = {
       role: "system",
       content: pageContext
@@ -124,7 +122,6 @@ export async function POST(request: NextRequest) {
         : SYSTEM_PROMPT,
     };
 
-    // Only send the last 20 messages to stay within token limits
     const recentMessages = messages.slice(-20);
 
     const completion = await zai.chat.completions.create({
@@ -136,19 +133,14 @@ export async function POST(request: NextRequest) {
     const reply = completion.choices[0]?.message?.content || "Sorry, I couldn't generate a response. Please try again.";
 
     // ─── Lead Capture Logic ───
-    // After the first substantive exchange, check if the visitor shows buying signals
-    // Capture leads asynchronously — don't block the response
     const userMessages = messages.filter((m) => m.role === "user");
     if (userMessages.length >= 1) {
       const latestUserMsg = userMessages[userMessages.length - 1].content;
 
-      // Check for lead signals
       const isStrongLead = STRONG_LEAD_SIGNALS.some((p) => p.test(latestUserMsg));
       const isLead = !isStrongLead && LEAD_SIGNALS.some((p) => p.test(latestUserMsg));
 
-      // Only capture after at least 2 messages to avoid false positives on greetings
       if ((isStrongLead && userMessages.length >= 1) || (isLead && userMessages.length >= 2)) {
-        // Fire and forget — don't block the chat response
         captureChatLead(latestUserMsg, pageContext, visitorId, isStrongLead).catch(() => {});
       }
     }
@@ -164,8 +156,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// ─── Async Lead Capture ───
-// Creates a contact + company in the CRM from chat interactions
+// ─── Async Lead Capture (Supabase) ───
 
 async function captureChatLead(
   message: string,
@@ -174,83 +165,101 @@ async function captureChatLead(
   isStrongLead: boolean = false
 ) {
   try {
+    const supabase = createServiceClient()
+
     const contactName = `Chat Visitor${visitorId ? `-${visitorId.slice(0, 8)}` : `-${Date.now().toString(36)}`}`;
     const visitorTag = visitorId ? `[visitor:${visitorId}]` : null;
 
-    // Find or create the default "Chat Leads" company for chat widget contacts
-    const chatCompany = await db.company.upsert({
-      where: { id: "chat-leads-default" },
-      update: {},
-      create: {
-        id: "chat-leads-default",
-        name: "Chat Widget Leads",
-        counties: "",
-        status: "active",
-        notes: "Auto-created bucket for leads captured via the public chat widget.",
-      },
-    });
+    // Find or create the default "Chat Leads" company
+    const { data: chatCompany } = await supabase
+      .from('companies')
+      .select('id')
+      .eq('id', 'chat-leads-default')
+      .single()
+
+    let companyId = chatCompany?.id
+
+    if (!companyId) {
+      const { data: newCompany } = await supabase
+        .from('companies')
+        .insert({
+          id: 'chat-leads-default',
+          name: 'Chat Widget Leads',
+          counties: '',
+          status: 'active',
+          notes: 'Auto-created bucket for leads captured via the public chat widget.',
+        })
+        .select('id')
+        .single()
+      companyId = newCompany?.id
+    }
+
+    if (!companyId) {
+      console.warn('[Chat Lead] Could not create/find chat leads company')
+      return
+    }
 
     // Check if we already have a recent chat lead from this visitor
     if (visitorTag) {
-      const existingRecent = await db.contact.findFirst({
-        where: {
-          companyId: chatCompany.id,
-          source: "chat",
-          notes: { contains: visitorTag },
-          createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-        },
-      });
-      if (existingRecent) {
-        // Update existing contact's notes with new interaction
-        await db.contact.update({
-          where: { id: existingRecent.id },
-          data: {
-            notes: `${existingRecent.notes || ""}\n\n[${new Date().toISOString()}] ${message}`,
-            status: isStrongLead ? "prospect" : existingRecent.status,
-          },
-        });
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+      const { data: existingRecent } = await supabase
+        .from('contacts')
+        .select('id, notes, status')
+        .eq('company_id', companyId)
+        .ilike('notes', `%${visitorId!.slice(0, 8)}%`)
+        .gte('created_at', oneDayAgo)
+        .limit(1)
+        .single()
 
-        console.log(`[Chat Lead] Returning visitor updated: ${existingRecent.id}`);
-        return;
+      if (existingRecent) {
+        await supabase
+          .from('contacts')
+          .update({
+            notes: `${existingRecent.notes || ''}\n\n[${new Date().toISOString()}] ${message}`,
+            status: isStrongLead ? 'prospect' : existingRecent.status,
+          })
+          .eq('id', existingRecent.id)
+
+        console.log(`[Chat Lead] Returning visitor updated: ${existingRecent.id}`)
+        return
       }
     }
 
-    // Create a new contact from the chat interaction
-    const contact = await db.contact.create({
-      data: {
-        companyId: chatCompany.id,
+    // Create a new contact
+    const { data: contact } = await supabase
+      .from('contacts')
+      .insert({
+        company_id: companyId,
         name: contactName,
         email: null,
         phone: null,
-        source: "chat",
-        status: isStrongLead ? "prospect" : "lead",
-        notes: `[Chat Lead Capture - ${new Date().toISOString()}]${visitorTag ? `\n${visitorTag}` : ""}${pageContext ? `\nPage: ${pageContext}` : ""}\n\nMessage: ${message}`,
-      },
-    });
+        source: 'chat',
+        status: isStrongLead ? 'prospect' : 'lead',
+        notes: `[Chat Lead Capture - ${new Date().toISOString()}]${visitorTag ? `\n${visitorTag}` : ''}${pageContext ? `\nPage: ${pageContext}` : ''}\n\nMessage: ${message}`,
+      })
+      .select('id, name')
+      .single()
 
-    // Create a Deal so chat leads appear in the CRM pipeline view
+    // Create a Deal
     try {
-      await db.deal.create({
-        data: {
-          companyId: chatCompany.id,
-          product: "ai_workforce",
-          stage: "new_lead",
-          notes: `Lead captured from chat widget on ${pageContext || "unknown"}.\n\nMessage: "${message.slice(0, 300)}"`,
-          value: 15000, // Default €15k annual estimate (€1,250/mo subscription)
-          mrr: 1000,
-        },
-      });
-
-      console.log(`[Chat Lead] Deal created for contact ${contact.id}`);
+      await supabase.from('deals').insert({
+        company_id: companyId,
+        product: 'ai_workforce',
+        stage: 'new_lead',
+        notes: `Lead captured from chat widget on ${pageContext || "unknown"}.\n\nMessage: "${message.slice(0, 300)}"`,
+        value: 15000,
+        mrr: 1000,
+      })
+      console.log(`[Chat Lead] Deal created for contact ${contact?.id}`)
     } catch (dealError) {
-      console.warn("[Chat Lead] Could not create deal:", dealError instanceof Error ? dealError.message : dealError);
+      console.warn("[Chat Lead] Could not create deal:", dealError instanceof Error ? dealError.message : dealError)
     }
 
-    // Send notification email to hello@renewably.ie
+    // Send notification email
     try {
       await sendEmail({
         to: "hello@renewably.ie",
-        subject: `${isStrongLead ? "Strong" : "New"} chat lead captured — ${contact.name}`,
+        subject: `${isStrongLead ? "Strong" : "New"} chat lead captured — ${contact?.name || 'Unknown'}`,
         htmlBody: `
           <div style="font-family: system-ui, sans-serif; color: #1A1A1A; max-width: 560px; margin: 0 auto;">
             <div style="background: #0A0A0A; padding: 24px 32px; border-radius: 12px 12px 0 0;">
@@ -259,7 +268,7 @@ async function captureChatLead(
             <div style="padding: 24px 32px; border: 1px solid #E5E7EB; border-top: none; border-radius: 0 0 12px 12px;">
               <p style="margin: 0 0 16px; font-size: 15px;">A new ${isStrongLead ? "<strong>strong</strong>" : ""} lead was captured from the chat widget:</p>
               <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
-                <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px; width: 120px;">Contact</td><td style="padding: 6px 0; font-size: 14px; font-weight: 500;">${contact.name}</td></tr>
+                <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px; width: 120px;">Contact</td><td style="padding: 6px 0; font-size: 14px; font-weight: 500;">${contact?.name || 'Unknown'}</td></tr>
                 <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px;">Source</td><td style="padding: 6px 0; font-size: 14px;">Chat Widget</td></tr>
                 <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px;">Page</td><td style="padding: 6px 0; font-size: 14px;">${pageContext || "Unknown"}</td></tr>
                 <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px;">Signal</td><td style="padding: 6px 0; font-size: 14px;">${isStrongLead ? "Strong buying intent" : "General interest"}</td></tr>
@@ -269,17 +278,15 @@ async function captureChatLead(
             </div>
           </div>
         `,
-        textBody: `New ${isStrongLead ? "STRONG " : ""}chat lead captured!\n\nContact: ${contact.name}\nSource: Chat Widget\nPage: ${pageContext || "Unknown"}\nMessage: "${message.slice(0, 300)}"\n\nA deal has been created in the pipeline: https://renewably.ie/crm/pipeline`,
-      });
-
-      console.log(`[Chat Lead] Notification email sent for ${contact.id}`);
+        textBody: `New ${isStrongLead ? "STRONG " : ""}chat lead captured!\n\nContact: ${contact?.name || 'Unknown'}\nSource: Chat Widget\nPage: ${pageContext || "Unknown"}\nMessage: "${message.slice(0, 300)}"\n\nA deal has been created in the pipeline: https://renewably.ie/crm/pipeline`,
+      })
+      console.log(`[Chat Lead] Notification email sent for ${contact?.id}`)
     } catch (emailError) {
-      console.warn("[Chat Lead] Could not send notification email:", emailError instanceof Error ? emailError.message : emailError);
+      console.warn("[Chat Lead] Could not send notification email:", emailError instanceof Error ? emailError.message : emailError)
     }
 
-    console.log(`[Chat Lead] ${isStrongLead ? "STRONG" : "soft"} lead captured: ${contact.id}`);
+    console.log(`[Chat Lead] ${isStrongLead ? "STRONG" : "soft"} lead captured: ${contact?.id}`)
   } catch (error) {
-    // Never block the chat response with lead capture errors
-    console.warn("[Chat Lead] Could not capture lead:", error instanceof Error ? error.message : error);
+    console.warn("[Chat Lead] Could not capture lead:", error instanceof Error ? error.message : error)
   }
 }

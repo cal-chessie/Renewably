@@ -1,4 +1,3 @@
-// @ts-nocheck — pending migration to Supabase
 // ============================================================================
 // RENEWABLY.IE — CRM BILLING: WEBHOOK HANDLER
 // ============================================================================
@@ -8,8 +7,8 @@
 // ============================================================================
 
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
-import { verifyWebhook } from '@/lib/stripe'
+import { createServiceClient } from '@/lib/supabase'
+import { verifyWebhook, getStripe } from '@/lib/stripe'
 import Stripe from 'stripe'
 import { logger } from '@/lib/logger'
 
@@ -38,6 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     const event = verifyWebhook(body, signature)
+    const supabase = createServiceClient()
 
     // Handle each event type
     switch (event.type) {
@@ -55,40 +55,59 @@ export async function POST(request: NextRequest) {
         const subscriptionId = session.subscription as string
         if (!subscriptionId) break
 
-        const stripe = (await import('@/lib/stripe')).getStripe()
+        const stripe = getStripe()
         const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId)
 
         // Upsert the Subscription record
-        const sub = stripeSubscription as any
-        const existing = await db.subscription.findFirst({ where: { installerId } })
+        const sub = stripeSubscription as unknown as {
+          status: string
+          current_period_start: number
+          current_period_end: number
+          items: { data: Array<{ price: { recurring: { interval: string } } | null }> }
+          metadata: { planId?: string } | null
+        }
+
+        const billingCycle = sub.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly'
+        const status = mapSubscriptionStatus(sub.status)
+        const currentPeriodStart = new Date(sub.current_period_start * 1000).toISOString()
+        const currentPeriodEnd = new Date(sub.current_period_end * 1000).toISOString()
+
+        const { data: existing } = await supabase
+          .from('subscriptions')
+          .select('id')
+          .eq('installer_id', installerId)
+          .limit(1)
+          .maybeSingle()
+
         if (existing) {
-          await db.subscription.update({
-            where: { id: existing.id },
-            data: {
-              status: mapSubscriptionStatus(sub.status),
-              currentPeriodStart: new Date(sub.current_period_start * 1000),
-              currentPeriodEnd: new Date(sub.current_period_end * 1000),
-              billingCycle: sub.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
-            },
-          })
+          await supabase
+            .from('subscriptions')
+            .update({
+              status,
+              current_period_start: currentPeriodStart,
+              current_period_end: currentPeriodEnd,
+              billing_cycle: billingCycle,
+            })
+            .eq('id', existing.id)
         } else {
-          await db.subscription.create({
-            data: {
-              installerId,
-              planId: sub.metadata?.planId || 'pro',
-              status: mapSubscriptionStatus(sub.status),
-              billingCycle: sub.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
-              currentPeriodStart: new Date(sub.current_period_start * 1000),
-              currentPeriodEnd: new Date(sub.current_period_end * 1000),
-            },
-          })
+          await supabase
+            .from('subscriptions')
+            .insert({
+              installer_id: installerId,
+              plan_id: sub.metadata?.planId || 'pro',
+              status,
+              billing_cycle: billingCycle,
+              current_period_start: currentPeriodStart,
+              current_period_end: currentPeriodEnd,
+              stripe_subscription_id: subscriptionId,
+            })
         }
 
         // Save the Stripe customer ID on the installer profile
-        await db.installerProfile.update({
-          where: { id: installerId },
-          data: { stripeCustomerId } as any,
-        })
+        await supabase
+          .from('installer_profiles')
+          .update({ stripe_customer_id: stripeCustomerId })
+          .eq('id', installerId)
 
         break
       }
@@ -97,33 +116,50 @@ export async function POST(request: NextRequest) {
       // Subscription updated — sync status and period dates
       // ---------------------------------------------------------------
       case 'customer.subscription.updated': {
-        const subscription = event.data.object as any
+        const subscription = event.data.object as unknown as {
+          status: string
+          current_period_start: number
+          current_period_end: number
+          items: { data: Array<{ price: { recurring: { interval: string } } | null }> }
+          metadata: { planId?: string; installerId?: string } | null
+        }
         const installerId = subscription.metadata?.installerId
 
         if (!installerId) break
 
-        const existing = await db.subscription.findFirst({ where: { installerId } })
+        const billingCycle = subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly'
+        const status = mapSubscriptionStatus(subscription.status)
+        const currentPeriodStart = new Date(subscription.current_period_start * 1000).toISOString()
+        const currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString()
+
+        const { data: existing } = await supabase
+          .from('subscriptions')
+          .select('id')
+          .eq('installer_id', installerId)
+          .limit(1)
+          .maybeSingle()
+
         if (existing) {
-          await db.subscription.update({
-            where: { id: existing.id },
-            data: {
-              status: mapSubscriptionStatus(subscription.status),
-              currentPeriodStart: new Date(subscription.current_period_start * 1000),
-              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-              billingCycle: subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
-            },
-          })
+          await supabase
+            .from('subscriptions')
+            .update({
+              status,
+              current_period_start: currentPeriodStart,
+              current_period_end: currentPeriodEnd,
+              billing_cycle: billingCycle,
+            })
+            .eq('id', existing.id)
         } else {
-          await db.subscription.create({
-            data: {
-              installerId,
-              planId: subscription.metadata?.planId || 'pro',
-              status: mapSubscriptionStatus(subscription.status),
-              billingCycle: subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
-              currentPeriodStart: new Date(subscription.current_period_start * 1000),
-              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-            },
-          })
+          await supabase
+            .from('subscriptions')
+            .insert({
+              installer_id: installerId,
+              plan_id: subscription.metadata?.planId || 'pro',
+              status,
+              billing_cycle: billingCycle,
+              current_period_start: currentPeriodStart,
+              current_period_end: currentPeriodEnd,
+            })
         }
 
         break
@@ -133,28 +169,44 @@ export async function POST(request: NextRequest) {
       // Subscription deleted — mark as cancelled
       // ---------------------------------------------------------------
       case 'customer.subscription.deleted': {
-        const subscription = event.data.object as any
+        const subscription = event.data.object as unknown as {
+          status: string
+          current_period_start: number
+          current_period_end: number
+          items: { data: Array<{ price: { recurring: { interval: string } } | null }> }
+          metadata: { planId?: string; installerId?: string } | null
+        }
         const installerId = subscription.metadata?.installerId
 
         if (!installerId) break
 
-        const existing = await db.subscription.findFirst({ where: { installerId } })
+        const billingCycle = subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly'
+        const currentPeriodStart = new Date(subscription.current_period_start * 1000).toISOString()
+        const currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString()
+
+        const { data: existing } = await supabase
+          .from('subscriptions')
+          .select('id')
+          .eq('installer_id', installerId)
+          .limit(1)
+          .maybeSingle()
+
         if (existing) {
-          await db.subscription.update({
-            where: { id: existing.id },
-            data: { status: 'canceled' },
-          })
+          await supabase
+            .from('subscriptions')
+            .update({ status: 'canceled' })
+            .eq('id', existing.id)
         } else {
-          await db.subscription.create({
-            data: {
-              installerId,
-              planId: subscription.metadata?.planId || 'pro',
+          await supabase
+            .from('subscriptions')
+            .insert({
+              installer_id: installerId,
+              plan_id: subscription.metadata?.planId || 'pro',
               status: 'canceled',
-              billingCycle: subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly',
-              currentPeriodStart: new Date(subscription.current_period_start * 1000),
-              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-            },
-          })
+              billing_cycle: billingCycle,
+              current_period_start: currentPeriodStart,
+              current_period_end: currentPeriodEnd,
+            })
         }
 
         break
@@ -164,26 +216,26 @@ export async function POST(request: NextRequest) {
       // Invoice payment failed — mark as past_due
       // ---------------------------------------------------------------
       case 'invoice.payment_failed': {
-        const invoice = event.data.object as any
-        const subscriptionId = invoice.subscription as string | null
+        const invoice = event.data.object as unknown as {
+          subscription: string | null
+        }
+        const subscriptionId = invoice.subscription
 
         if (!subscriptionId) break
 
-        // Find our Subscription record by matching the Stripe subscription ID
-        // stored in metadata. We look up via the installer profiles.
-        // Since we store installerId in Stripe subscription metadata, we
-        // need to find the matching subscription. The most reliable way is
-        // to look at the invoice's customer and then the linked installer.
-        const stripe = (await import('@/lib/stripe')).getStripe()
-        const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId) as any
+        const stripe = getStripe()
+        const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId) as unknown as {
+          status: string
+          metadata: { installerId?: string } | null
+        }
         const installerId = stripeSubscription.metadata?.installerId
 
         if (!installerId) break
 
-        await db.subscription.updateMany({
-          where: { installerId },
-          data: { status: 'past_due' },
-        })
+        await supabase
+          .from('subscriptions')
+          .update({ status: 'past_due' })
+          .eq('installer_id', installerId)
 
         break
       }
@@ -192,25 +244,32 @@ export async function POST(request: NextRequest) {
       // Invoice payment succeeded — mark as active
       // ---------------------------------------------------------------
       case 'invoice.payment_succeeded': {
-        const invoice = event.data.object as any
-        const subscriptionId = invoice.subscription as string | null
+        const invoice = event.data.object as unknown as {
+          subscription: string | null
+        }
+        const subscriptionId = invoice.subscription
 
         if (!subscriptionId) break
 
-        const stripe = (await import('@/lib/stripe')).getStripe()
-        const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId) as any
+        const stripe = getStripe()
+        const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId) as unknown as {
+          status: string
+          current_period_start: number
+          current_period_end: number
+          metadata: { installerId?: string } | null
+        }
         const installerId = stripeSubscription.metadata?.installerId
 
         if (!installerId) break
 
-        await db.subscription.updateMany({
-          where: { installerId },
-          data: {
+        await supabase
+          .from('subscriptions')
+          .update({
             status: mapSubscriptionStatus(stripeSubscription.status),
-            currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
-          },
-        })
+            current_period_start: new Date(stripeSubscription.current_period_start * 1000).toISOString(),
+            current_period_end: new Date(stripeSubscription.current_period_end * 1000).toISOString(),
+          })
+          .eq('installer_id', installerId)
 
         break
       }

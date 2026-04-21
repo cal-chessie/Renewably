@@ -1,11 +1,9 @@
-// @ts-nocheck — pending migration to Supabase
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAdmin } from '@/lib/crm-auth'
 import { changePasswordSchema, formatZodError } from '@/lib/crm-schemas'
 import { checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
-import { hashPassword, verifyPassword } from '@/lib/auth'
 import { logger } from '@/lib/logger'
 
 // PATCH /api/crm/settings/password
@@ -32,21 +30,32 @@ export async function PATCH(request: NextRequest) {
 
     const { currentPassword, newPassword } = body
 
-    const fullUser = await db.user.findUnique({ where: { id: user.id } })
-    if (!fullUser) {
+    const supabase = createServiceClient()
+
+    // Get the user's auth metadata to verify current password
+    const { data: authUser, error: authError } = await supabase.auth.admin.getUserById(user.userId)
+    if (authError || !authUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const isValid = await verifyPassword(currentPassword, fullUser.passwordHash)
-    if (!isValid) {
+    // Verify current password by attempting to sign in
+    const cookieHeader = request.headers.get('cookie') || ''
+    const email = user.email
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password: currentPassword })
+    if (signInError) {
+      // Sign back in with session
       return NextResponse.json({ error: 'Current password is incorrect' }, { status: 401 })
     }
 
-    const newHash = await hashPassword(newPassword)
-    await db.user.update({
-      where: { id: user.id },
-      data: { passwordHash: newHash },
+    // Update the password via Supabase Admin API
+    const { error: updateError } = await supabase.auth.admin.updateUserById(user.userId, {
+      password: newPassword,
     })
+
+    if (updateError) {
+      logger.error('Password update error from Supabase', { error: updateError.message })
+      return NextResponse.json({ error: 'Failed to update password' }, { status: 500 })
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {

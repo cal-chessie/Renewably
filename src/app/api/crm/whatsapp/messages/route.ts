@@ -1,6 +1,5 @@
-// @ts-nocheck — pending migration to Supabase
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 
 // ============================================================================
@@ -11,53 +10,60 @@ export async function GET(request: NextRequest) {
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
+    const supabase = createServiceClient()
+
     const { searchParams } = new URL(request.url)
     const contactId = searchParams.get('contactId')
     const companyId = searchParams.get('companyId')
     const direction = searchParams.get('direction')
-    const limit = parseInt(searchParams.get('limit') || '50', 10)
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50', 10), 200)
     const offset = parseInt(searchParams.get('offset') || '0', 10)
 
     // Look up installer profile
-    const installer = await db.installerProfile.findUnique({
-      where: { userId: user.id },
-      select: { id: true },
-    })
+    const { data: installer, error: installerError } = await supabase
+      .from('installer_profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single()
 
-    if (!installer) {
+    if (installerError || !installer) {
       return NextResponse.json(
         { error: 'Installer profile not found.' },
         { status: 404 }
       )
     }
 
-    // Build where clause — always scope to installer
-    const where: Record<string, unknown> = {
-      installerId: installer.id,
+    // Build query — always scope to installer
+    let query = supabase
+      .from('whatsapp_messages')
+      .select('*, contacts!whatsapp_messages_contact_id_fkey(id, name)', { count: 'exact' })
+      .eq('installer_id', installer.id)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1)
+
+    if (contactId) {
+      query = query.eq('contact_id', contactId)
+    }
+    if (companyId) {
+      query = query.eq('company_id', companyId)
+    }
+    if (direction) {
+      query = query.eq('direction', direction)
     }
 
-    if (contactId) where.contactId = contactId
-    if (companyId) where.companyId = companyId
-    if (direction) where.direction = direction
+    const { data: messages, error: messagesError, count } = await query
 
-    const [messages, total] = await Promise.all([
-      db.whatsAppMessage.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        take: Math.min(limit, 200),
-        skip: offset,
-        include: {
-          contact: {
-            select: { id: true, firstName: true, lastName: true },
-          },
-        },
-      }),
-      db.whatsAppMessage.count({ where }),
-    ])
+    if (messagesError) {
+      console.error('WhatsApp messages query error:', messagesError.message)
+      return NextResponse.json(
+        { error: 'Failed to fetch WhatsApp messages.' },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json({
-      messages,
-      total,
+      messages: messages ?? [],
+      total: count ?? 0,
       limit,
       offset,
     })

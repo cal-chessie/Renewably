@@ -1,6 +1,5 @@
-// @ts-nocheck — pending migration to Supabase
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 
 // ============================================================================
@@ -12,12 +11,15 @@ export async function GET(request: NextRequest) {
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
-    const installer = await db.installerProfile.findUnique({
-      where: { userId: user.id },
-      select: { id: true, integrations: true },
-    })
+    const supabase = createServiceClient()
 
-    if (!installer) {
+    const { data: installer, error: installerError } = await supabase
+      .from('installer_profiles')
+      .select('id, integrations')
+      .eq('user_id', user.id)
+      .single()
+
+    if (installerError || !installer) {
       return NextResponse.json({
         configured: false,
         webhookUrl: null,
@@ -28,34 +30,47 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    let integrations: Record<string, unknown>[] = []
-    try {
-      integrations = JSON.parse(installer.integrations || '[]')
-    } catch {
-      integrations = []
-    }
-
-    const twilioConfig = integrations.find(
-      (i) => i.type === 'twilio' || i.provider === 'twilio'
-    ) as { accountSid?: string; whatsappNumber?: string; phoneNumber?: string; connectedAt?: string } | undefined
+    const integrations = parseIntegrations(installer.integrations as string | Record<string, unknown>[] | null)
+    const twilioConfig = findTwilioConfig(integrations)
 
     const accountSid = twilioConfig?.accountSid
     const whatsappNumber = twilioConfig?.whatsappNumber || twilioConfig?.phoneNumber
 
-    // Fetch message stats
-    const [totalMessages, inboundCount, outboundCount, recentMessages] = await Promise.all([
-      db.whatsAppMessage.count({ where: { installerId: installer.id } }),
-      db.whatsAppMessage.count({ where: { installerId: installer.id, direction: 'inbound' } }),
-      db.whatsAppMessage.count({ where: { installerId: installer.id, direction: 'outbound' } }),
-      db.whatsAppMessage.findMany({
-        where: { installerId: installer.id },
-        orderBy: { createdAt: 'desc' },
-        take: 10,
-        include: {
-          contact: { select: { firstName: true, lastName: true } },
-        },
-      }),
+    // Fetch message stats in parallel
+    const [totalRes, inboundRes, outboundRes, recentRes] = await Promise.all([
+      supabase
+        .from('whatsapp_messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('installer_id', installer.id),
+      supabase
+        .from('whatsapp_messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('installer_id', installer.id)
+        .eq('direction', 'inbound'),
+      supabase
+        .from('whatsapp_messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('installer_id', installer.id)
+        .eq('direction', 'outbound'),
+      supabase
+        .from('whatsapp_messages')
+        .select('*, contacts!whatsapp_messages_contact_id_fkey(name)')
+        .eq('installer_id', installer.id)
+        .order('created_at', { ascending: false })
+        .limit(10),
     ])
+
+    const totalMessages = totalRes.count ?? 0
+    const inboundCount = inboundRes.count ?? 0
+    const outboundCount = outboundRes.count ?? 0
+    const recentMessages = (recentRes.data ?? []).map((m) => ({
+      id: m.id,
+      direction: m.direction,
+      body: m.body,
+      status: m.status,
+      created_at: m.created_at,
+      contact: m.contacts ? { name: (m.contacts as { name?: string }).name || null } : null,
+    }))
 
     return NextResponse.json({
       configured: !!(accountSid && whatsappNumber),
@@ -66,14 +81,7 @@ export async function GET(request: NextRequest) {
       webhookUrl: '/api/crm/whatsapp/webhook',
       connectedAt: twilioConfig?.connectedAt || null,
       stats: { totalMessages, inboundCount, outboundCount },
-      recentMessages: recentMessages.map((m) => ({
-        id: m.id,
-        direction: m.direction,
-        body: m.body,
-        status: m.status,
-        createdAt: m.createdAt.toISOString(),
-        contact: m.contact ? { firstName: m.contact.firstName, lastName: m.contact.lastName } : null,
-      })),
+      recentMessages,
     })
   } catch (error) {
     console.error('WhatsApp config GET error:', error)
@@ -92,6 +100,8 @@ export async function PUT(request: NextRequest) {
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
+    const supabase = createServiceClient()
+
     const body = await request.json()
     const { accountSid, authToken, phoneNumber, testConnection } = body as {
       accountSid?: string
@@ -102,28 +112,21 @@ export async function PUT(request: NextRequest) {
 
     // Handle test connection — validate existing credentials against Twilio API
     if (testConnection) {
-      const installer = await db.installerProfile.findUnique({
-        where: { userId: user.id },
-        select: { id: true, integrations: true },
-      })
+      const { data: installer, error: installerError } = await supabase
+        .from('installer_profiles')
+        .select('id, integrations')
+        .eq('user_id', user.id)
+        .single()
 
-      if (!installer) {
+      if (installerError || !installer) {
         return NextResponse.json(
           { error: 'Installer profile not found.' },
           { status: 404 }
         )
       }
 
-      let integrations: Record<string, unknown>[] = []
-      try {
-        integrations = JSON.parse(installer.integrations || '[]')
-      } catch {
-        integrations = []
-      }
-
-      const twilioConfig = integrations.find(
-        (i) => i.type === 'twilio' || i.provider === 'twilio'
-      ) as { accountSid?: string; authToken?: string } | undefined
+      const integrations = parseIntegrations(installer.integrations as string | Record<string, unknown>[] | null)
+      const twilioConfig = findTwilioConfig(integrations)
 
       if (!twilioConfig?.accountSid || !twilioConfig?.authToken) {
         return NextResponse.json(
@@ -170,12 +173,13 @@ export async function PUT(request: NextRequest) {
     }
 
     // Look up installer profile
-    const installer = await db.installerProfile.findUnique({
-      where: { userId: user.id },
-      select: { id: true, integrations: true },
-    })
+    const { data: installer, error: installerError } = await supabase
+      .from('installer_profiles')
+      .select('id, integrations')
+      .eq('user_id', user.id)
+      .single()
 
-    if (!installer) {
+    if (installerError || !installer) {
       return NextResponse.json(
         { error: 'Installer profile not found. Complete your profile setup first.' },
         { status: 404 }
@@ -183,18 +187,12 @@ export async function PUT(request: NextRequest) {
     }
 
     // Parse existing integrations, update or add Twilio config
-    let integrations: Record<string, unknown>[] = []
-    try {
-      integrations = JSON.parse(installer.integrations || '[]')
-    } catch {
-      integrations = []
-    }
-
+    const integrations = parseIntegrations(installer.integrations as string | Record<string, unknown>[] | null)
     const existingIndex = integrations.findIndex(
       (i) => i.type === 'twilio' || i.provider === 'twilio'
     )
 
-    const newTwilioConfig = {
+    const newTwilioConfig: Record<string, unknown> = {
       type: 'twilio',
       provider: 'twilio',
       accountSid: accountSid.trim(),
@@ -216,34 +214,12 @@ export async function PUT(request: NextRequest) {
     }
 
     // Save back to installer profile
-    await db.installerProfile.update({
-      where: { id: installer.id },
-      data: {
-        integrations: JSON.stringify(integrations),
-      },
-    })
-
-    // Also update the Integration table for the settings overview page
-    await db.integration.upsert({
-      where: { provider: 'twilio' },
-      create: {
-        provider: 'twilio',
-        isEnabled: true,
-        apiKey: accountSid.trim(),
-        apiSecret: '[stored in installer profile]',
-        webhookUrl: phoneNumber.trim(),
-        connectedAt: new Date(),
-        userId: user.id,
-      },
-      update: {
-        isEnabled: true,
-        apiKey: accountSid.trim(),
-        webhookUrl: phoneNumber.trim(),
-        connectedAt: new Date(),
-      },
-    }).catch(() => {
-      // Integration table update is secondary — don't fail if it errors
-    })
+    await supabase
+      .from('installer_profiles')
+      .update({
+        integrations: integrations as unknown as Record<string, unknown>,
+      })
+      .eq('id', installer.id)
 
     return NextResponse.json({
       success: true,
@@ -258,4 +234,34 @@ export async function PUT(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+// ============================================================================
+// Helpers
+// ============================================================================
+interface TwilioConfig {
+  accountSid?: string
+  authToken?: string
+  whatsappNumber?: string
+  phoneNumber?: string
+  connectedAt?: string
+}
+
+function parseIntegrations(raw: string | Record<string, unknown>[] | null): Record<string, unknown>[] {
+  if (Array.isArray(raw)) return raw
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw)
+      return Array.isArray(parsed) ? parsed : []
+    } catch {
+      return []
+    }
+  }
+  return []
+}
+
+function findTwilioConfig(integrations: Record<string, unknown>[]): TwilioConfig | undefined {
+  return integrations.find(
+    (i) => i.type === 'twilio' || i.provider === 'twilio'
+  ) as TwilioConfig | undefined
 }

@@ -1,7 +1,7 @@
-// @ts-nocheck — installer routes pending migration to Supabase
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '@/lib/logger'
 
 const PLAN_PRICES: Record<string, number> = {
   starter: 1000,
@@ -21,47 +21,48 @@ export async function GET(request: NextRequest) {
     const county = searchParams.get('county') || ''
     const ids = searchParams.get('ids') || ''
 
-    const where: Record<string, unknown> = {}
+    const supabase = createServiceClient()
 
+    // ── Build query ─────────────────────────────────────────────────────
+    let query = supabase
+      .from('installer_profiles')
+      .select(
+        '*, profiles!installer_profiles_user_id_fkey(email), contacts(email, phone), companies(website, address, city), subscriptions(status, plan_id, billing_cycle), installer_documents(document_type, signed_at)'
+      )
+      .order('created_at', { ascending: false })
+      .limit(500)
+
+    // ── Apply filters ──────────────────────────────────────────────────
     if (ids) {
-      where.id = { in: ids.split(',') }
+      query = query.in('id', ids.split(','))
     } else {
       if (search) {
-        where.OR = [
-          { companyName: { contains: search } },
-          { contactName: { contains: search } },
-          { user: { email: { contains: search } } },
-        ]
+        const escaped = search.replace(/'/g, "\\'")
+        query = query.or(
+          `company_name.ilike.%${escaped}%,contact_name.ilike.%${escaped}%,email.ilike.%${escaped}%`
+        )
       }
       if (plan && ['starter', 'pro', 'enterprise'].includes(plan)) {
-        where.planId = plan
+        query = query.eq('plan_id', plan)
       }
       if (onboarding === 'complete') {
-        where.onboardingComplete = true
+        query = query.eq('onboarding_complete', true)
       } else if (onboarding === 'incomplete') {
-        where.onboardingComplete = false
+        query = query.eq('onboarding_complete', false)
       }
       if (county) {
-        where.serviceCounties = { contains: county }
+        query = query.contains('service_counties', [county])
       }
     }
 
-    const installers = await db.installerProfile.findMany({
-      where,
-      include: {
-        user: { select: { email: true } },
-        contact: { select: { email: true, phone: true } },
-        company: { select: { website: true, address: true, city: true } },
-        subscription: { select: { status: true, planId: true, billingCycle: true } },
-        equipment: { select: { category: true } },
-        signedDocuments: { select: { docType: true, signedAt: true } },
-        _count: { select: { equipment: true, signedDocuments: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 500, // Limit export to 500
-    })
+    const { data: rows, error } = await query
 
-    // CSV header
+    if (error) {
+      logger.error('Export query failed', { error: error.message, code: error.code })
+      return NextResponse.json({ error: 'Failed to export installers' }, { status: 500 })
+    }
+
+    // ── CSV header ──────────────────────────────────────────────────────
     const headers = [
       'Company Name', 'Contact Name', 'Email', 'Phone', 'Plan',
       'Subscription Status', 'Onboarding Step', 'Onboarding Complete',
@@ -69,41 +70,66 @@ export async function GET(request: NextRequest) {
       'Counties', 'Equipment Categories', 'MRR', 'Created At',
     ]
 
-    const rows = installers.map(inst => {
-      let counties: string[] = []
-      try { counties = JSON.parse(inst.serviceCounties) } catch { /* empty */ }
+    const csvRows = (rows ?? []).map((installer) => {
+      const row = installer as Record<string, unknown>
 
-      const subscription = inst.subscription
-      const planId = inst.planId
-      const billingCycle = subscription?.billingCycle || 'monthly'
+      // ── Parse JSONB service_counties (may already be an array) ────────
+      const serviceCountiesRaw = row.service_counties
+      const counties: string[] = Array.isArray(serviceCountiesRaw)
+        ? serviceCountiesRaw
+        : typeof serviceCountiesRaw === 'string'
+          ? (() => { try { return JSON.parse(serviceCountiesRaw) } catch { return [] } })()
+          : []
+
+      // ── Subscription data (one-to-many, take first) ───────────────────
+      const subscriptionRows = (row.subscriptions ?? []) as Record<string, unknown>[]
+      const subscription = subscriptionRows[0]
+      const subscriptionStatus = (subscription?.status as string) || 'none'
+      const subscriptionBillingCycle = (subscription?.billing_cycle as string) || 'monthly'
+
+      // ── Profile email from joined profiles table ──────────────────────
+      const profileRow = row.profiles as Record<string, unknown> | null
+      const profileEmail = (profileRow?.email as string) || ''
+
+      // ── Contact data from joined contacts table ───────────────────────
+      const contactRow = row.contacts as Record<string, unknown> | null
+      const contactEmail = (contactRow?.email as string) || ''
+      const contactPhone = (contactRow?.phone as string) || ''
+
+      // ── MRR calculation ───────────────────────────────────────────────
+      const planId = (row.plan_id as string) || 'pro'
       const basePrice = PLAN_PRICES[planId] || 0
-      const mrr = billingCycle === 'yearly' ? Math.round(basePrice / 12) : basePrice
+      const mrr = subscriptionBillingCycle === 'annual' ? Math.round(basePrice / 12) : basePrice
 
-      const equipmentCategories = [...new Set(inst.equipment.map(e => e.category))]
-      const email = inst.user?.email || inst.contact?.email || ''
-      const phone = inst.contact?.phone || inst.phone || ''
+      // ── Equipment categories: use installer_documents document_type ──
+      const documentRows = (row.installer_documents ?? []) as Record<string, unknown>[]
+      const equipmentCategories = [...new Set(documentRows.map(d => d.document_type as string).filter(Boolean))]
+
+      // ── Resolve email and phone ───────────────────────────────────────
+      const email = (row.email as string) || profileEmail || contactEmail || ''
+      const phone = (row.phone as string) || contactPhone || ''
 
       return [
-        `"${(inst.companyName || '').replace(/"/g, '""')}"`,
-        `"${(inst.contactName || '').replace(/"/g, '""')}"`,
+        `"${((row.company_name as string) || '').replace(/"/g, '""')}"`,
+        `"${((row.contact_name as string) || '').replace(/"/g, '""')}"`,
         email,
         phone,
         planId,
-        subscription?.status || 'none',
-        inst.onboardingStep,
-        inst.onboardingComplete ? 'Yes' : 'No',
-        inst.seaiRegistered ? 'Yes' : 'No',
-        inst.reciRegistered ? 'Yes' : 'No',
-        inst.teamSize || '',
-        inst.avgProjectValue || '',
+        subscriptionStatus,
+        (row.onboarding_step as number) ?? 0,
+        (row.onboarding_complete as boolean) ? 'Yes' : 'No',
+        (row.seai_registered as boolean) ? 'Yes' : 'No',
+        (row.reci_registered as boolean) ? 'Yes' : 'No',
+        (row.team_size as number) ?? '',
+        (row.avg_project_value as number) ?? '',
         `"${counties.join(', ')}"`,
         `"${equipmentCategories.join(', ')}"`,
         mrr,
-        new Date(inst.createdAt).toISOString(),
+        new Date(row.created_at as string).toISOString(),
       ].join(',')
     })
 
-    const csv = [headers.join(','), ...rows].join('\n')
+    const csv = [headers.join(','), ...csvRows].join('\n')
 
     return new NextResponse(csv, {
       headers: {
@@ -112,7 +138,10 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Export error:', error)
+    logger.error('Export error', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

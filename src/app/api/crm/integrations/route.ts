@@ -1,4 +1,3 @@
-// @ts-nocheck — pending migration to Supabase
 // ============================================================================
 // INTEGRATIONS STATUS API
 // ============================================================================
@@ -7,7 +6,7 @@
 // ============================================================================
 
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 
 // Helper: safely check if env vars are set
@@ -20,15 +19,24 @@ export async function GET(request: NextRequest) {
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
+    const supabase = createServiceClient()
+
     // Check if this is a credentials request
     const { searchParams } = new URL(request.url)
     if (searchParams.get('credentials') === 'true') {
-      const profile = await db.installerProfile.findUnique({
-        where: { userId: user.id },
-        select: { integrations: true },
-      })
-      if (!profile) return NextResponse.json({ credentials: {} })
-      const saved = JSON.parse(profile.integrations || '{}')
+      const { data: profile, error: profileError } = await supabase
+        .from('installer_profiles')
+        .select('integrations')
+        .eq('user_id', user.id)
+        .single()
+
+      if (profileError || !profile) return NextResponse.json({ credentials: {} })
+
+      const saved: Record<string, Record<string, string>> =
+        (typeof profile.integrations === 'string'
+          ? JSON.parse(profile.integrations)
+          : (profile.integrations ?? {})) as Record<string, Record<string, string>>
+
       // Mask sensitive values
       const sensitivePatterns = ['authToken', 'apiKey', 'apiSecret', 'bearerToken', 'clientSecret', 'accessToken', 'serviceKey', 'webhookSecret', 'personalAccessToken', 'token', 'secret', 'key']
       const masked: Record<string, Record<string, string>> = {}
@@ -50,16 +58,18 @@ export async function GET(request: NextRequest) {
     let stripeMRR = 0
 
     if (stripeConfigured) {
-      const subs = await db.subscription.findMany({
-        where: { status: { in: ['active', 'trialing'] } },
-        select: { status: true, planId: true, currentPeriodEnd: true },
-      })
-      stripeSubscriptionCount = subs.length
-      stripeActiveCount = subs.filter(s => s.status === 'active').length
-      // Approximate MRR from planId
+      const { data: subs } = await supabase
+        .from('subscriptions')
+        .select('status, plan_id, current_period_end')
+        .in('status', ['active', 'trialing'])
+
+      const subscriptions = subs ?? []
+      stripeSubscriptionCount = subscriptions.length
+      stripeActiveCount = subscriptions.filter(s => s.status === 'active').length
+      // Approximate MRR from plan_id
       const planCounts: Record<string, number> = {}
-      for (const sub of subs) {
-        const plan = sub.planId || 'starter'
+      for (const sub of subscriptions) {
+        const plan = sub.plan_id || 'starter'
         planCounts[plan] = (planCounts[plan] || 0) + 1
       }
       // Default pricing (monthly)
@@ -77,14 +87,16 @@ export async function GET(request: NextRequest) {
     let googleLastSynced: Date | null = null
 
     if (googleConfigured) {
-      const connections = await db.googleCalendarConnection.findMany({
-        where: { isActive: true },
-        select: { id: true, email: true, lastSyncedAt: true },
-      })
-      googleConnectionCount = connections.length
-      if (connections.length > 0) {
-        googleLastSynced = connections.reduce((latest: Date | null, c) => {
-          const t = c.lastSyncedAt ? new Date(c.lastSyncedAt) : null
+      const { data: connections } = await supabase
+        .from('google_calendar_connections')
+        .select('id, email, last_synced_at')
+        .eq('is_active', true)
+
+      const googleConnections = connections ?? []
+      googleConnectionCount = googleConnections.length
+      if (googleConnections.length > 0) {
+        googleLastSynced = googleConnections.reduce((latest: Date | null, c) => {
+          const t = c.last_synced_at ? new Date(c.last_synced_at) : null
           if (!latest || (t && t > latest)) return t
           return latest
         }, null)
@@ -322,11 +334,13 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PUT — Save integration credentials to InstallerProfile.integrations JSON
+// PUT — Save integration credentials to installer_profiles.integrations JSONB
 export async function PUT(request: NextRequest) {
   try {
     const user = await requireAuth(request)
     if (!user) return unauthorized()
+
+    const supabase = createServiceClient()
 
     const body = await request.json()
     const { integrationId, fields } = body as { integrationId: string; fields: Record<string, string> }
@@ -336,17 +350,20 @@ export async function PUT(request: NextRequest) {
     }
 
     // Load current integrations config
-    const profile = await db.installerProfile.findUnique({
-      where: { userId: user.id },
-      select: { integrations: true },
-    })
+    const { data: profile, error: profileError } = await supabase
+      .from('installer_profiles')
+      .select('integrations')
+      .eq('user_id', user.id)
+      .single()
 
-    if (!profile) {
+    if (profileError || !profile) {
       return NextResponse.json({ error: 'Installer profile not found' }, { status: 404 })
     }
 
     const currentIntegrations: Record<string, Record<string, string>> =
-      JSON.parse(profile.integrations || '{}')
+      typeof profile.integrations === 'string'
+        ? JSON.parse(profile.integrations)
+        : ((profile.integrations ?? {}) as Record<string, Record<string, string>>)
 
     // Mask sensitive fields for the response
     const sensitiveKeys = ['authToken', 'apiKey', 'apiSecret', 'bearerToken', 'clientSecret', 'accessToken', 'serviceKey', 'webhookSecret', 'personalAccessToken']
@@ -359,10 +376,15 @@ export async function PUT(request: NextRequest) {
     }
     currentIntegrations[integrationId] = merged
 
-    await db.installerProfile.update({
-      where: { userId: user.id },
-      data: { integrations: JSON.stringify(currentIntegrations) },
-    })
+    const { error: updateError } = await supabase
+      .from('installer_profiles')
+      .update({ integrations: currentIntegrations as unknown as Record<string, unknown> })
+      .eq('user_id', user.id)
+
+    if (updateError) {
+      console.error('Failed to update integrations:', updateError)
+      return NextResponse.json({ error: 'Failed to save integration credentials' }, { status: 500 })
+    }
 
     // Build a safe response (mask sensitive values)
     const safeFields: Record<string, string> = {}
@@ -385,6 +407,8 @@ export async function DELETE(request: NextRequest) {
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
+    const supabase = createServiceClient()
+
     const { searchParams } = new URL(request.url)
     const integrationId = searchParams.get('integrationId')
 
@@ -392,24 +416,32 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'integrationId is required' }, { status: 400 })
     }
 
-    const profile = await db.installerProfile.findUnique({
-      where: { userId: user.id },
-      select: { integrations: true },
-    })
+    const { data: profile, error: profileError } = await supabase
+      .from('installer_profiles')
+      .select('integrations')
+      .eq('user_id', user.id)
+      .single()
 
-    if (!profile) {
+    if (profileError || !profile) {
       return NextResponse.json({ error: 'Installer profile not found' }, { status: 404 })
     }
 
     const currentIntegrations: Record<string, Record<string, string>> =
-      JSON.parse(profile.integrations || '{}')
+      typeof profile.integrations === 'string'
+        ? JSON.parse(profile.integrations)
+        : ((profile.integrations ?? {}) as Record<string, Record<string, string>>)
 
     delete currentIntegrations[integrationId]
 
-    await db.installerProfile.update({
-      where: { userId: user.id },
-      data: { integrations: JSON.stringify(currentIntegrations) },
-    })
+    const { error: updateError } = await supabase
+      .from('installer_profiles')
+      .update({ integrations: currentIntegrations as unknown as Record<string, unknown> })
+      .eq('user_id', user.id)
+
+    if (updateError) {
+      console.error('Failed to update integrations:', updateError)
+      return NextResponse.json({ error: 'Failed to disconnect integration' }, { status: 500 })
+    }
 
     return NextResponse.json({ success: true, integrationId })
   } catch (error) {

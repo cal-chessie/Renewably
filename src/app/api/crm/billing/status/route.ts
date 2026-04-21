@@ -1,4 +1,3 @@
-// @ts-nocheck — pending migration to Supabase
 // ============================================================================
 // RENEWABLY.IE — CRM BILLING: SUBSCRIPTION STATUS
 // ============================================================================
@@ -8,7 +7,7 @@
 // ============================================================================
 
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { isValidUuid } from '@/lib/crm-validation'
 import { logger } from '@/lib/logger'
@@ -30,12 +29,16 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch the subscription for this installer
-    const subscription = await db.subscription.findFirst({
-      where: { installerId },
-      orderBy: { createdAt: 'desc' },
-    })
+    const supabase = createServiceClient()
+    const { data: subscription, error: fetchError } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('installer_id', installerId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
 
-    if (!subscription) {
+    if (fetchError || !subscription) {
       return NextResponse.json({
         subscription: null,
         isActive: false,
@@ -46,11 +49,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       subscription: {
         id: subscription.id,
-        planId: subscription.planId,
+        planId: subscription.plan_id,
         status: subscription.status,
-        billingCycle: subscription.billingCycle,
-        currentPeriodStart: subscription.currentPeriodStart,
-        currentPeriodEnd: subscription.currentPeriodEnd,
+        billingCycle: subscription.billing_cycle,
+        currentPeriodStart: subscription.current_period_start,
+        currentPeriodEnd: subscription.current_period_end,
       },
       isActive: subscription.status === 'active' || subscription.status === 'trialing',
     })

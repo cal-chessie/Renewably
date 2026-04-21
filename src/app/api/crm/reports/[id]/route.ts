@@ -1,11 +1,51 @@
-// @ts-nocheck — pending migration to Supabase
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { updateReportSchema, formatZodError } from '@/lib/crm-schemas'
 import { logger } from '@/lib/logger'
+
+// GET: Fetch a single report by ID
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const user = await requireAuth(request)
+    if (!user) return unauthorized()
+
+    const { id } = await params
+    if (!isValidUuid(id)) {
+      return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
+    }
+
+    const supabase = createServiceClient()
+
+    const { data: report, error } = await supabase
+      .from('reports')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (error) {
+      logger.error('Get report error from Supabase', { error: error.message, code: error.code, id })
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Report not found' }, { status: 404 })
+      }
+      return NextResponse.json({ error: 'Failed to fetch report' }, { status: 500 })
+    }
+
+    if (!report) {
+      return NextResponse.json({ error: 'Report not found' }, { status: 404 })
+    }
+
+    return NextResponse.json({ report })
+  } catch (error) {
+    logger.error('Get report error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
 
 // PUT: Update a report
 export async function PUT(
@@ -37,17 +77,35 @@ export async function PUT(
     }
     const { name, description, type, config, isScheduled, schedule } = body
 
-    const report = await db.report.update({
-      where: { id },
-      data: {
-        ...(name && { name }),
-        ...(description !== undefined && { description }),
-        ...(type && { type }),
-        ...(config !== undefined && { config: JSON.stringify(config) }),
-        ...(isScheduled !== undefined && { isScheduled }),
-        ...(schedule !== undefined && { schedule }),
-      },
-    })
+    // Build update data with snake_case column names for Supabase
+    const updates: Record<string, unknown> = {}
+    if (name) updates.name = name
+    if (description !== undefined) updates.description = description
+    if (type) updates.type = type
+    if (config !== undefined) updates.config = config
+    if (isScheduled !== undefined) updates.is_scheduled = isScheduled
+    if (schedule !== undefined) updates.schedule = schedule
+
+    const supabase = createServiceClient()
+
+    const { data: report, error } = await supabase
+      .from('reports')
+      .update(updates)
+      .eq('id', id)
+      .select('*')
+      .single()
+
+    if (error) {
+      logger.error('Update report error from Supabase', { error: error.message, code: error.code, id })
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Report not found' }, { status: 404 })
+      }
+      return NextResponse.json({ error: 'Failed to update report' }, { status: 500 })
+    }
+
+    if (!report) {
+      return NextResponse.json({ error: 'Report not found' }, { status: 404 })
+    }
 
     return NextResponse.json({ report })
   } catch (error) {
@@ -75,7 +133,17 @@ export async function DELETE(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    await db.report.delete({ where: { id } })
+    const supabase = createServiceClient()
+
+    const { error } = await supabase
+      .from('reports')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      logger.error('Delete report error from Supabase', { error: error.message, code: error.code, id })
+      return NextResponse.json({ error: 'Failed to delete report' }, { status: 500 })
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {
