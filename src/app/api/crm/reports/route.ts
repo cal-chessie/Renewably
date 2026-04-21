@@ -81,40 +81,14 @@ export async function POST(request: NextRequest) {
       .from('reports')
       .insert({
         name: data.name,
-        description: data.description ?? null,
         type: data.type,
-        config: JSON.stringify(data.config || {}),
-        is_scheduled: data.isScheduled,
-        schedule: data.schedule ?? null,
-        created_by: user.id,
+        filters: JSON.stringify(data.config || {}),
+        format: 'json',
+        status: data.isScheduled ? 'scheduled' : 'completed',
+        data: JSON.stringify({ schedule: data.schedule ?? null }),
       })
       .select()
       .single()
-
-    // If insert fails with "column does not exist", retry with minimal columns
-    if (error && error.code === '42703') {
-      logger.warn('Reports table missing columns — retrying with minimal insert', {
-        missingColumns: error.message,
-      })
-      const { data: fallbackReport, error: fallbackError } = await supabase
-        .from('reports')
-        .insert({
-          name: data.name,
-          type: data.type,
-        })
-        .select()
-        .single()
-
-      if (fallbackError) {
-        logger.error('Reports minimal insert also failed', {
-          error: fallbackError.message,
-          code: fallbackError.code,
-        })
-        return NextResponse.json({ error: 'Failed to create report' }, { status: 500 })
-      }
-
-      return NextResponse.json({ report: fallbackReport }, { status: 201 })
-    }
 
     if (error) {
       logger.error('Create report DB error', { error: error.message, code: error.code })

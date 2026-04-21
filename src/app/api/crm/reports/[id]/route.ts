@@ -85,51 +85,25 @@ export async function PUT(
     }
     const { name, description, type, config, isScheduled, schedule } = parsed.data
 
-    // Build full updates map (camelCase → snake_case)
-    const fullUpdates: Record<string, unknown> = {}
-    if (name) fullUpdates.name = name
-    if (description !== undefined) fullUpdates.description = description
-    if (type) fullUpdates.type = type
-    if (config !== undefined) fullUpdates.config = config
-    if (isScheduled !== undefined) fullUpdates.is_scheduled = isScheduled
-    if (schedule !== undefined) fullUpdates.schedule = schedule
-
-    // Build minimal updates map (only columns that definitely exist)
-    const minimalUpdates: Record<string, unknown> = {}
-    if (name) minimalUpdates.name = name
-    if (type) minimalUpdates.type = type
+    // Build updates map using actual DB column names
+    const updates: Record<string, unknown> = {}
+    if (name) updates.name = name
+    if (type) updates.type = type
+    if (config !== undefined) updates.filters = JSON.stringify(config)
+    if (isScheduled !== undefined) updates.status = isScheduled ? 'scheduled' : 'completed'
+    if (schedule !== undefined) {
+      // Merge schedule into existing data JSON
+      updates.data = JSON.stringify({ schedule })
+    }
 
     const supabase = createServiceClient()
 
-    // Try full update first
-    let report, error
-
-    const fullResult = await supabase
+    const { data: report, error } = await supabase
       .from('reports')
-      .update(fullUpdates)
+      .update(updates)
       .eq('id', id)
       .select('*')
       .single()
-
-    if (fullResult.error && (fullResult.error.code === '42703' || fullResult.error.message?.includes('column'))) {
-      // Column doesn't exist — fall back to minimal update
-      logger.warn('Reports table missing optional columns, falling back to minimal update', {
-        code: fullResult.error.code,
-        message: fullResult.error.message,
-        id,
-      })
-      const minimalResult = await supabase
-        .from('reports')
-        .update(minimalUpdates)
-        .eq('id', id)
-        .select('*')
-        .single()
-      report = minimalResult.data
-      error = minimalResult.error
-    } else {
-      report = fullResult.data
-      error = fullResult.error
-    }
 
     if (error) {
       logger.error('Update report error from Supabase', { error: error.message, code: error.code, id })

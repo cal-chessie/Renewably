@@ -381,7 +381,7 @@ export async function POST(request: NextRequest) {
       const progressPercent = Math.round((completedSteps / stepChecks.length) * 100)
 
       const { data: existingOnboarding, error: onboardingFetchError } = await supabase
-        .from('onboardings')
+        .from('onboarding')
         .select('id')
         .eq('company_id', companyId)
         .single()
@@ -395,7 +395,7 @@ export async function POST(request: NextRequest) {
 
       if (existingOnboarding) {
         const { error: onboardingUpdateError } = await supabase
-          .from('onboardings')
+          .from('onboarding')
           .update({
             solarpilot_progress: progressPercent,
             solarpilot_steps: stepChecks,
@@ -411,7 +411,7 @@ export async function POST(request: NextRequest) {
         }
       } else {
         const { error: onboardingInsertError } = await supabase
-          .from('onboardings')
+          .from('onboarding')
           .insert({
             company_id: companyId,
             solarpilot_progress: progressPercent,
