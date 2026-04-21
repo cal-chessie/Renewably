@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
       // causing "reducedMotion is not defined" ReferenceError at runtime
     ],
   },
-  serverExternalPackages: ['stripe', 'ioredis', 'bcryptjs'],
+  serverExternalPackages: ['stripe', 'ioredis'],
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 86400,

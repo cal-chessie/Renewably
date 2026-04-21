@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { createCompanySchema, formatZodError } from '@/lib/crm-schemas'
-import { clampPagination, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
+import { clampPagination, checkApiRateLimit, getClientIp, sanitizeSearchQuery } from '@/lib/crm-validation'
 import { logger } from '@/lib/logger'
 import { sendInternalNotification, isPostmarkConfigured } from '@/lib/postmark'
 
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    const search = searchParams.get('search') || ''
+    const search = sanitizeSearchQuery(searchParams.get('search'))
     const status = searchParams.get('status') || ''
     const page = parseInt(searchParams.get('page') || '1')
     const limit = clampPagination(parseInt(searchParams.get('limit') || '0'), 20)
@@ -74,7 +74,8 @@ export async function GET(request: NextRequest) {
       .select('*', { count: 'exact' })
 
     if (search) {
-      query = query.or(`name.ilike.%${search}%,counties.ilike.%${search}%,seai_reg.ilike.%${search}%`)
+      const safeSearch = sanitizeSearchQuery(search)
+      query = query.or(`name.ilike.%${safeSearch}%,counties.ilike.%${safeSearch}%,seai_reg.ilike.%${safeSearch}%`)
     }
 
     if (status) {

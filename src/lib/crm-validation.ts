@@ -201,7 +201,13 @@ export function validString(v: unknown, { minLen = 0, maxLen = 10000 } = {}): st
 export function sanitizeSearchQuery(query: unknown): string {
   if (typeof query !== 'string') return ''
   // Remove any characters that could be used for injection
-  return query.replace(/[<>{}()\[\]\\\/]/g, '').trim().slice(0, 200)
+  // Also escape ILIKE wildcards (% and _) to prevent wildcard abuse
+  return query
+    .replace(/[<>{}()\[\]\\\/]/g, '')
+    .replace(/%/g, '')
+    .replace(/_/g, '')
+    .trim()
+    .slice(0, 200)
 }
 
 export function sanitizeSortField(field: unknown, allowed: string[]): string | null {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
-import { clampPagination, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
+import { clampPagination, checkApiRateLimit, getClientIp, sanitizeSearchQuery } from '@/lib/crm-validation'
 import { createProposalSchema } from '@/lib/crm-schemas'
 import { logger } from '@/lib/logger'
 
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
 
     // ILIKE search on title and notes
     if (search) {
-      const sanitized = search.replace(/[<>{}()\[\]\\\/]/g, '').trim().slice(0, 200)
+      const sanitized = sanitizeSearchQuery(search)
       query = query.or(`title.ilike.%${sanitized}%,notes.ilike.%${sanitized}%`)
     }
 

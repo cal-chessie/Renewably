@@ -2,6 +2,7 @@ import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '@/lib/logger'
+import { sanitizeSearchQuery } from '@/lib/crm-validation'
 
 const PLAN_PRICES: Record<string, number> = {
   starter: 1000,
@@ -37,7 +38,7 @@ export async function GET(request: NextRequest) {
       query = query.in('id', ids.split(','))
     } else {
       if (search) {
-        const escaped = search.replace(/'/g, "\\'")
+        const escaped = sanitizeSearchQuery(search)
         query = query.or(
           `company_name.ilike.%${escaped}%,contact_name.ilike.%${escaped}%,email.ilike.%${escaped}%`
         )

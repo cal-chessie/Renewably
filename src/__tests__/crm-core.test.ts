@@ -333,9 +333,9 @@ describe('sanitizeSearchQuery', () => {
     expect(sanitizeSearchQuery('<script>alert(1)</script>')).toBe('scriptalert1script')
   })
 
-  it('strips curly braces', () => {
-    // Curly braces are stripped; $ is preserved
-    expect(sanitizeSearchQuery('${__proto__}')).toBe('$__proto__')
+  it('strips curly braces and underscores (ILIKE wildcards)', () => {
+    // Curly braces are stripped; underscores are ILIKE wildcards and also stripped
+    expect(sanitizeSearchQuery('${__proto__}')).toBe('$proto')
   })
 
   it('strips parentheses', () => {

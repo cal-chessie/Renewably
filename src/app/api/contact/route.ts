@@ -11,6 +11,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase";
 import { sendEmail, isPostmarkConfigured, getFromEmail } from "@/lib/postmark";
 import { logger } from "@/lib/logger";
+import { sanitizeSearchQuery, escapeHtml } from "@/lib/crm-validation";
 
 // ============================================================================
 // TYPES
@@ -112,7 +113,7 @@ export async function POST(request: NextRequest) {
         const { data: existingCompany } = await supabase
           .from("companies")
           .select("id")
-          .ilike("name", body.company.trim())
+          .ilike("name", sanitizeSearchQuery(body.company.trim()))
           .limit(1)
           .single();
 
@@ -200,15 +201,15 @@ export async function POST(request: NextRequest) {
         </div>
         <h2 style="color:#fff;font-size:18px;margin:0 0 16px;">New Website Enquiry</h2>
         <table style="width:100%;border-collapse:collapse;">
-          <tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Name</td><td style="color:#fff;padding:8px 0;font-size:14px;">${fullName}</td></tr>
-          <tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Email</td><td style="color:#60A5FA;padding:8px 0;font-size:14px;"><a href="mailto:${email.trim()}" style="color:#60A5FA;">${email.trim()}</a></td></tr>
-          ${body.phone?.trim() ? `<tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Phone</td><td style="color:#fff;padding:8px 0;font-size:14px;">${body.phone.trim()}</td></tr>` : ""}
-          ${body.company?.trim() ? `<tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Company</td><td style="color:#fff;padding:8px 0;font-size:14px;">${body.company.trim()}</td></tr>` : ""}
-          ${body.jobsPerMonth?.trim() ? `<tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Installs/month</td><td style="color:#fff;padding:8px 0;font-size:14px;">${body.jobsPerMonth.trim()}</td></tr>` : ""}
+          <tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Name</td><td style="color:#fff;padding:8px 0;font-size:14px;">${escapeHtml(fullName)}</td></tr>
+          <tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Email</td><td style="color:#60A5FA;padding:8px 0;font-size:14px;"><a href="mailto:${escapeHtml(email.trim())}" style="color:#60A5FA;">${escapeHtml(email.trim())}</a></td></tr>
+          ${body.phone?.trim() ? `<tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Phone</td><td style="color:#fff;padding:8px 0;font-size:14px;">${escapeHtml(body.phone.trim())}</td></tr>` : ""}
+          ${body.company?.trim() ? `<tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Company</td><td style="color:#fff;padding:8px 0;font-size:14px;">${escapeHtml(body.company.trim())}</td></tr>` : ""}
+          ${body.jobsPerMonth?.trim() ? `<tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Installs/month</td><td style="color:#fff;padding:8px 0;font-size:14px;">${escapeHtml(body.jobsPerMonth.trim())}</td></tr>` : ""}
         </table>
         <div style="margin-top:16px;padding:16px;background:rgba(255,255,255,0.03);border-radius:8px;">
           <p style="color:rgba(255,255,255,0.50);font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin:0 0 8px;">Message</p>
-          <p style="color:rgba(255,255,255,0.85);font-size:14px;line-height:1.6;margin:0;">${message.trim()}</p>
+          <p style="color:rgba(255,255,255,0.85);font-size:14px;line-height:1.6;margin:0;">${escapeHtml(message.trim())}</p>
         </div>
       </td>
     </tr>
@@ -247,7 +248,7 @@ export async function POST(request: NextRequest) {
           <span style="font-size:22px;font-weight:800;color:#F3D840;">Renewably</span>
         </div>
         <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin:0 0 16px;">
-          Hi ${firstName.trim()},
+          Hi ${escapeHtml(firstName.trim())},
         </p>
         <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin:0 0 16px;">
           Thanks for getting in touch with Renewably. We've received your message and one of our team will be in touch within 24 hours.

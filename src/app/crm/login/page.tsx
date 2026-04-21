@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { Eye, EyeOff, Sun } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
+import Link from 'next/link'
 
 // ============================================================================
 // BRAND CONSTANTS
@@ -321,6 +322,30 @@ export default function LoginPage() {
               )}
             </motion.button>
           </form>
+
+          <div style={{ textAlign: 'center', marginTop: 16 }}>
+            <Link
+              href="/crm/forgot-password"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'rgba(255,255,255,0.4)',
+                fontSize: 13,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                textDecoration: 'none',
+                transition: 'color 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = YELLOW
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'rgba(255,255,255,0.4)'
+              }}
+            >
+              Forgot your password?
+            </Link>
+          </div>
         </motion.div>
 
         {/* Footer */}

@@ -67,7 +67,8 @@ export async function GET(request: NextRequest) {
       query = query.eq('onboarding_complete', false)
     }
     if (county) {
-      query = query.ilike('service_counties', `%${county}%`)
+      const safeCounty = sanitizeSearchQuery(county)
+      query = query.ilike('service_counties', `%${safeCounty}%`)
     }
 
     const { data: rows, error, count } = await query

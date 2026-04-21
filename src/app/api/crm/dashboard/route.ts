@@ -4,7 +4,7 @@ import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { clampPagination, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { logger } from '@/lib/logger'
 
-// 8 deal pipeline stages in order
+// 9 deal pipeline stages in order
 const PIPELINE_STAGES = [
   'new_lead',
   'contacted',
@@ -14,6 +14,7 @@ const PIPELINE_STAGES = [
   'proposal_sent',
   'negotiation',
   'closed_won',
+  'closed_lost',
 ] as const
 
 const STAGE_LABELS: Record<string, string> = {
@@ -28,7 +29,7 @@ const STAGE_LABELS: Record<string, string> = {
   closed_lost: 'Closed Lost',
 }
 
-const ACTIVE_STAGES = PIPELINE_STAGES.slice(0, 7) // everything except closed_won
+const ACTIVE_STAGES = PIPELINE_STAGES.slice(0, 7) // open pipeline stages (before closed_won/closed_lost)
 
 const STAGE_WEIGHTS: Record<string, number> = {
   new_lead: 0.1,
