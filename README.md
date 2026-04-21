@@ -39,8 +39,6 @@
 <td width="50%"><img src="public/screenshot-crm-companies.png" alt="Companies" /></td>
 </tr>
 <tr>
-<td width="50%"><img src="public/screenshot-pricing.png" alt="Pricing" /></td>
-<td width="50%"><img src="public/screenshot-crm-login.png" alt="CRM Login" /></td>
 </tr>
 </table>
 
