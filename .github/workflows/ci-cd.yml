@@ -36,7 +36,7 @@ jobs:
       - run: npm ci
 
       - name: ESLint
-        run: ./node_modules/.bin/next lint
+        run: ./node_modules/.bin/next lint --dir src
 
   # ── 2. Type Check ──────────────────────────────────────────────────────
   typecheck:
