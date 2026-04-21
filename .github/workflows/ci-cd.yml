@@ -1,0 +1,136 @@
+# ============================================================================
+# Renewably CRM — CI/CD Pipeline
+# ============================================================================
+# Triggers on push to main and pull requests.
+# Jobs: lint → typecheck → test → build → deploy (main only)
+# ============================================================================
+
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_ENV: production
+  NEXT_TELEMETRY_DISABLED: 1
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── 1. Lint ─────────────────────────────────────────────────────────────
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: ESLint
+        run: npx next lint
+
+  # ── 2. Type Check ──────────────────────────────────────────────────────
+  typecheck:
+    name: TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: TypeScript strict check
+        run: npx tsc --noEmit
+
+  # ── 3. Tests ────────────────────────────────────────────────────────────
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run tests
+        run: npx vitest run --reporter=verbose
+
+  # ── 4. Build ────────────────────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck, test]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build Next.js
+        run: npx next build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+
+      - name: Verify standalone output
+        run: |
+          test -d .next/standalone || (echo "ERROR: standalone output missing" && exit 1)
+          test -f .next/standalone/server.js || (echo "ERROR: server.js missing" && exit 1)
+          echo "Standalone build verified successfully"
+
+  # ── 5. Deploy (main branch only) ───────────────────────────────────────
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -euo pipefail
+
+            cd /opt/renewably-crm
+
+            # Pull latest code
+            git pull origin main
+
+            # Build and deploy with zero-downtime
+            docker compose -f docker-compose.production.yml build app
+            docker compose -f docker-compose.production.yml up -d --no-deps app
+
+            # Wait for health check
+            echo "Waiting for app to become healthy..."
+            timeout 120 bash -c 'until docker inspect --format="{{.State.Health.Status}}" renewably-crm | grep -q healthy; do sleep 5; done'
+
+            echo "Deploy completed successfully"
