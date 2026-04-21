@@ -111,7 +111,7 @@ function enrichDeal(raw: RawDeal) {
   const createdAt = new Date(raw.created_at)
   const daysInStage = computeDaysInStage(updatedAt)
   const allStageKeys = PIPELINE_STAGES.map(s => s.stageKey)
-  const stageIndex = allStageKeys.indexOf(raw.stage)
+  const stageIndex = allStageKeys.indexOf(raw.stage as typeof PIPELINE_STAGES[number]['stageKey'])
   const dealScore = computeDealScore(daysInStage, stageIndex)
 
   // Sort activities newest-first
@@ -229,11 +229,11 @@ export async function GET(request: NextRequest) {
     // joined companies table (PostgREST can't filter on nested relations).
     const filteredDeals = search
       ? (rawDeals || []).filter(d =>
-          d.companies?.name?.toLowerCase().includes(search.toLowerCase()),
+          (d.companies as any[])[0]?.name?.toLowerCase().includes(search.toLowerCase()),
         )
       : rawDeals || []
 
-    const enrichedDeals = filteredDeals.map(enrichDeal)
+    const enrichedDeals = filteredDeals.map((d) => enrichDeal(d as unknown as RawDeal))
 
     const visibleStages = includeClosed
       ? PIPELINE_STAGES
@@ -397,11 +397,11 @@ export async function PUT(request: NextRequest) {
       if (dm?.email) {
         sendWelcomeEmail({
           to: dm.email,
-          companyName: company.name,
+          companyName: company?.name || '',
           contactName: dm.name,
           productName: enriched.product || 'SolarPilot',
           dealId,
-          companyId: company.id,
+          companyId: company?.id || dealId,
           contactId: dm.id,
           userId: user.id,
         }).catch(err => {
@@ -413,17 +413,18 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    // Log activity in deal_activities
-    createServiceClient()
-      .from('deal_activities')
-      .insert({
+    // Log activity in deal_activities (non-blocking)
+    try {
+      const activityClient = createServiceClient()
+      await activityClient.from('deal_activities').insert({
         deal_id: dealId,
         user_id: user.id,
         type: 'stage_change',
         title: `Stage changed to ${stageName}`,
         content: `Moved from previous stage to ${stageName}`,
+        created_at: new Date().toISOString(),
       })
-      .catch(() => {})
+    } catch { /* non-fatal: activity log is best-effort */ }
 
     return NextResponse.json({ deal: enriched })
   } catch (error) {

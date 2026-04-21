@@ -96,7 +96,7 @@ export async function GET(request: NextRequest) {
 
       for (const a of (activities ?? [])) {
         const userRow = a.user as Array<{ name: string }> | null
-        const dealRow = a.deal as Array<{ company: { name: string } }> | null
+        const dealRow = a.deal as unknown as Array<{ company: { name: string } }> | null
         csvContent += [
           a.type,
           a.title,

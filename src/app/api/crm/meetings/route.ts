@@ -112,7 +112,7 @@ export async function GET(request: NextRequest) {
     const contactId = searchParams.get('contactId')
     const meetingType = searchParams.get('meetingType')
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = clampPagination(parseInt(searchParams.get('limit')), 100)
+    const limit = clampPagination(parseInt(searchParams.get('limit') || '0'), 100)
 
     const supabase = createServiceClient()
     const from = (page - 1) * limit
@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch meetings' }, { status: 500 })
     }
 
-    let meetings = (activities ?? []).map(formatMeeting)
+    let meetings = (activities ?? []).map((a) => formatMeeting(a as unknown as RawActivity))
 
     // Apply JSON-content filters client-side
     if (status) {
@@ -268,7 +268,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const meeting = formatMeeting(activity as RawActivity)
+    const meeting = formatMeeting(activity as unknown as RawActivity)
 
     return NextResponse.json({ meeting }, { status: 201 })
   } catch (error) {

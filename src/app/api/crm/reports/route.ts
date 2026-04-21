@@ -9,7 +9,7 @@ const createReportSchema = z.object({
   name: z.string().min(1).max(200),
   description: z.string().max(1000).optional().nullable(),
   type: z.string().min(1).max(50),
-  config: z.record(z.unknown()).optional().nullable(),
+  config: z.record(z.string(), z.unknown()).optional().nullable(),
   isScheduled: z.boolean().optional().default(false),
   schedule: z.string().optional().nullable(),
 })

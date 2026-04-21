@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const includeInactive = searchParams.get('includeInactive') === 'true'
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = clampPagination(parseInt(searchParams.get('limit')), 100, 1)
+    const limit = clampPagination(parseInt(searchParams.get('limit') || '0'), 100, 1)
     const from = (page - 1) * limit
     const to = page * limit - 1
 

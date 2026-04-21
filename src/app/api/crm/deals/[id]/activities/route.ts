@@ -62,18 +62,21 @@ export async function GET(
     }
 
     // Convert snake_case to camelCase for the response
-    const camelActivities = (activities || []).map(a => ({
-      id: a.id,
-      dealId: a.deal_id,
-      userId: a.user_id,
-      type: a.type,
-      title: a.title,
-      content: a.content,
-      createdAt: a.created_at,
-      user: a.profiles
-        ? { id: a.profiles.id, name: a.profiles.name, avatar: a.profiles.avatar }
-        : null,
-    }))
+    const camelActivities = (activities || []).map(a => {
+      const profiles = a.profiles as unknown as { id: string; name: string; avatar: string } | null
+      return {
+        id: a.id,
+        dealId: a.deal_id,
+        userId: a.user_id,
+        type: a.type,
+        title: a.title,
+        content: a.content,
+        createdAt: a.created_at,
+        user: profiles
+          ? { id: profiles.id, name: profiles.name, avatar: profiles.avatar }
+          : null,
+      }
+    })
 
     return NextResponse.json({ activities: camelActivities })
   } catch (error) {
@@ -166,6 +169,7 @@ export async function POST(
     }
 
     // Convert to camelCase
+    const profiles = activity.profiles as unknown as { id: string; name: string; avatar: string } | null
     const camelActivity = {
       id: activity.id,
       dealId: activity.deal_id,
@@ -174,11 +178,11 @@ export async function POST(
       title: activity.title,
       content: activity.content,
       createdAt: activity.created_at,
-      user: activity.profiles
+      user: profiles
         ? {
-            id: activity.profiles.id,
-            name: activity.profiles.name,
-            avatar: activity.profiles.avatar,
+            id: profiles.id,
+            name: profiles.name,
+            avatar: profiles.avatar,
           }
         : null,
     }

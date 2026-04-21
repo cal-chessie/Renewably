@@ -114,7 +114,7 @@ export async function GET(
       return NextResponse.json({ error: 'Meeting not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ meeting: formatMeeting(activity as RawActivity) })
+    return NextResponse.json({ meeting: formatMeeting(activity as unknown as RawActivity) })
   } catch (error) {
     logger.error('Get meeting error', {
       error: error instanceof Error ? error.message : String(error),
@@ -231,7 +231,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Meeting not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ meeting: formatMeeting(activity as RawActivity) })
+    return NextResponse.json({ meeting: formatMeeting(activity as unknown as RawActivity) })
   } catch (error) {
     logger.error('Update meeting error', {
       error: error instanceof Error ? error.message : String(error),

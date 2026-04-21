@@ -95,32 +95,33 @@ export async function PATCH(
         `)
         .eq('id', id)
         .single()
-        .then(({ data: enriched }) => {
+        .then(async ({ data: enriched }) => {
           if (!enriched?.companies) return
           const company = enriched.companies as any
           const contacts = (enriched.contacts || []) as any[]
           const dm = contacts.find(c => c.is_decision_maker) || contacts[0]
           if (!dm?.email) return
 
-          return sendStageChangeEmail({
-            to: dm.email,
-            companyName: company.name,
-            contactName: dm.name,
-            productName: deal.product || 'SolarPilot',
-            stageName,
-            dealId: id,
-            companyId: company.id,
-            contactId: dm.id,
-            userId: user.id,
-            dealValue: deal.value ?? undefined,
-            mrr: deal.mrr ?? undefined,
-          })
-        })
-        .catch(err => {
-          logger.warn('Postmark deal stage email failed (non-fatal)', {
-            error: err instanceof Error ? err.message : String(err),
-            dealId: id,
-          })
+          try {
+            await sendStageChangeEmail({
+              to: dm.email,
+              companyName: company.name,
+              contactName: dm.name,
+              productName: deal.product || 'SolarPilot',
+              stageName,
+              dealId: id,
+              companyId: company.id,
+              contactId: dm.id,
+              userId: user.id,
+              dealValue: deal.value ?? undefined,
+              mrr: deal.mrr ?? undefined,
+            })
+          } catch (err) {
+            logger.warn('Postmark deal stage email failed (non-fatal)', {
+              error: err instanceof Error ? err.message : String(err),
+              dealId: id,
+            })
+          }
         })
 
       // Internal notification for closed_won / closed_lost
@@ -194,7 +195,7 @@ export async function GET(
       title: a.title,
       content: a.content,
       createdAt: a.created_at,
-      user: a.profiles ? { id: a.profiles.id, name: a.profiles.name, avatar: a.profiles.avatar } : null,
+      user: a.profiles ? { id: (a.profiles as any).id, name: (a.profiles as any).name, avatar: (a.profiles as any).avatar } : null,
     }))
 
     const company = deal.companies ? {

@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = clampPagination(parseInt(searchParams.get('limit')), 100)
+    const limit = clampPagination(parseInt(searchParams.get('limit') || '0'), 100)
 
     const { data: payments, count: total, error } = await supabase
       .from('payments')

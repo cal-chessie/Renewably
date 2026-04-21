@@ -145,7 +145,7 @@ export async function POST(
       return NextResponse.json({ error: 'Failed to complete meeting' }, { status: 400 })
     }
 
-    return NextResponse.json({ meeting: formatMeeting(activity as RawActivity) })
+    return NextResponse.json({ meeting: formatMeeting(activity as unknown as RawActivity) })
   } catch (error) {
     logger.error('Complete meeting error', {
       error: error instanceof Error ? error.message : String(error),

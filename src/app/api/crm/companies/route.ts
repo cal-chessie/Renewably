@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || ''
     const status = searchParams.get('status') || ''
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = clampPagination(parseInt(searchParams.get('limit')), 20)
+    const limit = clampPagination(parseInt(searchParams.get('limit') || '0'), 20)
     const sort = searchParams.get('sort') || 'createdAt'
     const order = searchParams.get('order') === 'asc' ? 'asc' : 'desc'
 

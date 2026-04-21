@@ -101,15 +101,18 @@ export async function POST(request: NextRequest) {
     // Log activity in deal_activities if dealId provided
     if (dealId && isValidUuid(dealId)) {
       const supabase = createServiceClient()
-      await supabase.from('deal_activities').insert({
-        deal_id: dealId,
-        user_id: user.id,
-        type: 'email',
-        title: `${subject} → ${to}`,
-        content: emailBody.substring(0, 500),
-      }).catch(() => {
+      try {
+        await supabase.from('deal_activities').insert({
+          deal_id: dealId,
+          user_id: user.id,
+          type: 'email',
+          title: `${subject} → ${to}`,
+          content: emailBody.substring(0, 500),
+          created_at: new Date().toISOString(),
+        })
+      } catch {
         // Non-fatal: email was already sent/logged
-      })
+      }
     }
 
     return NextResponse.json({

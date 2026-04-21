@@ -126,14 +126,19 @@ export async function PUT(
       totalAmount = subtotalAmount + taxAmount
 
       // Insert new line items (map item.name → description, no 'name' column)
-      const lineItemsData = lineItems.map((item: { name: string; description?: string; quantity: number; unitPrice: number; total: number; sortOrder: number }, index: number) => ({
-        invoice_id: id,
-        description: item.name,
-        quantity: item.quantity || 1,
-        unit_price: item.unitPrice || 0,
-        amount: item.total || (item.quantity * item.unitPrice),
-        sort_order: item.sortOrder ?? index,
-      }))
+      const lineItemsData = lineItems.map((item, index) => {
+        const r = item as Record<string, unknown>
+        const qty = Number(r.quantity) || 1
+        const price = Number(r.unitPrice) || 0
+        return {
+          invoice_id: id,
+          description: String(r.name || r.description || ''),
+          quantity: qty,
+          unit_price: price,
+          amount: Number(r.total) || (qty * price),
+          sort_order: r.sortOrder != null ? Number(r.sortOrder) : index,
+        }
+      })
 
       const { error: liError } = await supabase.from('invoice_line_items').insert(lineItemsData)
       if (liError) {

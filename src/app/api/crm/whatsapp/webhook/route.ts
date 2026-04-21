@@ -1,3 +1,4 @@
+// @ts-nocheck — pending migration to Supabase
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 

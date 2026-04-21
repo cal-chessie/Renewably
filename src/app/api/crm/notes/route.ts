@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     const dealId = searchParams.get('dealId') || ''
     const companyId = searchParams.get('companyId') || ''
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = clampPagination(parseInt(searchParams.get('limit')), 50)
+    const limit = clampPagination(parseInt(searchParams.get('limit') || '0'), 50)
 
     if (contactId && !isValidUuid(contactId)) {
       return NextResponse.json({ error: 'Invalid contactId format' }, { status: 400 })

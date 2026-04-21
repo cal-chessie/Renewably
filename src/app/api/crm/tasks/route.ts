@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const contactId = searchParams.get('contactId') || ''
     const dealId = searchParams.get('dealId') || ''
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = clampPagination(parseInt(searchParams.get('limit')), 50)
+    const limit = clampPagination(parseInt(searchParams.get('limit') || '0'), 50)
 
     const supabase = createServiceClient()
 

@@ -243,7 +243,7 @@ export async function GET(request: NextRequest) {
     // ===== RECENT ACTIVITY =====
     const activities = activitiesRes.data ?? []
     const recentActivity = activities.map((a) => {
-      const dealRow = a.deal as Array<{ company: { name: string } }> | null
+      const dealRow = a.deal as unknown as Array<{ company: { name: string } }> | null
       const userRow = a.user as Array<{ id: string; name: string }> | null
       return {
         id: a.id,
@@ -278,7 +278,7 @@ export async function GET(request: NextRequest) {
     // ===== COMPANY LIST (paginated) =====
     const { searchParams } = new URL(request.url)
     const companyPage = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const companyLimit = clampPagination(parseInt(searchParams.get('limit')), 20)
+    const companyLimit = clampPagination(parseInt(searchParams.get('limit') || '0'), 20)
     const companyFrom = (companyPage - 1) * companyLimit
 
     const [companiesRes, companyCountRes] = await Promise.all([
@@ -341,7 +341,7 @@ export async function GET(request: NextRequest) {
       companies: companyList,
       recentActivity,
       upcomingTasks: (upcomingTasksRaw.data ?? []).map((t) => {
-        const dealRow = t.deal as Array<{ company: { name: string } }> | null
+        const dealRow = t.deal as unknown as Array<{ company: { name: string } }> | null
         const priority = t.type === 'meeting' ? 'high' : t.type === 'call' ? 'medium' : 'low'
         return {
           title: t.title,

@@ -9,7 +9,7 @@ import { logger } from '@/lib/logger'
 
 /** Check if a Supabase error is a missing-relation error (table does not exist) */
 function isMissingRelationError(error: { code?: string; message?: string }): boolean {
-  return (
+  return !!(
     error.code === '42P01' ||
     (error.message?.toLowerCase().includes('relation') &&
      error.message?.toLowerCase().includes('does not exist'))
@@ -36,7 +36,7 @@ async function fetchTagCounts(
     const counts: Record<string, number> = {}
     if (data) {
       for (const row of data) {
-        const tagId = (row as Record<string, unknown>)[tagColumnName] as string
+        const tagId = (row as unknown as Record<string, unknown>)[tagColumnName] as string
         if (tagId) {
           counts[tagId] = (counts[tagId] || 0) + 1
         }
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = clampPagination(parseInt(searchParams.get('limit')), 100, 1)
+    const limit = clampPagination(parseInt(searchParams.get('limit') || '0'), 100, 1)
 
     const supabase = createServiceClient()
 

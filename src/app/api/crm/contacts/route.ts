@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     const search = sanitizeSearchQuery(searchParams.get('search'))
     const companyId = searchParams.get('companyId') || ''
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = clampPagination(parseInt(searchParams.get('limit')), 20)
+    const limit = clampPagination(parseInt(searchParams.get('limit') || '0'), 20)
 
     const supabase = createServiceClient()
 

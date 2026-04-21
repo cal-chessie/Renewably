@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     const startDate = searchParams.get('startDate') || ''
     const endDate = searchParams.get('endDate') || ''
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = clampPagination(parseInt(searchParams.get('limit')), 50)
+    const limit = clampPagination(parseInt(searchParams.get('limit') || '0'), 50)
 
     // Build query
     let query = supabase
@@ -204,14 +204,19 @@ export async function POST(request: NextRequest) {
 
     // Insert line items (map item.name → description column, no 'name' column in Supabase)
     if (lineItems && lineItems.length > 0) {
-      const lineItemsData = lineItems.map((item: { name: string; description?: string; quantity: number; unitPrice: number; total: number; sortOrder: number }, index: number) => ({
-        invoice_id: invoice.id,
-        description: item.name,
-        quantity: item.quantity || 1,
-        unit_price: item.unitPrice || 0,
-        amount: item.total || (item.quantity * item.unitPrice),
-        sort_order: item.sortOrder ?? index,
-      }))
+      const lineItemsData = lineItems.map((item, index) => {
+        const r = item as Record<string, unknown>
+        const qty = Number(r.quantity) || 1
+        const price = Number(r.unitPrice) || 0
+        return {
+          invoice_id: invoice.id,
+          description: String(r.name || r.description || ''),
+          quantity: qty,
+          unit_price: price,
+          amount: Number(r.total) || (qty * price),
+          sort_order: r.sortOrder != null ? Number(r.sortOrder) : index,
+        }
+      })
 
       const { error: lineItemsError } = await supabase.from('invoice_line_items').insert(lineItemsData)
       if (lineItemsError) {

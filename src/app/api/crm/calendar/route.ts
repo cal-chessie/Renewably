@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
     // Transform raw data into structured calendar events
     const transformedActivities = (activities ?? []).map((a) => {
       // Extract company name from nested join: deal → company
-      const dealRow = a.deal as { id: string; company: { id: string; name: string } | null }[] | null
+      const dealRow = a.deal as unknown as { id: string; company: { id: string; name: string } | null }[] | null
       const company = dealRow?.[0]?.company
       const dealId = dealRow?.[0]?.id ?? null
 

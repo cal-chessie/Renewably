@@ -166,7 +166,7 @@ export async function GET(request: NextRequest) {
     // ===== Client Revenue Leaderboard =====
     const { searchParams } = new URL(request.url)
     const clientPage = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const clientLimit = clampPagination(parseInt(searchParams.get('limit')), 20)
+    const clientLimit = clampPagination(parseInt(searchParams.get('limit') || '0'), 20)
 
     const clientCompanies = activeCompaniesWithDealsRes.data ?? []
     const clientRevenue = clientCompanies

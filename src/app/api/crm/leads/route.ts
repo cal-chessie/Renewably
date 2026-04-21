@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status')
     const search = searchParams.get('search')
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = clampPagination(parseInt(searchParams.get('limit')), 50)
+    const limit = clampPagination(parseInt(searchParams.get('limit') || '0'), 50)
     const from = (page - 1) * limit
     const to = page * limit - 1
 

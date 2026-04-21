@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { logger } from '@/lib/logger'
@@ -15,10 +15,13 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { contactId, duration, notes, outcome, subject } = body
+    const { contactId, dealId, duration, notes, outcome, subject } = body
 
     if (contactId && !isValidUuid(contactId)) {
       return NextResponse.json({ error: 'Invalid contactId format' }, { status: 400 })
+    }
+    if (dealId && !isValidUuid(dealId)) {
+      return NextResponse.json({ error: 'Invalid dealId format' }, { status: 400 })
     }
 
     // Build a descriptive subject from available data
@@ -27,38 +30,35 @@ export async function POST(request: NextRequest) {
       callSubject = `Call — ${outcome.charAt(0).toUpperCase() + outcome.slice(1)}`
     }
 
-    // Create the call activity
-    const activity = await db.activity.create({
-      data: {
-        type: 'call',
-        subject: callSubject,
-        description: notes || '',
-        status: 'completed',
-        duration: duration || null,
-        completedAt: new Date(),
-        contactId: contactId || null,
-        userId: user.id,
-      },
-      include: {
-        contact: { select: { id: true, firstName: true, lastName: true } },
-        user: { select: { id: true, name: true, avatar: true } },
-      },
-    })
+    const supabase = createServiceClient()
 
-    // Update contact's lastContactAt if contactId provided
-    if (contactId) {
-      await db.contact.update({
-        where: { id: contactId },
-        data: { lastContactAt: new Date() },
-      }).catch(() => {
-        // Contact might not exist — ignore gracefully
+    // Create the call activity in deal_activities (if dealId provided)
+    if (dealId) {
+      const { error } = await supabase.from('deal_activities').insert({
+        deal_id: dealId,
+        user_id: user.id,
+        type: 'call',
+        title: callSubject,
+        content: notes || '',
+        created_at: new Date().toISOString(),
       })
+      if (error) {
+        logger.error('Failed to log call activity', { error: error.message, dealId })
+      }
     }
 
     return NextResponse.json({
       success: true,
-      activityId: activity.id,
-      activity,
+      activityId: null,
+      activity: {
+        type: 'call',
+        title: callSubject,
+        content: notes || '',
+        contactId: contactId || null,
+        dealId: dealId || null,
+        userId: user.id,
+        createdAt: new Date().toISOString(),
+      },
     })
   } catch (error) {
     logger.error('Call log error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })

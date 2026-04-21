@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     const stage = searchParams.get('stage') || ''
     const assignedToId = searchParams.get('assignedToId') || ''
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = clampPagination(parseInt(searchParams.get('limit')), 50)
+    const limit = clampPagination(parseInt(searchParams.get('limit') || '0'), 50)
 
     const supabase = createServiceClient()
 
