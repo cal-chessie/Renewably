@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, createServiceClient } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
+import { validateCsrfOrigin } from '@/lib/crm-route-helpers'
 
 const ACCESS_TOKEN_COOKIE = 'sb-access-token'
 const REFRESH_TOKEN_COOKIE = 'sb-refresh-token'
@@ -31,6 +32,10 @@ async function getProfile(userId: string) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!validateCsrfOrigin(request)) {
+      return NextResponse.json({ error: 'Invalid request origin' }, { status: 403 })
+    }
+
     const { email, password } = await request.json()
 
     if (!email || !password) {

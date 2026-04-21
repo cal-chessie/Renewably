@@ -9,6 +9,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, createServiceClient } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
+import { validateCsrfOrigin } from '@/lib/crm-route-helpers'
 
 const COOKIE_OPTIONS = {
   path: '/',
@@ -78,6 +79,10 @@ function getTokensFromCookies(request: NextRequest): {
 // ============================================================================
 export async function POST(request: NextRequest) {
   try {
+    if (!validateCsrfOrigin(request)) {
+      return NextResponse.json({ error: 'Invalid request origin' }, { status: 403 })
+    }
+
     const body = await request.json()
     const { email, password } = body
 
@@ -315,6 +320,10 @@ export async function GET(request: NextRequest) {
 // ============================================================================
 export async function DELETE(request: NextRequest) {
   try {
+    if (!validateCsrfOrigin(request)) {
+      return NextResponse.json({ error: 'Invalid request origin' }, { status: 403 })
+    }
+
     const { accessToken } = getTokensFromCookies(request)
 
     // Attempt to sign out from Supabase if we have a token

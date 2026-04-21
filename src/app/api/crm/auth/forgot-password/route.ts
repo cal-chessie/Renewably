@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { logger } from '@/lib/logger'
+import { validateCsrfOrigin } from '@/lib/crm-route-helpers'
 
 // In-memory rate limit: max 3 reset requests per 15 minutes per IP
 const resetRateLimits = new Map<string, { count: number; expiresAt: number }>()
@@ -34,6 +35,10 @@ function getClientIp(request: Request): string {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!validateCsrfOrigin(request)) {
+      return NextResponse.json({ error: 'Invalid request origin' }, { status: 403 })
+    }
+
     const clientIp = getClientIp(request)
 
     // Rate limiting: max 3 requests per 15 minutes per IP

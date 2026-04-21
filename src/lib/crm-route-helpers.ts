@@ -1,5 +1,5 @@
 // ============================================================================
-// Renewably CRM — Shared API Route Helpers (Rate Limit + Validation)
+// Renewably CRM — Shared API Route Helpers (CSRF + Rate Limit + Validation)
 // ============================================================================
 
 import type { NextRequest, NextResponse } from 'next/server'
@@ -19,6 +19,94 @@ type ValidatedRouteHandler<T = unknown> = (
 interface RateLimitOptions {
   limit?: number
   windowMs?: number
+}
+
+// ─── CSRF Protection ───────────────────────────────────────────────────────
+// Validates Origin/Referer on state-changing requests (POST, PUT, PATCH, DELETE).
+// SameSite=Lax already blocks cross-site cookies, but this adds an explicit
+// Origin check as defense-in-depth. Safe methods (GET, HEAD, OPTIONS) pass through.
+
+/** Build the set of allowed origins from env */
+function getAllowedOrigins(): Set<string> {
+  const base = process.env.NEXT_PUBLIC_BASE_URL || ''
+  const origins = new Set<string>()
+
+  // Production base URL
+  if (base) {
+    try {
+      origins.add(new URL(base).origin)
+    } catch {
+      origins.add(base)
+    }
+  }
+
+  // Supabase project URL (for auth callbacks)
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  if (supabaseUrl) {
+    try {
+      origins.add(new URL(supabaseUrl).origin)
+    } catch { /* ignore */ }
+  }
+
+  // Dev proxy domains
+  if (process.env.NODE_ENV !== 'production') {
+    origins.add('https://space.chatglm.site')
+    origins.add('https://space.z.ai')
+  }
+
+  return origins
+}
+
+/** Extract origin from a full URL string */
+function extractOrigin(url: string): string | null {
+  try {
+    return new URL(url).origin
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Validates that the request's Origin or Referer header matches an allowed origin.
+ * Returns true if the request is safe (GET/HEAD/OPTIONS) or if the origin is valid.
+ * Returns false if a state-changing request has a mismatched or missing origin.
+ */
+export function validateCsrfOrigin(request: NextRequest): boolean {
+  const method = request.method.toUpperCase()
+  const safeMethods = new Set(['GET', 'HEAD', 'OPTIONS'])
+  if (safeMethods.has(method)) return true
+
+  const allowedOrigins = getAllowedOrigins()
+  if (allowedOrigins.size === 0) return true // no config — don't block
+
+  // Check Origin header (sent on cross-origin and preflighted requests)
+  const origin = request.headers.get('origin')
+  if (origin) {
+    return allowedOrigins.has(origin)
+  }
+
+  // Fall back to Referer (sent on most navigational requests)
+  const referer = request.headers.get('referer')
+  if (referer) {
+    const refererOrigin = extractOrigin(referer)
+    if (refererOrigin) {
+      return allowedOrigins.has(refererOrigin)
+    }
+  }
+
+  // No Origin and no Referer on a state-changing request — block it.
+  // Legitimate browsers always send at least one of these for same-origin mutations.
+  return false
+}
+
+/**
+ * Returns a 403 CSRF rejection response.
+ */
+export function csrfErrorResponse(): NextResponse {
+  return NextResponse.json(
+    { error: 'CSRF validation failed — missing or invalid origin header' },
+    { status: 403 },
+  )
 }
 
 // ─── Standardized Error Responses ──────────────────────────────────────────
@@ -162,16 +250,43 @@ export function withValidation<T>(
   }
 }
 
+// ─── withCsrf ──────────────────────────────────────────────────────────────
+
+/**
+ * Wraps a route handler with CSRF origin validation.
+ * Safe methods (GET, HEAD, OPTIONS) always pass through.
+ * State-changing methods (POST, PUT, PATCH, DELETE) require a matching Origin or Referer.
+ * Returns 403 if validation fails.
+ */
+export function withCsrf(handler: RouteHandler): RouteHandler {
+  return async (request, context) => {
+    if (!validateCsrfOrigin(request)) {
+      logger.warn('CSRF validation failed', {
+        method: request.method,
+        path: request.nextUrl.pathname,
+        origin: request.headers.get('origin') || '(none)',
+        referer: request.headers.get('referer') || '(none)',
+        ip: getClientIp(request),
+      })
+      return csrfErrorResponse()
+    }
+    return handler(request, context)
+  }
+}
+
 // ─── withHandler (unified wrapper) ────────────────────────────────────────
 
 /**
- * Convenience wrapper that combines auth, rate limiting, and validation.
- * Applies: rate limit → validate body → run handler.
+ * Convenience wrapper that combines CSRF, rate limiting, and validation.
+ * Applies: CSRF check → rate limit → validate body → run handler.
+ * CSRF is always enabled on state-changing methods (POST/PUT/PATCH/DELETE).
  */
 export function withHandler<T>(
   options: {
     rateLimit?: RateLimitOptions
     schema?: z.ZodType<T>
+    /** Set to false to skip CSRF origin validation (e.g., for webhooks) */
+    csrf?: boolean
   },
   handler: ValidatedRouteHandler<T>,
 ): RouteHandler {
@@ -183,6 +298,11 @@ export function withHandler<T>(
 
   if (options.rateLimit) {
     wrapped = withRateLimit(wrapped, options.rateLimit)
+  }
+
+  // CSRF wraps outermost (runs first before rate limit / validation)
+  if (options.csrf !== false) {
+    wrapped = withCsrf(wrapped)
   }
 
   return wrapped

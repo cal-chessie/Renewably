@@ -4,6 +4,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '@/lib/logger'
+import { validateCsrfOrigin } from '@/lib/crm-route-helpers'
 
 const ACCESS_TOKEN_COOKIE = 'sb-access-token'
 const REFRESH_TOKEN_COOKIE = 'sb-refresh-token'
@@ -15,6 +16,10 @@ const CLEAR_COOKIE = (name: string) => {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!validateCsrfOrigin(request)) {
+      return NextResponse.json({ error: 'Invalid request origin' }, { status: 403 })
+    }
+
     const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value
 
     // Attempt to revoke the session server-side
