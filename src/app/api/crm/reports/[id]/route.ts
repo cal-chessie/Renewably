@@ -10,7 +10,7 @@ const updateBodySchema = z.object({
   name: z.string().min(1).max(300).optional(),
   description: z.string().max(2000).optional(),
   type: z.string().min(1).max(100).optional(),
-  config: z.record(z.unknown()).optional(),
+  config: z.record(z.string(), z.unknown()).optional(),
   isScheduled: z.boolean().optional(),
   schedule: z.string().max(500).optional(),
 })

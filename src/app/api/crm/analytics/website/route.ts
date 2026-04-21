@@ -126,8 +126,8 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.visitors - a.visitors)
 
     // ── Conversion funnel from deal pipeline stages ─────────────────────
-    const pipelineStages = ['New Lead', 'Contacted', 'Discovery', 'Demo Booked', 'Demo Done', 'Proposal', 'Negotiation', 'Won']
-    const stageKeys = ['new_lead', 'contacted', 'discovery_call', 'demo_booked', 'demo_done', 'proposal_sent', 'negotiation', 'closed_won']
+    const pipelineStages = ['New Lead', 'Contacted', 'Discovery Call', 'Demo Booked', 'Demo Done', 'Proposal Sent', 'Negotiation', 'Closed Won', 'Closed Lost']
+    const stageKeys = ['new_lead', 'contacted', 'discovery_call', 'demo_booked', 'demo_done', 'proposal_sent', 'negotiation', 'closed_won', 'closed_lost']
     const stageCounts: Record<string, number> = {}
     for (const key of stageKeys) stageCounts[key] = 0
     for (const d of deals) {

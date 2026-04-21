@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       windowMs: 60_000,
     })
     if (!rateLimitResult.allowed) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAsMs / 1000)) } })
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil(rateLimitResult.retryAfterMs / 1000)) } })
     }
 
     const body = await request.json()

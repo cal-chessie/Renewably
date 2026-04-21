@@ -66,14 +66,18 @@ export default function PipelineLoading() {
           </div>
         </div>
 
-        {/* 5 Pipeline Columns */}
+        {/* 9 Pipeline Columns */}
         <div style={{ display: 'flex', gap: 16, overflow: 'hidden' }}>
           {[
-            { title: 'Lead', count: 4 },
-            { title: 'Qualified', count: 3 },
-            { title: 'Proposal', count: 2 },
-            { title: 'Negotiation', count: 3 },
+            { title: 'New Lead', count: 4 },
+            { title: 'Contacted', count: 3 },
+            { title: 'Discovery Call', count: 2 },
+            { title: 'Demo Booked', count: 3 },
+            { title: 'Demo Done', count: 2 },
+            { title: 'Proposal Sent', count: 3 },
+            { title: 'Negotiation', count: 2 },
             { title: 'Closed Won', count: 2 },
+            { title: 'Closed Lost', count: 1 },
           ].map((col, colIdx) => (
             <div key={colIdx} style={{ flex: 1, minWidth: 0 }}>
               {/* Column Header */}

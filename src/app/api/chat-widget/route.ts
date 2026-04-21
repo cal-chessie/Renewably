@@ -14,6 +14,7 @@ import { sendEmail } from "@/lib/postmark";
 import { checkRateLimit, getClientIp, CHAT_RATE_LIMIT } from "@/lib/rate-limit";
 import { escapeHtml } from "@/lib/crm-validation";
 import { validateCsrfOrigin } from "@/lib/crm-route-helpers";
+import { logger } from "@/lib/logger";
 
 const SYSTEM_PROMPT = `You are the Renewably AI Assistant — the friendly, knowledgeable face of renewably.ie, Ireland's leading AI-as-a-Service platform for solar PV installers.
 
@@ -153,7 +154,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ reply });
   } catch (error: unknown) {
-    console.error("Chat API error:", error);
+    logger.error("Chat API error", { error: error instanceof Error ? error.message : String(error) });
     const message = error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json(
       { error: "Failed to generate response. Please try again." },
@@ -201,7 +202,7 @@ async function captureChatLead(
     }
 
     if (!companyId) {
-      console.warn('[Chat Lead] Could not create/find chat leads company')
+      logger.warn('Chat Lead: Could not create/find chat leads company')
       return
     }
 
@@ -226,7 +227,7 @@ async function captureChatLead(
           })
           .eq('id', existingRecent.id)
 
-        console.log(`[Chat Lead] Returning visitor updated: ${existingRecent.id}`)
+        logger.info(`Chat Lead: Returning visitor updated`, { contactId: existingRecent.id })
         return
       }
     }
@@ -256,9 +257,9 @@ async function captureChatLead(
         value: 15000,
         mrr: 1000,
       })
-      console.log(`[Chat Lead] Deal created for contact ${contact?.id}`)
+      logger.info(`Chat Lead: Deal created`, { contactId: contact?.id })
     } catch (dealError) {
-      console.warn("[Chat Lead] Could not create deal:", dealError instanceof Error ? dealError.message : dealError)
+      logger.warn("Chat Lead: Could not create deal", { error: dealError instanceof Error ? dealError.message : String(dealError) })
     }
 
     // Send notification email
@@ -286,13 +287,13 @@ async function captureChatLead(
         `,
         textBody: `New ${isStrongLead ? "STRONG " : ""}chat lead captured!\n\nContact: ${contact?.name || 'Unknown'}\nSource: Chat Widget\nPage: ${pageContext || "Unknown"}\nMessage: "${message.slice(0, 300)}"\n\nA deal has been created in the pipeline: https://renewably.ie/crm/pipeline`,
       })
-      console.log(`[Chat Lead] Notification email sent for ${contact?.id}`)
+      logger.info(`Chat Lead: Notification email sent`, { contactId: contact?.id })
     } catch (emailError) {
-      console.warn("[Chat Lead] Could not send notification email:", emailError instanceof Error ? emailError.message : emailError)
+      logger.warn("Chat Lead: Could not send notification email", { error: emailError instanceof Error ? emailError.message : String(emailError) })
     }
 
-    console.log(`[Chat Lead] ${isStrongLead ? "STRONG" : "soft"} lead captured: ${contact?.id}`)
+    logger.info(`Chat Lead: ${isStrongLead ? 'STRONG' : 'soft'} lead captured`, { contactId: contact?.id })
   } catch (error) {
-    console.warn("[Chat Lead] Could not capture lead:", error instanceof Error ? error.message : error)
+    logger.warn("Chat Lead: Could not capture lead", { error: error instanceof Error ? error.message : String(error) })
   }
 }
