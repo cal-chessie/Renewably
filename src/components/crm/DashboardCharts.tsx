@@ -471,7 +471,7 @@ function FinancialTab() {
               <span style={{ width: 8, height: 8, borderRadius: 2, background: entry.fill || GREEN, display: 'inline-block' }} />
               {getName(entry.dataKey)}
             </span>
-            <span style={{ fontSize: 13, color: TEXT_PRIMARY, fontWeight: 700, fontFamily: 'monospace' }}>{formatCurrency(entry.value)}</span>
+            <span style={{ fontSize: 13, color: TEXT_PRIMARY, fontWeight: 700, fontFamily: 'monospace' }}>{formatCurrency(entry.value ?? 0)}</span>
           </div>
         ))}
       </div>
@@ -760,7 +760,7 @@ function FinancialTab() {
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.025)" vertical={false} />
                         <XAxis dataKey="month" tick={{ fontSize: 10, fill: TEXT_TERTIARY }} axisLine={false} tickLine={false} />
                         <YAxis tick={{ fontSize: 10, fill: TEXT_TERTIARY }} axisLine={false} tickLine={false} tickFormatter={(v) => `€${(v / 1000).toFixed(1)}k`} domain={[0, 'auto']} />
-                        <Tooltip content={renderCinematicTooltip} cursor={{ fill: 'rgba(255,255,255,0.015)' }} />
+                        <Tooltip content={renderCinematicTooltip as any} cursor={{ fill: 'rgba(255,255,255,0.015)' }} />
                         <Bar dataKey="solarpilot" stackId="rev" fill="url(#stackSP)" radius={[0, 0, 0, 0]} maxBarSize={40}>
                           {stackedData.map((entry, index) => (
                             <Cell key={index} fill={index === stackedData.length - 1 ? 'url(#stackSP)' : 'rgba(243,216,64,0.65)'} />
@@ -1062,7 +1062,7 @@ function FinancialTab() {
                     <XAxis dataKey="month" tick={{ fontSize: 10, fill: TEXT_TERTIARY }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 10, fill: TEXT_TERTIARY }} axisLine={false} tickLine={false}
                       tickFormatter={(v) => `€${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip content={renderCinematicTooltip} />
+                    <Tooltip content={renderCinematicTooltip as any} />
                     <Line type="monotone" dataKey="actual" stroke={GREEN} strokeWidth={2.5}
                       dot={{ fill: GREEN, r: 3.5, strokeWidth: 0 }}
                       activeDot={{ fill: GREEN, r: 5, stroke: GREEN, strokeWidth: 2, strokeOpacity: 0.3 }} />
