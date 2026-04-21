@@ -95,8 +95,14 @@ export function validateCsrfOrigin(request: NextRequest): boolean {
     }
   }
 
-  // No Origin and no Referer on a state-changing request — block it.
-  // Legitimate browsers always send at least one of these for same-origin mutations.
+  // No Origin and no Referer on a state-changing request.
+  // Legitimate browsers always send at least one of these for same-origin mutations,
+  // but some reverse proxies (e.g. dev preview tunnels) strip them.
+  // In development, be lenient to avoid blocking legitimate requests.
+  if (process.env.NODE_ENV !== 'production') {
+    return true
+  }
+
   return false
 }
 
