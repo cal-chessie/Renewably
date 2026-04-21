@@ -52,12 +52,12 @@ const C = {
 // ══════════════════════════════════════════════════════════════
 //  REUSABLE INLINE STYLE HELPERS
 // ══════════════════════════════════════════════════════════════
-const flex = { display: 'flex' }
-const flexCol = { display: 'flex', flexDirection: 'column' }
-const flexRow = { display: 'flex', flexDirection: 'row' }
-const flexCenter = { display: 'flex', alignItems: 'center', justifyContent: 'center' }
-const flexBetween = { display: 'flex', alignItems: 'center', justifyContent: 'space-between' }
-const flexStart = { display: 'flex', alignItems: 'center' }
+const flex = { display: 'flex' as const }
+const flexCol = { display: 'flex' as const, flexDirection: 'column' as const }
+const flexRow = { display: 'flex' as const, flexDirection: 'row' as const }
+const flexCenter = { display: 'flex' as const, alignItems: 'center' as const, justifyContent: 'center' as const }
+const flexBetween = { display: 'flex' as const, alignItems: 'center' as const, justifyContent: 'space-between' as const }
+const flexStart = { display: 'flex' as const, alignItems: 'center' as const }
 const gap2 = { ...flexCol, gap: '0.5rem' }
 const gap3 = { ...flexCol, gap: '0.75rem' }
 const gap4 = { ...flexCol, gap: '1rem' }

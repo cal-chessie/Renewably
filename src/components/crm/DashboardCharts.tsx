@@ -443,7 +443,7 @@ function FinancialTab() {
 
   const mrrMaxVal = Math.max(mrrMovement.newMRR, Math.abs(mrrMovement.churnedMRR), mrrMovement.expansionMRR, Math.abs(mrrMovement.netNewMRR))
 
-  const renderCinematicTooltip = (props: { active?: boolean; payload?: Array<{ value: number; dataKey?: string; fill?: string }>; label?: string }) => {
+  const renderCinematicTooltip = (props: { active?: boolean; payload?: Array<{ value?: number; dataKey?: string; fill?: string }>; label?: string }) => {
     const { active, payload, label } = props
     if (!active || !payload || !payload.length) return null
     const getName = (dk?: string) => {
@@ -745,7 +745,7 @@ function FinancialTab() {
 
                   {/* Stacked bar chart — fills height */}
                   <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-                    <ResponsiveContainer width="100%" height="100%" style={{ flex: 1, minHeight: 260 }}>
+                    <ResponsiveContainer width="100%" height="100%" style={{ flex: 1 }}>
                       <BarChart data={stackedData} margin={{ top: 8, right: 0, left: -20, bottom: 0 }} barCategoryGap="22%">
                         <defs>
                           <linearGradient id="stackSP" x1="0" y1="0" x2="0" y2="1">

@@ -303,7 +303,7 @@ function SidebarNav({ collapsed, onNavigate }: {
           <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
             <CollapsedStat value={activeCount !== null ? String(activeCount) : '—'} label="Active Clients" color={GREEN} />
             <CollapsedStat value={openDeals !== null ? String(openDeals) : '—'} label="Open Deals" color={YELLOW} />
-            <CollapsedStat value={mrr !== null ? fmtCompact(mrr) : '—'} label="MRR" color={BLUE} />
+            <CollapsedStat value={mrr != null ? fmtCompact(mrr) : '—'} label="MRR" color={BLUE} />
           </div>
         </nav>
 
@@ -470,7 +470,7 @@ function SidebarNav({ collapsed, onNavigate }: {
                 icon={TrendingUp}
               />
               <ExpandedStatCard
-                value={mrr !== null ? fmtCompact(mrr) : '—'}
+                value={mrr != null ? fmtCompact(mrr) : '—'}
                 label="MRR"
                 color={BLUE}
                 icon={Euro}
