@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { createServiceClient } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const user = await requireAuth(request)
     if (!user) return unauthorized()
