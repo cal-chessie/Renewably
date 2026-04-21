@@ -54,11 +54,6 @@ server.log
 # Skills directory
 /skills/
 
-# Local database files
-/db/custom.db
-/db/sessions.json
-prisma/dev.db
-prisma/db/custom.db
 
 # Generated docs, downloads, and uploads (regenerate as needed)
 /download/
@@ -90,7 +85,6 @@ keepalive.sh
 seed-crm.js
 _cleanup.cjs
 paperclip-*.json
-prisma/seed.json
 watchdog.js
 watchdog.sh
 start.sh
@@ -106,4 +100,4 @@ supabase-schema.sql
 *.bak
 
 # Next.js 16: middleware.ts is replaced by proxy.ts — never track the old file
-src/middleware.ts
+src/middleware.ts.env.production
