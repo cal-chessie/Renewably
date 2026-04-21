@@ -11,7 +11,7 @@
 [![Bun](https://img.shields.io/badge/Runtime-Bun-000?logo=bun)](https://bun.sh)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
 [![Supabase](https://img.shields.io/badge/Supabase-Auth+%2B_Postgres-3ECF8E?logo=supabase)](https://supabase.com)
-[![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)](https://prisma.io)
+
 [![Anthropic](https://img.shields.io/badge/Anthropic-Claude-D4A574?logo=anthropic)](https://anthropic.com)
 [![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF?logo=stripe)](https://stripe.com)
 [![Tests](https://img.shields.io/badge/Tests-261_passed-22C55E?logo=vitest)](https://vitest.dev)
@@ -40,8 +40,8 @@ bun install
 cp .env.example .env
 # Fill in the 3 required variables (see Environment Variables below)
 
-# 4. Setup database
-npx prisma migrate deploy && npx prisma generate
+# 4. Database migrations are managed in Supabase dashboard
+#    (SQL migrations in supabase/migrations/)
 
 # 5. Run
 bun dev
@@ -108,43 +108,51 @@ This repo handles the top of the funnel — attracting visitors, capturing leads
                     │   └──────────────────────────────┘   │
                     └──────────────────┬───────────────────┘
                                        │
-           ┌───────────────────────────┼───────────────────────────┐
-           │                           │                           │
-  ┌────────┴──────────┐    ┌──────────┴──────────┐    ┌───────────┴──────────┐
-  │ Supabase (Postgres)│    │  SQLite (Prisma)    │    │   External APIs     │
-  │                    │    │                     │    │                     │
-  │  auth.users        │    │  Companies          │    │  Anthropic Claude   │
-  │  profiles          │    │  Contacts           │    │  Stripe             │
-  │  email_logs        │    │  Deals (9 stages)   │    │  Postmark           │
-  │                    │    │  Proposals          │    │  Google Calendar    │
-  │                    │    │  Invoices           │    │  Z-AI SDK           │
-  │                    │    │  Tasks, Notes       │    │                     │
-  │                    │    │  Workflows          │    │                     │
-  │                    │    │  Installer profiles │    │                     │
-  └────────────────────┘    └─────────────────────┘    └─────────────────────┘
+           ┌───────────────────────────┴───────────────────────────┐
+           │                                                       │
+           │  Supabase (PostgreSQL)                                │
+           │                                                       │
+           │  auth.users, profiles, email_logs                     │
+           │  Companies, Contacts, Deals (9 stages)                │
+           │  Proposals, Invoices, Tasks, Notes, Tags              │
+           │  Workflows, Installer profiles, Subscriptions         │
+           │  Deal activities, Meeting logs, WhatsApp messages     │
+           │  Onboarding, Reports                                  │
+           │                                                       │
+           │  Accessed via @supabase/supabase-js (29 tables)       │
+           └───────────────────────────────────────────────────────┘
+           │                                                       │
+           └──────────────────────┬────────────────────────────────┘
+                                  │
+                    ┌─────────────┴─────────────────────┐
+                    │         External APIs              │
+                    │                                   │
+                    │  Anthropic Claude                 │
+                    │  Stripe                           │
+                    │  Postmark                         │
+                    │  Google Calendar                  │
+                    │  Z-AI SDK                         │
+                    └───────────────────────────────────┘
 ```
 
 ### How a request flows
 
 1. **Visitor hits `/`** — `proxy.ts` passes the request through (public route). Next.js renders the marketing homepage with a cinematic hero, AI agent showcase, FAQ, and pricing cards.
-2. **Visitor chats on the widget** — `POST /api/chat-widget` sends the message to the Z-AI SDK. The AI monitors for buying signals (solar installation intent, budget, timeline). When detected, it automatically creates a Contact and Deal in SQLite and sends an email alert to `hello@renewably.ie`.
-3. **Visitor starts onboarding** — The 10-step wizard at `/onboarding` collects company details, territory, finances, tech stack, compliance info, and account credentials. Progress is saved to `OnboardingSubmission` in SQLite so visitors can resume later.
+2. **Visitor chats on the widget** — `POST /api/chat-widget` sends the message to the Z-AI SDK. The AI monitors for buying signals (solar installation intent, budget, timeline). When detected, it automatically creates a Contact and Deal in Supabase and sends an email alert to `hello@renewably.ie`.
+3. **Visitor starts onboarding** — The 10-step wizard at `/onboarding` collects company details, territory, finances, tech stack, compliance info, and account credentials. Progress is saved to the `onboardings` and `onboarding_submissions` tables in Supabase so visitors can resume later.
 4. **Team member logs into CRM** — `POST /api/crm/auth/login` validates credentials against Supabase Auth, fetches the user's profile from the `profiles` table, and sets HttpOnly JWT cookies (`sb-access-token`, `sb-refresh-token`).
 5. **Team member opens `/crm/dashboard`** — `proxy.ts` reads the JWT cookie, calls `supabase.auth.getUser()` to validate, and either renders the dashboard or redirects to `/crm/login`.
-6. **Team member drags a deal on the pipeline** — `PUT /api/crm/pipeline` updates the deal stage in SQLite, triggers a Postmark email notification to the assigned contact, and logs the activity.
-7. **Team member creates an invoice** — `POST /api/crm/invoices` stores it in SQLite. `GET /api/crm/invoices/[id]/pdf` generates a PDF via `@react-pdf/renderer`. `POST /api/crm/invoices/[id]/send` emails it through Postmark. `POST /api/crm/invoices/[id]/payment-link` creates a Stripe payment link.
-8. **Team member asks the AI assistant** — `POST /api/crm/ai` fetches relevant CRM context (contacts, deals, tasks, company data) from SQLite, injects it into a Claude prompt, and streams the response. Supports 8 action types including email drafting, call scripts, deal insights, and objection handling.
+6. **Team member drags a deal on the pipeline** — `PUT /api/crm/pipeline` updates the deal stage in Supabase, triggers a Postmark email notification to the assigned contact, and logs the activity.
+7. **Team member creates an invoice** — `POST /api/crm/invoices` stores it in Supabase. `GET /api/crm/invoices/[id]/pdf` generates a PDF via `@react-pdf/renderer`. `POST /api/crm/invoices/[id]/send` emails it through Postmark. `POST /api/crm/invoices/[id]/payment-link` creates a Stripe payment link.
+8. **Team member asks the AI assistant** — `POST /api/crm/ai` fetches relevant CRM context (contacts, deals, tasks, company data) from Supabase, injects it into a Claude prompt, and streams the response. Supports 8 action types including email drafting, call scripts, deal insights, and objection handling.
 
-### Dual-database design
+### Database design
 
-The platform intentionally separates concerns across two databases:
+All data — authentication, CRM business data, onboarding, and integration state — lives in a single **Supabase (PostgreSQL)** instance. This gives the platform battle-tested JWT management, password recovery, email confirmation, real-time subscriptions, and row-level security (RLS) out of the box.
 
-| Database | Engine | Purpose | Accessed via |
-|----------|--------|---------|-------------|
-| **Supabase** | PostgreSQL | Authentication, user profiles, email delivery logs | `@supabase/supabase-js` |
-| **Local** | SQLite | All CRM business data — companies, deals, invoices, tasks, workflows | Prisma ORM (25 models) |
-
-Auth lives in Supabase because it provides battle-tested JWT management, password recovery, and email confirmation out of the box. CRM data lives in SQLite because it keeps the entire dataset local and portable — no external database dependency for the core business logic.
+| Layer | Engine | Purpose | Accessed via |
+|-------|--------|---------|-------------|
+| **Supabase** | PostgreSQL | Auth, profiles, CRM data, onboarding, integrations — everything | `@supabase/supabase-js` |
 
 <br />
 
@@ -157,8 +165,7 @@ Auth lives in Supabase because it provides battle-tested JWT management, passwor
 | **Runtime** | Bun | Node.js fallback for production |
 | **Styling** | Tailwind CSS 4 + shadcn/ui | New York theme, 47 primitives |
 | **Animations** | Framer Motion 12 | Scroll reveals, page transitions |
-| **Auth DB** | Supabase (PostgreSQL) | `auth.users`, `profiles`, `email_logs` |
-| **Business DB** | SQLite via Prisma ORM | 25 models, 3 migrations |
+| **Database** | Supabase (PostgreSQL) | 29 tables, RLS policies, real-time subscriptions |
 | **Auth** | Supabase Auth | JWT + HttpOnly cookies (7-day expiry) |
 | **Email** | Postmark | Transactional email + delivery webhooks |
 | **Payments** | Stripe | Checkout sessions, customer portal, webhooks |
@@ -184,7 +191,7 @@ Auth lives in Supabase because it provides battle-tested JWT management, passwor
 
 - **Cinematic homepage** — Hero with animated counters, AI agent showcase (8 workforce cards), FAQ accordion, pricing preview, and multiple conversion CTAs
 - **AI chat widget** — Floating chat bubble powered by the Z-AI SDK. Monitors conversations for buying signals (solar installation intent, budget, timeline). Automatically creates Contact and Deal records when intent is detected, and sends an email alert to the team
-- **10-step onboarding wizard** — Collects company details, service territory, financials, tech stack, compliance, and account credentials. Progress persists in SQLite so visitors can resume across sessions
+- **10-step onboarding wizard** — Collects company details, service territory, financials, tech stack, compliance, and account credentials. Progress persists in Supabase so visitors can resume across sessions
 - **Blog** — 9 full articles rendered via react-markdown, with SEO-optimised metadata and Open Graph images
 - **GDPR compliance** — Cookie consent banner, privacy policy, terms of service, dynamic `robots.txt` and `sitemap.xml`
 
@@ -199,49 +206,52 @@ Auth lives in Supabase because it provides battle-tested JWT management, passwor
 
 <br />
 
-## Database Schema (25 Prisma Models)
+## Database Schema (29 Supabase Tables)
 
 ### Core Business
 
-| Model | Purpose |
+| Table | Purpose |
 |-------|---------|
-| `Company` | Solar installer companies |
-| `Contact` | Decision-makers at companies |
-| `Deal` | Sales deals with 9-stage pipeline |
-| `DealActivity` | Timeline of all deal interactions |
-| `Proposal` | Sales proposals with line items |
-| `ProposalLineItem` | Individual proposal line items |
-| `Invoice` | Invoices with status tracking |
-| `InvoiceLineItem` | Individual invoice line items |
-| `Payment` | Recorded payments against invoices |
-| `Task` | CRM tasks with priorities and due dates |
-| `Note` | Freeform notes on any entity |
-| `Tag` / `ContactTag` / `DealTag` | Flexible tagging system |
+| `companies` | Solar installer companies |
+| `contacts` | Decision-makers at companies |
+| `deals` | Sales deals with 9-stage pipeline |
+| `deal_activities` | Timeline of all deal interactions |
+| `proposals` | Sales proposals with line items |
+| `proposal_line_items` | Individual proposal line items |
+| `proposal_templates` | Reusable proposal templates |
+| `invoices` | Invoices with status tracking |
+| `invoice_line_items` | Individual invoice line items |
+| `payments` | Recorded payments against invoices |
+| `tasks` | CRM tasks with priorities and due dates |
+| `notes` | Freeform notes on any entity |
+| `tags` / `contact_tags` / `deal_tags` | Flexible tagging system |
 
 ### Pipeline & Automation
 
-| Model | Purpose |
+| Table | Purpose |
 |-------|---------|
-| `PipelineStage` | Configurable pipeline stage definitions |
-| `WorkflowRule` | Automation trigger rules |
-| `WorkflowExecution` | Workflow run history |
+| `workflow_rules` | Automation trigger rules |
+| `workflow_executions` | Workflow run history |
 
 ### Onboarding & Installers
 
-| Model | Purpose |
+| Table | Purpose |
 |-------|---------|
-| `Onboarding` | Onboarding session state |
-| `OnboardingSubmission` | Completed onboarding form data |
-| `InstallerProfile` | Installer performance profiles |
-| `InstallerDocument` | Installer compliance documents |
+| `onboardings` | Onboarding session state |
+| `onboarding_submissions` | Completed onboarding form data |
+| `installer_profiles` | Installer performance profiles |
+| `installer_documents` | Installer compliance documents |
 
-### Integrations & Auth
+### Integrations & Communication
 
-| Model | Purpose |
+| Table | Purpose |
 |-------|---------|
-| `Subscription` | Stripe subscription records |
-| `GoogleCalendarConnection` | OAuth2 calendar connection tokens |
-| `User` / `Session` | Application-level user records |
+| `subscriptions` | Stripe subscription records |
+| `google_calendar_connections` | OAuth2 calendar connection tokens |
+| `whatsapp_messages` | WhatsApp message log |
+| `email_logs` | Email delivery tracking |
+| `reports` | Saved report snapshots |
+| `profiles` | CRM user profiles (extends auth.users) |
 
 <br />
 
@@ -419,7 +429,6 @@ All variables defined in `.env.example`. Only 3 are required to start:
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `DATABASE_URL` | `file:./dev.db` | SQLite connection string |
 | `NEXT_PUBLIC_BASE_URL` | `http://localhost:3000` | Public base URL (OAuth redirects, password reset) |
 | `ANTHROPIC_API_KEY` | — | Anthropic Claude (enables AI assistant) |
 | `STRIPE_SECRET_KEY` | — | Stripe secret key (enables billing) |
@@ -453,7 +462,7 @@ The CRM uses **Supabase Auth** with JWT tokens stored in HttpOnly cookies:
 
 ### CRM AI Assistant (`/api/crm/ai`)
 
-Powered by Anthropic Claude (`claude-sonnet-4-20250514`). Fetches real-time CRM context — contacts, deals, tasks, company data — from SQLite and injects it into the prompt. Streams responses via SSE.
+Powered by Anthropic Claude (`claude-sonnet-4-20250514`). Fetches real-time CRM context — contacts, deals, tasks, company data — from Supabase and injects it into the prompt. Streams responses via SSE.
 
 **8 supported action types:**
 1. **Email drafting** — Compose follow-up emails based on deal context
@@ -467,7 +476,7 @@ Powered by Anthropic Claude (`claude-sonnet-4-20250514`). Fetches real-time CRM 
 
 ### Public AI Chat Widget (`/api/chat-widget`)
 
-Powered by the Z-AI SDK. Sits on the marketing site as a floating chat bubble. Monitors conversations for buying signals (solar installation intent, budget, timeline). When detected, automatically creates a Contact and Deal in SQLite and sends an email alert to `hello@renewably.ie`.
+Powered by the Z-AI SDK. Sits on the marketing site as a floating chat bubble. Monitors conversations for buying signals (solar installation intent, budget, timeline). When detected, automatically creates a Contact and Deal in Supabase and sends an email alert to `hello@renewably.ie`.
 
 <br />
 
@@ -499,9 +508,9 @@ renewably/
 ├── tailwind.config.ts            # CSS variables, shadcn/ui theme
 ├── vitest.config.ts              # Vitest — node env, v8 coverage
 │
-├── prisma/
-│   ├── schema.prisma             # 25 models (SQLite)
-│   └── seed.ts                   # Sample data seeder
+├── supabase/
+│   ├── migrations/               # SQL migrations
+│   └── seed.sql                  # Sample data
 │
 ├── src/
 │   ├── proxy.ts                  # Auth middleware (JWT, rate limiting, route guards)
@@ -544,7 +553,7 @@ renewably/
 │   │   ├── crm-auth.ts           # requireAuth(), requireAdmin()
 │   │   ├── crm-route-helpers.ts  # CSRF validation, error responses
 │   │   ├── crm-schemas.ts        # Zod validation schemas
-│   │   ├── db.ts                 # Prisma client singleton
+│   │   ├── db.ts                 # Supabase client singleton
 │   │   ├── claude.ts             # Claude AI — 8 actions + streaming
 │   │   ├── claude-context.ts     # Real-time CRM context injection
 │   │   ├── stripe.ts             # Checkout, portal, webhooks
@@ -576,7 +585,7 @@ renewably/
 
 - **Authentication** — Supabase JWT tokens in HttpOnly, SameSite=Lax, Secure (production) cookies. 7-day expiry with refresh token rotation
 - **CSRF protection** — Origin/Referer validation on all mutation endpoints (POST/PUT/PATCH/DELETE). `requireAuth()` in `crm-auth.ts` validates request origin against allowed domains. Public mutation routes have explicit checks via `validateCsrfOrigin()` in `crm-route-helpers.ts`
-- **SQL injection** — Supabase and Prisma both use parameterized queries
+- **SQL injection** — Supabase uses parameterized queries by default
 - **XSS prevention** — Input sanitization via `sanitize.ts`, CSP headers in `next.config.ts`
 - **Rate limiting** — 10 requests/minute/IP via in-memory store (Redis-backed in production)
 - **Webhook verification** — Postmark delivery webhooks and Stripe billing/payment webhooks verify cryptographic signatures before processing
@@ -593,7 +602,7 @@ git clone https://github.com/RenewableIreland/Renewably.git && cd Renewably
 cp .env.production .env
 # Fill in your secrets (Stripe, Postmark, Anthropic, etc.)
 docker compose -f docker-compose.production.yml up -d --build
-docker compose -f docker-compose.production.yml exec app npx prisma migrate deploy
+# Migrations are managed in the Supabase dashboard
 ```
 
 | Service | Port | Purpose |
@@ -607,8 +616,6 @@ docker compose -f docker-compose.production.yml exec app npx prisma migrate depl
 ```bash
 cp .env.production .env          # Configure environment
 bun install                       # Install dependencies
-npx prisma migrate deploy        # Apply migrations
-npx prisma generate               # Generate Prisma client
 bun run build                     # Build (produces .next/standalone/)
 NODE_ENV=production bun .next/standalone/server.js  # Start on port 3000
 ```
@@ -657,7 +664,7 @@ The `.github/workflows/ci-cd.yml` pipeline runs on every push to `main`:
 |--------|-------|
 | API route files | 101 |
 | React components | 130 |
-| Prisma models | 25 |
+| Supabase tables | 29 |
 | CRM pages | 18 |
 | Marketing pages | 11 |
 | Blog posts | 9 |
