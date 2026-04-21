@@ -618,6 +618,31 @@ export function AIAssistant() {
     if (isOpen) setTimeout(() => inputRef.current?.focus(), 300)
   }, [isOpen])
 
+  const closePanel = useCallback(() => {
+    setIsClosing(true)
+    setTimeout(() => {
+      setIsOpen(false)
+      setIsClosing(false)
+    }, 180)
+  }, [])
+
+  const handleSelectAction = useCallback((action: ActionType) => {
+    setSelectedAction(action)
+    setShowActionPicker(false)
+    inputRef.current?.focus()
+    const prompts: Record<ActionType, string> = {
+      chat: '',
+      draft_email: 'Draft a follow-up email for ',
+      call_script: 'Write a call script for ',
+      summarize_contact: 'Summarise this contact: ',
+      deal_insights: 'Analyse this deal and give me insights: ',
+      generate_proposal: 'Generate a proposal for ',
+      next_actions: 'What should I do next? ',
+      objection_handling: 'How should I handle the objection: ',
+    }
+    setInput(prompts[action])
+  }, [])
+
   // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -640,15 +665,7 @@ export function AIAssistant() {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [isOpen, isLoading, isStreaming, messages.length, isClosing])
-
-  const closePanel = useCallback(() => {
-    setIsClosing(true)
-    setTimeout(() => {
-      setIsOpen(false)
-      setIsClosing(false)
-    }, 180)
-  }, [])
+  }, [isOpen, isLoading, isStreaming, messages.length, isClosing, closePanel, handleSelectAction])
 
   // Voice input
   const toggleMic = useCallback(() => {
@@ -674,23 +691,6 @@ export function AIAssistant() {
     recognition.start()
     setIsListening(true)
   }, [isListening])
-
-  const handleSelectAction = useCallback((action: ActionType) => {
-    setSelectedAction(action)
-    setShowActionPicker(false)
-    inputRef.current?.focus()
-    const prompts: Record<ActionType, string> = {
-      chat: '',
-      draft_email: 'Draft a follow-up email for ',
-      call_script: 'Write a call script for ',
-      summarize_contact: 'Summarise this contact: ',
-      deal_insights: 'Analyse this deal and give me insights: ',
-      generate_proposal: 'Generate a proposal for ',
-      next_actions: 'What should I do next? ',
-      objection_handling: 'How should I handle the objection: ',
-    }
-    setInput(prompts[action])
-  }, [])
 
   // Send with SSE streaming
   const sendMessage = useCallback(async (text: string) => {
