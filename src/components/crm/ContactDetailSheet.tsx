@@ -184,9 +184,9 @@ function ActivityRow({ activity }: { activity: Record<string, unknown> }) {
         <div style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.75)' }}>
           {activity.subject as string}
         </div>
-        {activity.description && (
+        {activity.description != null && (
           <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginTop: 2, lineHeight: 1.4 }}>
-            {activity.description as string}
+            {String(activity.description)}
           </div>
         )}
         <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', marginTop: 3 }}>

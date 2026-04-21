@@ -568,7 +568,7 @@ export function CalendarView() {
                   key={t}
                   onClick={() => setTypeFilter(isActive ? null : t)}
                   style={{
-                    padding: '5px 10px', borderRadius: 7, border: 'none',
+                    padding: '5px 10px', borderRadius: 7,
                     background: isActive ? `${cfg.color}20` : 'rgba(255,255,255,0.03)',
                     color: isActive ? cfg.color : TEXT_TERTIARY,
                     fontSize: 11, fontWeight: isActive ? 600 : 500,
