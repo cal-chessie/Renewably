@@ -119,14 +119,14 @@ function buildSystemPrompt(
     prompt += '\n\n--- Current CRM Context ---\n'
 
     if (contextData.contact) {
-      const c = contextData.contact
+      const c = contextData.contact as Record<string, unknown>
       prompt += `\n**Contact:** ${c.name || 'Unknown'}
 - Email: ${c.email || 'Not provided'}
 - Phone: ${c.phone || 'Not provided'}
 - Role: ${c.role || 'Not provided'}
 - Company: ${c.companyName || 'Not provided'}
 - Decision Maker: ${c.isDecisionMaker ? 'Yes' : 'No'}`
-      if (c.recentDeals?.length) {
+      if (Array.isArray(c.recentDeals) && c.recentDeals.length) {
         prompt += `\n- Recent Deals: ${c.recentDeals.map((d: Record<string, unknown>) =>
           `"${d.title}" \u2014 \u20AC${Number(d.value || 0).toLocaleString()} (${d.stage})`
         ).join('; ')}`
@@ -134,7 +134,7 @@ function buildSystemPrompt(
     }
 
     if (contextData.deal) {
-      const d = contextData.deal
+      const d = contextData.deal as Record<string, unknown>
       prompt += `\n**Deal:** ${d.title || 'Unknown'}
 - Stage: ${d.stage || 'Unknown'}
 - Value: \u20AC${Number(d.value || 0).toLocaleString()}
@@ -142,7 +142,7 @@ function buildSystemPrompt(
 - Product: ${d.product || 'Not specified'}
 - Company: ${d.companyName || 'Not specified'}
 - Created: ${d.createdAt || 'Unknown'}`
-      if (d.recentActivities?.length) {
+      if (Array.isArray(d.recentActivities) && d.recentActivities.length) {
         prompt += `\n- Recent Activity: ${d.recentActivities.map((a: Record<string, unknown>) =>
           `${a.type}: ${a.title}`
         ).join('; ')}`
@@ -150,7 +150,7 @@ function buildSystemPrompt(
     }
 
     if (contextData.task) {
-      const t = contextData.task
+      const t = contextData.task as Record<string, unknown>
       prompt += `\n**Task:** ${t.title}
 - Type: ${t.type}
 - Status: ${t.status || 'Not set'}
@@ -211,94 +211,92 @@ export async function POST(request: NextRequest) {
       const promises: Promise<void>[] = []
 
       if (context.contactId) {
-        promises.push(
-          supabase
-            .from('contacts')
-            .select('id, name, email, phone, role, is_decision_maker, company:companies(id, name)')
-            .eq('id', context.contactId)
-            .single()
-            .then(async ({ data: contact }) => {
-              if (contact) {
-                const companyRow = contact.company as Array<{ id: string; name: string }> | null
-                const { data: deals } = await supabase
-                  .from('deals')
-                  .select('id, stage, value, mrr, product, company:companies(name)')
-                  .eq('company_id', contact.company_id)
-                  .order('updated_at', { ascending: false })
-                  .limit(5)
+        promises.push((async () => {
+          try {
+            const { data: contact } = await supabase
+              .from('contacts')
+              .select('id, name, email, phone, role, is_decision_maker, company_id, company:companies(id, name)')
+              .eq('id', context.contactId)
+              .single()
+            if (contact) {
+              const contactRecord = contact as Record<string, unknown>
+              const companyId = contactRecord.company_id as string | null
+              const companyRow = contact.company as Array<{ id: string; name: string }> | null
+              const { data: deals } = await supabase
+                .from('deals')
+                .select('id, stage, value, mrr, product, company:companies(name)')
+                .eq('company_id', companyId)
+                .order('created_at', { ascending: false })
+                .limit(5)
 
-                contextData.contact = {
-                  name: contact.name,
-                  email: contact.email,
-                  phone: contact.phone,
-                  role: contact.role,
-                  isDecisionMaker: contact.is_decision_maker,
-                  companyName: companyRow?.[0]?.name || null,
-                  recentDeals: (deals ?? []).map((d: Record<string, unknown>) => {
-                    const companyArr = d.company as Array<{ name: string }> | null
-                    return { ...d, companyName: companyArr?.[0]?.name || null }
-                  }),
-                }
+              contextData.contact = {
+                name: contact.name,
+                email: contact.email,
+                phone: contact.phone,
+                role: contact.role,
+                isDecisionMaker: contact.is_decision_maker,
+                companyName: companyRow?.[0]?.name || null,
+                recentDeals: (deals ?? []).map((d: Record<string, unknown>) => {
+                  const companyArr = d.company as Array<{ name: string }> | null
+                  return { ...d, companyName: companyArr?.[0]?.name || null }
+                }),
               }
-            })
-            .catch(() => {})
-        )
+            }
+          } catch {}
+        })())
       }
 
       if (context.dealId) {
-        promises.push(
-          supabase
-            .from('deals')
-            .select('id, stage, value, mrr, product, setup_fee, created_at, updated_at, company:companies(id, name)')
-            .eq('id', context.dealId)
-            .single()
-            .then(async ({ data: deal }) => {
-              if (deal) {
-                const companyRow = deal.company as Array<{ id: string; name: string }> | null
-                const { data: activities } = await supabase
-                  .from('deal_activities')
-                  .select('id, type, title, content, created_at')
-                  .eq('deal_id', deal.id)
-                  .order('created_at', { ascending: false })
-                  .limit(10)
+        promises.push((async () => {
+          try {
+            const { data: deal } = await supabase
+              .from('deals')
+              .select('id, stage, value, mrr, product, setup_fee, created_at, company:companies(id, name)')
+              .eq('id', context.dealId)
+              .single()
+            if (deal) {
+              const companyRow = deal.company as Array<{ id: string; name: string }> | null
+              const { data: activities } = await supabase
+                .from('deal_activities')
+                .select('id, type, title, content, created_at')
+                .eq('deal_id', deal.id)
+                .order('created_at', { ascending: false })
+                .limit(10)
 
-                contextData.deal = {
-                  stage: deal.stage,
-                  value: deal.value,
-                  mrr: deal.mrr,
-                  product: deal.product,
-                  companyName: companyRow?.[0]?.name || null,
-                  createdAt: deal.created_at,
-                  updatedAt: deal.updated_at,
-                  recentActivities: activities ?? [],
-                }
+              contextData.deal = {
+                stage: deal.stage,
+                value: deal.value,
+                mrr: deal.mrr,
+                product: deal.product,
+                companyName: companyRow?.[0]?.name || null,
+                createdAt: deal.created_at,
+                recentActivities: activities ?? [],
               }
-            })
-            .catch(() => {})
-        )
+            }
+          } catch {}
+        })())
       }
 
       if (context.taskId) {
-        promises.push(
-          supabase
-            .from('deal_activities')
-            .select('id, type, title, content, created_at, deal:deals(company:companies(name))')
-            .eq('id', context.taskId)
-            .single()
-            .then(({ data: task }) => {
-              if (task) {
-                const dealRow = task.deal as Array<{ company: { name: string } }> | null
-                contextData.task = {
-                  title: task.title,
-                  type: task.type,
-                  content: task.content,
-                  createdAt: task.created_at,
-                  companyName: dealRow?.[0]?.company?.name || null,
-                }
+        promises.push((async () => {
+          try {
+            const { data: task } = await supabase
+              .from('deal_activities')
+              .select('id, type, title, content, created_at, deal:deals(company:companies(name))')
+              .eq('id', context.taskId)
+              .single()
+            if (task) {
+              const dealRow = task.deal as unknown as Array<{ company: { name: string } }> | null
+              contextData.task = {
+                title: task.title,
+                type: task.type,
+                content: task.content,
+                createdAt: task.created_at,
+                companyName: dealRow?.[0]?.company?.name || null,
               }
-            })
-            .catch(() => {})
-        )
+            }
+          } catch {}
+        })())
       }
 
       await Promise.all(promises)
@@ -311,7 +309,7 @@ export async function POST(request: NextRequest) {
     )
 
     // Build messages array with conversation history
-    const messages: Array<{ role: string; content: string }> = [
+    const messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }> = [
       { role: 'system', content: systemPrompt },
     ]
 

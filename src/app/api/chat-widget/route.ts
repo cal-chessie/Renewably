@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
 }
 
 // ─── Async Lead Capture ───
-// Creates a contact in the CRM from chat interactions
+// Creates a contact + company in the CRM from chat interactions
 
 async function captureChatLead(
   message: string,
@@ -174,69 +174,43 @@ async function captureChatLead(
   isStrongLead: boolean = false
 ) {
   try {
+    const contactName = `Chat Visitor${visitorId ? `-${visitorId.slice(0, 8)}` : `-${Date.now().toString(36)}`}`;
+    const visitorTag = visitorId ? `[visitor:${visitorId}]` : null;
+
+    // Find or create the default "Chat Leads" company for chat widget contacts
+    const chatCompany = await db.company.upsert({
+      where: { id: "chat-leads-default" },
+      update: {},
+      create: {
+        id: "chat-leads-default",
+        name: "Chat Widget Leads",
+        counties: "",
+        status: "active",
+        notes: "Auto-created bucket for leads captured via the public chat widget.",
+      },
+    });
+
     // Check if we already have a recent chat lead from this visitor
-    if (visitorId) {
+    if (visitorTag) {
       const existingRecent = await db.contact.findFirst({
         where: {
+          companyId: chatCompany.id,
           source: "chat",
-          description: { contains: visitorId },
+          notes: { contains: visitorTag },
           createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
         },
       });
       if (existingRecent) {
-        // Update existing contact's description with new interaction
+        // Update existing contact's notes with new interaction
         await db.contact.update({
           where: { id: existingRecent.id },
           data: {
-            description: `${existingRecent.description}\n\n[${new Date().toISOString()}] ${message}`,
+            notes: `${existingRecent.notes || ""}\n\n[${new Date().toISOString()}] ${message}`,
             status: isStrongLead ? "prospect" : existingRecent.status,
           },
         });
 
-        // Log the activity
-        await db.activity.create({
-          data: {
-            type: "note",
-            title: "Chat interaction",
-            description: `Visitor sent: "${message.slice(0, 200)}"`,
-            contactId: existingRecent.id,
-          },
-        });
-
-        // Check if this contact already has a deal from chat — if not, create one
-        const existingDeal = await db.deal.findFirst({
-          where: {
-            contactId: existingRecent.id,
-            title: { contains: "Chat Enquiry" },
-          },
-        });
-
-        if (!existingDeal && isStrongLead) {
-          try {
-            const leadStage = await db.pipelineStage.upsert({
-              where: { name: "Lead" },
-              update: {},
-              create: { name: "Lead", order: 1, color: "#9CA3AF", isDefault: true },
-            });
-
-            await db.deal.create({
-              data: {
-                title: `${existingRecent.firstName} ${existingRecent.lastName} — Chat Enquiry`,
-                description: `Returning chat visitor showing strong intent.\n\nLatest message: "${message.slice(0, 300)}"`,
-                value: 15000,
-                currency: "EUR",
-                probability: 30,
-                stageId: leadStage.id,
-                contactId: existingRecent.id,
-                closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-              },
-            });
-            console.log(`[Chat Lead] Deal created for returning visitor ${existingRecent.id}`);
-          } catch (dealErr) {
-            console.warn("[Chat Lead] Could not create deal for returning visitor:", dealErr instanceof Error ? dealErr.message : dealErr);
-          }
-        }
-
+        console.log(`[Chat Lead] Returning visitor updated: ${existingRecent.id}`);
         return;
       }
     }
@@ -244,44 +218,26 @@ async function captureChatLead(
     // Create a new contact from the chat interaction
     const contact = await db.contact.create({
       data: {
-        firstName: "Chat",
-        lastName: `Visitor${visitorId ? `-${visitorId.slice(0, 8)}` : `-${Date.now().toString(36)}`}`,
+        companyId: chatCompany.id,
+        name: contactName,
         email: null,
         phone: null,
         source: "chat",
         status: isStrongLead ? "prospect" : "lead",
-        description: `[Chat Lead Capture - ${new Date().toISOString()}]${visitorId ? `\nVisitor ID: ${visitorId}` : ""}${pageContext ? `\nPage: ${pageContext}` : ""}\n\nMessage: ${message}`,
-      },
-    });
-
-    // Log the activity
-    await db.activity.create({
-      data: {
-        type: "note",
-        title: isStrongLead ? "Strong chat lead captured" : "Chat lead captured",
-        description: `New lead from chat widget.\nPage: ${pageContext || "unknown"}\nMessage: "${message.slice(0, 200)}"`,
-        contactId: contact.id,
+        notes: `[Chat Lead Capture - ${new Date().toISOString()}]${visitorTag ? `\n${visitorTag}` : ""}${pageContext ? `\nPage: ${pageContext}` : ""}\n\nMessage: ${message}`,
       },
     });
 
     // Create a Deal so chat leads appear in the CRM pipeline view
     try {
-      const leadStage = await db.pipelineStage.upsert({
-        where: { name: "Lead" },
-        update: {},
-        create: { name: "Lead", order: 1, color: "#9CA3AF", isDefault: true },
-      });
-
       await db.deal.create({
         data: {
-          title: `${contact.firstName} ${contact.lastName} — Chat Enquiry`,
-          description: `Lead captured from chat widget on ${pageContext || "unknown"}.\n\nMessage: "${message.slice(0, 300)}"`,
+          companyId: chatCompany.id,
+          product: "ai_workforce",
+          stage: "new_lead",
+          notes: `Lead captured from chat widget on ${pageContext || "unknown"}.\n\nMessage: "${message.slice(0, 300)}"`,
           value: 15000, // Default €15k annual estimate (€1,250/mo subscription)
-          currency: "EUR",
-          probability: isStrongLead ? 30 : 15,
-          stageId: leadStage.id,
-          contactId: contact.id,
-          closeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+          mrr: 1000,
         },
       });
 
@@ -294,7 +250,7 @@ async function captureChatLead(
     try {
       await sendEmail({
         to: "hello@renewably.ie",
-        subject: `${isStrongLead ? "🔥 Strong" : "💬 New"} chat lead captured — ${contact.firstName} ${contact.lastName}`,
+        subject: `${isStrongLead ? "Strong" : "New"} chat lead captured — ${contact.name}`,
         htmlBody: `
           <div style="font-family: system-ui, sans-serif; color: #1A1A1A; max-width: 560px; margin: 0 auto;">
             <div style="background: #0A0A0A; padding: 24px 32px; border-radius: 12px 12px 0 0;">
@@ -303,17 +259,17 @@ async function captureChatLead(
             <div style="padding: 24px 32px; border: 1px solid #E5E7EB; border-top: none; border-radius: 0 0 12px 12px;">
               <p style="margin: 0 0 16px; font-size: 15px;">A new ${isStrongLead ? "<strong>strong</strong>" : ""} lead was captured from the chat widget:</p>
               <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
-                <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px; width: 120px;">Contact</td><td style="padding: 6px 0; font-size: 14px; font-weight: 500;">${contact.firstName} ${contact.lastName}</td></tr>
+                <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px; width: 120px;">Contact</td><td style="padding: 6px 0; font-size: 14px; font-weight: 500;">${contact.name}</td></tr>
                 <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px;">Source</td><td style="padding: 6px 0; font-size: 14px;">Chat Widget</td></tr>
                 <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px;">Page</td><td style="padding: 6px 0; font-size: 14px;">${pageContext || "Unknown"}</td></tr>
                 <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px;">Signal</td><td style="padding: 6px 0; font-size: 14px;">${isStrongLead ? "Strong buying intent" : "General interest"}</td></tr>
                 <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px;">Message</td><td style="padding: 6px 0; font-size: 14px;">"${message.slice(0, 300)}"</td></tr>
               </table>
-              <p style="margin: 16px 0 0; font-size: 13px; color: #6B7280;">A deal has been automatically created in the pipeline. <a href="https://renewably.ie/crm/pipeline" style="color: #F3D840; text-decoration: none; font-weight: 600;">View Pipeline →</a></p>
+              <p style="margin: 16px 0 0; font-size: 13px; color: #6B7280;">A deal has been automatically created in the pipeline. <a href="https://renewably.ie/crm/pipeline" style="color: #F3D840; text-decoration: none; font-weight: 600;">View Pipeline</a></p>
             </div>
           </div>
         `,
-        textBody: `New ${isStrongLead ? "STRONG " : ""}chat lead captured!\n\nContact: ${contact.firstName} ${contact.lastName}\nSource: Chat Widget\nPage: ${pageContext || "Unknown"}\nMessage: "${message.slice(0, 300)}"\n\nA deal has been created in the pipeline: https://renewably.ie/crm/pipeline`,
+        textBody: `New ${isStrongLead ? "STRONG " : ""}chat lead captured!\n\nContact: ${contact.name}\nSource: Chat Widget\nPage: ${pageContext || "Unknown"}\nMessage: "${message.slice(0, 300)}"\n\nA deal has been created in the pipeline: https://renewably.ie/crm/pipeline`,
       });
 
       console.log(`[Chat Lead] Notification email sent for ${contact.id}`);

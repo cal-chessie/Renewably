@@ -11,9 +11,8 @@ const nextConfig: NextConfig = {
     "*.space.chatglm.site",
     "*.space.z.ai",
   ],
-  // TODO: Set ignoreBuildErrors to false before production build — fix all TS errors first
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   experimental: {
     // optimizeCss disabled — causes framer-motion "reducedMotion is not defined" runtime error

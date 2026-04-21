@@ -137,11 +137,13 @@ export async function POST(request: NextRequest) {
           if (newCompany) {
             companyId = newCompany.id;
             // Create onboarding record
-            await supabase.from("onboarding").insert({
-              company_id: companyId,
-              solarpilot_progress: 0,
-              ai_workforce_progress: 0,
-            }).catch(() => {});
+            try {
+              await supabase.from("onboarding").insert({
+                company_id: companyId,
+                solarpilot_progress: 0,
+                ai_workforce_progress: 0,
+              });
+            } catch {}
           }
         }
       }

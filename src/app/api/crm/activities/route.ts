@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
-    const limit = clampPagination(parseInt(searchParams.get('limit')), 50)
+    const limit = clampPagination(parseInt(searchParams.get('limit') || '50'), 50)
     const dealId = searchParams.get('dealId') || ''
     const companyId = searchParams.get('companyId') || ''
 
