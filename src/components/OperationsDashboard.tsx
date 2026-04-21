@@ -6,20 +6,20 @@ import { useState, useEffect } from "react";
    OPERATIONS DASHBOARD — Interactive ops agent laptop mockup
    ============================================================ */
 
-const INITIAL_JOBS = [
-  { id: 1, name: "Mary Walsh", county: "Cork", stage: "install" as const, progress: 68, crew: "Sean's Team" },
-  { id: 2, name: "Pat Smith", county: "Dublin", stage: "permit" as const, progress: 45, crew: "Mary's Team" },
-  { id: 3, name: "Anne Doyle", county: "Galway", stage: "grant" as const, progress: 80, crew: null },
-  { id: 4, name: "Tom Kelly", county: "Limerick", stage: "assessment" as const, progress: 20, crew: null },
-  { id: 5, name: "Siobhán Ní Fhaoláin", county: "Kerry", stage: "assessment" as const, progress: 0, crew: null },
-  { id: 6, name: "Declan Finnerty", county: "Mayo", stage: "install" as const, progress: 45, crew: "Owen's Team" },
+const INITIAL_JOBS: Array<{ id: number; name: string; county: string; stage: string; progress: number; crew: string | null }> = [
+  { id: 1, name: "Mary Walsh", county: "Cork", stage: "install", progress: 68, crew: "Sean's Team" },
+  { id: 2, name: "Pat Smith", county: "Dublin", stage: "permit", progress: 45, crew: "Mary's Team" },
+  { id: 3, name: "Anne Doyle", county: "Galway", stage: "grant", progress: 80, crew: null },
+  { id: 4, name: "Tom Kelly", county: "Limerick", stage: "assessment", progress: 20, crew: null },
+  { id: 5, name: "Siobhán Ní Fhaoláin", county: "Kerry", stage: "assessment", progress: 0, crew: null },
+  { id: 6, name: "Declan Finnerty", county: "Mayo", stage: "install", progress: 45, crew: "Owen's Team" },
 ];
 
-const INITIAL_CREWS = [
-  { id: 1, name: "Sean's Team", task: "Installing Mary Walsh (Cork)", status: "active" as const, progress: 68 },
-  { id: 2, name: "Mary's Team", task: "Waiting on ESB permit — Pat Smith", status: "waiting" as const, progress: 45 },
-  { id: 3, name: "Owen's Team", task: "Installing Declan Finnerty (Mayo)", status: "active" as const, progress: 45 },
-  { id: 4, name: "Pat's Team", task: "Awaiting SEAI grant — Anne Doyle", status: "idle" as const, progress: 80 },
+const INITIAL_CREWS: Array<{ id: number; name: string; task: string; status: string; progress: number }> = [
+  { id: 1, name: "Sean's Team", task: "Installing Mary Walsh (Cork)", status: "active", progress: 68 },
+  { id: 2, name: "Mary's Team", task: "Waiting on ESB permit — Pat Smith", status: "waiting", progress: 45 },
+  { id: 3, name: "Owen's Team", task: "Installing Declan Finnerty (Mayo)", status: "active", progress: 45 },
+  { id: 4, name: "Pat's Team", task: "Awaiting SEAI grant — Anne Doyle", status: "idle", progress: 80 },
 ];
 
 const INITIAL_TIMELINE = [

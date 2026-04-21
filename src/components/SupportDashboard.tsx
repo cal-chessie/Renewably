@@ -8,12 +8,12 @@ import { useState, useEffect } from "react";
 
 const SATISFACTION = 98.47;
 
-const INITIAL_TICKETS = [
-  { id: "TKT-1042", customer: "Mary Walsh", county: "Cork", subject: "When will my installation start?", status: "in-progress" as const, time: "2 min ago" },
-  { id: "TKT-1041", customer: "Pat Smith", county: "Dublin", subject: "Grant application status update", status: "open" as const, time: "15 min ago" },
-  { id: "TKT-1040", customer: "Anne Doyle", county: "Galway", subject: "ESB permit delay", status: "escalated" as const, time: "45 min ago" },
-  { id: "TKT-1039", customer: "Tom Kelly", county: "Limerick", subject: "Quote revision request", status: "open" as const, time: "1 hour ago" },
-  { id: "TKT-1038", customer: "Siobhán Ní Fhaoláin", county: "Kerry", subject: "Battery storage compatibility", status: "in-progress" as const, time: "2 hours ago" },
+const INITIAL_TICKETS: Array<{ id: string; customer: string; county: string; subject: string; status: string; time: string }> = [
+  { id: "TKT-1042", customer: "Mary Walsh", county: "Cork", subject: "When will my installation start?", status: "in-progress", time: "2 min ago" },
+  { id: "TKT-1041", customer: "Pat Smith", county: "Dublin", subject: "Grant application status update", status: "open", time: "15 min ago" },
+  { id: "TKT-1040", customer: "Anne Doyle", county: "Galway", subject: "ESB permit delay", status: "escalated", time: "45 min ago" },
+  { id: "TKT-1039", customer: "Tom Kelly", county: "Limerick", subject: "Quote revision request", status: "open", time: "1 hour ago" },
+  { id: "TKT-1038", customer: "Siobhán Ní Fhaoláin", county: "Kerry", subject: "Battery storage compatibility", status: "in-progress", time: "2 hours ago" },
 ];
 
 const INITIAL_CONVERSATIONS = [
