@@ -64,11 +64,12 @@ export default function MiniDesktop() {
   const [rtAgents, setRtAgents] = useState(RT_AGENTS.map((a) => ({ ...a })));
 
   // Installs
-  const [installs, setInstalls] = useState([
-    { name: "Mary Walsh", status: "in_progress" as const, progress: 68, logistics: "12 panels arrived", crew: "Sean's team" },
-    { name: "Pat Smith", status: "scheduled" as const, progress: 0, logistics: "Delivery 14:00", crew: "Mary's team" },
-    { name: "Anne Doyle", status: "completed" as const, progress: 100, logistics: "Install complete", crew: "Pat's team" },
-    { name: "Tom Kelly", status: "in_progress" as const, progress: 32, logistics: "14 panels", crew: "Owen's team" },
+  type InstallItem = { name: string; status: string; progress: number; logistics: string; crew: string };
+  const [installs, setInstalls] = useState<InstallItem[]>([
+    { name: "Mary Walsh", status: "in_progress", progress: 68, logistics: "12 panels arrived", crew: "Sean's team" },
+    { name: "Pat Smith", status: "scheduled", progress: 0, logistics: "Delivery 14:00", crew: "Mary's team" },
+    { name: "Anne Doyle", status: "completed", progress: 100, logistics: "Install complete", crew: "Pat's team" },
+    { name: "Tom Kelly", status: "in_progress", progress: 32, logistics: "14 panels", crew: "Owen's team" },
   ]);
 
   const fillForm = useCallback(() => {
@@ -118,10 +119,10 @@ export default function MiniDesktop() {
         prev.map((inst) => {
           if (inst.status === "in_progress") {
             const np = Math.min(100, inst.progress + Math.floor(Math.random() * 6) + 2);
-            return np >= 100 ? { ...inst, progress: 100, status: "completed" as const } : { ...inst, progress: np };
+            return np >= 100 ? { ...inst, progress: 100, status: "completed" } : { ...inst, progress: np };
           }
           if (inst.status === "scheduled" && Math.random() > 0.7) {
-            return { ...inst, status: "in_progress" as const, progress: 5 };
+            return { ...inst, status: "in_progress", progress: 5 };
           }
           return inst;
         })

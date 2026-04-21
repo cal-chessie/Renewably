@@ -226,10 +226,12 @@ function loadMessages(): Message[] {
     const parsed = JSON.parse(raw)
     if (!Array.isArray(parsed)) return []
     return parsed.map((m: Record<string, unknown>) => ({
-      ...m,
+      id: String(m.id),
+      role: String(m.role),
+      content: String(m.content),
       timestamp: new Date(m.timestamp as string),
       isStreaming: false,
-    }))
+    } as Message))
   } catch { return [] }
 }
 

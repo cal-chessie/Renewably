@@ -46,7 +46,7 @@ const ReportingDashboard = dynamic(() => import("@/components/ReportingDashboard
 /* ============================================================
    DATA — 8 AI Agents (+ 1 Coming Soon)
    ============================================================ */
-const agents = [
+const agents: Array<{ num: string; title: string; tagline: string; body: string; closing: string; image?: string }> = [
   {
     num: "01",
     title: "CEO Agent",
