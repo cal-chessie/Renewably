@@ -540,11 +540,11 @@ export function FinancialTab() {
                 </div>
 
                 {/* Main layout: fills remaining height */}
-                <div style={{ flex: 1, display: 'flex', gap: 20, minHeight: 0 }}>
+                <div style={{ flex: 1, display: 'flex', gap: 20,  }}>
 
                   {/* Stacked bar chart — fills height */}
                   <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-                    <ResponsiveContainer width="100%" height="100%" style={{ flex: 1, minHeight: 260 }}>
+                    <ResponsiveContainer width="100%" height="100%" style={{ flex: 1,  }}>
                       <BarChart data={stackedData} margin={{ top: 8, right: 0, left: -20, bottom: 0 }} barCategoryGap="22%">
                         <defs>
                           <linearGradient id="stackSP" x1="0" y1="0" x2="0" y2="1">
@@ -559,7 +559,7 @@ export function FinancialTab() {
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.025)" vertical={false} />
                         <XAxis dataKey="month" tick={{ fontSize: 10, fill: TEXT_TERTIARY }} axisLine={false} tickLine={false} />
                         <YAxis tick={{ fontSize: 10, fill: TEXT_TERTIARY }} axisLine={false} tickLine={false} tickFormatter={(v) => `€${(v / 1000).toFixed(1)}k`} domain={[0, 'auto']} />
-                        <Tooltip content={renderCinematicTooltip} cursor={{ fill: 'rgba(255,255,255,0.015)' }} />
+                        <Tooltip content={renderCinematicTooltip as any} cursor={{ fill: 'rgba(255,255,255,0.015)' }} />
                         <Bar dataKey="solarpilot" stackId="rev" fill="url(#stackSP)" radius={[0, 0, 0, 0]} maxBarSize={40}>
                           {stackedData.map((entry, index) => (
                             <Cell key={index} fill={index === stackedData.length - 1 ? 'url(#stackSP)' : 'rgba(243,216,64,0.65)'} />
@@ -861,7 +861,7 @@ export function FinancialTab() {
                     <XAxis dataKey="month" tick={{ fontSize: 10, fill: TEXT_TERTIARY }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 10, fill: TEXT_TERTIARY }} axisLine={false} tickLine={false}
                       tickFormatter={(v) => `€${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip content={renderCinematicTooltip} />
+                    <Tooltip content={renderCinematicTooltip as any} />
                     <Line type="monotone" dataKey="actual" stroke={GREEN} strokeWidth={2.5}
                       dot={{ fill: GREEN, r: 3.5, strokeWidth: 0 }}
                       activeDot={{ fill: GREEN, r: 5, stroke: GREEN, strokeWidth: 2, strokeOpacity: 0.3 }} />
