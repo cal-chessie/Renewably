@@ -49,6 +49,20 @@ function getAllowedOrigins(): Set<string> {
     } catch { /* ignore */ }
   }
 
+  // ── ADDED: Vercel deployment URLs (production, preview, branch) ──────────
+  // VERCEL_URL is injected at runtime on every deployment, including the
+  // hashed preview URLs. Without this, every preview deploy fails CSRF.
+  if (process.env.VERCEL_URL) {
+    origins.add(`https://${process.env.VERCEL_URL}`)
+  }
+  if (process.env.VERCEL_BRANCH_URL) {
+    origins.add(`https://${process.env.VERCEL_BRANCH_URL}`)
+  }
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    origins.add(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`)
+  }
+  // ────────────────────────────────────────────────────────────────────────
+
   // Dev environments
   if (process.env.NODE_ENV !== 'production') {
     origins.add('http://localhost:3000')
@@ -58,16 +72,6 @@ function getAllowedOrigins(): Set<string> {
 
   return origins
 }
-
-/** Extract origin from a full URL string */
-function extractOrigin(url: string): string | null {
-  try {
-    return new URL(url).origin
-  } catch {
-    return null
-  }
-}
-
 /**
  * Validates that the request's Origin or Referer header matches an allowed origin.
  * Returns true if the request is safe (GET/HEAD/OPTIONS) or if the origin is valid.
