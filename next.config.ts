@@ -96,7 +96,7 @@ const nextConfig: NextConfig = {
                 ].join("; ")
               : [
                   "default-src 'self'"
-                "script-src 'self' 'unsafe-inline' https://js.stripe.com",,
+                "script-src 'self' 'unsafe-inline' https://js.stripe.com",
                   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
                   "font-src 'self' https://fonts.gstatic.com",
                   "img-src 'self' data: blob: https:",
