@@ -93,6 +93,20 @@ export function validateCsrfOrigin(request: NextRequest): boolean {
   if (safeMethods.has(method)) return true
 
   const allowedOrigins = getAllowedOrigins()
+
+  // ── Same-origin is ALWAYS allowed ────────────────────────────────────────
+  // Derive the origin this request actually arrived at from its own Host
+  // header. This needs no configuration and is correct on every domain:
+  // production, custom domains, and every Vercel preview/branch deployment.
+  // A cross-site attacker's request carries THEIR origin but arrives at OUR
+  // host — mismatch, blocked. A legitimate same-origin request matches.
+  const host = request.headers.get('host')
+  const proto = request.headers.get('x-forwarded-proto') || 'https'
+  if (host) {
+    allowedOrigins.add(`${proto}://${host}`)
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
   if (allowedOrigins.size === 0) return true // no config — don't block
 
   // Check Origin header (sent on cross-origin and preflighted requests)
