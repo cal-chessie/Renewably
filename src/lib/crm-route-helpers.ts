@@ -72,6 +72,16 @@ function getAllowedOrigins(): Set<string> {
 
   return origins
 }
+
+/** Extract origin from a full URL string */
+function extractOrigin(url: string): string | null {
+  try {
+    return new URL(url).origin
+  } catch {
+    return null
+  }
+}
+
 /**
  * Validates that the request's Origin or Referer header matches an allowed origin.
  * Returns true if the request is safe (GET/HEAD/OPTIONS) or if the origin is valid.
