@@ -1,7 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
-import ZAI from 'z-ai-web-dev-sdk'
+async function openaiChat(
+  messages: Array<{ role: string; content: string }>
+): Promise<string | null> {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) {
+    console.error('[CRM AI] OPENAI_API_KEY is not set')
+    return null
+  }
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+      messages,
+      temperature: 0.7,
+      max_tokens: 800,
+    }),
+  })
+  if (!res.ok) {
+    console.error('[CRM AI] OpenAI error', res.status, await res.text())
+    return null
+  }
+  const data = await res.json()
+  return data.choices?.[0]?.message?.content ?? null
+}
 
 function buildSystemPrompt(contextData?: {
   contact?: Record<string, unknown>
@@ -189,15 +213,11 @@ export async function POST(request: NextRequest) {
     )
 
     // Get AI response
-    const zai = await ZAI.create()
-    const completion = await zai.chat.completions.create({
-      messages: [
+    const reply =
+      (await openaiChat([
         { role: 'system', content: systemPrompt },
         { role: 'user', content: message },
-      ],
-    })
-
-    const reply = completion.choices[0]?.message?.content || 'Sorry, I couldn\'t generate a response. Please try again.'
+      ])) || 'Sorry, I couldn\'t generate a response. Please try again.'
 
     return NextResponse.json({ reply })
   } catch (error) {

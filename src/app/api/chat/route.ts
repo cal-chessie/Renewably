@@ -3,7 +3,7 @@
 // ============================================================================
 // POST /api/chat
 //
-// Handles visitor chat via z-ai-web-dev-sdk.
+// Handles visitor chat via OpenAI.
 // Detects buying signals and captures leads into the CRM as contacts.
 // ============================================================================
 

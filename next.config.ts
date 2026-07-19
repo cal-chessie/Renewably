@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // 'output: standalone' removed — that was for Z.ai self-hosting; Vercel
+  // handles the Next.js output natively.
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
