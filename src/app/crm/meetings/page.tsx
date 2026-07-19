@@ -284,7 +284,7 @@ function CalendarView({
               <button
                 key={date.toISOString()}
                 onClick={() => onSelectDate(date)}
-                className="crm-calendar-day min-h-[60px] md:min-h-[120px] p-1 md:p-1.5 text-left transition-colors hover:bg-[#F3D840]/10 focus:outline-none relative ${
+                className={`crm-calendar-day min-h-[60px] md:min-h-[120px] p-1 md:p-1.5 text-left transition-colors hover:bg-[#F3D840]/10 focus:outline-none relative ${
                   isSelected ? 'bg-[#F3D840]/10 ring-2 ring-inset ring-[#F3D840]' : ''
                 }`}
               >
