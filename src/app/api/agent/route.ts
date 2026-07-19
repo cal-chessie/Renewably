@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 
-const AGENT_API_KEY = process.env.AGENT_API_KEY || "change-me-in-production";
+// Fail closed: no key configured → no access. A hardcoded fallback here was
+// audit finding #1 (2026-07-15) — the default value WAS the working key.
+const AGENT_API_KEY = process.env.AGENT_API_KEY || null;
 const CONTENT_DIR = path.join(process.cwd(), "src", "data");
 
 interface ContentItem {
@@ -18,6 +20,7 @@ interface ContentItem {
 }
 
 function auth(request: NextRequest): boolean {
+  if (!AGENT_API_KEY) return false; // unconfigured = locked, never open
   const key = request.headers.get("x-agent-api-key");
   return key === AGENT_API_KEY;
 }

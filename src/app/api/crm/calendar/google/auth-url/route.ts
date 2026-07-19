@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { db } from '@/lib/db'
+import { signOAuthState } from '@/lib/oauth-state'
 
 export async function GET(request: Request) {
   try {
@@ -11,7 +12,7 @@ export async function GET(request: Request) {
     const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/crm/calendar/google/callback`
 
     if (!clientId) {
-      const mockUrl = `${redirectUri}?code=mock_code_${Date.now()}&state=${Buffer.from(JSON.stringify({ userId: user.id })).toString('base64')}`
+      const mockUrl = `${redirectUri}?code=mock_code_${Date.now()}&state=${signOAuthState(user.id)}`
       return NextResponse.json({ url: mockUrl, mock: true })
     }
 
@@ -20,7 +21,7 @@ export async function GET(request: Request) {
       'https://www.googleapis.com/auth/calendar.events',
     ].join(' ')
 
-    const state = Buffer.from(JSON.stringify({ userId: user.id })).toString('base64')
+    const state = signOAuthState(user.id)
 
     const url = new URL('https://accounts.google.com/o/oauth2/v2/auth')
     url.searchParams.set('client_id', clientId)

@@ -588,3 +588,22 @@ model Subscription {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
+
+// ─── Kernel bridge outbox (Door B, cross-DB) ─────────────────────────────────
+// Solves the outbox problem flagged OPEN in AIOS_ARCHITECTURE.md: the intent
+// row is written in the SAME local transaction as the business write, then a
+// flusher delivers it to public.kernel_emit with retry. Emit failure can no
+// longer lose events; local write failure emits nothing. Refs only, no PII.
+model KernelOutbox {
+  id        String    @id @default(cuid())
+  eventType String
+  payload   String    // JSON string — references only, never raw PII
+  status    String    @default("pending") // pending | sent | failed
+  attempts  Int       @default(0)
+  lastError String?
+  createdAt DateTime  @default(now())
+  sentAt    DateTime?
+
+  @@index([status, createdAt])
+  @@map("kernel_outbox")
+}

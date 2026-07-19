@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { verifyOAuthState } from '@/lib/oauth-state'
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,13 +17,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/crm/meetings?error=missing_params`)
     }
 
-    let userId = ''
-    try {
-      const state = JSON.parse(Buffer.from(stateParam, 'base64').toString())
-      userId = state.userId
-    } catch {
-      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/crm/meetings?error=invalid_state`)
-    }
+    // Verify the HMAC signature before trusting userId (CSRF / session-fixation guard).
+    const userId = verifyOAuthState(stateParam) || ''
 
     if (!userId) {
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/crm/meetings?error=no_user`)

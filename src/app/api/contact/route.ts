@@ -143,9 +143,23 @@ export async function POST(request: NextRequest) {
       });
 
       savedContact = true;
+
+      // Emit LeadCreated into the kernel (refs only — id, no PII). Queued in
+      // the local outbox; delivered by the flush cron. Never blocks the user.
+      if (contact?.id) {
+        const { queueKernelEvent } = await import('@/lib/kernel-bridge');
+        await queueKernelEvent('LeadCreated', {
+          contact_id: contact.id,
+          brand: 'renewably',
+          source: 'website_contact',
+          has_company: !!body.company?.trim(),
+        });
+      }
     } catch (dbError) {
-      console.warn(
-        "[Contact API] Could not save contact to database:",
+      // ERROR, not warn — a lead that reaches the inbox but not the CRM is a
+      // lead the pipeline can't see. Audit finding #2 (2026-07-15).
+      console.error(
+        "[Contact API] DB SAVE FAILED — lead exists only in email:",
         dbError instanceof Error ? dbError.message : dbError
       );
     }

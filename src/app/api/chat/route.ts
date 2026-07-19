@@ -8,7 +8,32 @@
 // ============================================================================
 
 import { NextRequest, NextResponse } from "next/server";
-import ZAI from "z-ai-web-dev-sdk";
+const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
+
+async function openaiChat(
+  messages: Array<{ role: string; content: string }>
+): Promise<string | null> {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    console.error("[Chat API] OPENAI_API_KEY is not set");
+    return null;
+  }
+  const res = await fetch(OPENAI_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({ model: OPENAI_MODEL, messages, temperature: 0.7, max_tokens: 800 }),
+  });
+  if (!res.ok) {
+    console.error("[Chat API] OpenAI error", res.status, await res.text());
+    return null;
+  }
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content ?? null;
+}
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/postmark";
 import { checkRateLimit, getClientIp, CHAT_RATE_LIMIT } from "@/lib/rate-limit";
@@ -114,8 +139,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const zai = await ZAI.create();
-
     // Build the full message history with system prompt
     const systemMessage: ChatMessage = {
       role: "system",
@@ -127,13 +150,9 @@ export async function POST(request: NextRequest) {
     // Only send the last 20 messages to stay within token limits
     const recentMessages = messages.slice(-20);
 
-    const completion = await zai.chat.completions.create({
-      messages: [systemMessage, ...recentMessages],
-      temperature: 0.7,
-      max_tokens: 800,
-    });
-
-    const reply = completion.choices[0]?.message?.content || "Sorry, I couldn't generate a response. Please try again.";
+    const reply =
+      (await openaiChat([systemMessage, ...recentMessages])) ||
+      "Sorry, I couldn't generate a response. Please try again.";
 
     // ─── Lead Capture Logic ───
     // After the first substantive exchange, check if the visitor shows buying signals
