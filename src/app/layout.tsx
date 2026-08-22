@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import SiteShell from "@/components/SiteShell";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -223,6 +224,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         <SiteShell>{children}</SiteShell>
+        <Analytics />
       </body>
     </html>
   );
