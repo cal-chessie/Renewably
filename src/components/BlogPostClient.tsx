@@ -45,7 +45,7 @@ function ArrowRightIcon({ color = "#F3D840" }: { color?: string }) {
   );
 }
 
-function ClockIcon({ color = "#9CA3AF" }: { color?: string }) {
+function ClockIcon({ color = "#6B7280" }: { color?: string }) {
   return (
     <svg width="14" height="14" fill="none" stroke={color} viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10" />
@@ -231,7 +231,7 @@ function RenderedBlock({ text, index }: { text: string; index: number }) {
    ============================================================ */
 function RelatedCard({ post }: { post: typeof posts[0] }) {
   const [isHovered, setIsHovered] = useState(false);
-  const catColor = categoryColors[post.category] || "#9CA3AF";
+  const catColor = categoryColors[post.category] || "#6B7280";
 
   return (
     <Link href={`/blog/${post.slug}`} className="group block">
@@ -257,11 +257,11 @@ function RelatedCard({ post }: { post: typeof posts[0] }) {
           {post.title}
         </h4>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ fontSize: 12, color: "#9CA3AF", display: "flex", alignItems: "center", gap: 4 }}>
+          <span style={{ fontSize: 12, color: "#6B7280", display: "flex", alignItems: "center", gap: 4 }}>
             <ClockIcon /> {post.readTime}
           </span>
           <motion.div animate={{ x: isHovered ? 3 : 0 }} transition={{ duration: 0.2 }}>
-            <ArrowRightIcon color="#9CA3AF" />
+            <ArrowRightIcon color="#6B7280" />
           </motion.div>
         </div>
       </motion.div>
@@ -292,7 +292,7 @@ export default function BlogPostClient() {
       <main>
         <section style={{ padding: "128px 20px", textAlign: "center", backgroundColor: "#fff" }}>
           <h1 style={{ fontSize: 36, fontWeight: 800, color: "#1A1A1A", marginBottom: 16 }}>Post Not Found</h1>
-          <p style={{ fontSize: 16, color: "#9CA3AF", marginBottom: 24 }}>The article you are looking for does not exist.</p>
+          <p style={{ fontSize: 16, color: "#6B7280", marginBottom: 24 }}>The article you are looking for does not exist.</p>
           <MagneticButton href="/blog">
             <ArrowLeftIcon /> Back to Blog
           </MagneticButton>
@@ -452,7 +452,7 @@ export default function BlogPostClient() {
               display: "flex", alignItems: "center", gap: 12, padding: "24px 0",
               borderTop: "1px solid rgba(26,26,26,0.06)", marginTop: 40,
             }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: "#9CA3AF" }}>Share this article</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#6B7280" }}>Share this article</span>
               <div style={{ display: "flex", gap: 8 }}>
                 {[
                   { label: "LinkedIn", href: shareUrl ? `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}` : undefined },

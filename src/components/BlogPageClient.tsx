@@ -392,7 +392,7 @@ function CategoryFilters({
                   backgroundColor: isActive
                     ? catColor || YELLOW
                     : "transparent",
-                  color: isActive ? "#1A1A1A" : "#9CA3AF",
+                  color: isActive ? "#1A1A1A" : "#6B7280",
                   border: `1px solid ${
                     isActive
                       ? catColor || YELLOW
@@ -631,7 +631,7 @@ function ArticleCard({
   index: number;
 }) {
   const [isHovered, setIsHovered] = useState(false);
-  const catColor = categoryColors[post.category] || "#9CA3AF";
+  const catColor = categoryColors[post.category] || "#6B7280";
 
   return (
     <ScrollReveal delay={index * 0.05}>
@@ -683,7 +683,7 @@ function ArticleCard({
             <span
               style={{
                 fontSize: 12,
-                color: "#9CA3AF",
+                color: "#6B7280",
                 display: "flex",
                 alignItems: "center",
                 gap: 4,
@@ -735,7 +735,7 @@ function ArticleCard({
             }}
           >
             <time
-              style={{ fontSize: 13, color: "#9CA3AF" }}
+              style={{ fontSize: 13, color: "#6B7280" }}
               dateTime={post.date}
             >
               {new Date(post.date).toLocaleDateString("en-IE", {
@@ -750,7 +750,7 @@ function ArticleCard({
                 transition: "transform 0.2s ease",
               }}
             >
-              <ArrowIcon color={isHovered ? catColor : "#9CA3AF"} />
+              <ArrowIcon color={isHovered ? catColor : "#6B7280"} />
             </div>
           </div>
         </div>
@@ -1065,7 +1065,7 @@ function TopicsSection() {
                     color:
                       hoveredTopic === topic.label
                         ? YELLOW
-                        : "#9CA3AF",
+                        : "#6B7280",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -1265,7 +1265,7 @@ export default function BlogPageClient() {
               <span
                 style={{
                   fontSize: 13,
-                  color: "#9CA3AF",
+                  color: "#6B7280",
                   fontWeight: 500,
                 }}
               >
@@ -1293,7 +1293,7 @@ export default function BlogPageClient() {
           {/* Empty state */}
           {filteredPosts.length === 0 && (
             <div style={{ textAlign: "center", padding: "60px 20px" }}>
-              <p style={{ fontSize: 16, color: "#9CA3AF" }}>
+              <p style={{ fontSize: 16, color: "#6B7280" }}>
                 No articles in this category yet.
               </p>
             </div>

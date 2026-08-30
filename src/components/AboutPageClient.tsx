@@ -615,7 +615,7 @@ function ProblemsSection() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      color: activeProblem === i ? YELLOW : "#9CA3AF",
+                      color: activeProblem === i ? YELLOW : "#6B7280",
                       transition: "all 0.3s ease",
                     }}
                   >
@@ -1055,7 +1055,7 @@ function FounderSection() {
                   textAlign: "center",
                   marginTop: 16,
                   fontSize: 13,
-                  color: "#9CA3AF",
+                  color: "#6B7280",
                   fontStyle: "italic",
                 }}
               >

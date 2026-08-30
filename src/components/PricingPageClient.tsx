@@ -177,7 +177,7 @@ export default function PricingPageClient() {
                   <ul style={{ display: "flex", flexDirection: "column", gap: 12, listStyle: "none", padding: 0, margin: 0 }}>
                     {separateItems.map((item) => (
                       <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                        <svg style={{ width: 18, height: 18, color: "#9CA3AF", flexShrink: 0, marginTop: 2 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg style={{ width: 18, height: 18, color: "#6B7280", flexShrink: 0, marginTop: 2 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span style={{ color: "#535353", fontSize: 14, lineHeight: 1.5 }}>{item}</span>
@@ -218,7 +218,7 @@ export default function PricingPageClient() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </Link>
-                <p style={{ color: "#9CA3AF", fontSize: 13, textAlign: "center", marginTop: 12 }}>
+                <p style={{ color: "#6B7280", fontSize: 13, textAlign: "center", marginTop: 12 }}>
                   14-day free trial. No credit card required.
                 </p>
               </div>

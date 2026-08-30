@@ -174,7 +174,7 @@ function ContactCard({ item, index }: { item: typeof contactChannels[0]; index: 
         {iconMap[item.icon as keyof typeof iconMap]}
       </div>
       <div style={{ flex: 1 }}>
-        <p style={{ fontSize: 13, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>
+        <p style={{ fontSize: 13, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>
           {item.label}
         </p>
         {item.href ? (
@@ -184,11 +184,11 @@ function ContactCard({ item, index }: { item: typeof contactChannels[0]; index: 
         ) : (
           <p style={{ fontSize: 16, fontWeight: 700, color: "#1A1A1A" }}>{item.value}</p>
         )}
-        <p style={{ fontSize: 13, color: "#9CA3AF", marginTop: 2 }}>{item.desc}</p>
+        <p style={{ fontSize: 13, color: "#6B7280", marginTop: 2 }}>{item.desc}</p>
       </div>
       {item.href && (
         <motion.div animate={{ x: isHovered ? 4 : 0 }} transition={{ duration: 0.2 }}>
-          <ArrowRightIcon color="#9CA3AF" />
+          <ArrowRightIcon color="#6B7280" />
         </motion.div>
       )}
     </motion.div>
@@ -511,7 +511,7 @@ export default function ContactPageClient() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
                 Sound familiar?
               </p>
               <h2 style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 800, color: "#1A1A1A", lineHeight: 1.15 }}>
@@ -690,7 +690,7 @@ export default function ContactPageClient() {
                           Back to Home
                           <ArrowRightIcon />
                         </MagneticButton>
-                        <a href="mailto:hello@renewably.ie" style={{ fontSize: 14, color: "#9CA3AF", textDecoration: "underline", marginTop: 8 }}>
+                        <a href="mailto:hello@renewably.ie" style={{ fontSize: 14, color: "#6B7280", textDecoration: "underline", marginTop: 8 }}>
                           Or email us directly at hello@renewably.ie
                         </a>
                       </div>
@@ -895,7 +895,7 @@ export default function ContactPageClient() {
                       <div style={{ marginTop: 20 }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                           <label htmlFor="message" style={labelStyle}>Tell us what you need help with *</label>
-                          <span style={{ fontSize: 12, color: "#9CA3AF" }}>
+                          <span style={{ fontSize: 12, color: "#6B7280" }}>
                             {formData.message.length > 0 && `${formData.message.length} characters`}
                           </span>
                         </div>
@@ -951,7 +951,7 @@ export default function ContactPageClient() {
                             </>
                           )}
                         </motion.button>
-                        <p style={{ fontSize: 13, color: "#9CA3AF" }}>
+                        <p style={{ fontSize: 13, color: "#6B7280" }}>
                           We will never spam you. Read our{" "}
                           <Link href="/privacy" style={{ color: "#535353", textDecoration: "underline" }}>Privacy Policy</Link>
                         </p>
@@ -1092,7 +1092,7 @@ export default function ContactPageClient() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div style={{ textAlign: "center", marginBottom: 64 }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
                 The process
               </p>
               <h2 style={{ fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 800, color: "#1A1A1A", lineHeight: 1.15, marginBottom: 16 }}>
@@ -1137,7 +1137,7 @@ export default function ContactPageClient() {
                         flexShrink: 0,
                         fontSize: 16,
                         fontWeight: 800,
-                        color: i < 3 ? "#1A1A1A" : "#9CA3AF",
+                        color: i < 3 ? "#1A1A1A" : "#6B7280",
                         boxShadow: i < 3 ? "0 4px 20px rgba(243,216,64,0.25)" : "none",
                         zIndex: 1,
                       }}
@@ -1167,7 +1167,7 @@ export default function ContactPageClient() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div style={{ textAlign: "center", marginBottom: 56 }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
                 Common questions
               </p>
               <h2 style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 800, color: "#1A1A1A", lineHeight: 1.15 }}>

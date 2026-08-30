@@ -287,7 +287,7 @@ export default function ExitIntentPopup() {
             <p
               style={{
                 fontSize: 12,
-                color: "#9CA3AF",
+                color: "#6B7280",
                 marginTop: 16,
               }}
             >
