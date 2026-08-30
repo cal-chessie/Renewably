@@ -1053,23 +1053,6 @@ export default function ContactPageClient() {
                     </MagneticButton>
                   </div>
                 </ScrollReveal>
-
-                {/* Straight talk — honest trust card */}
-                <ScrollReveal direction="right" delay={0.5}>
-                  <div style={{
-                    padding: 20,
-                    borderRadius: 16,
-                    border: "1px solid rgba(26,26,26,0.06)",
-                    backgroundColor: WHITE,
-                  }}>
-                    <p style={{ fontSize: 13, fontWeight: 700, color: "#1A1A1A", marginBottom: 8 }}>
-                      No fake reviews here.
-                    </p>
-                    <p style={{ fontSize: 13, color: "#535353", lineHeight: 1.7 }}>
-                      We are founder led and onboarding our first Irish installers now. When a client says something worth quoting, it will sit here with a name you can ring. Until then, book the call and judge us on the plan we bring.
-                    </p>
-                  </div>
-                </ScrollReveal>
               </div>
             </div>
           </div>
