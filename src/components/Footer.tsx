@@ -214,7 +214,7 @@ export default function Footer() {
             <li className="footer-social-row" style={{ display: "flex", gap: 12, marginTop: "0.75rem" }}>
               {/* Facebook */}
               <a
-                href="https://facebook.com/renewably"
+                href="https://www.facebook.com/Renewably.ie/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -239,7 +239,7 @@ export default function Footer() {
               </a>
               {/* Instagram */}
               <a
-                href="https://instagram.com/renewably"
+                href="https://www.instagram.com/renewablyhq/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"

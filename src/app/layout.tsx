@@ -104,8 +104,8 @@ function OrganizationSchema() {
             addressCountry: "IE",
           },
           sameAs: [
-            "https://www.facebook.com/renewably",
-            "https://www.instagram.com/renewably",
+            "https://www.facebook.com/Renewably.ie/",
+            "https://www.instagram.com/renewablyhq/",
           ],
           contactPoint: {
             "@type": "ContactPoint",
