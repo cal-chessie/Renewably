@@ -34,6 +34,8 @@ export default function Header() {
   const { scrollYProgress } = useScroll();
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const lastScrollY = useRef(0);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useMotionValueEvent(scrollYProgress, "change", () => {
     const current = window.scrollY;
@@ -50,6 +52,25 @@ export default function Header() {
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
+  // Close on Escape + basic focus management while the mobile menu is open
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+
+    // Move focus into the panel on open
+    panelRef.current?.focus();
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      // Restore focus to the hamburger toggle on close
+      toggleRef.current?.focus();
+    };
   }, [mobileOpen]);
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
@@ -79,11 +100,12 @@ export default function Header() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex items-center justify-between h-full">
             <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-              <img
+              <Image
                 src="/logo-white.png"
                 alt="Renewably"
                 width={44}
                 height={44}
+                priority
                 style={{ transition: 'transform 0.3s' }}
               />
               <span style={{ fontSize: 21, fontWeight: 600, letterSpacing: '-0.01em', color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
@@ -100,11 +122,11 @@ export default function Header() {
                     key={link.href}
                     href={link.href}
                     className={`relative px-4 py-2 text-[13.5px] font-medium rounded-lg group transition-colors duration-200 ${
-                      isActive ? "text-[#F3D840]" : "text-white/80 hover:text-white"
+                      isActive ? "text-[#F3D840]" : "text-white/80 hover:text-white focus-visible:text-white"
                     }`}
                   >
                     {link.label}
-                    <span className="absolute bottom-1 left-4 right-4 h-[1.5px] rounded-full bg-[#F3D840] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" />
+                    <span className="absolute bottom-1 left-4 right-4 h-[1.5px] rounded-full bg-[#F3D840] origin-left scale-x-0 group-hover:scale-x-100 group-focus-visible:scale-x-100 transition-transform duration-300 ease-out" />
                     {isActive && (
                       <span className="absolute bottom-1 left-4 right-4 h-[1.5px] rounded-full bg-[#F3D840]" />
                     )}
@@ -132,6 +154,16 @@ export default function Header() {
                   e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.04)';
                 }}
                 onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'rgba(255,255,255,0.45)';
+                  e.currentTarget.style.borderColor = 'transparent';
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+                  e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.04)';
+                }}
+                onBlur={(e) => {
                   e.currentTarget.style.color = 'rgba(255,255,255,0.45)';
                   e.currentTarget.style.borderColor = 'transparent';
                   e.currentTarget.style.backgroundColor = 'transparent';
@@ -170,9 +202,12 @@ export default function Header() {
 
               {/* Mobile Hamburger */}
               <button
+                ref={toggleRef}
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className="md:hidden relative z-[110] p-2 rounded-xl"
                 aria-label="Toggle menu"
+                aria-expanded={mobileOpen}
+                aria-haspopup="dialog"
               >
                 <div className="w-6 h-[20px] flex flex-col justify-between relative">
                   <motion.span
@@ -226,12 +261,15 @@ export default function Header() {
 
             {/* Panel — slides in from right */}
             <motion.div
+              ref={panelRef}
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300, mass: 0.8 }}
               role="dialog"
+              aria-modal="true"
               aria-label="Navigation menu"
+              tabIndex={-1}
               className="fixed top-0 right-0 bottom-0 z-[101] md:hidden"
               style={{
                 width: 'min(320px, 85vw)',
@@ -240,6 +278,7 @@ export default function Header() {
                 display: 'flex',
                 flexDirection: 'column',
                 boxShadow: '-8px 0 30px rgba(0,0,0,0.4)',
+                outline: 'none',
               }}
             >
               {/* ── Top bar ── */}
@@ -297,6 +336,8 @@ export default function Header() {
                         }}
                         onMouseEnter={() => setHoveredLink(link.href)}
                         onMouseLeave={() => setHoveredLink(null)}
+                        onFocus={() => setHoveredLink(link.href)}
+                        onBlur={() => setHoveredLink(null)}
                         style={{ position: 'relative' }}
                       >
                         <TapLink

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 const BRAND_YELLOW = "#F3D840";
 const DARK = "#0A0A0A";
@@ -46,7 +47,7 @@ export default function Footer() {
         {/* Brand column */}
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <img
+            <Image
               src="/logo-transparent.png"
               alt="Renewably logo"
               width={36}

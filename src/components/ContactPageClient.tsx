@@ -199,27 +199,38 @@ function FAQItem({ item, index, isOpen, onToggle }: { item: typeof faqs[0]; inde
   return (
     <ScrollReveal delay={index * 0.05}>
       <div
-        onClick={onToggle}
         style={{
           borderBottom: "1px solid rgba(26,26,26,0.08)",
           cursor: "pointer",
         }}
       >
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "20px 0",
-          gap: 16,
-        }}>
-          <h4 style={{ fontSize: 16, fontWeight: 600, color: "#1A1A1A", flex: 1 }}>{item.q}</h4>
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={isOpen}
+          aria-controls={`faq-answer-${index}`}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            padding: "20px 0",
+            gap: 16,
+            cursor: "pointer",
+            background: "transparent",
+            border: "none",
+            textAlign: "left",
+          }}
+        >
+          <h3 style={{ fontSize: 16, fontWeight: 600, color: "#1A1A1A", flex: 1 }}>{item.q}</h3>
           <div style={{ flexShrink: 0 }}>
             <ChevronDownIcon open={isOpen} />
           </div>
-        </div>
+        </button>
         <AnimatePresence>
           {isOpen && (
             <motion.div
+              id={`faq-answer-${index}`}
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -613,7 +624,7 @@ export default function ContactPageClient() {
       </section>
 
       {/* ===== FORM + SIDEBAR ===== */}
-      <section style={{ backgroundColor: "#F9FAFB", paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
+      <section id="contact-form" style={{ backgroundColor: "#F9FAFB", paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)', scrollMarginTop: 100 }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-12 lg:gap-16 items-start contact-form-grid">
             {/* Form — 3 columns */}
