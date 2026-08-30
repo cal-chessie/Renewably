@@ -154,8 +154,9 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // Create contact record
-      const { data: contact } = await supabase
+      // Create contact record — Supabase returns { error } instead of throwing,
+      // so we MUST inspect it; a rejected insert must never look saved.
+      const { data: contact, error: contactError } = await supabase
         .from("contacts")
         .insert({
           company_id: companyId,
@@ -169,10 +170,19 @@ export async function POST(request: NextRequest) {
         .select("id")
         .single();
 
-      // Create a deal in the pipeline (new_lead stage)
+      if (contactError) {
+        logger.error("Contact insert failed — lead not written to CRM", {
+          error: contactError.message,
+          name: fullName,
+          email: email.trim(),
+        });
+      }
+
+      // Create a deal in the pipeline (new_lead stage). This deal IS the
+      // CRM-visible lead, so its success is what "captured" really means.
       const estimatedValue = estimateDealValue(body.jobsPerMonth?.trim());
 
-      await supabase.from("deals").insert({
+      const { error: dealError } = await supabase.from("deals").insert({
         company_id: companyId,
         product: "solarpilot",
         mrr: Math.round(estimatedValue / 12),
@@ -182,8 +192,19 @@ export async function POST(request: NextRequest) {
         notes: `Website enquiry from ${fullName} — ${message.trim().slice(0, 300)}`,
       });
 
-      savedContact = true;
-      logger.info("Contact form saved to Supabase", { name: fullName, email: email.trim(), companyId });
+      if (dealError) {
+        logger.error("Deal insert failed — lead did not reach the CRM pipeline", {
+          error: dealError.message,
+          name: fullName,
+          email: email.trim(),
+        });
+      }
+
+      // The lead is genuinely captured only if it landed in the CRM.
+      savedContact = !contactError && !dealError && Boolean(contact);
+      if (savedContact) {
+        logger.info("Contact form saved to CRM", { name: fullName, email: email.trim(), companyId });
+      }
     } catch (dbError) {
       logger.warn("Could not save contact to Supabase", {
         error: dbError instanceof Error ? dbError.message : String(dbError),
@@ -223,7 +244,9 @@ export async function POST(request: NextRequest) {
 
       const textBody = `New Enquiry from ${fullName}\n\nEmail: ${email.trim()}\n${body.phone?.trim() ? `Phone: ${body.phone.trim()}\n` : ""}${body.company?.trim() ? `Company: ${body.company.trim()}\n` : ""}${body.jobsPerMonth?.trim() ? `Installs/month: ${body.jobsPerMonth.trim()}\n` : ""}\nMessage:\n${message.trim()}`;
 
-      await sendEmail({
+      // sendEmail resolves on failure (returns { success:false }) instead of
+      // throwing, so read the result — do not assume the send worked.
+      const notifyResult = await sendEmail({
         to: "hello@renewably.ie",
         subject,
         htmlBody,
@@ -231,7 +254,13 @@ export async function POST(request: NextRequest) {
         tag: "contact-form-notification",
         metadata: { source: "website", contactName: fullName, contactEmail: email.trim() },
       });
-      emailSent = true;
+      emailSent = notifyResult?.success === true;
+      if (!emailSent) {
+        logger.warn("Contact notification email not delivered", {
+          error: notifyResult?.error,
+          email: email.trim(),
+        });
+      }
     } catch (emailError) {
       logger.warn("Could not send contact notification email", {
         error: emailError instanceof Error ? emailError.message : String(emailError),
