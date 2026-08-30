@@ -21,7 +21,7 @@ const ExitIntentPopup = dynamic(
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isCRMRoute = pathname.startsWith("/crm");
-  const isOnboardingRoute = pathname.startsWith("/onboarding");
+  const isOnboardingRoute = pathname.startsWith("/onboarding") || pathname.startsWith("/setup/");
 
   if (isCRMRoute || isOnboardingRoute) {
     return <>{children}</>;
