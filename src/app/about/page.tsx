@@ -17,5 +17,9 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  return <AboutPageClient />;
+  return (
+    <main id="main-content">
+      <AboutPageClient />
+    </main>
+  );
 }

@@ -16,5 +16,9 @@ export const metadata: Metadata = {
 };
 
 export default function WorkforcePage() {
-  return <WorkforcePageClient />;
+  return (
+    <main id="main-content">
+      <WorkforcePageClient />
+    </main>
+  );
 }

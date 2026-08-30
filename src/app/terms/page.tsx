@@ -17,5 +17,9 @@ export const metadata: Metadata = {
 };
 
 export default function TermsPage() {
-  return <TermsPageClient />;
+  return (
+    <main id="main-content">
+      <TermsPageClient />
+    </main>
+  );
 }

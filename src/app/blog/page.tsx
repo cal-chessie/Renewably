@@ -17,5 +17,9 @@ export const metadata: Metadata = {
 };
 
 export default function BlogPage() {
-  return <BlogPageClient />;
+  return (
+    <main id="main-content">
+      <BlogPageClient />
+    </main>
+  );
 }

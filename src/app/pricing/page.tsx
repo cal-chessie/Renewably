@@ -17,5 +17,9 @@ export const metadata: Metadata = {
 };
 
 export default function PricingPage() {
-  return <PricingPageClient />;
+  return (
+    <main id="main-content">
+      <PricingPageClient />
+    </main>
+  );
 }

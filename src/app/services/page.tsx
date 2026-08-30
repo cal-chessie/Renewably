@@ -16,5 +16,9 @@ export const metadata: Metadata = {
 };
 
 export default function ServicesPage() {
-  return <ServicesPageClient />;
+  return (
+    <main id="main-content">
+      <ServicesPageClient />
+    </main>
+  );
 }
