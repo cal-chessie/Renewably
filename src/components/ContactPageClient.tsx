@@ -1054,7 +1054,7 @@ export default function ContactPageClient() {
                   </div>
                 </ScrollReveal>
 
-                {/* Social proof mini */}
+                {/* Straight talk — honest trust card */}
                 <ScrollReveal direction="right" delay={0.5}>
                   <div style={{
                     padding: 20,
@@ -1062,22 +1062,11 @@ export default function ContactPageClient() {
                     border: "1px solid rgba(26,26,26,0.06)",
                     backgroundColor: WHITE,
                   }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                      {/* Star rating */}
-                      <div style={{ display: "flex", gap: 2 }}>
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <svg key={s} width="14" height="14" viewBox="0 0 24 24" fill={YELLOW} stroke="none">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                          </svg>
-                        ))}
-                      </div>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: "#1A1A1A" }}>Trusted by Irish installers</span>
-                    </div>
-                    <p style={{ fontSize: 13, color: "#535353", lineHeight: 1.7, fontStyle: "italic" }}>
-                      &ldquo;Renewably cut our admin time by 70%. The grants agent alone paid for itself in the first month.&rdquo;
+                    <p style={{ fontSize: 13, fontWeight: 700, color: "#1A1A1A", marginBottom: 8 }}>
+                      No fake reviews here.
                     </p>
-                    <p style={{ fontSize: 12, fontWeight: 600, color: "#1A1A1A", marginTop: 8 }}>
-                      Eamonn K. — SolarCo Dublin
+                    <p style={{ fontSize: 13, color: "#535353", lineHeight: 1.7 }}>
+                      We are founder led and onboarding our first Irish installers now. When a client says something worth quoting, it will sit here with a name you can ring. Until then, book the call and judge us on the plan we bring.
                     </p>
                   </div>
                 </ScrollReveal>
@@ -1244,7 +1233,7 @@ export default function ContactPageClient() {
                   boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
                 }}
               >
-                Get Started Now
+                Book Your Call
                 <ArrowRightIcon color={YELLOW} />
               </motion.a>
               <motion.a

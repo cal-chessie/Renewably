@@ -151,8 +151,8 @@ function HeroSection() {
 
         {/* CTA */}
         <div className="hp-rise" style={{ animationDelay: '1.1s' }}>
-          <MagneticButton href="/onboarding">
-            Start Free Trial
+          <MagneticButton href="/contact">
+            Book a Call
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
@@ -281,7 +281,7 @@ function SolutionSection() {
         {/* Body */}
         <ScrollReveal delay={0.25}>
           <p style={{ color: '#535353', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
-            They assess roofs. They fill out grant applications. They call customers back. They coordinate installers. They order equipment. They flag problems before you know they exist.
+            They text back the missed calls. They fill out grant applications. They chase every follow-up. They coordinate installers. They order equipment. They flag problems before you know they exist.
           </p>
         </ScrollReveal>
 
@@ -418,8 +418,8 @@ function FeaturesSection() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
         </svg>
       ),
-      title: "Assess sites. Automatically.",
-      desc: "Upload roof photos. Agent analyses shade, orientation, structural issues. Generates report. Adds to quote. All before lunch.",
+      title: "Every site detail. On the job file.",
+      desc: "Roof photos, bill details, access notes. Filed against the job, not lost in someone's phone. Your surveyor arrives already briefed.",
     },
     {
       icon: (
@@ -428,7 +428,7 @@ function FeaturesSection() {
         </svg>
       ),
       title: "Handle every grant.",
-      desc: "SEAI applications. Paperwork. Follow-ups. Resubmissions. Agent knows every form, every deadline, every requirement. Your grant approval rate goes up. Your admin time goes to zero.",
+      desc: "SEAI applications. Paperwork. Follow-ups. Resubmissions. Agent knows every form, every deadline, every requirement. Nothing sits forgotten. Nothing misses a deadline.",
     },
     {
       icon: (
@@ -784,7 +784,7 @@ function FAQSection() {
           </p>
           <div style={{ textAlign: 'center' }}>
             <Link
-              href="/onboarding"
+              href="/contact"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -800,7 +800,7 @@ function FAQSection() {
                 minWidth: 180,
               }}
             >
-              Get Started
+              Book a Call
               <svg style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
@@ -847,19 +847,25 @@ function PricingSection() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.4}>
-          <p style={{ color: '#1A1A1A', fontSize: 'clamp(15px, 2vw, 20px)', fontWeight: 600, marginBottom: 'clamp(20px, 4vw, 40px)' }}>
-            We&apos;ll give you an exact quote after a 30 minute call.
+          <p style={{ color: '#535353', fontSize: 'clamp(15px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
+            And you don&apos;t take the full team on day one. Most installers start with the front office: a PA that does the sending, a Chief of Staff that does the thinking. When you&apos;re ready, the same system grows into the full workforce. You approve every hire.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.5}>
+          <p style={{ color: '#1A1A1A', fontSize: 'clamp(15px, 2vw, 20px)', fontWeight: 600, marginBottom: 'clamp(20px, 4vw, 40px)' }}>
+            Book a 15 minute call. If it fits, we scope your build and give you a fixed quote.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.6}>
           <div style={{ marginTop: 'clamp(24px, 3vw, 48px)' }}>
             <Link
-              href="/onboarding"
+              href="/contact"
               className="home-pricing-cta"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 12, borderRadius: 9999, fontWeight: 700, textDecoration: 'none', padding: 'clamp(12px, 1.5vw, 14px) 28px', fontSize: 14, letterSpacing: '0.02em', backgroundColor: '#1A1A1A', color: '#fff', transition: 'box-shadow 0.3s ease', minWidth: 180 }}
             >
-              Start Free Trial
+              Book a Call
               <svg style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
@@ -898,7 +904,7 @@ export default function HomePageClient() {
           },
           {
             before: "You spend 10 hours a week on grant paperwork. You miss deadlines. You make mistakes.",
-            after: "Grants agent handles it. Your approval rate doubles. You do zero hours.",
+            after: "Grants agent handles it. Every application tracked, chased and resubmitted. You check a summary.",
           },
           {
             before: "You have no idea where every job is. You chase your team. You find out about delays too late.",

@@ -22,9 +22,12 @@ steady job volume who want to move faster without hiring more admin staff.
 
 ## How it works
 A short call scopes the business; Renewably then builds and configures the
-agent team over one to two weeks, with the owner approving every step. Pricing
-is a monthly service. Installers bring their own AI provider keys and pay model
-usage directly, with no markup.
+agent team over one to two weeks, with the owner approving every step. Most
+engagements start with a two-role front office (a PA that handles sending and
+follow-up, and a Chief of Staff that decides and drafts) and grow into the
+full workforce as the owner approves each new hire. Pricing is a monthly
+service with no lock-in. Installers bring their own AI provider keys and pay
+model usage directly, with no markup.
 
 ## Key pages
 - The workforce and what each agent does: https://renewably.ie/workforce

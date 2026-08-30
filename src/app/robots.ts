@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/crm/"],
+      disallow: ["/api/", "/crm/", "/onboarding"],
     },
     sitemap: "https://renewably.ie/sitemap.xml",
   };

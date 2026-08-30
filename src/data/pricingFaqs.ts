@@ -14,7 +14,7 @@ export const pricingFaqs: PricingFaq[] = [
   },
   {
     q: "What does the setup fee cover?",
-    a: "The one-time setup fee covers everything you need to get started: custom configuration of your AI agents, integration setup with your existing tools (calendar, email, WhatsApp), team onboarding and training, and importing your existing data into the CRM. We handle all of it so you don’t have to.",
+    a: "The one-time setup fee covers everything you need to get started: custom configuration of your AI agents, integration setup with your existing tools (calendar, email and your existing CRM), team onboarding and training, and importing your existing data. We handle all of it so you don’t have to.",
   },
   {
     q: "How much are AI costs?",
@@ -22,11 +22,11 @@ export const pricingFaqs: PricingFaq[] = [
   },
   {
     q: "Can I start small?",
-    a: "Absolutely. Many installers start with the core agents — CEO, Operations, and Support — then add Grants, Permitting, and others as their workload grows. Every agent is independent, so you can scale up or down whenever you like.",
+    a: "Most installers do. The usual starting point is the front office: a PA that does the sending and a Chief of Staff that decides and drafts. They work the messy front of your funnel while your CRM stays yours. When you're ready, the same system grows into the full workforce. You approve every hire.",
   },
   {
     q: "Is there a free trial?",
-    a: "Yes. We offer a 14-day free trial with full access to all features and agents. No credit card required. At the end of the trial, simply choose the plan that fits your team size and continue. If it’s not for you, walk away — no strings attached.",
+    a: "No, because this is a managed service, not software you poke at alone. We build your team, test it against your real jobs, and hand it over working. What you get instead: month-to-month billing, no lock-in, and in week one nothing reaches a customer without your approval. If it's not for you, cancel and keep your data.",
   },
   {
     q: "What if I cancel?",

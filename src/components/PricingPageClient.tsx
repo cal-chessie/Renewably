@@ -10,7 +10,6 @@ const includedItems = [
   "Full CRM dashboard",
   "Calendar integration",
   "Email integration",
-  "WhatsApp integration",
   "Weekly reports",
   "Dedicated support",
   "Free updates and new agents",
@@ -219,7 +218,7 @@ export default function PricingPageClient() {
                   </svg>
                 </Link>
                 <p style={{ color: "#6B7280", fontSize: 13, textAlign: "center", marginTop: 12 }}>
-                  14-day free trial. No credit card required.
+                  Month-to-month. No lock-in. Cancel anytime.
                 </p>
               </div>
             </div>
@@ -264,7 +263,7 @@ export default function PricingPageClient() {
               Ready to meet your team?
             </h2>
             <p style={{ color: "#374151", fontSize: 16, lineHeight: 1.7, marginBottom: 32, maxWidth: 440, margin: "0 auto 32px" }}>
-              Start your 14-day free trial today. No credit card required. Full access from day one.
+              Book a 15 minute call. We scope your build, quote it fixed, and you approve every hire before anything goes live.
             </p>
             <Link
               href="/contact"

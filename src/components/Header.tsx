@@ -10,12 +10,12 @@ const navLinks = [
   { href: "/", label: "Home", num: "01" },
   { href: "/about", label: "About Us", num: "02" },
   { href: "/workforce", label: "Workforce", num: "03" },
-  { href: "/blog", label: "Blog", num: "04" },
-  { href: "/contact", label: "Contact Us", num: "05" },
+  { href: "/pricing", label: "Pricing", num: "04" },
+  { href: "/blog", label: "Blog", num: "05" },
+  { href: "/contact", label: "Contact Us", num: "06" },
 ];
 
 const portalLink = { href: "/crm/login", label: "Portal" };
-const onboardLink = { href: "/onboarding", label: "Get Started" };
 
 /* ─── Tap-scale wrapper for mobile ─── */
 function TapLink({ children, ...props }: React.ComponentProps<typeof Link>) {
@@ -174,18 +174,6 @@ export default function Header() {
                   <path d="M7 11V7a5 5 0 0110 0v4" />
                 </svg>
                 {portalLink.label}
-              </Link>
-
-              {/* Desktop — Get Started */}
-              <Link
-                href={onboardLink.href}
-                className="hidden md:inline-flex items-center gap-2 rounded-full font-bold transition-all duration-200 active:scale-[0.97] shrink-0"
-                style={{ padding: "7px 18px", fontSize: 13, letterSpacing: "0.02em", backgroundColor: "transparent", color: "#F3D840", border: "1.5px solid rgba(243,216,64,0.4)" }}
-              >
-                {onboardLink.label}
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
               </Link>
 
               {/* Desktop CTA */}
@@ -449,32 +437,6 @@ export default function Header() {
 
               {/* ── Bottom Section ── */}
               <div style={{ padding: '0 20px 32px' }}>
-                {/* Get Started — outline button */}
-                <motion.a
-                  href="/onboarding"
-                  onClick={closeMobile}
-                  whileTap={{ scale: 0.97 }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 10,
-                    width: '100%',
-                    padding: '14px 20px',
-                    borderRadius: 14,
-                    border: '1.5px solid rgba(243,216,64,0.4)',
-                    textDecoration: 'none',
-                    marginBottom: 10,
-                  }}
-                >
-                  <span style={{ fontSize: 15, fontWeight: 800, color: '#F3D840', letterSpacing: '-0.01em' }}>
-                    Get Started
-                  </span>
-                  <svg width="16" height="16" fill="none" stroke="#F3D840" viewBox="0 0 24 24" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </motion.a>
-
                 {/* Portal link — subtle */}
                 <motion.a
                   href="/crm/login"

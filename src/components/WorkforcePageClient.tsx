@@ -63,7 +63,7 @@ const agents: Array<{ num: string; title: string; tagline: string; body: string;
     num: "03",
     title: "Customer Support Agent",
     tagline: "Answers every message. Books every consult. Never sleeps.",
-    body: "The support agent is your front desk. It answers emails, web forms, chat messages, and phone calls. It answers questions about pricing, grants, timelines, and technical specifications. It books consultations directly into your calendar. It follows up with customers who haven't responded.",
+    body: "The support agent is your front desk. It answers emails, web forms and chat messages, and texts back missed calls inside your hours. It answers questions about pricing, grants, timelines, and technical specifications. It books consultations directly into your calendar. It follows up with customers who haven't responded.",
     closing: "Only what needs you gets to you. Everything else — handled.",
   },
   {
@@ -71,7 +71,7 @@ const agents: Array<{ num: string; title: string; tagline: string; body: string;
     title: "Grants Agent",
     tagline: "Knows every SEAI scheme. Fills every form. Chases every application.",
     body: "The grants agent is your SEAI expert. It knows every grant scheme — Solar PV, Battery Storage, Heat Pumps. It knows every form, every requirement, every deadline. It completes applications. It gathers supporting documents. It tracks submission status. It follows up on delays. It resubmits rejections within 24 hours.",
-    closing: "Your approval rate goes up. Your admin time goes to zero.",
+    closing: "Nothing sits forgotten. Nothing misses a deadline.",
   },
   {
     num: "05",
@@ -85,7 +85,7 @@ const agents: Array<{ num: string; title: string; tagline: string; body: string;
     title: "Permitting Agent",
     tagline: "Handles ESB. Tracks submissions. Follows up on delays.",
     body: "The permitting agent is your ESB Networks specialist. It knows every application type — NC6 for domestic, NC7 for commercial. It knows every form, every attachment, every submission method. It completes applications. It submits to the correct portal or email address. It tracks every submission. It follows up on day 5, day 10, day 15. It alerts you only when intervention is needed.",
-    closing: "Average approval time: from 6 weeks to 10 days.",
+    closing: "Follow-ups on day 5, day 10, day 15. Nothing sits in a queue unwatched.",
   },
   {
     num: "07",
@@ -334,7 +334,7 @@ function CTASection() {
             className="hover:bg-[#374151] transition-all duration-300 shadow-md hover:shadow-lg"
             style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', padding: '10px 24px', backgroundColor: '#1A1A1A', color: '#fff', fontWeight: 700, fontSize: 'clamp(13px, 1.5vw, 14px)', letterSpacing: '0.02em', borderRadius: 9999, textDecoration: 'none' }}
           >
-            Get Started
+            Book a Call
             <svg style={{ width: 16, height: 16 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>

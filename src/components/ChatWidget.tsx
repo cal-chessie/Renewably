@@ -38,13 +38,13 @@ const FOLLOW_UP_SUGGESTIONS: Suggestion[] = [
   { text: "Pricing details", icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" },
   { text: "AI agents list", icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
   { text: "Getting started", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
-  { text: "Free trial?", icon: "M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
+  { text: "How do I start?", icon: "M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
 ];
 
 const PAGE_CONTEXT_MAP: Record<string, string> = {
   "/": "the homepage",
   "/about": "the About Us page",
-  "/workforce": "the AI Workforce page — showing the 9 AI agents",
+  "/workforce": "the AI Workforce page — the 8 AI agents, with a ninth (Marketing) in development",
   "/services": "the Services page",
   "/pricing": "the Pricing page",
   "/blog": "the Blog page",

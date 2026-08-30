@@ -29,6 +29,10 @@ export const homeFaqs: HomeFaq[] = [
     a: "Absolutely. Your data is encrypted at rest and in transit, stored in EU-based data centres, and never shared with third parties. We comply with GDPR and Irish data protection regulations. Your customer data, business information, and conversation histories are yours alone — we do not use them to train AI models.",
   },
   {
+    q: "Do I have to take all eight agents at once?",
+    a: "No. Most installers start with the front office: a PA that does the sending and a Chief of Staff that decides and drafts. It works the front of your funnel, and your CRM stays yours. When you're ready, the same system grows into the full workforce. You approve every hire.",
+  },
+  {
     q: "How do I get started?",
     a: "Book a 15-minute call through our website or ring us on +353 87 395 8424. We will walk you through the platform, discuss your specific needs, and provide a tailored quote. Once you sign up, our team handles the entire setup — typically within one to two weeks. No technical expertise required.",
   },

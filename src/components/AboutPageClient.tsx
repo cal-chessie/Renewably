@@ -34,12 +34,12 @@ const journey = [
   {
     phase: "The Launch",
     year: "2025",
-    text: "We deployed our first AI workforce with a solar installer in Ireland. Within 30 days, their grant approval rate doubled. Their customer response time dropped from 12 hours to 2 minutes. Their install velocity increased by 40%. The founder told us: 'It's like hiring six people overnight.'",
+    text: "We deployed our first AI workforce with a solar installer in Ireland. The lesson from the first month was simple: the value was never another dashboard, it was work actually done. Grant files moved without being chased. Enquiries got answered the same day. The founder stopped being the bottleneck in his own company.",
   },
   {
     phase: "The Scale",
     year: "2025",
-    text: "Today we deploy AI workforces across Irish solar companies doing 20+ jobs a month. Eight specialised agents live, with a ninth (Marketing) in development. One unified dashboard. Full management and reporting. Our clients are installing more panels, serving more customers, and finally getting home before dark.",
+    text: "Today we build AI workforces for Irish solar companies doing 20+ jobs a month. Eight specialised agents live, with a ninth (Marketing) in development. One unified dashboard. Full management and reporting. The goal has not changed: installers installing more panels, serving more customers, and getting home before dark.",
   },
 ];
 

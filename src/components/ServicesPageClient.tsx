@@ -21,7 +21,7 @@ const agents = [
   {
     num: "02",
     title: "Grants Agent",
-    desc: "Handles every grant from start to finish. SEAI applications. Paperwork. Follow-ups. Resubmissions. Knows every form, every deadline, every requirement. Your approval rate goes up. Your admin time goes to zero.",
+    desc: "Handles every grant from start to finish. SEAI applications. Paperwork. Follow-ups. Resubmissions. Knows every form, every deadline, every requirement. Nothing sits forgotten. Nothing misses a deadline.",
     image: "/agents/agent-grants.jpg",
   },
   {
@@ -301,7 +301,7 @@ export default function ServicesPageClient() {
             },
             {
               before: "You spend 10 hours a week on grant paperwork. You miss deadlines. You make mistakes.",
-              after: "Grants agent handles it. Your approval rate doubles. You do zero hours.",
+              after: "Grants agent handles it. Every application tracked, chased and resubmitted. You check a summary.",
             },
             {
               before: "You have no idea where every job is. You chase your team. You find out about delays too late.",
@@ -328,7 +328,7 @@ export default function ServicesPageClient() {
         {/* ===== HOW IT STARTS + CTA ===== */}
         <HowItStartsSection
           ctaTitle="Let\u2019s talk."
-          ctaButtonLabel="Get Started"
+          ctaButtonLabel="Book a Call"
           ctaButtonColor="#fff"
           padding={{ top: 'clamp(48px, 10vw, 112px)', bottom: 'clamp(48px, 10vw, 112px)' }}
         />
