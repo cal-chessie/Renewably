@@ -1,0 +1,38 @@
+# Renewably
+
+> Renewably gives solar PV installers in Ireland an AI-powered workforce:
+> specialist AI agents that run the front and back office of a solar
+> installation business, from answering enquiries and following up leads to
+> coordinating installs, handling grant paperwork and reporting. It is a
+> founder-led, managed service, not self-serve software. The installer keeps
+> their existing CRM and tools; Renewably works alongside them, and every
+> customer-facing action is owner-approved.
+
+## What Renewably does
+- Answers and follows up customer enquiries quickly, in the installer's own voice
+- Qualifies leads and books the right next conversation
+- Coordinates installs, materials and scheduling
+- Handles SEAI grant applications and tracks ESB Networks paperwork
+- Gives the owner a clear operating view and escalates decisions to a human
+- Sends nothing to a customer without human approval
+
+## Who it is for
+Solar PV installation businesses in Ireland (SEAI-registered installers) with
+steady job volume who want to move faster without hiring more admin staff.
+
+## How it works
+A short call scopes the business; Renewably then builds and configures the
+agent team over one to two weeks, with the owner approving every step. Pricing
+is a monthly service. Installers bring their own AI provider keys and pay model
+usage directly, with no markup.
+
+## Key pages
+- The workforce and what each agent does: https://renewably.ie/workforce
+- Services: https://renewably.ie/services
+- Pricing: https://renewably.ie/pricing
+- Blog (solar operations, SEAI grants, the Irish market): https://renewably.ie/blog
+- Contact and book a call: https://renewably.ie/contact
+
+## Contact
+- Email: hello@renewably.ie
+- Book a call: https://renewably.ie/contact

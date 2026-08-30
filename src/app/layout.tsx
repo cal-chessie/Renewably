@@ -103,6 +103,17 @@ function OrganizationSchema() {
             "@type": "PostalAddress",
             addressCountry: "IE",
           },
+          areaServed: {
+            "@type": "Country",
+            name: "Ireland",
+          },
+          knowsAbout: [
+            "Solar PV installation",
+            "SEAI solar grants",
+            "ESB Networks grid connection",
+            "Battery storage",
+            "AI automation for solar installers",
+          ],
           sameAs: [
             "https://www.facebook.com/Renewably.ie/",
             "https://www.instagram.com/renewablyhq/",
