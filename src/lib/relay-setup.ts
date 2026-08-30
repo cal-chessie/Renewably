@@ -60,9 +60,12 @@ export function normaliseAnswers(value: unknown): Record<string, string | boolea
 
 export function missingFieldIds(answers: Record<string, string | boolean>): string[] {
   return INTAKE_FIELDS
-    .filter((field) => field.control === 'confirm'
-      ? answers[field.id] !== true
-      : typeof answers[field.id] !== 'string' || !answers[field.id].trim())
+    .filter((field) => {
+      const answer = answers[field.id]
+      return field.control === 'confirm'
+        ? answer !== true
+        : typeof answer !== 'string' || !answer.trim()
+    })
     .map((field) => field.id)
 }
 
