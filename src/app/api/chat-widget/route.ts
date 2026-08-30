@@ -264,7 +264,7 @@ async function captureChatLead(
 
     // Send notification email
     try {
-      await sendEmail({
+      const notify = await sendEmail({
         to: "hello@renewably.ie",
         subject: `${isStrongLead ? "Strong" : "New"} chat lead captured — ${contact?.name || 'Unknown'}`,
         htmlBody: `
@@ -287,7 +287,11 @@ async function captureChatLead(
         `,
         textBody: `New ${isStrongLead ? "STRONG " : ""}chat lead captured!\n\nContact: ${contact?.name || 'Unknown'}\nSource: Chat Widget\nPage: ${pageContext || "Unknown"}\nMessage: "${message.slice(0, 300)}"\n\nA deal has been created in the pipeline: https://renewably.ie/crm/pipeline`,
       })
-      logger.info(`Chat Lead: Notification email sent`, { contactId: contact?.id })
+      if (notify.success) {
+        logger.info(`Chat Lead: Notification email sent`, { contactId: contact?.id })
+      } else {
+        logger.warn(`Chat Lead: Notification email not sent (lead is safe in the pipeline)`, { contactId: contact?.id, error: notify.error })
+      }
     } catch (emailError) {
       logger.warn("Chat Lead: Could not send notification email", { error: emailError instanceof Error ? emailError.message : String(emailError) })
     }

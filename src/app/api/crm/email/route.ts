@@ -115,6 +115,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Hard failure: the email neither sent via Postmark nor got logged to Supabase.
+    // Surface it as an error instead of a misleading 200/success (the contact-form lesson).
+    if (!result.success && !result.logged) {
+      return NextResponse.json(
+        {
+          success: false,
+          status: 'failed',
+          error: result.error || 'Email could not be sent or logged',
+          postmarkConfigured: isPostmarkConfigured(),
+        },
+        { status: 502 },
+      )
+    }
+
     return NextResponse.json({
       success: result.success || result.logged,
       messageId: result.messageId,
