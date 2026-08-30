@@ -1,12 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+import { useState } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import MagneticButton from "@/components/MagneticButton";
 import Link from "next/link";
@@ -153,17 +147,8 @@ const agents: (string | { name: string; comingSoon?: boolean })[] = [
    HERO SECTION
    ============================================================ */
 function HeroSection() {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 80]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
   return (
     <section
-      ref={heroRef}
       data-theme="dark"
       style={{ position: "relative", minHeight: '100dvh', display: 'flex', alignItems: 'center', overflow: "hidden", backgroundColor: DARK }}
     >
@@ -205,10 +190,8 @@ function HeroSection() {
       />
 
       {/* Content */}
-      <motion.div
+      <div
         style={{
-          y: heroY,
-          opacity: heroOpacity,
           position: "relative",
           zIndex: 3,
           maxWidth: 896,
@@ -220,11 +203,10 @@ function HeroSection() {
       >
         <div style={{ padding: 'clamp(60px, 10vh, 100px) 16px' }}>
           {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
+          <div
+            className="hp-rise"
             style={{
+              animationDelay: '0.3s',
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
@@ -239,7 +221,8 @@ function HeroSection() {
               letterSpacing: "0.03em",
             }}
           >
-            <motion.span
+            <span
+              className="hp-pulse"
               style={{
                 width: 8,
                 height: 8,
@@ -247,18 +230,15 @@ function HeroSection() {
                 background: YELLOW,
                 boxShadow: "0 0 8px rgba(243,216,64,0.6)",
               }}
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
             />
             <span style={{ color: "rgba(255,255,255,0.85)" }}>About Us</span>
-          </motion.div>
+          </div>
 
           {/* Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
+          <h1
+            className="hp-rise"
             style={{
+              animationDelay: '0.5s',
               fontSize: "clamp(40px, 6vw, 72px)",
               fontWeight: 800,
               color: "#fff",
@@ -270,14 +250,13 @@ function HeroSection() {
             We built the team
             <br />
             <span style={{ color: YELLOW }}>you can&apos;t find.</span>
-          </motion.h1>
+          </h1>
 
           {/* Sub */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
+          <p
+            className="hp-rise"
             style={{
+              animationDelay: '0.8s',
               color: "rgba(255,255,255,0.6)",
               fontSize: "clamp(17px, 2vw, 21px)",
               lineHeight: 1.6,
@@ -288,14 +267,12 @@ function HeroSection() {
             Renewably deploys AI employees across your solar operations. Not
             chatbots. Not software. Actual workers with roles, responsibilities,
             and a boss. Based in Ireland. Built for Irish solar installers.
-          </motion.p>
+          </p>
 
           {/* CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.5 }}
-            style={{ marginTop: 40 }}
+          <div
+            className="hp-rise"
+            style={{ animationDelay: '1.1s', marginTop: 40 }}
           >
             <MagneticButton href="/contact">
               Meet the Team
@@ -313,9 +290,9 @@ function HeroSection() {
                 />
               </svg>
             </MagneticButton>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Bottom fade */}
       <div
@@ -418,11 +395,9 @@ function StorySection() {
 
             return (
               <ScrollReveal key={i} delay={i * 0.08}>
-                <motion.div
+                <div
                   onClick={() => setExpandedStep(isExpanded ? null : i)}
                   style={{ cursor: "pointer" }}
-                  whileHover={{ x: 4 }}
-                  transition={{ duration: 0.2 }}
                 >
                   {/* Row */}
                   <div
@@ -469,28 +444,18 @@ function StorySection() {
 
                     {/* Right: text + expand */}
                     <div style={{ flex: 1 }}>
-                      <AnimatePresence mode="wait">
-                        <motion.p
-                          key={isExpanded ? "full" : "preview"}
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{
-                            opacity: 1,
-                            height: "auto",
-                          }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
-                          style={{
-                            fontSize: 'clamp(14px, 2vw, 15px)',
-                            lineHeight: 1.7,
-                            color: isExpanded ? "#374151" : "#535353",
-                            overflow: "hidden",
-                          }}
-                        >
-                          {isExpanded
-                            ? step.text
-                            : step.text.slice(0, 120) + "..."}
-                        </motion.p>
-                      </AnimatePresence>
+                      <p
+                        style={{
+                          fontSize: 'clamp(14px, 2vw, 15px)',
+                          lineHeight: 1.7,
+                          color: isExpanded ? "#374151" : "#535353",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {isExpanded
+                          ? step.text
+                          : step.text.slice(0, 120) + "..."}
+                      </p>
 
                       <span
                         style={{
@@ -507,13 +472,13 @@ function StorySection() {
                     </div>
 
                     {/* Expand icon */}
-                    <motion.div
-                      animate={{ rotate: isExpanded ? 180 : 0 }}
-                      transition={{ duration: 0.3 }}
+                    <div
                       style={{
                         display: "flex",
                         alignItems: "flex-start",
                         paddingTop: 4,
+                        transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                        transition: "transform 0.3s ease",
                       }}
                     >
                       <svg
@@ -530,9 +495,9 @@ function StorySection() {
                           d="M19 9l-7 7-7-7"
                         />
                       </svg>
-                    </motion.div>
+                    </div>
                   </div>
-                </motion.div>
+                </div>
               </ScrollReveal>
             );
           })}
@@ -611,10 +576,8 @@ function ProblemsSection() {
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {problems.map((problem, i) => (
             <ScrollReveal key={problem.title} delay={i * 0.08}>
-              <motion.div
+              <div
                 onClick={() => setActiveProblem(i)}
-                whileHover={{ scale: 1.005 }}
-                whileTap={{ scale: 0.995 }}
                 style={{
                   cursor: "pointer",
                   padding: 'clamp(14px, 2vw, 20px) 16px',
@@ -715,30 +678,21 @@ function ProblemsSection() {
                       </div>
                     </div>
 
-                    <AnimatePresence mode="wait">
-                      {activeProblem === i && (
-                        <motion.p
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{
-                            duration: 0.4,
-                            ease: [0.22, 1, 0.36, 1] as const,
-                          }}
-                          style={{
-                            fontSize: 'clamp(14px, 2vw, 15px)',
-                            lineHeight: 1.7,
-                            color: "#535353",
-                            overflow: "hidden",
-                          }}
-                        >
-                          {problem.desc}
-                        </motion.p>
-                      )}
-                    </AnimatePresence>
+                    {activeProblem === i && (
+                      <p
+                        style={{
+                          fontSize: 'clamp(14px, 2vw, 15px)',
+                          lineHeight: 1.7,
+                          color: "#535353",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {problem.desc}
+                      </p>
+                    )}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </ScrollReveal>
           ))}
         </div>
@@ -828,11 +782,8 @@ function ValuesSection() {
         >
           {values.map((v, i) => (
             <ScrollReveal key={v.title} delay={i * 0.1}>
-              <motion.div
-                whileHover={{
-                  y: -6,
-                  boxShadow: "0 20px 40px rgba(243,216,64,0.08)",
-                }}
+              <div
+                className="hp-lift"
                 style={{
                   padding: "24px 20px",
                   borderRadius: 20,
@@ -879,7 +830,7 @@ function ValuesSection() {
                 >
                   {v.desc}
                 </p>
-              </motion.div>
+              </div>
             </ScrollReveal>
           ))}
         </div>
@@ -970,8 +921,8 @@ function WorkforceSection() {
             const label = typeof agent === 'object' ? agent.name : agent;
             return (
             <ScrollReveal key={label} delay={i * 0.06}>
-              <motion.div
-                whileHover={isComingSoon ? {} : { y: -3, scale: 1.02 }}
+              <div
+                className={isComingSoon ? undefined : "hp-lift-sm"}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -1003,7 +954,7 @@ function WorkforceSection() {
                 >
                   {label}{isComingSoon && <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 500, color: "rgba(255,255,255,0.4)" }}>COMING SOON</span>}
                 </span>
-              </motion.div>
+              </div>
             </ScrollReveal>
             );
           })}
@@ -1036,16 +987,8 @@ function WorkforceSection() {
    FOUNDER / CTA SECTION
    ============================================================ */
 function FounderSection() {
-  const founderRef = useRef<HTMLDivElement>(null);
-  const isInView = useScroll({
-    target: founderRef,
-    offset: ["start end", "end start"],
-  });
-  const bgScale = useTransform(isInView.scrollYProgress, [0.2, 0.6], [1.05, 1]);
-
   return (
     <section
-      ref={founderRef}
       style={{
         backgroundColor: "#FFFDF5",
         paddingTop: 'clamp(48px, 10vw, 96px)',
@@ -1066,8 +1009,8 @@ function FounderSection() {
           {/* Photo */}
           <ScrollReveal>
             <div style={{ maxWidth: 400, margin: "0 auto" }}>
-              <motion.div
-                style={{ scale: bgScale, borderRadius: 20, overflow: "hidden" }}
+              <div
+                style={{ borderRadius: 20, overflow: "hidden" }}
               >
                 <div
                   style={{
@@ -1104,7 +1047,7 @@ function FounderSection() {
                     }}
                   />
                 </div>
-              </motion.div>
+              </div>
 
               {/* Caption */}
               <p

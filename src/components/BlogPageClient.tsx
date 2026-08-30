@@ -1,12 +1,6 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { useState, useMemo } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import MagneticButton from "@/components/MagneticButton";
 import Link from "next/link";
@@ -149,17 +143,8 @@ function TagIcon() {
    HERO SECTION
    ============================================================ */
 function HeroSection() {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 80]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
   return (
     <section
-      ref={heroRef}
       data-theme="dark"
       style={{
         position: "relative",
@@ -208,10 +193,8 @@ function HeroSection() {
       />
 
       {/* Content */}
-      <motion.div
+      <div
         style={{
-          y: heroY,
-          opacity: heroOpacity,
           position: "relative",
           zIndex: 3,
           maxWidth: 896,
@@ -223,10 +206,8 @@ function HeroSection() {
       >
         <div style={{ paddingTop: 'clamp(100px, 14vh, 120px)', paddingBottom: 'clamp(40px, 8vh, 64px)' }}>
           {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
+          <div
+            className="hp-rise"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -240,9 +221,11 @@ function HeroSection() {
               fontSize: 13,
               fontWeight: 600,
               letterSpacing: "0.03em",
+              animationDelay: "0.3s",
             }}
           >
-            <motion.span
+            <span
+              className="hp-pulse"
               style={{
                 width: 8,
                 height: 8,
@@ -250,21 +233,13 @@ function HeroSection() {
                 background: YELLOW,
                 boxShadow: "0 0 8px rgba(243,216,64,0.6)",
               }}
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
             />
             <span style={{ color: "rgba(255,255,255,0.85)" }}>Insights</span>
-          </motion.div>
+          </div>
 
           {/* Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              delay: 0.5,
-              duration: 0.8,
-              ease: [0.22, 1, 0.36, 1] as const,
-            }}
+          <h1
+            className="hp-rise"
             style={{
               fontSize: "clamp(40px, 6vw, 72px)",
               fontWeight: 800,
@@ -272,42 +247,40 @@ function HeroSection() {
               lineHeight: 1.08,
               letterSpacing: "-0.02em",
               marginBottom: 24,
+              animationDelay: "0.5s",
             }}
           >
             Solar is changing.
             <br />
             <span style={{ color: YELLOW }}>Stay ahead.</span>
-          </motion.h1>
+          </h1>
 
           {/* Sub */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
+          <p
+            className="hp-rise"
             style={{
               color: "rgba(255,255,255,0.6)",
               fontSize: "clamp(17px, 2vw, 21px)",
               lineHeight: 1.6,
               maxWidth: 640,
               margin: "0 auto 40px",
+              animationDelay: "0.8s",
             }}
           >
             Practical guides on AI operations, SEAI grants, ESB permitting,
             logistics, and customer support. Written for solar companies doing
             20+ jobs a month in Ireland.
-          </motion.p>
+          </p>
 
           {/* Search bar */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0, duration: 0.6 }}
-            style={{ maxWidth: 520, margin: "0 auto" }}
+          <div
+            className="hp-rise"
+            style={{ maxWidth: 520, margin: "0 auto", animationDelay: "1s" }}
           >
             <SearchBar />
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Bottom fade */}
       <div
@@ -407,11 +380,9 @@ function CategoryFilters({
             const isActive = activeCategory === cat;
             const catColor = categoryColors[cat];
             return (
-              <motion.button
+              <button
                 key={cat}
                 type="button"
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
                 onClick={() => setActiveCategory(cat)}
                 style={{
                   padding: "8px 20px",
@@ -432,7 +403,7 @@ function CategoryFilters({
                 }}
               >
                 {cat}
-              </motion.button>
+              </button>
             );
           })}
         </div>
@@ -450,9 +421,8 @@ function FeaturedCard({ post }: { post: (typeof posts)[0] }) {
   return (
     <ScrollReveal>
       <Link href={`/blog/${post.slug}`} className="group block">
-        <motion.div
-          whileHover={{ y: -4 }}
-          transition={{ duration: 0.3 }}
+        <div
+          className="hp-lift-sm"
           style={{
             position: "relative",
             borderRadius: 24,
@@ -491,9 +461,8 @@ function FeaturedCard({ post }: { post: (typeof posts)[0] }) {
                   marginBottom: 24,
                 }}
               >
-                <motion.span
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
+                <span
+                  className="hp-pulse"
                   style={{
                     width: 8,
                     height: 8,
@@ -609,7 +578,7 @@ function FeaturedCard({ post }: { post: (typeof posts)[0] }) {
                   })}
                 </span>
 
-                <motion.span
+                <span
                   className="group-hover:inline-flex"
                   style={{
                     display: "inline-flex",
@@ -625,18 +594,13 @@ function FeaturedCard({ post }: { post: (typeof posts)[0] }) {
                   }}
                 >
                   Read Article <ArrowIcon />
-                </motion.span>
+                </span>
               </div>
             </div>
           </div>
 
           {/* Ambient glow */}
-          <motion.div
-            animate={{
-              x: [0, 40, -20, 0],
-              y: [0, -30, 20, 0],
-            }}
-            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          <div
             style={{
               position: "absolute",
               top: "-20%",
@@ -650,7 +614,7 @@ function FeaturedCard({ post }: { post: (typeof posts)[0] }) {
               pointerEvents: "none",
             }}
           />
-        </motion.div>
+        </div>
       </Link>
     </ScrollReveal>
   );
@@ -672,9 +636,8 @@ function ArticleCard({
   return (
     <ScrollReveal delay={index * 0.05}>
       <Link href={`/blog/${post.slug}`} className="group block">
-        <motion.div
-          whileHover={{ y: -4 }}
-          transition={{ duration: 0.25 }}
+        <div
+          className="hp-lift-sm"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           style={{
@@ -781,14 +744,16 @@ function ArticleCard({
                 year: "numeric",
               })}
             </time>
-            <motion.div
-              animate={{ x: isHovered ? 4 : 0 }}
-              transition={{ duration: 0.2 }}
+            <div
+              style={{
+                transform: isHovered ? "translateX(4px)" : "translateX(0)",
+                transition: "transform 0.2s ease",
+              }}
             >
               <ArrowIcon color={isHovered ? catColor : "#9CA3AF"} />
-            </motion.div>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </Link>
     </ScrollReveal>
   );
@@ -913,10 +878,9 @@ function NewsletterSection() {
                 outline: "none",
               }}
             />
-            <motion.button
+            <button
               type="button"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              className="hp-lift-sm"
               style={{
                 padding: "14px 28px",
                 borderRadius: 12,
@@ -933,7 +897,7 @@ function NewsletterSection() {
               }}
             >
               Subscribe <ArrowIcon />
-            </motion.button>
+            </button>
           </div>
         </ScrollReveal>
 
@@ -949,9 +913,7 @@ function NewsletterSection() {
         </ScrollReveal>
 
         {/* Ambient glow */}
-        <motion.div
-          animate={{ x: [-30, 20, -30], y: [10, -20, 10] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        <div
           style={{
             position: "absolute",
             top: "-15%",
@@ -1056,10 +1018,8 @@ function TopicsSection() {
         >
           {topics.map((topic, i) => (
             <ScrollReveal key={topic.label} delay={i * 0.04}>
-              <motion.button
+              <button
                 type="button"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 onMouseEnter={() => setHoveredTopic(topic.label)}
                 onMouseLeave={() => setHoveredTopic(null)}
                 style={{
@@ -1111,7 +1071,7 @@ function TopicsSection() {
                 >
                   {topic.count}
                 </span>
-              </motion.button>
+              </button>
             </ScrollReveal>
           ))}
         </div>
@@ -1177,11 +1137,9 @@ function FinalCTA() {
               flexWrap: "wrap",
             }}
           >
-            <motion.a
+            <a
               href="/contact"
-              className="blog-final-cta"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              className="blog-final-cta hp-lift-sm"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -1198,12 +1156,10 @@ function FinalCTA() {
               }}
             >
               Get Started <ArrowIcon color={YELLOW} />
-            </motion.a>
-            <motion.a
+            </a>
+            <a
               href="/workforce"
-              className="blog-final-cta"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              className="blog-final-cta hp-lift-sm"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -1220,7 +1176,7 @@ function FinalCTA() {
               }}
             >
               Meet the AI Team <ArrowIcon />
-            </motion.a>
+            </a>
           </div>
           <style>{`
             @media (max-width: 767px) {
@@ -1319,25 +1275,20 @@ export default function BlogPageClient() {
             </div>
           </ScrollReveal>
 
-          {/* Posts grid with AnimatePresence */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.3 }}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                gap: 20,
-              }}
-            >
-              {filteredPosts.map((post, i) => (
-                <ArticleCard key={post.slug} post={post} index={i} />
-              ))}
-            </motion.div>
-          </AnimatePresence>
+          {/* Posts grid — re-animates on category change via key + hp-rise */}
+          <div
+            key={activeCategory}
+            className="hp-rise"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: 20,
+            }}
+          >
+            {filteredPosts.map((post, i) => (
+              <ArticleCard key={post.slug} post={post} index={i} />
+            ))}
+          </div>
 
           {/* Empty state */}
           {filteredPosts.length === 0 && (

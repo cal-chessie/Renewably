@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useInViewOnce } from "@/lib/useInViewOnce";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
 import Image from "next/image";
@@ -84,11 +83,9 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
         style={{ gap: 'clamp(24px, 5vw, 48px)', alignItems: 'center' }}
       >
         {/* Image */}
-        <motion.div
-          initial={{ opacity: 0, x: isReversed ? 40 : -40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
+        <ScrollReveal
+          direction={isReversed ? "left" : "right"}
+          duration={0.7}
           className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
         >
           <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 16, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
@@ -107,14 +104,11 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
               {agent.num}
             </div>
           </div>
-        </motion.div>
+        </ScrollReveal>
 
         {/* Copy */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, delay: 0.15 }}
+        <ScrollReveal
+          delay={0.15}
           className={isReversed ? "lg:order-1" : "lg:order-2"}
         >
           <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, marginBottom: 'clamp(10px, 1.5vw, 16px)' }}>
@@ -123,7 +117,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           <p style={{ color: '#535353', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', lineHeight: 1.7 }}>
             {agent.desc}
           </p>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </ScrollReveal>
   );
@@ -133,8 +127,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
    PRICING SECTION
    ============================================================ */
 function PricingSection() {
-  const totalRef = useRef<HTMLDivElement>(null);
-  const totalInView = useInView(totalRef, { once: true, margin: "-60px" });
+  const [totalRef, totalInView] = useInViewOnce<HTMLDivElement>("-60px");
 
   return (
     <section style={{ backgroundColor: '#FFFDF5', paddingTop: 'clamp(48px, 10vw, 112px)', paddingBottom: 'clamp(48px, 10vw, 112px)' }}>
@@ -171,17 +164,23 @@ function PricingSection() {
         </div>
 
         {/* Total callout */}
-        <motion.div
+        <div
           ref={totalRef}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={totalInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
-          style={{ backgroundColor: '#F3D840', borderRadius: 16, padding: 'clamp(20px, 4vw, 40px) clamp(16px, 3vw, 48px)', textAlign: 'center', marginBottom: 'clamp(12px, 2vw, 16px)' }}
+          style={{
+            backgroundColor: '#F3D840',
+            borderRadius: 16,
+            padding: 'clamp(20px, 4vw, 40px) clamp(16px, 3vw, 48px)',
+            textAlign: 'center',
+            marginBottom: 'clamp(12px, 2vw, 16px)',
+            opacity: totalInView ? 1 : 0,
+            transform: totalInView ? 'scale(1)' : 'scale(0.95)',
+            transition: 'opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s',
+          }}
         >
           <p style={{ color: '#1A1A1A', fontSize: 'clamp(1.25rem, 4vw, 2.5rem)', fontWeight: 800, lineHeight: 1.2 }}>
             €1,000 – €1,500/month for your full AI team
           </p>
-        </motion.div>
+        </div>
 
         <ScrollReveal delay={0.3}>
           <p style={{ textAlign: 'center', color: '#535353', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', marginBottom: 'clamp(10px, 1.5vw, 16px)' }}>
@@ -230,39 +229,32 @@ export default function ServicesPageClient() {
           {/* Content */}
           <div style={{ position: 'relative', zIndex: 2, maxWidth: 896, margin: '0 auto', padding: 'clamp(80px, 15vh, 160px) clamp(16px, 4vw, 32px)' }}>
             <div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.6 }}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', marginBottom: 'clamp(20px, 4vw, 32px)' }}
+              <div
+                className="hp-rise"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', marginBottom: 'clamp(20px, 4vw, 32px)', animationDelay: '0.3s' }}
               >
-                <motion.span
+                <span
+                  className="hp-pulse"
                   style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840', boxShadow: '0 0 8px rgba(243,216,64,0.6)' }}
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
                 />
                 <span style={{ color: '#F3D840', fontSize: 'clamp(12px, 1.5vw, 14px)', fontWeight: 700, letterSpacing: '0.03em' }}>
                   Renewably
                 </span>
-              </motion.div>
+              </div>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
-                style={{ fontSize: 'clamp(2rem, 6vw, 3.75rem)', fontWeight: 800, color: '#fff', lineHeight: 1.08, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}
+              <h1
+                className="hp-rise"
+                style={{ fontSize: 'clamp(2rem, 6vw, 3.75rem)', fontWeight: 800, color: '#fff', lineHeight: 1.08, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)', animationDelay: '0.5s' }}
               >
                 AI Workforce That Runs Your Solar Company, On Autopilot
-              </motion.h1>
+              </h1>
 
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.6 }}
-                style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(1rem, 2vw, 1.25rem)', lineHeight: 1.7, maxWidth: 640 }}
+              <p
+                className="hp-rise"
+                style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(1rem, 2vw, 1.25rem)', lineHeight: 1.7, maxWidth: 640, animationDelay: '0.8s' }}
               >
                 A fully managed AI workforce deployed across your operations, customer support, grants, and logistics. Built for solar companies that want to scale without finding staff they can&apos;t hire.
-              </motion.p>
+              </p>
             </div>
           </div>
 
@@ -277,10 +269,9 @@ export default function ServicesPageClient() {
             <ScrollReveal>
               <div style={{ textAlign: 'center', maxWidth: 768, margin: '0 auto clamp(32px, 5vw, 80px)' }}>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)' }}>
-                  <motion.span
+                  <span
+                    className="hp-pulse"
                     style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840' }}
-                    animate={{ scale: [1, 1.3, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
                   />
                   <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
                     Here&apos;s what we deploy.

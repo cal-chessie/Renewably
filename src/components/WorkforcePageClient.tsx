@@ -1,7 +1,5 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
 import dynamic from "next/dynamic";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
@@ -143,11 +141,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
         style={{ gap: "clamp(24px, 5vw, 48px)", alignItems: 'center' }}
       >
         {/* Image */}
-        <motion.div
-          initial={{ opacity: 0, x: isReversed ? 40 : -40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
+        <div
           className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
         >
           {DashboardComponent ? (
@@ -173,14 +167,10 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
               </div>
             </div>
           )}
-        </motion.div>
+        </div>
 
         {/* Copy */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, delay: 0.15 }}
+        <div
           className={isReversed ? "lg:order-first" : "lg:order-last"}
         >
           <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, marginBottom: 12 }}>
@@ -195,7 +185,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           <p style={{ color: '#1A1A1A', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', lineHeight: 1.7, fontWeight: 600 }}>
             {agent.closing}
           </p>
-        </motion.div>
+        </div>
       </div>
     </ScrollReveal>
   );
@@ -205,19 +195,15 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
    HOW IT WORKS TOGETHER — Scenario Flow
    ============================================================ */
 function ScenarioSection() {
-  const stepsRef = useRef<HTMLDivElement>(null);
-  const stepsInView = useInView(stepsRef, { once: true, margin: "-60px" });
-
   return (
     <section style={{ backgroundColor: '#0A0A0A', paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
       <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', padding: '6px 16px', borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', marginBottom: 'clamp(20px, 4vw, 32px)' }}>
-            <motion.span
+            <span
+              className="hp-pulse"
               style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840' }}
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
             />
             <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.5vw, 14px)', fontWeight: 600, letterSpacing: '0.03em' }}>
               How it works together.
@@ -233,28 +219,23 @@ function ScenarioSection() {
         </ScrollReveal>
 
         {/* Steps */}
-        <div ref={stepsRef} style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 1.5vw, 12px)', marginBottom: 'clamp(24px, 5vw, 40px)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(8px, 1.5vw, 12px)', marginBottom: 'clamp(24px, 5vw, 40px)' }}>
           {scenarioSteps.map((step, i) => (
-            <motion.div
-              key={step.agent}
-              initial={{ opacity: 0, x: -20 }}
-              animate={stepsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-              transition={{ delay: 0.15 + i * 0.08, duration: 0.45, ease: "easeOut" }}
-              style={{ display: 'flex', alignItems: 'flex-start', gap: 'clamp(12px, 2vw, 16px)' }}
-            >
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={stepsInView ? { scale: 1 } : { scale: 0 }}
-                transition={{ delay: 0.15 + i * 0.08, duration: 0.3, type: "spring", stiffness: 300 }}
-                style={{ width: 28, height: 28, minWidth: 28, borderRadius: '50%', background: '#F3D840', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 2 }}
+            <ScrollReveal key={step.agent} delay={0.15 + i * 0.08} direction="left">
+              <div
+                style={{ display: 'flex', alignItems: 'flex-start', gap: 'clamp(12px, 2vw, 16px)' }}
               >
-                <span style={{ color: '#1A1A1A', fontWeight: 800, fontSize: 11 }}>{i + 1}</span>
-              </motion.div>
-              <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(14px, 2vw, 18px)', lineHeight: 1.7 }}>
-                <span style={{ color: '#F3D840', fontWeight: 700 }}>{step.agent}</span>{" "}
-                {step.action}
-              </p>
-            </motion.div>
+                <div
+                  style={{ width: 28, height: 28, minWidth: 28, borderRadius: '50%', background: '#F3D840', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 2 }}
+                >
+                  <span style={{ color: '#1A1A1A', fontWeight: 800, fontSize: 11 }}>{i + 1}</span>
+                </div>
+                <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(14px, 2vw, 18px)', lineHeight: 1.7 }}>
+                  <span style={{ color: '#F3D840', fontWeight: 700 }}>{step.agent}</span>{" "}
+                  {step.action}
+                </p>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
 
@@ -391,39 +372,32 @@ export default function WorkforcePageClient() {
 
         {/* Content */}
         <div style={{ position: 'relative', zIndex: 2, maxWidth: 896, width: '100%', padding: '0 clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', marginBottom: 'clamp(20px, 4vw, 32px)', padding: '6px 16px', fontSize: 'clamp(12px, 1.5vw, 13px)', fontWeight: 600, letterSpacing: '0.03em' }}
+          <div
+            className="hp-rise"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', marginBottom: 'clamp(20px, 4vw, 32px)', padding: '6px 16px', fontSize: 'clamp(12px, 1.5vw, 13px)', fontWeight: 600, letterSpacing: '0.03em', animationDelay: '0.3s' }}
           >
-            <motion.span
+            <span
+              className="hp-pulse"
               style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840', boxShadow: '0 0 8px rgba(243,216,64,0.6)' }}
-              animate={{ scale: [1, 1.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
             />
             <span style={{ color: 'rgba(255,255,255,0.85)' }}>
               Ready to meet your new team?
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
-            style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, color: '#F3D840', lineHeight: 1.08, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}
+          <h1
+            className="hp-rise"
+            style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, color: '#F3D840', lineHeight: 1.08, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)', animationDelay: '0.5s' }}
           >
             The AI Workforce
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-            style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(1.1rem, 2vw, 1.35rem)', lineHeight: 1.6, maxWidth: 640, margin: '0 auto' }}
+          <p
+            className="hp-rise"
+            style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(1.1rem, 2vw, 1.35rem)', lineHeight: 1.6, maxWidth: 640, margin: '0 auto', animationDelay: '0.8s' }}
           >
             Eight AI employees. One team. Your solar company, automated. (Ninth coming soon.)
-          </motion.p>
+          </p>
         </div>
 
         {/* Yellow fade at bottom */}
