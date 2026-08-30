@@ -4,7 +4,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 
 export default function TermsPageClient() {
   return (
-    <main>
+    <div>
       {/* Hero — Dark */}
       <section style={{ position: "relative", overflow: "hidden", backgroundColor: "#0A0A0A" }}>
         <div
@@ -53,7 +53,7 @@ export default function TermsPageClient() {
               <div>
                 <h2 style={{ color: "#1A1A1A", fontSize: 20, fontWeight: 700, marginBottom: 12 }}>1. Service Description</h2>
                 <p style={{ color: "#535353", fontSize: 15, lineHeight: 1.8 }}>
-                  Renewably provides an AI-as-a-Service platform designed specifically for solar PV installers operating in Ireland. Our service deploys AI agents that perform operational tasks including grant application management, permit processing, customer support, logistics coordination, quality assurance, and reporting. The platform includes a CRM dashboard, calendar integration, email integration, and WhatsApp integration. All services are delivered through our web-based platform and associated integrations.
+                  Renewably provides an AI-as-a-Service platform designed specifically for solar PV installers operating in Ireland. Our service deploys AI agents that perform operational tasks including grant application management, permit processing, customer support, logistics coordination, quality assurance, and reporting. The platform includes an operations dashboard, calendar integration, and email integration. All services are delivered through our web-based platform and associated integrations.
                 </p>
               </div>
 
@@ -185,6 +185,6 @@ export default function TermsPageClient() {
           </ScrollReveal>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

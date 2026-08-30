@@ -52,8 +52,6 @@ const problems = [
       </svg>
     ),
     desc: "You have more work than people. Electricians are booked out. Admin staff don't stay. Project managers burn out. Every time you lose someone, you lose months of knowledge, relationships, and momentum. The work keeps coming. The people keep leaving.",
-    stat: "73%",
-    statLabel: "of Irish installers can't hire fast enough",
   },
   {
     title: "The Admin Trap",
@@ -63,8 +61,6 @@ const problems = [
       </svg>
     ),
     desc: "Grant applications. ESB paperwork. Customer follow-ups. Equipment ordering. Permit chasing. You started a solar company to install panels. Instead you spend half your week on tasks that have nothing to do with your craft. That's not what you signed up for.",
-    stat: "18hrs",
-    statLabel: "per week wasted on admin tasks",
   },
   {
     title: "The Lead Leakage",
@@ -74,8 +70,6 @@ const problems = [
       </svg>
     ),
     desc: "A customer submits an enquiry at nine on a Tuesday night. You see it at eight the next morning. They've already called three other installers. One answered at seven. They booked with them. You lost a deal not because you're bad. Because you were asleep.",
-    stat: "47%",
-    statLabel: "of leads go cold before follow-up",
   },
   {
     title: "The Visibility Problem",
@@ -86,8 +80,6 @@ const problems = [
       </svg>
     ),
     desc: "Where is every job right now? Which grants are approved? Which permits are stuck? Which customer hasn't heard from you in two weeks? You don't know. Your spreadsheets don't know. Your WhatsApp groups don't know. Nobody knows. That's not a system. That's chaos.",
-    stat: "3x",
-    statLabel: "more jobs handled with full visibility",
   },
 ];
 
@@ -122,7 +114,7 @@ const values = [
   },
   {
     title: "Grows With You",
-    desc: "Start with three agents. Add two more next quarter. Build out the full team over six months. Every agent is independent. Cancel anytime. No contracts. No lock-in.",
+    desc: "Start with the front office: a PA and a Chief of Staff. Add the next hire when you're ready. Build out the full team at your pace. You approve every hire. Cancel anytime. No contracts. No lock-in.",
     icon: (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
@@ -644,38 +636,6 @@ function ProblemsSection() {
                         {problem.title}
                       </h3>
 
-                      {/* Stat pill */}
-                      <div
-                        style={{
-                          display:
-                            activeProblem === i ? "inline-flex" : "none",
-                          alignItems: "center",
-                          gap: 8,
-                          padding: "6px 14px",
-                          borderRadius: 9999,
-                          backgroundColor: "rgba(59,130,246,0.08)",
-                          border: "1px solid rgba(59,130,246,0.15)",
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: 16,
-                            fontWeight: 800,
-                            color: "#3B82F6",
-                          }}
-                        >
-                          {problem.stat}
-                        </span>
-                        <span
-                          style={{
-                            fontSize: 11,
-                            color: "#6B7280",
-                            fontWeight: 500,
-                          }}
-                        >
-                          {problem.statLabel}
-                        </span>
-                      </div>
                     </div>
 
                     {activeProblem === i && (
@@ -1285,7 +1245,7 @@ function FinalCTA() {
    ============================================================ */
 export default function AboutPageClient() {
   return (
-    <main>
+    <div>
       <HeroSection />
       <StorySection />
       <ProblemsSection />
@@ -1293,6 +1253,6 @@ export default function AboutPageClient() {
       <WorkforceSection />
       <FounderSection />
       <FinalCTA />
-    </main>
+    </div>
   );
 }

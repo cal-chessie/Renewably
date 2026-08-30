@@ -205,7 +205,7 @@ function PricingSection() {
    ============================================================ */
 export default function ServicesPageClient() {
   return (
-    <main>
+    <div>
         {/* ===== HERO — Full-Width Robot Banner ===== */}
         <section data-theme="dark" style={{ position: 'relative', minHeight: '100dvh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
           {/* Robot image background */}
@@ -332,6 +332,6 @@ export default function ServicesPageClient() {
           ctaButtonColor="#fff"
           padding={{ top: 'clamp(48px, 10vw, 112px)', bottom: 'clamp(48px, 10vw, 112px)' }}
         />
-      </main>
+      </div>
   );
 }

@@ -7,7 +7,7 @@ import { pricingFaqs } from "@/data/pricingFaqs";
 
 const includedItems = [
   "All 8 AI agents (CEO, Operations, Support, Grants, Logistics, Permitting, QA, Reporting) + Marketing Agent coming soon",
-  "Full CRM dashboard",
+  "Operations dashboard (works alongside your existing CRM)",
   "Calendar integration",
   "Email integration",
   "Weekly reports",
@@ -82,7 +82,7 @@ export default function PricingPageClient() {
   const [openFAQ, setOpenFAQ] = useState<number | null>(0);
 
   return (
-    <main>
+    <div>
       {/* Hero — Dark */}
       <section style={{ position: "relative", overflow: "hidden", backgroundColor: "#0A0A0A" }}>
         <div
@@ -307,6 +307,6 @@ export default function PricingPageClient() {
           `}</style>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

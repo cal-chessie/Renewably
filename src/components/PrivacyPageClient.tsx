@@ -4,7 +4,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 
 export default function PrivacyPageClient() {
   return (
-    <main>
+    <div>
       {/* Hero — Dark */}
       <section style={{ position: "relative", overflow: "hidden", backgroundColor: "#0A0A0A" }}>
         <div
@@ -209,6 +209,6 @@ export default function PrivacyPageClient() {
           </ScrollReveal>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

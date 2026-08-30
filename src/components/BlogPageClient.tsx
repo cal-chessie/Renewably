@@ -1207,7 +1207,7 @@ export default function BlogPageClient() {
   }, [activeCategory, featuredPost.slug]);
 
   return (
-    <main>
+    <div>
       {/* 1. HERO */}
       <HeroSection />
 
@@ -1309,6 +1309,6 @@ export default function BlogPageClient() {
 
       {/* 7. FINAL CTA */}
       <FinalCTA />
-    </main>
+    </div>
   );
 }

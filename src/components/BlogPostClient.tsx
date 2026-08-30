@@ -289,7 +289,7 @@ export default function BlogPostClient() {
 
   if (!post) {
     return (
-      <main>
+      <main id="main-content">
         <section style={{ padding: "128px 20px", textAlign: "center", backgroundColor: "#fff" }}>
           <h1 style={{ fontSize: 36, fontWeight: 800, color: "#1A1A1A", marginBottom: 16 }}>Post Not Found</h1>
           <p style={{ fontSize: 16, color: "#6B7280", marginBottom: 24 }}>The article you are looking for does not exist.</p>
@@ -306,7 +306,7 @@ export default function BlogPostClient() {
   const nextPost = post.nextSlug ? getPostBySlug(post.nextSlug) : null;
 
   return (
-    <main>
+    <main id="main-content">
       {/* ===== ARTICLE HEADER ===== */}
       <article>
         <section style={{ position: "relative", overflow: "hidden", backgroundColor: DARK }}>

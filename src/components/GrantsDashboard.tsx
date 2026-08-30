@@ -318,7 +318,7 @@ export default function GrantsDashboard() {
 
         {/* Footer */}
         <div className="ft" style={S.grantsFooter}>
-          <span>AI-powered grant management &middot; SEAI &middot; Auto-submit &middot; 92% approval rate</span>
+          <span>AI-powered grant management &middot; SEAI &middot; Every form tracked &middot; Nothing missed</span>
           <span>Auto-refresh every 4 seconds</span>
         </div>
       </div>

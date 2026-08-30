@@ -224,7 +224,7 @@ export default function SupportDashboard() {
 
         {/* Footer */}
         <div className="ft" style={S.footer}>
-          <span>💬 AI-powered customer support · 24/7 · Zero wait</span>
+          <span>💬 AI-powered customer support · Nothing sits unread · Nothing goes cold</span>
           <span>🔄 Auto-refresh every 4 seconds</span>
         </div>
       </div>

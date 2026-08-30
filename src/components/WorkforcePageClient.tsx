@@ -279,7 +279,7 @@ function InvestmentSection() {
 
         <ScrollReveal delay={0.2}>
           <p style={{ color: '#1A1A1A', fontSize: 'clamp(16px, 2.2vw, 20px)', fontWeight: 600, marginBottom: 'clamp(24px, 5vw, 40px)' }}>
-            We&apos;ll give you an exact quote after a 30 minute call.
+            Book a 15 minute call. If it fits, we scope your build and give you a fixed quote.
           </p>
         </ScrollReveal>
 
@@ -351,7 +351,7 @@ function CTASection() {
    ============================================================ */
 export default function WorkforcePageClient() {
   return (
-    <main>
+    <div>
       <style>{`.workforce-hero-bg { object-position: 60% 45% !important; } @media (min-width: 768px) { .workforce-hero-bg { object-position: center center !important; } } @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }`}</style>
 
       {/* ===== HERO ===== */}
@@ -449,6 +449,6 @@ export default function WorkforcePageClient() {
 
       {/* ===== CTA ===== */}
       <CTASection />
-    </main>
+    </div>
   );
 }

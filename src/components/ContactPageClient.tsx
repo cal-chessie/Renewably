@@ -58,9 +58,9 @@ const painPoints = [
 const faqs = [
   { q: "Is there any commitment or contract?", a: "No. We operate month-to-month. There is no lock-in, no minimum term, and no cancellation penalty. You can cancel anytime. We believe our service should earn your business every single month." },
   { q: "How much does it cost?", a: "Monthly plans start at EUR 1,000 for the full AI workforce of 8 agents, with a ninth (Marketing Agent) coming soon. There is a one-time setup fee. You bring your own AI API keys and pay model providers directly, typically EUR 50-200/month. No markup from us." },
-  { q: "How quickly can I get set up?", a: "Most installers are fully operational within 5-7 business days. The initial call takes 60 minutes, configuration takes 2-3 days, and we run a testing period before going live. We do not rush." },
+  { q: "How quickly can I get set up?", a: "It starts with a 15 minute call. If it fits, we scope your build properly, configuration takes 2-3 days, and we run a testing period before going live. Most installers are fully operational within one to two weeks. We do not rush." },
   { q: "Will this work for my size of operation?", a: "We work with solar installers doing anywhere from 5 to 100+ installs per month. The AI workforce scales with you. Whether you are a one-man band or a 20-person crew, we build your team to match your volume." },
-  { q: "What integrations do you support?", a: "We integrate with your existing CRM, email (Gmail, Outlook), calendar (Google Calendar, Outlook), phone system, and project management tools. We also support WhatsApp Business for customer communication." },
+  { q: "What integrations do you support?", a: "We integrate with your existing CRM, email (Gmail, Outlook), calendar (Google Calendar, Outlook), phone system, and project management tools. Your CRM stays yours. Nothing to migrate." },
   { q: "Is my data secure?", a: "Absolutely. All data is encrypted at rest and in transit. We are fully GDPR-compliant, based in Ireland, and never share your data with third parties. You can request data deletion at any time." },
 ];
 
@@ -349,7 +349,7 @@ export default function ContactPageClient() {
   };
 
   return (
-    <main>
+    <div>
       {/* ===== HERO SECTION ===== */}
       <section ref={heroRef} style={{ position: "relative", minHeight: '100dvh', display: 'flex', alignItems: 'center', overflow: "hidden", backgroundColor: DARK }}>
         {/* Animated dot grid */}
@@ -1243,6 +1243,6 @@ export default function ContactPageClient() {
           </ScrollReveal>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

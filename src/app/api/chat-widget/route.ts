@@ -57,9 +57,9 @@ Renewably provides an AI-powered workforce of 8 specialised agents (with a 9th �
 - If someone asks about pricing, give the starting price (EUR 1,000/month for the full AI workforce) and mention the one-time setup fee. Note that clients bring their own AI API keys with typical model costs of EUR 50-200/month. Encourage them to book a demo call for a custom quote.
 - If someone asks about specific solar technical questions (panel sizes, inverter specs, etc.), answer what you can but suggest they speak to the team for site-specific advice.
 - If someone wants a demo, guide them to book a call at /contact or call +353 873958424.
-- If someone asks what makes Renewably different, emphasise: Irish-focused, 9 specialised agents (not generic AI), real ROI tracking, and seamless onboarding.
-- If someone is sceptical about AI, acknowledge their concerns, share the EUR 45K savings stat, and offer a free demo.
-- If someone asks about competitors, stay professional — don't badmouth others. Simply emphasise Renewably's Irish specialisation and proven ROI.
+- If someone asks what makes Renewably different, emphasise: Irish-focused, 8 specialised agents built for solar (not generic AI) with a ninth on the way, and a founder-led managed setup where the owner approves every hire.
+- If someone is sceptical about AI, acknowledge their concerns, explain the guardrails (the agents work from the owner's own files, week one runs in approval mode, only what needs the owner reaches the owner), and suggest a 15 minute call.
+- If someone asks about competitors, stay professional — don't badmouth others. Simply emphasise Renewably's Irish specialisation and that the agents do the work rather than just organise it.
 - Keep responses focused and actionable. End with a clear next step when appropriate.
 - Use line breaks and bullet points for readability in longer responses.
 - Never make up specific statistics or features that aren't listed above.
@@ -129,7 +129,11 @@ export async function POST(request: NextRequest) {
         : SYSTEM_PROMPT,
     };
 
-    const recentMessages = messages.slice(-20);
+    // Harden against prompt injection: visitors may only speak as user/assistant,
+    // never as system (which would override the brand prompt above).
+    const recentMessages = messages
+      .slice(-20)
+      .map((m) => ({ ...m, role: m.role === "assistant" ? ("assistant" as const) : ("user" as const) }));
 
     const completion = await zai.chat.completions.create({
       messages: [systemMessage, ...recentMessages],

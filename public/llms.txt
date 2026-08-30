@@ -5,8 +5,9 @@
 > installation business, from answering enquiries and following up leads to
 > coordinating installs, handling grant paperwork and reporting. It is a
 > founder-led, managed service, not self-serve software. The installer keeps
-> their existing CRM and tools; Renewably works alongside them, and every
-> customer-facing action is owner-approved.
+> their existing CRM and tools; Renewably works alongside them. Week one runs
+> in approval mode, and the first message to anyone new always needs the
+> owner's yes.
 
 ## What Renewably does
 - Answers and follows up customer enquiries quickly, in the installer's own voice
@@ -14,7 +15,7 @@
 - Coordinates installs, materials and scheduling
 - Handles SEAI grant applications and tracks ESB Networks paperwork
 - Gives the owner a clear operating view and escalates decisions to a human
-- Sends nothing to a customer without human approval
+- Never contacts anyone new without the owner's approval; in week one, every message is owner-approved
 
 ## Who it is for
 Solar PV installation businesses in Ireland (SEAI-registered installers) with
