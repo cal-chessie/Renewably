@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import PricingPageClient from "@/components/PricingPageClient";
+import { pricingFaqs } from "@/data/pricingFaqs";
 
 export const metadata: Metadata = {
   title: "Pricing — AI Workforce for Solar Installers | Renewably",
@@ -16,10 +17,35 @@ export const metadata: Metadata = {
   },
 };
 
+function FAQSchema() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: pricingFaqs.map((faq) => ({
+            "@type": "Question",
+            name: faq.q,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq.a,
+            },
+          })),
+        }),
+      }}
+    />
+  );
+}
+
 export default function PricingPage() {
   return (
-    <main id="main-content">
-      <PricingPageClient />
-    </main>
+    <>
+      <FAQSchema />
+      <main id="main-content">
+        <PricingPageClient />
+      </main>
+    </>
   );
 }
