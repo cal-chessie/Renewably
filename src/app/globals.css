@@ -279,3 +279,23 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Homepage entrance + micro-interactions (CSS, replacing framer-motion).
+   The prefers-reduced-motion block above neutralises these automatically. */
+@keyframes hp-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hp-rise {
+  opacity: 0;
+  animation: hp-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes hp-scale-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.3); }
+}
+.hp-pulse { animation: hp-scale-pulse 2s ease-in-out infinite; }
+
+.hp-lift:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(243,216,64,0.12); }
+.hp-lift-sm:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(243,216,64,0.1); }

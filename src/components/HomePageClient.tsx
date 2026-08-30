@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { homeFaqs } from "@/data/homeFaqs";
-import { motion, useInView } from "framer-motion";
+import { useInViewOnce } from "@/lib/useInViewOnce";
 import Image from "next/image";
 import Link from "next/link";
 import MagneticButton from "@/components/MagneticButton";
@@ -92,10 +92,8 @@ function HeroSection() {
         }}
       >
         {/* Brand badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
+        <div
+          className="hp-rise"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -108,38 +106,36 @@ function HeroSection() {
             fontSize: 'clamp(11px, 1.3vw, 13px)',
             fontWeight: 600,
             letterSpacing: '0.03em',
+            animationDelay: '0.3s',
           }}
         >
-          <motion.span
+          <span
             className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
             style={{ boxShadow: '0 0 8px rgba(243,216,64,0.6)' }}
           />
           <span style={{ color: 'rgba(255,255,255,0.85)' }}>
             AI as a Service
           </span>
-        </motion.div>
+        </div>
 
         {/* Setup line */}
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
+        <p
+          className="hp-rise"
           style={{
             fontSize: 'clamp(17px, 3.5vw, 30px)',
             fontWeight: 500,
             color: 'rgba(255,255,255,0.7)',
             marginBottom: 'clamp(6px, 1.2vw, 16px)',
             lineHeight: 1.4,
+            animationDelay: '0.5s',
           }}
         >
           You don&apos;t need more staff.
-        </motion.p>
+        </p>
 
         {/* Hero statement */}
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
+        <h1
+          className="hp-rise"
           style={{
             fontSize: 'clamp(28px, 7vw, 72px)',
             fontWeight: 800,
@@ -147,24 +143,21 @@ function HeroSection() {
             letterSpacing: '-0.02em',
             color: '#F3D840',
             marginBottom: 'clamp(24px, 4vw, 48px)',
+            animationDelay: '0.7s',
           }}
         >
           You need a workforce that never sleeps.
-        </motion.h1>
+        </h1>
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.1, duration: 0.5 }}
-        >
+        <div className="hp-rise" style={{ animationDelay: '1.1s' }}>
           <MagneticButton href="/onboarding">
             Start Free Trial
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </MagneticButton>
-        </motion.div>
+        </div>
       </div>
       {/* Responsive objectPosition — desktop centres, mobile shifts right to show the robot */}
       <style>{`
@@ -185,8 +178,6 @@ function HeroSection() {
    SECTION 2: PROBLEM SECTION — Dark Background
    ============================================================ */
 function ProblemSection() {
-  const calloutRef = useRef<HTMLDivElement>(null);
-  const calloutInView = useInView(calloutRef, { once: true, margin: "-80px" });
 
   return (
     <section
@@ -251,18 +242,16 @@ function ProblemSection() {
         </div>
 
         {/* Callout */}
-        <motion.div
-          ref={calloutRef}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={calloutInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
-          className="bg-[#F3D840] rounded-2xl"
-          style={{ padding: 'clamp(20px, 4vw, 32px) clamp(16px, 3vw, 32px)' }}
-        >
-          <p style={{ color: '#1A1A1A', fontSize: 'clamp(20px, 4vw, 36px)', fontWeight: 800, lineHeight: 1.2 }}>
-            That&apos;s not a business. That&apos;s a hostage situation.
-          </p>
-        </motion.div>
+        <ScrollReveal>
+          <div
+            className="bg-[#F3D840] rounded-2xl"
+            style={{ padding: 'clamp(20px, 4vw, 32px) clamp(16px, 3vw, 32px)' }}
+          >
+            <p style={{ color: '#1A1A1A', fontSize: 'clamp(20px, 4vw, 36px)', fontWeight: 800, lineHeight: 1.2 }}>
+              That&apos;s not a business. That&apos;s a hostage situation.
+            </p>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -311,8 +300,7 @@ function SolutionSection() {
    SECTION 4: PLATFORM TOUR — Dark Background (Lazy Video)
    ============================================================ */
 function PlatformTourSection() {
-  const videoRef = useRef<HTMLDivElement>(null);
-  const videoInView = useInView(videoRef, { once: true, margin: "200px" });
+  const [videoRef, videoInView] = useInViewOnce<HTMLDivElement>("200px");
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   return (
@@ -495,11 +483,7 @@ function FeaturesSection() {
                 border: '1px solid rgba(243,216,64,0.2)',
               }}
             >
-              <motion.span
-                className="w-2 h-2 rounded-full bg-[#F3D840]"
-                animate={{ scale: [1, 1.3, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
+              <span className="w-2 h-2 rounded-full bg-[#F3D840] hp-pulse" />
               <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
                 Here&apos;s what they do.
               </span>
@@ -511,9 +495,8 @@ function FeaturesSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
           {features.map((feature, i) => (
             <ScrollReveal key={feature.title} delay={i * 0.1}>
-              <motion.div
-                whileHover={{ y: -6, boxShadow: "0 20px 40px rgba(243,216,64,0.12)" }}
-                className="p-5 lg:p-6 rounded-2xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 transition-all duration-300 cursor-pointer group h-full"
+              <div
+                className="hp-lift p-5 lg:p-6 rounded-2xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 transition-all duration-300 cursor-pointer group h-full"
               >
                 <div className="w-12 h-12 rounded-2xl bg-[#F3D840] flex items-center justify-center text-[#374151] group-hover:scale-110 transition-transform duration-300 mb-5">
                   {feature.icon}
@@ -524,7 +507,7 @@ function FeaturesSection() {
                 <p className="text-[#535353] text-sm leading-relaxed">
                   {feature.desc}
                 </p>
-              </motion.div>
+              </div>
             </ScrollReveal>
           ))}
         </div>
@@ -612,9 +595,8 @@ function AgentsSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5" style={{ marginBottom: 'clamp(32px, 4vw, 48px)' }}>
           {agents.map((agent, i) => (
             <ScrollReveal key={agent.title} delay={i * 0.08}>
-              <motion.div
-                whileHover={{ y: -4, boxShadow: "0 12px 30px rgba(243,216,64,0.1)" }}
-                className={`p-5 lg:p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer group h-full ${'comingSoon' in agent ? 'bg-[#0A0A0A] border-[#F3D840]/30 opacity-50' : 'bg-white border-[#F3D840]/30 hover:border-[#F3D840]/60'}`}
+              <div
+                className={`hp-lift-sm p-5 lg:p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer group h-full ${'comingSoon' in agent ? 'bg-[#0A0A0A] border-[#F3D840]/30 opacity-50' : 'bg-white border-[#F3D840]/30 hover:border-[#F3D840]/60'}`}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className={`w-3 h-3 rounded-full group-hover:scale-125 transition-transform duration-300 ${'comingSoon' in agent ? 'bg-[#F3D840]/40' : 'bg-[#F3D840]'}`} />
@@ -626,16 +608,15 @@ function AgentsSection() {
                 <p className={`text-sm leading-relaxed ${'comingSoon' in agent ? 'text-white/40' : 'text-[#535353]'}`}>
                   {agent.desc}
                 </p>
-              </motion.div>
+              </div>
             </ScrollReveal>
           ))}
 
           {/* Much more card */}
           <ScrollReveal delay={0.72}>
             <Link href="/workforce">
-              <motion.div
-                whileHover={{ y: -4, boxShadow: "0 12px 30px rgba(243,216,64,0.15)" }}
-                className="p-5 lg:p-6 rounded-2xl bg-[#0A0A0A] border-2 border-[#F3D840]/40 hover:border-[#F3D840] transition-all duration-300 cursor-pointer group h-full flex flex-col items-center justify-center text-center min-h-[100px]"
+              <div
+                className="hp-lift-sm p-5 lg:p-6 rounded-2xl bg-[#0A0A0A] border-2 border-[#F3D840]/40 hover:border-[#F3D840] transition-all duration-300 cursor-pointer group h-full flex flex-col items-center justify-center text-center min-h-[100px]"
               >
                 <span className="text-[#F3D840] text-2xl font-extrabold mb-2 group-hover:scale-110 transition-transform duration-300">
                   + Much More
@@ -643,7 +624,7 @@ function AgentsSection() {
                 <span className="text-white/50 text-sm">
                   See the full workforce
                 </span>
-              </motion.div>
+              </div>
             </Link>
           </ScrollReveal>
         </div>
@@ -732,9 +713,7 @@ function FAQSection() {
                     <span style={{ color: '#1A1A1A', fontSize: 'clamp(0.95rem, 1.5vw, 1.05rem)', fontWeight: 600, lineHeight: 1.5 }}>
                       {faq.q}
                     </span>
-                    <motion.span
-                      animate={{ rotate: isOpen ? 45 : 0 }}
-                      transition={{ duration: 0.2 }}
+                    <span
                       aria-hidden="true"
                       style={{
                         display: 'flex',
@@ -745,14 +724,15 @@ function FAQSection() {
                         minWidth: 24,
                         borderRadius: '50%',
                         backgroundColor: isOpen ? '#F3D840' : 'rgba(0,0,0,0.05)',
-                        transition: 'background-color 0.3s ease',
+                        transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+                        transition: 'background-color 0.3s ease, transform 0.2s ease',
                         color: isOpen ? '#1A1A1A' : '#535353',
                         fontSize: 16,
                         fontWeight: 700,
                       }}
                     >
                       +
-                    </motion.span>
+                    </span>
                   </button>
 
                   {/* Mobile FAQ button tap target and pricing CTA tweaks */}
@@ -768,27 +748,29 @@ function FAQSection() {
                     }
                   `}</style>
 
-                  <motion.div
+                  <div
                     id={`faq-answer-${i}`}
                     role="region"
                     aria-labelledby={`faq-question-${i}`}
-                    initial={false}
-                    animate={{
-                      height: isOpen ? 'auto' : 0,
+                    style={{
+                      display: 'grid',
+                      gridTemplateRows: isOpen ? '1fr' : '0fr',
                       opacity: isOpen ? 1 : 0,
+                      overflow: 'hidden',
+                      transition: 'grid-template-rows 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease',
                     }}
-                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
-                    style={{ overflow: 'hidden' }}
                   >
-                    <p style={{
-                      color: '#535353',
-                      fontSize: 'clamp(0.9rem, 1.4vw, 0.95rem)',
-                      lineHeight: 1.7,
-                      padding: '0 clamp(16px, 3vw, 24px) clamp(16px, 2.5vw, 20px)',
-                    }}>
-                      {faq.a}
-                    </p>
-                  </motion.div>
+                    <div style={{ overflow: 'hidden' }}>
+                      <p style={{
+                        color: '#535353',
+                        fontSize: 'clamp(0.9rem, 1.4vw, 0.95rem)',
+                        lineHeight: 1.7,
+                        padding: '0 clamp(16px, 3vw, 24px) clamp(16px, 2.5vw, 20px)',
+                      }}>
+                        {faq.a}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </ScrollReveal>
             );
