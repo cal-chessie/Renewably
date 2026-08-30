@@ -45,6 +45,11 @@ export default function RelaySetupClient({ token, companyName, contactName, prev
     setMessage('')
   }
 
+  function answerText(id: string): string {
+    const answer = answers[id]
+    return typeof answer === 'string' ? answer : ''
+  }
+
   async function save(nextStage = stage) {
     if (preview) {
       setMessage('Preview only — no client data has been saved.')
@@ -141,8 +146,8 @@ export default function RelaySetupClient({ token, companyName, contactName, prev
           {field.control === 'confirm'
             ? <input type="checkbox" checked={answers[field.id] === true} onChange={(event) => updateAnswer(field.id, event.target.checked)} style={{ width: 20, height: 20, marginTop: 10 }} />
             : field.control === 'textarea'
-              ? <textarea value={typeof answers[field.id] === 'string' ? answers[field.id] : ''} onChange={(event) => updateAnswer(field.id, event.target.value)} rows={4} style={inputStyle} />
-              : <input value={typeof answers[field.id] === 'string' ? answers[field.id] : ''} onChange={(event) => updateAnswer(field.id, event.target.value)} style={inputStyle} />}
+              ? <textarea value={answerText(field.id)} onChange={(event) => updateAnswer(field.id, event.target.value)} rows={4} style={inputStyle} />
+              : <input value={answerText(field.id)} onChange={(event) => updateAnswer(field.id, event.target.value)} style={inputStyle} />}
         </label>)}
       </fieldset>)}
 
