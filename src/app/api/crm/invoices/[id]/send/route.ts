@@ -57,8 +57,8 @@ export async function POST(
           deal_id: invoice.deal_id,
           user_id: user.id,
           type: 'system',
-          title: `Invoice ${invoice.invoice_number} sent`,
-          content: `Invoice for €${invoice.total_amount} sent to ${invoice.contact?.name || ''}`,
+          title: `Invoice ${invoice.invoice_number} marked as sent`,
+          content: `Invoice for €${invoice.total_amount} marked as sent (no email dispatched)`,
           created_at: new Date().toISOString(),
         })
       } catch (err) {

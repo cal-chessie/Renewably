@@ -237,7 +237,7 @@ async function captureChatLead(
     }
 
     // Create a new contact
-    const { data: contact } = await supabase
+    const { data: contact, error: contactError } = await supabase
       .from('contacts')
       .insert({
         company_id: companyId,
@@ -251,9 +251,14 @@ async function captureChatLead(
       .select('id, name')
       .single()
 
-    // Create a Deal
+    if (contactError) {
+      logger.error("Chat Lead: contact insert failed", { error: contactError.message })
+    }
+
+    // Create a Deal (Supabase inserts return { error }; they do not throw)
+    let dealCreated = false
     try {
-      await supabase.from('deals').insert({
+      const { error: dealError } = await supabase.from('deals').insert({
         company_id: companyId,
         product: 'ai_workforce',
         stage: 'new_lead',
@@ -261,12 +266,23 @@ async function captureChatLead(
         value: 15000,
         mrr: 1000,
       })
-      logger.info(`Chat Lead: Deal created`, { contactId: contact?.id })
+      if (dealError) {
+        logger.warn("Chat Lead: Could not create deal", { error: dealError.message, contactId: contact?.id })
+      } else {
+        dealCreated = true
+        logger.info(`Chat Lead: Deal created`, { contactId: contact?.id })
+      }
     } catch (dealError) {
-      logger.warn("Chat Lead: Could not create deal", { error: dealError instanceof Error ? dealError.message : String(dealError) })
+      logger.warn("Chat Lead: Could not create deal (threw)", { error: dealError instanceof Error ? dealError.message : String(dealError) })
     }
 
     // Send notification email
+    const dealLineHtml = dealCreated
+      ? `A deal has been automatically created in the pipeline. <a href="https://renewably.ie/crm/pipeline" style="color: #F3D840; text-decoration: none; font-weight: 600;">View Pipeline</a>`
+      : `Lead saved, but the pipeline deal could not be created automatically. Add it manually. <a href="https://renewably.ie/crm/pipeline" style="color: #F3D840; text-decoration: none; font-weight: 600;">View Pipeline</a>`
+    const dealLineText = dealCreated
+      ? `A deal has been created in the pipeline: https://renewably.ie/crm/pipeline`
+      : `Lead saved, but the pipeline deal could not be created automatically. Add it manually: https://renewably.ie/crm/pipeline`
     try {
       const notify = await sendEmail({
         to: "hello@renewably.ie",
@@ -285,11 +301,11 @@ async function captureChatLead(
                 <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px;">Signal</td><td style="padding: 6px 0; font-size: 14px;">${isStrongLead ? "Strong buying intent" : "General interest"}</td></tr>
                 <tr><td style="padding: 6px 0; color: #6B7280; font-size: 13px;">Message</td><td style="padding: 6px 0; font-size: 14px;">${escapeHtml(message.slice(0, 300))}</td></tr>
               </table>
-              <p style="margin: 16px 0 0; font-size: 13px; color: #6B7280;">A deal has been automatically created in the pipeline. <a href="https://renewably.ie/crm/pipeline" style="color: #F3D840; text-decoration: none; font-weight: 600;">View Pipeline</a></p>
+              <p style="margin: 16px 0 0; font-size: 13px; color: #6B7280;">${dealLineHtml}</p>
             </div>
           </div>
         `,
-        textBody: `New ${isStrongLead ? "STRONG " : ""}chat lead captured!\n\nContact: ${contact?.name || 'Unknown'}\nSource: Chat Widget\nPage: ${pageContext || "Unknown"}\nMessage: "${message.slice(0, 300)}"\n\nA deal has been created in the pipeline: https://renewably.ie/crm/pipeline`,
+        textBody: `New ${isStrongLead ? "STRONG " : ""}chat lead captured!\n\nContact: ${contact?.name || 'Unknown'}\nSource: Chat Widget\nPage: ${pageContext || "Unknown"}\nMessage: "${message.slice(0, 300)}"\n\n${dealLineText}`,
       })
       if (notify.success) {
         logger.info(`Chat Lead: Notification email sent`, { contactId: contact?.id })
