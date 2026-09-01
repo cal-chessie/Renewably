@@ -63,7 +63,7 @@ const agents: Array<{ num: string; title: string; tagline: string; body: string;
     num: "03",
     title: "Customer Support Agent",
     tagline: "Answers every message. Books every consult. Never sleeps.",
-    body: "The support agent is your front desk. It answers emails, web forms and chat messages, and texts back missed calls inside your hours. It answers questions about pricing, grants, timelines, and technical specifications. It books consultations directly into your calendar. It follows up with customers who haven't responded.",
+    body: "The support agent is your front desk. It answers emails, web forms and chat messages, and texts back missed calls on the hours you set, whether that's business hours or around the clock. It answers questions about pricing, grants, timelines, and technical specifications. It books consultations directly into your calendar. It follows up with customers who haven't responded.",
     closing: "Only what needs you gets to you. Everything else — handled.",
   },
   {

@@ -42,9 +42,9 @@
     "type": "service",
     "title": "Customer Support Agent",
     "slug": "customer-support-agent",
-    "description": "Your front desk that never drops an enquiry. The Customer Support Agent handles incoming enquiries from your website, social media, and email, replies inside your business hours and captures the rest so nothing is lost overnight. It answers questions about pricing, SEAI grants, and installation timelines, qualifies leads, and books them directly into your calendar.",
+    "description": "Your front desk that never drops an enquiry. The Customer Support Agent handles incoming enquiries from your website, social media, and email. It works around the clock and replies to customers on the hours you set, whether that's inside business hours or 24/7, so nothing is ever lost overnight. It answers questions about pricing, SEAI grants, and installation timelines, qualifies leads, and books them directly into your calendar.",
     "features": [
-      "Fast replies inside your business hours; nothing lost overnight",
+      "Replies on the hours you set, business hours or 24/7; nothing lost overnight",
       "Multi-channel: web, email, and social media",
       "Intelligent lead qualification with tailored questions",
       "Automatic booking into your scheduling system",

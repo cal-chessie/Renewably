@@ -352,7 +352,7 @@ Add it up and a serious slice of every week goes on communication a well-trained
 
 ## What an AI Customer Support Agent Does
 
-Answers every customer. Inside your business hours, the reply goes back while the customer is still looking at their phone. Outside them, the enquiry is captured, logged against the right job, and queued for first thing. Nothing sits unread. Nothing goes cold in an inbox.
+Answers every customer, on the hours you set, business hours or around the clock. Inside them the reply goes back while the customer is still looking at their phone; anything outside is captured, logged against the right job, and queued for first thing. Nothing sits unread. Nothing goes cold in an inbox.
 
 **Answers questions.** How much does solar cost? The agent gives a price range based on system size. Asks for roof details. Offers to book an assessment. What's the SEAI grant? The agent explains current rates. Lists eligibility requirements. Estimates the customer's likely grant amount based on system size. Do I need planning permission? The agent explains the exemption rules. Tells the customer when permission is needed. Tells them how to apply when it is.
 
@@ -737,11 +737,11 @@ This isn't a scheduling problem. This isn't a staffing problem. This is a physic
 
 ## What an AI Lead Generation Agent Does
 
-Answers every lead. Inside your business hours, straight away. Outside them, the enquiry is captured, logged and queued so it's answered the moment you open. Nothing waits in an inbox. Nothing gets forgotten.
+Answers every lead, on the hours you set, business hours or around the clock. Inside them, straight away; anything outside is captured, logged and queued so it's answered the moment you open. Nothing waits in an inbox. Nothing gets forgotten.
 
-**Rescues missed calls.** Customer rings while you're on a roof and it rings out. Inside your business hours, the agent texts them back in your name: sorry we missed you, how can we help. The conversation carries on by text. Qualifying questions get asked, pricing and grant questions get answered, and a consultation gets booked into your calendar. The lead that used to ring your competitor next now hears from you first.
+**Rescues missed calls.** Customer rings while you're on a roof and it rings out. On the hours you set, the agent texts them back in your name: sorry we missed you, how can we help. The conversation carries on by text. Qualifying questions get asked, pricing and grant questions get answered, and a consultation gets booked into your calendar. The lead that used to ring your competitor next now hears from you first.
 
-**Answers web forms.** Customer submits an enquiry on your website. The agent replies by email with answers to their questions and a link to book a consultation. Inside your hours, that reply goes out while they're still on your site. Overnight, the enquiry sits safely logged, first in the queue for the morning.
+**Answers web forms.** Customer submits an enquiry on your website. The agent replies by email with answers to their questions and a link to book a consultation. On the hours you set, that reply goes out while they're still on your site; anything outside them sits safely logged, first in the queue for the morning.
 
 **Answers website chat.** Customer visits your website and opens the chat. The agent engages, answers questions about grants and typical system costs, and offers to book a consultation. An enquiry that lands at ten on a Sunday evening is captured in full, every question logged, and confirmed the moment you open. Either way, the lead exists in your system instead of evaporating.
 
