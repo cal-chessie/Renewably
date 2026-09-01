@@ -370,36 +370,28 @@ export default function ChatWidget() {
         <motion.button
           onClick={() => setOpen((v) => !v)}
           style={{
-            width: 60,
-            height: 60,
-            borderRadius: 50,
+            width: 74,
+            height: 74,
+            borderRadius: open ? 50 : 0,
             border: "none",
             cursor: "pointer",
             padding: 0,
-            overflow: "hidden",
-            background: DARK,
+            overflow: "visible",
+            background: open ? DARK : "transparent",
+            boxShadow: open ? `0 6px 20px ${YELLOW}44` : "none",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.94 }}
-          animate={
-            !open
-              ? {
-                  boxShadow: [
-                    `0 4px 24px ${YELLOW}55, 0 0 0 0 ${YELLOW}44`,
-                    `0 4px 24px ${YELLOW}55, 0 0 0 12px ${YELLOW}00`,
-                  ],
-                }
-              : {}
-          }
+          animate={!open ? { y: [0, -5, 0] } : {}}
           transition={
             !open
-              ? { boxShadow: { duration: 2, repeat: Infinity, ease: "easeOut" } }
+              ? { y: { duration: 2.6, repeat: Infinity, ease: "easeInOut" } }
               : { duration: 0.2 }
           }
-          aria-label="Open chat"
+          aria-label={open ? "Close chat" : "Open chat"}
         >
           <AnimatePresence mode="wait">
             {open ? (
@@ -422,13 +414,9 @@ export default function ChatWidget() {
                 exit={{ scale: 0 }}
                 transition={{ type: "spring", damping: 20, stiffness: 300 }}
                 style={{
+                  position: "relative",
                   width: "100%",
                   height: "100%",
-                  borderRadius: 50,
-                  overflow: "hidden",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
                 }}
               >
                 <Image
@@ -436,7 +424,8 @@ export default function ChatWidget() {
                   alt="Chat with Renewably"
                   fill
                   style={{
-                    objectFit: "cover",
+                    objectFit: "contain",
+                    filter: "drop-shadow(0 6px 14px rgba(10,10,10,0.30))",
                   }}
                 />
               </motion.div>
