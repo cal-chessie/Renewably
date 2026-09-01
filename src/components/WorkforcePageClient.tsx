@@ -318,11 +318,11 @@ function CTASection() {
         <ScrollReveal delay={0.15}>
           <p style={{ color: '#374151', fontSize: 'clamp(16px, 2.2vw, 20px)', marginBottom: 'clamp(24px, 5vw, 40px)' }}>
             <a
-              href="mailto:hello@renewably.ie"
+              href="mailto:cal@renewably.ie"
               className="hover:text-[#1A1A1A] transition-colors"
               style={{ textDecoration: 'underline', fontWeight: 600 }}
             >
-              hello@renewably.ie
+              cal@renewably.ie
             </a>
           </p>
         </ScrollReveal>

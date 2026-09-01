@@ -165,7 +165,7 @@ export default function Footer() {
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             <li style={{ marginBottom: "0.5rem" }}>
               <a
-                href="mailto:hello@renewably.ie"
+                href="mailto:cal@renewably.ie"
                 className="footer-contact-link"
                 style={{
                   fontSize: "clamp(0.8rem, 1.4vw, 0.95rem)",
@@ -180,7 +180,7 @@ export default function Footer() {
                   e.currentTarget.style.color = LIGHT_TEXT;
                 }}
               >
-                hello@renewably.ie
+                cal@renewably.ie
               </a>
             </li>
             <li style={{ marginBottom: "0.5rem" }}>

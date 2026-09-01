@@ -380,7 +380,7 @@ export async function PUT(request: NextRequest) {
     // Internal notification for closed_won
     if (stage === 'closed_won' && isPostmarkConfigured()) {
       sendInternalNotification({
-        to: 'hello@renewably.ie',
+        to: 'cal@renewably.ie',
         title: `Deal Won: ${company?.name || 'Unknown'}`,
         message: `Deal ${dealId} for ${company?.name || 'Unknown'} (${enriched.product}) moved to Closed Won. Value: €${(enriched.value || 0).toLocaleString()}, MRR: €${(enriched.mrr || 0).toLocaleString()}/mo.`,
         type: 'deal_won',

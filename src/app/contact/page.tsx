@@ -32,7 +32,7 @@ function ContactSchema() {
             "@type": "Organization",
             name: "Renewably",
             telephone: "+353 873958424",
-            email: "hello@renewably.ie",
+            email: "cal@renewably.ie",
             contactType: "sales",
             areaServed: "IE",
           },

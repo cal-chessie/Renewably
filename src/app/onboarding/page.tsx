@@ -150,7 +150,7 @@ function OnboardingNav({ step }: { step: number }) {
             Getting set up
           </Badge>
           <div className="mono" style={{ fontSize: 11, color: 'var(--ink-4)', letterSpacing: '0.04em' }}>
-            Need help? <span style={{ color: 'var(--ink-2)', textDecoration: 'underline' }}>hello@renewably.ie</span>
+            Need help? <span style={{ color: 'var(--ink-2)', textDecoration: 'underline' }}>cal@renewably.ie</span>
           </div>
         </div>
       )}

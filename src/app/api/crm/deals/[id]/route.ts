@@ -127,7 +127,7 @@ export async function PATCH(
       // Internal notification for closed_won / closed_lost
       if (body.stage === 'closed_won' || body.stage === 'closed_lost') {
         sendInternalNotification({
-          to: 'hello@renewably.ie',
+          to: 'cal@renewably.ie',
           title: body.stage === 'closed_won' ? 'Deal Won' : 'Deal Lost',
           message: `Deal ${id} moved to ${stageName}. Product: ${deal.product || 'N/A'}, Value: €${(deal.value || 0).toLocaleString()}.`,
           type: body.stage === 'closed_won' ? 'deal_won' : 'deal_lost',

@@ -271,7 +271,7 @@ export async function POST(request: NextRequest) {
     // ─── Postmark: Internal notification for new company ──────────────────────
     if (isPostmarkConfigured()) {
       sendInternalNotification({
-        to: 'hello@renewably.ie',
+        to: 'cal@renewably.ie',
         title: `New Company Added: ${body.name}`,
         message: `${body.name} was added to the CRM by ${user.name || user.email}. Status: ${body.status || 'lead'}. Counties: ${body.counties || 'N/A'}.`,
         type: 'new_lead',

@@ -16,7 +16,7 @@ const siteConfig = {
   description: "AI workforce for solar installers in Ireland. Renewably deploys AI employees that handle grants, permits, customer support, and logistics — so you can focus on installing.",
   url: "https://renewably.ie",
   phone: "+353 873958424",
-  email: "hello@renewably.ie",
+  email: "cal@renewably.ie",
   locale: "en_IE",
   type: "website",
 };

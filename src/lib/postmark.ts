@@ -10,7 +10,7 @@ import { logger } from '@/lib/logger'
 // ─── Client Setup ──────────────────────────────────────────────────────────
 
 const POSTMARK_SERVER_TOKEN = process.env.POSTMARK_SERVER_TOKEN || ''
-const POSTMARK_FROM_EMAIL = process.env.POSTMARK_FROM_EMAIL || 'hello@renewably.ie'
+const POSTMARK_FROM_EMAIL = process.env.POSTMARK_FROM_EMAIL || 'cal@renewably.ie'
 
 let postmarkClient: postmark.ServerClient | null = null
 
@@ -147,7 +147,7 @@ export function buildWelcomeEmail(payload: TemplatePayload): {
           We're excited to partner with <strong style="color:#F3D840;">${companyName}</strong> on ${productName}. Your onboarding is now underway and our team will reach out shortly with everything you need to get started.
         </p>
         <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin:0 0 20px;">
-          In the meantime, if you have any questions feel free to reply to this email or reach us at <a href="mailto:hello@renewably.ie" style="color:#F3D840;">hello@renewably.ie</a>.
+          In the meantime, if you have any questions feel free to reply to this email or reach us at <a href="mailto:cal@renewably.ie" style="color:#F3D840;">cal@renewably.ie</a>.
         </p>
         <p style="color:rgba(255,255,255,0.50);font-size:13px;margin:24px 0 0;">
           Best regards,<br>The Renewably Team
@@ -169,7 +169,7 @@ Hi ${contactName}, welcome aboard!
 
 We're excited to partner with ${companyName} on ${productName}. Your onboarding is now underway and our team will reach out shortly with everything you need to get started.
 
-In the meantime, if you have any questions feel free to reply to this email or reach us at hello@renewably.ie.
+In the meantime, if you have any questions feel free to reply to this email or reach us at cal@renewably.ie.
 
 Best regards,
 The Renewably Team
@@ -214,7 +214,7 @@ export function buildProposalEmail(payload: TemplatePayload): {
         </div>` : ''}
         ${customMessage ? `<p style="color:rgba(255,255,255,0.70);font-size:14px;line-height:1.6;margin:0 0 20px;">${customMessage}</p>` : ''}
         <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin:0 0 20px;">
-          We'd love to discuss the details with you. Please reply to schedule a call, or reach us at <a href="mailto:hello@renewably.ie" style="color:#F3D840;">hello@renewably.ie</a>.
+          We'd love to discuss the details with you. Please reply to schedule a call, or reach us at <a href="mailto:cal@renewably.ie" style="color:#F3D840;">cal@renewably.ie</a>.
         </p>
         <p style="color:rgba(255,255,255,0.50);font-size:13px;margin:24px 0 0;">
           Looking forward to working together,<br>The Renewably Team
@@ -238,7 +238,7 @@ Please find your custom ${productName} proposal for ${companyName}.
 ${dealValue ? `\nProposal Value: ${dealValue}` : ''}
 ${customMessage ? `\n${customMessage}` : ''}
 
-We'd love to discuss the details with you. Please reply to schedule a call, or reach us at hello@renewably.ie.
+We'd love to discuss the details with you. Please reply to schedule a call, or reach us at cal@renewably.ie.
 
 Looking forward to working together,
 The Renewably Team

@@ -59,7 +59,7 @@ export default function PrivacyPageClient() {
                   <p style={{ color: "#1A1A1A", fontSize: 15, fontWeight: 600, marginBottom: 4 }}>Renewably</p>
                   <p style={{ color: "#535353", fontSize: 14, lineHeight: 1.7 }}>
                     Registered in Ireland<br />
-                    Email: hello@renewably.ie<br />
+                    Email: cal@renewably.ie<br />
                     Phone: +353 873958424<br />
                     Website: renewably.ie
                   </p>
@@ -163,7 +163,7 @@ export default function PrivacyPageClient() {
                   <li><strong style={{ color: "#1A1A1A" }}>Right to withdraw consent:</strong> Withdraw consent at any time where processing is based on consent.</li>
                 </ul>
                 <p style={{ color: "#535353", fontSize: 15, lineHeight: 1.8, marginTop: 16 }}>
-                  To exercise any of these rights, contact us at <a href="mailto:hello@renewably.ie" style={{ color: "#F3D840", fontWeight: 600 }}>hello@renewably.ie</a>. We will respond within 30 days as required by GDPR.
+                  To exercise any of these rights, contact us at <a href="mailto:cal@renewably.ie" style={{ color: "#F3D840", fontWeight: 600 }}>cal@renewably.ie</a>. We will respond within 30 days as required by GDPR.
                 </p>
               </div>
 
@@ -199,7 +199,7 @@ export default function PrivacyPageClient() {
                 </p>
                 <div style={{ padding: 20, borderRadius: 12, backgroundColor: "#FFFDF5", borderLeft: "4px solid #F3D840" }}>
                   <p style={{ color: "#1A1A1A", fontSize: 15, lineHeight: 1.8 }}>
-                    <strong>Email:</strong> <a href="mailto:hello@renewably.ie" style={{ color: "#F3D840", fontWeight: 600 }}>hello@renewably.ie</a><br />
+                    <strong>Email:</strong> <a href="mailto:cal@renewably.ie" style={{ color: "#F3D840", fontWeight: 600 }}>cal@renewably.ie</a><br />
                     <strong>Phone:</strong> <a href="tel:+353873958424" style={{ color: "#F3D840", fontWeight: 600 }}>+353 873958424</a><br />
                     <strong>Data Protection Officer:</strong> You may also contact the Data Protection Commission (DPC) at <span style={{ color: "#F3D840", fontWeight: 600 }}>dataprotection.ie</span> if you believe your data protection rights have been violated.
                   </p>

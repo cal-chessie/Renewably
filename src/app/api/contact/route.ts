@@ -211,7 +211,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // ── 2. Send notification email to hello@renewably.ie ──────────────────
+    // ── 2. Send notification email to cal@renewably.ie ──────────────────
     let emailSent = false;
 
     try {
@@ -247,7 +247,7 @@ export async function POST(request: NextRequest) {
       // sendEmail resolves on failure (returns { success:false }) instead of
       // throwing, so read the result — do not assume the send worked.
       const notifyResult = await sendEmail({
-        to: "hello@renewably.ie",
+        to: "cal@renewably.ie",
         subject,
         htmlBody,
         textBody,
@@ -288,7 +288,7 @@ export async function POST(request: NextRequest) {
           Thanks for getting in touch with Renewably. We've received your message and one of our team will be in touch within 24 hours.
         </p>
         <p style="color:rgba(255,255,255,0.70);font-size:14px;line-height:1.6;margin:0;">
-          If your enquiry is urgent, you can reach us directly at <a href="mailto:hello@renewably.ie" style="color:#F3D840;">hello@renewably.ie</a>.
+          If your enquiry is urgent, you can reach us directly at <a href="mailto:cal@renewably.ie" style="color:#F3D840;">cal@renewably.ie</a>.
         </p>
         <p style="color:rgba(255,255,255,0.50);font-size:13px;margin:24px 0 0;">
           Best regards,<br>The Renewably Team
@@ -304,7 +304,7 @@ export async function POST(request: NextRequest) {
   </table>
 </body></html>`;
 
-      const replyText = `Hi ${firstName.trim()},\n\nThanks for getting in touch with Renewably. We've received your message and one of our team will be in touch within 24 hours.\n\nIf your enquiry is urgent, you can reach us directly at hello@renewably.ie.\n\nBest regards,\nThe Renewably Team`;
+      const replyText = `Hi ${firstName.trim()},\n\nThanks for getting in touch with Renewably. We've received your message and one of our team will be in touch within 24 hours.\n\nIf your enquiry is urgent, you can reach us directly at cal@renewably.ie.\n\nBest regards,\nThe Renewably Team`;
 
       await sendEmail({
         to: email.trim(),
@@ -325,7 +325,7 @@ export async function POST(request: NextRequest) {
     if (!savedContact && !emailSent) {
       logger.error("Both database save and email notification failed for contact form");
       return NextResponse.json(
-        { success: false, message: "Sorry, something went wrong. Please email hello@renewably.ie directly." },
+        { success: false, message: "Sorry, something went wrong. Please email cal@renewably.ie directly." },
         { status: 503 }
       );
     }
@@ -347,7 +347,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logger.error("Contact form unhandled error", { error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
-      { error: "An unexpected error occurred. Please try again or email hello@renewably.ie directly." },
+      { error: "An unexpected error occurred. Please try again or email cal@renewably.ie directly." },
       { status: 500 }
     );
   }

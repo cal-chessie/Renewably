@@ -121,8 +121,8 @@ export default function HowItStartsSection({
               className="text-gray-700"
               style={{ fontSize: 'clamp(1rem, 1.6vw, 1.125rem)', marginBottom: 'clamp(20px, 3vw, 32px)' }}
             >
-              <a href="mailto:hello@renewably.ie" className="underline">
-                hello@renewably.ie
+              <a href="mailto:cal@renewably.ie" className="underline">
+                cal@renewably.ie
               </a>
             </p>
             <Link

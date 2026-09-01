@@ -291,7 +291,7 @@ export default function Header() {
                   }}
                 >
                   <span style={{ fontSize: 11, fontWeight: 600, color: '#F3D840', letterSpacing: '0.06em' }}>
-                    hello@renewably.ie
+                    cal@renewably.ie
                   </span>
                 </div>
               </div>
@@ -518,7 +518,7 @@ export default function Header() {
                   </a>
                   <div style={{ width: 1, height: 12, backgroundColor: 'rgba(255,255,255,0.08)' }} />
                   <a
-                    href="mailto:hello@renewably.ie"
+                    href="mailto:cal@renewably.ie"
                     onClick={closeMobile}
                     style={{
                       display: 'flex',

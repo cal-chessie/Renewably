@@ -1228,10 +1228,10 @@ function FinalCTA() {
         <ScrollReveal delay={0.4}>
           <p style={{ marginTop: 32, fontSize: 14, color: "rgba(55,65,81,0.7)" }}>
             <a
-              href="mailto:hello@renewably.ie"
+              href="mailto:cal@renewably.ie"
               style={{ textDecoration: "underline", color: "#374151" }}
             >
-              hello@renewably.ie
+              cal@renewably.ie
             </a>
           </p>
         </ScrollReveal>

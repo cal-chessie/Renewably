@@ -294,7 +294,7 @@ export async function POST(request: NextRequest) {
       const textBody = `New Onboarding Request\n\nEmail: ${normalizedEmail}\n${summaryLines.join('\n')}`
 
       const notifyResult = await sendEmail({
-        to: 'hello@renewably.ie',
+        to: 'cal@renewably.ie',
         subject: `New Onboarding Request${companyName ? ` — ${companyName}` : ''}`,
         htmlBody,
         textBody,
@@ -322,12 +322,12 @@ export async function POST(request: NextRequest) {
       <div style="text-align:center;margin-bottom:24px;"><span style="font-size:22px;font-weight:800;color:#F3D840;">Renewably</span></div>
       <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin:0 0 16px;">Hi ${escapeHtml(firstName)},</p>
       <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin:0 0 16px;">Thanks for your details. We've got everything we need to get started, and one of our team will be in touch to walk you through setup and answer any questions.</p>
-      <p style="color:rgba(255,255,255,0.70);font-size:14px;line-height:1.6;margin:0;">If anything's urgent, reach us at <a href="mailto:hello@renewably.ie" style="color:#F3D840;">hello@renewably.ie</a>.</p>
+      <p style="color:rgba(255,255,255,0.70);font-size:14px;line-height:1.6;margin:0;">If anything's urgent, reach us at <a href="mailto:cal@renewably.ie" style="color:#F3D840;">cal@renewably.ie</a>.</p>
       <p style="color:rgba(255,255,255,0.50);font-size:13px;margin:24px 0 0;">Best regards,<br>The Renewably Team</p>
     </td></tr>
   </table>
 </body></html>`
-      const replyText = `Hi ${firstName},\n\nThanks for your details. We've got everything we need to get started, and one of our team will be in touch to walk you through setup.\n\nIf anything's urgent, reach us at hello@renewably.ie.\n\nBest regards,\nThe Renewably Team`
+      const replyText = `Hi ${firstName},\n\nThanks for your details. We've got everything we need to get started, and one of our team will be in touch to walk you through setup.\n\nIf anything's urgent, reach us at cal@renewably.ie.\n\nBest regards,\nThe Renewably Team`
 
       await sendEmail({
         to: normalizedEmail,
@@ -347,7 +347,7 @@ export async function POST(request: NextRequest) {
     if (!leadSaved && !emailSent) {
       logger.error('Both CRM save and notification failed for onboarding request', { email: normalizedEmail })
       return NextResponse.json(
-        { success: false, error: 'Sorry, something went wrong. Please email hello@renewably.ie directly.' },
+        { success: false, error: 'Sorry, something went wrong. Please email cal@renewably.ie directly.' },
         { status: 503 }
       )
     }

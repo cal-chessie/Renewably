@@ -25,8 +25,8 @@ const contactChannels = [
   {
     icon: "email",
     label: "Email Us",
-    value: "hello@renewably.ie",
-    href: "mailto:hello@renewably.ie",
+    value: "cal@renewably.ie",
+    href: "mailto:cal@renewably.ie",
     desc: "We reply within 2 hours during business hours",
   },
   {
@@ -690,8 +690,8 @@ export default function ContactPageClient() {
                           Back to Home
                           <ArrowRightIcon />
                         </MagneticButton>
-                        <a href="mailto:hello@renewably.ie" style={{ fontSize: 14, color: "#6B7280", textDecoration: "underline", marginTop: 8 }}>
-                          Or email us directly at hello@renewably.ie
+                        <a href="mailto:cal@renewably.ie" style={{ fontSize: 14, color: "#6B7280", textDecoration: "underline", marginTop: 8 }}>
+                          Or email us directly at cal@renewably.ie
                         </a>
                       </div>
                     </div>
@@ -1166,7 +1166,7 @@ export default function ContactPageClient() {
                 Still have questions?
               </p>
               <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                <MagneticButton href="mailto:hello@renewably.ie">
+                <MagneticButton href="mailto:cal@renewably.ie">
                   <EmailIcon color="#1A1A1A" />
                   Email Us
                 </MagneticButton>

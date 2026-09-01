@@ -143,7 +143,7 @@ export default function TermsPageClient() {
               <div>
                 <h2 style={{ color: "#1A1A1A", fontSize: 20, fontWeight: 700, marginBottom: 12 }}>8. Termination</h2>
                 <ul style={{ color: "#535353", fontSize: 15, lineHeight: 1.8, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 8 }}>
-                  <li><strong style={{ color: "#1A1A1A" }}>By you:</strong> You may cancel your subscription at any time by providing written notice to hello@renewably.ie. Your access continues until the end of the current billing period. Upon cancellation, you have 30 days to export your data.</li>
+                  <li><strong style={{ color: "#1A1A1A" }}>By you:</strong> You may cancel your subscription at any time by providing written notice to cal@renewably.ie. Your access continues until the end of the current billing period. Upon cancellation, you have 30 days to export your data.</li>
                   <li><strong style={{ color: "#1A1A1A" }}>By Renewably:</strong> We may suspend or terminate your account immediately if you breach these terms, engage in fraudulent activity, or use the platform in a way that causes harm to Renewably or third parties.</li>
                   <li><strong style={{ color: "#1A1A1A" }}>Data after termination:</strong> Following termination, your data will be retained for 30 days to allow export. After this period, all data is permanently and securely deleted, unless retention is required by law.</li>
                   <li><strong style={{ color: "#1A1A1A" }}>No penalties:</strong> There are no cancellation fees, early termination charges, or lock-in penalties.</li>
@@ -175,7 +175,7 @@ export default function TermsPageClient() {
                 <div style={{ padding: 20, borderRadius: 12, backgroundColor: "#FFFDF5", borderLeft: "4px solid #F3D840" }}>
                   <p style={{ color: "#1A1A1A", fontSize: 15, lineHeight: 1.8 }}>
                     <strong>Renewably</strong><br />
-                    <strong>Email:</strong> <a href="mailto:hello@renewably.ie" style={{ color: "#F3D840", fontWeight: 600 }}>hello@renewably.ie</a><br />
+                    <strong>Email:</strong> <a href="mailto:cal@renewably.ie" style={{ color: "#F3D840", fontWeight: 600 }}>cal@renewably.ie</a><br />
                     <strong>Phone:</strong> <a href="tel:+353873958424" style={{ color: "#F3D840", fontWeight: 600 }}>+353 873958424</a><br />
                     <strong>Website:</strong> renewably.ie
                   </p>

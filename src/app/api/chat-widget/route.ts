@@ -285,7 +285,7 @@ async function captureChatLead(
       : `Lead saved, but the pipeline deal could not be created automatically. Add it manually: https://renewably.ie/crm/pipeline`
     try {
       const notify = await sendEmail({
-        to: "hello@renewably.ie",
+        to: "cal@renewably.ie",
         subject: `${isStrongLead ? "Strong" : "New"} chat lead captured — ${contact?.name || 'Unknown'}`,
         htmlBody: `
           <div style="font-family: system-ui, sans-serif; color: #1A1A1A; max-width: 560px; margin: 0 auto;">

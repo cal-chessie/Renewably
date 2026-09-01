@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
         solarpilot: 'SolarPilot', ai_workforce: 'AI Workforce', both: 'SolarPilot + AI Workforce',
       }
       sendInternalNotification({
-        to: 'hello@renewably.ie',
+        to: 'cal@renewably.ie',
         title: `New Deal Created`,
         message: `A new deal has been created for company ID ${body.companyId}. Product: ${productLabels[body.product] || body.product}, MRR: €${body.mrr.toLocaleString()}/mo, Stage: ${body.stage}. Deal value: €${value.toLocaleString()}.`,
         type: 'new_lead',
