@@ -16,10 +16,10 @@ interface ScrollRevealProps {
 const getTransform = (direction: Direction, visible: boolean) => {
   if (visible) return "translate3d(0, 0, 0)";
   const offsets = {
-    up: "translate3d(0, 40px, 0)",
-    down: "translate3d(0, -40px, 0)",
-    left: "translate3d(40px, 0, 0)",
-    right: "translate3d(-40px, 0, 0)",
+    up: "translate3d(0, 32px, 0)",
+    down: "translate3d(0, -32px, 0)",
+    left: "translate3d(32px, 0, 0)",
+    right: "translate3d(-32px, 0, 0)",
   };
   return offsets[direction];
 };
@@ -64,7 +64,7 @@ export default function ScrollReveal({
       style={{
         opacity: isVisible ? 1 : 0,
         transform: getTransform(direction, isVisible),
-        transition: `opacity ${duration}s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s, transform ${duration}s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s`,
+        transition: `opacity ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, transform ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
         willChange: "opacity, transform",
       }}
     >

@@ -297,5 +297,31 @@ body {
 }
 .hp-pulse { animation: hp-scale-pulse 2s ease-in-out infinite; }
 
+/* Lifts glide, they never snap: the base transition was missing. */
+.hp-lift, .hp-lift-sm {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.2s ease;
+  will-change: transform;
+}
 .hp-lift:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(243,216,64,0.12); }
 .hp-lift-sm:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(243,216,64,0.1); }
+
+/* Keyboard focus: a crisp brand ring, never the faint grey default. */
+:focus-visible {
+  outline: 3px solid var(--color-brand-yellow);
+  outline-offset: 3px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* One warm elevation family for the whole site. */
+:root {
+  --elev-rest:   0 1px 2px rgba(20,18,5,0.04), 0 10px 28px rgba(20,18,5,0.06);
+  --elev-raised: 0 1px 2px rgba(20,18,5,0.06), 0 12px 32px rgba(20,18,5,0.14);
+  --elev-hover:  0 2px 6px rgba(20,18,5,0.05), 0 18px 44px rgba(20,18,5,0.10);
+}
+
+/* Figures line up in columns. */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* Primary CTA: the arrow leans in on hover. */
+.magnetic-cta svg { transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.magnetic-cta:hover svg { transform: translateX(3px); }

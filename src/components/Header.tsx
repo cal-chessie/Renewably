@@ -30,6 +30,7 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const { scrollYProgress } = useScroll();
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
@@ -39,6 +40,7 @@ export default function Header() {
 
   useMotionValueEvent(scrollYProgress, "change", () => {
     const current = window.scrollY;
+    setScrolled(current > 24);
     const diff = current - lastScrollY.current;
     // Hide on scroll down past 60px, show on scroll up
     if (diff > 5 && current > 60) {
@@ -93,7 +95,13 @@ export default function Header() {
           right: 0,
           zIndex: 100,
           height: 64,
-          backgroundColor: 'transparent',
+          // Transparent over the hero; a glassy dark bar once you scroll so the
+          // white nav stays legible over light sections.
+          backgroundColor: scrolled ? 'rgba(10,10,10,0.72)' : 'transparent',
+          backdropFilter: scrolled ? 'blur(14px) saturate(140%)' : 'none',
+          WebkitBackdropFilter: scrolled ? 'blur(14px) saturate(140%)' : 'none',
+          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : '1px solid transparent',
+          transition: 'background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease',
         }}
         className="md:!h-[72px]"
       >

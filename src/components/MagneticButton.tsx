@@ -27,7 +27,7 @@ const btnStyle: React.CSSProperties = {
   border: "none",
   cursor: "pointer",
   textDecoration: "none",
-  transition: "all 0.3s ease",
+  transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease",
   boxShadow: "0 10px 25px rgba(243,216,64,0.15)",
 };
 
@@ -71,7 +71,7 @@ export default function MagneticButton({
     : mergedStyle;
 
   return (
-    <motion.div style={{ x, y }}>
+    <motion.div style={{ x, y }} whileTap={{ scale: 0.98 }}>
       <Component
         ref={ref as React.Ref<HTMLAnchorElement & HTMLButtonElement>}
         href={href}
@@ -80,7 +80,7 @@ export default function MagneticButton({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={handleMouseLeave}
         style={hoverStyle}
-        className={className}
+        className={`magnetic-cta ${className}`.trim()}
       >
         {children}
       </Component>
