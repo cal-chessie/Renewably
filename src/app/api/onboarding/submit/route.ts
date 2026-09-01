@@ -1,34 +1,101 @@
+// ============================================================================
+// RENEWABLY.IE — ONBOARDING / DEMO REQUEST API  (lead capture)
+// ============================================================================
+// POST /api/onboarding/submit
+//
+// The public onboarding wizard is a LEAD CAPTURE flow. It does NOT create a
+// login. Installers do not sign in to the Renewably CRM — that is Cal's agency
+// CRM, and CRM logins are provisioned by the operator, never minted by a public
+// request. A submission creates a company + contact + a new_lead deal (exactly
+// like the public contact form), notifies the team, and confirms to the sender.
+//
+// It must never call supabase.auth.admin.createUser, write a role, issue a
+// session cookie, or persist a password. See the contact route for the same
+// lead pattern this mirrors.
+// ============================================================================
+
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
-import { createSession, createSessionCookie } from '@/lib/auth'
+import { sendEmail, isPostmarkConfigured } from '@/lib/postmark'
 import { sanitizeObject } from '@/lib/sanitize'
+import { escapeHtml, sanitizeSearchQuery } from '@/lib/crm-validation'
 import { onboardingSubmitSchema, formatZodError } from '@/lib/crm-schemas'
 import { logger } from '@/lib/logger'
 import { validateCsrfOrigin } from '@/lib/crm-route-helpers'
 
-export async function POST(request: NextRequest) {
-  const supabase = createServiceClient()
+// ─── Rate limiting (in-memory, per IP) ───────────────────────────────────
+const onboardingRateLimits = new Map<string, { count: number; expiresAt: number }>()
 
+if (typeof globalThis !== 'undefined') {
+  setInterval(() => {
+    const now = Date.now()
+    for (const [key, entry] of onboardingRateLimits) {
+      if (entry.expiresAt <= now) onboardingRateLimits.delete(key)
+    }
+  }, 60_000).unref?.()
+}
+
+function checkRateLimit(ip: string): { allowed: boolean; retryAfterMs: number } {
+  const now = Date.now()
+  const entry = onboardingRateLimits.get(ip)
+  if (!entry || now > entry.expiresAt) {
+    onboardingRateLimits.set(ip, { count: 1, expiresAt: now + 15 * 60 * 1000 })
+    return { allowed: true, retryAfterMs: 0 }
+  }
+  entry.count++
+  if (entry.count >= 5) {
+    return { allowed: false, retryAfterMs: entry.expiresAt - now }
+  }
+  return { allowed: true, retryAfterMs: 0 }
+}
+
+function getClientIp(request: Request): string {
+  const forwarded = request.headers.get('x-forwarded-for')
+  if (forwarded) return forwarded.split(',')[0].trim()
+  const realIp = request.headers.get('x-real-ip')
+  if (realIp) return realIp
+  return 'unknown'
+}
+
+function planLabel(plan: string | undefined): string {
+  if (plan === 'enterprise') return 'Enterprise'
+  if (plan === 'starter') return 'Starter'
+  return 'Pro'
+}
+
+// Indicative pipeline value for the deal, by plan interest.
+function estimateDealValue(plan: string | undefined): number {
+  if (plan === 'enterprise') return 24000
+  if (plan === 'starter') return 12000
+  return 18000
+}
+
+export async function POST(request: NextRequest) {
   try {
     if (!validateCsrfOrigin(request)) {
       return NextResponse.json({ error: 'Invalid request origin' }, { status: 403 })
     }
 
-    // 1. Parse request body
+    // Rate limit: max 5 submissions per 15 minutes per IP
+    const clientIp = getClientIp(request)
+    const { allowed, retryAfterMs } = checkRateLimit(clientIp)
+    if (!allowed) {
+      const retryAfterSec = Math.ceil(retryAfterMs / 1000)
+      return NextResponse.json(
+        { error: `Too many submissions. Please try again in ${retryAfterSec} seconds.` },
+        { status: 429, headers: { 'Retry-After': String(retryAfterSec) } }
+      )
+    }
+
+    // Parse + sanitize + validate
     let body: unknown
     try {
       body = await request.json()
     } catch {
-      return NextResponse.json(
-        { error: 'Invalid JSON body' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
     }
 
-    // 2. Sanitize input
     const sanitized = sanitizeObject(body)
-
-    // 3. Validate with Zod schema
     const parsed = onboardingSubmitSchema.safeParse(sanitized)
     if (!parsed.success) {
       return NextResponse.json(
@@ -39,508 +106,271 @@ export async function POST(request: NextRequest) {
 
     const data = parsed.data
     const normalizedEmail = data.email.toLowerCase().trim()
+    const contactName = data.contact_name?.trim() || data.demo_name?.trim() || ''
+    const companyName = data.company_name?.trim() || data.demo_company?.trim() || ''
+    const phone = data.phone?.trim() || data.demo_phone?.trim() || ''
+    const counties = Array.isArray(data.counties) ? data.counties.filter(Boolean) : []
 
-    // 4. Check if user already exists in profiles table (mirrors Supabase Auth)
-    const { data: existingProfile } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('email', normalizedEmail)
-      .single()
+    // ── Build a concise lead summary for the deal / notification ──────────
+    const summaryLines = [
+      companyName ? `Company: ${companyName}` : '',
+      contactName ? `Contact: ${contactName}` : '',
+      phone ? `Phone: ${phone}` : '',
+      data.size ? `Team size: ${data.size}` : '',
+      counties.length ? `Counties: ${counties.join(', ')}` : '',
+      data.plan ? `Plan interest: ${planLabel(data.plan)} (${data.billing || 'monthly'})` : '',
+      data.demo_date ? `Requested demo: ${data.demo_date}${data.demo_time ? ` ${data.demo_time}` : ''}` : '',
+      Array.isArray(data.demo_focus) && data.demo_focus.length ? `Focus: ${data.demo_focus.join(', ')}` : '',
+      data.installs_target ? `Installs target/mo: ${data.installs_target}` : '',
+    ].filter(Boolean)
+    const leadSummary = summaryLines.join(' · ').slice(0, 500)
 
-    if (existingProfile) {
-      return NextResponse.json(
-        { error: 'An account with this email already exists. Please sign in instead.' },
-        { status: 409 }
-      )
-    }
-
-    // 5. Create user in Supabase Auth
-    const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
-      email: normalizedEmail,
-      password: data.password,
-      email_confirm: true,
-      user_metadata: {
-        name: data.contact_name,
-        role: 'admin',
-        phone: data.phone || null,
-      },
-    })
-
-    if (authError) {
-      logger.error('Failed to create auth user', {
-        error: authError.message,
-        email: normalizedEmail,
-      })
-
-      // Handle unique constraint / duplicate email from auth
-      if (authError.message.toLowerCase().includes('already registered') || authError.status === 422) {
-        return NextResponse.json(
-          { error: 'An account with this email already exists.' },
-          { status: 409 }
-        )
-      }
-
-      return NextResponse.json(
-        { error: 'Failed to create account' },
-        { status: 500 }
-      )
-    }
-
-    if (!authUser.user) {
-      logger.error('Auth user created but no user returned', { email: normalizedEmail })
-      return NextResponse.json(
-        { error: 'Failed to create account' },
-        { status: 500 }
-      )
-    }
-
-    const userId = authUser.user.id
-
-    // Track created IDs for potential cleanup
-    const createdIds: string[] = []
+    // ── 1. Write the lead to the CRM (company + contact + new_lead deal) ──
+    let leadSaved = false
+    let companyId: string | null = null
+    let contactId: string | null = null
 
     try {
-      // 5b. Create profile in profiles table (login flow depends on it)
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          user_id: userId,
-          email: normalizedEmail,
-          name: data.contact_name,
-          role: 'admin',
-          phone: data.phone || null,
-          is_active: true,
-        })
+      const supabase = createServiceClient()
 
-      if (profileError) {
-        logger.error('Failed to create user profile', { error: profileError.message })
-        await cleanupAuthUser(supabase, userId)
-        return NextResponse.json(
-          { error: 'Failed to create user profile' },
-          { status: 500 }
-        )
+      // Reuse an existing company by name, else create one as a prospect.
+      if (companyName) {
+        const { data: existingCompany } = await supabase
+          .from('companies')
+          .select('id')
+          .ilike('name', sanitizeSearchQuery(companyName))
+          .limit(1)
+          .single()
+
+        if (existingCompany) {
+          companyId = existingCompany.id
+        } else {
+          const { data: newCompany } = await supabase
+            .from('companies')
+            .insert({
+              name: companyName,
+              status: 'prospect',
+              counties: counties.join(', '),
+              seai_reg: data.vat?.trim() || '',
+              team_size: 1,
+              installs_per_year: 0,
+              address: data.address?.trim() || null,
+              notes: `Created from onboarding request by ${contactName || normalizedEmail}`,
+            })
+            .select('id')
+            .single()
+
+          if (newCompany) {
+            companyId = newCompany.id
+            // Best-effort setup-tracking row, mirrors the contact route.
+            try {
+              await supabase.from('onboarding').insert({
+                company_id: companyId,
+                solarpilot_progress: 0,
+                ai_workforce_progress: 0,
+              })
+            } catch { /* non-fatal */ }
+          }
+        }
       }
 
-      // 6. Create Company
-      const teamSize = parseTeamSize(data.size)
-      const { data: company, error: companyError } = await supabase
-        .from('companies')
-        .insert({
-          name: data.company_name,
-          counties: Array.isArray(data.counties) ? data.counties.join(', ') : '',
-          status: 'active',
-          industry: 'Solar Installation',
-          address: data.address || null,
-          team_size: teamSize,
-          seai_reg: data.vat || null,
-        })
-        .select('id, name')
-        .single()
-
-      if (companyError) {
-        logger.error('Failed to create company', { error: companyError.message })
-        await cleanupAuthUser(supabase, userId)
-        return NextResponse.json(
-          { error: 'Failed to create company record' },
-          { status: 500 }
-        )
-      }
-
-      const companyId = company.id
-      createdIds.push(companyId)
-
-      // 7. Create Contact
+      // Supabase returns { error } rather than throwing — a rejected insert
+      // must never be treated as saved.
       const { data: contact, error: contactError } = await supabase
         .from('contacts')
         .insert({
-          name: data.contact_name,
-          email: normalizedEmail,
-          phone: data.phone || null,
-          role: 'Owner',
-          is_decision_maker: true,
           company_id: companyId,
+          name: contactName || normalizedEmail,
+          email: normalizedEmail,
+          phone: phone || null,
+          role: companyName ? 'Owner' : null,
+          is_decision_maker: true,
+          city: data.city?.trim() || null,
+          address: data.address?.trim() || null,
+          job_title: data.demo_role?.trim() || null,
+          source: 'onboarding',
           status: 'active',
-          source: 'demo',
-          city: data.city || null,
-          address: data.address || null,
-          job_title: data.demo_role || null,
+          notes: `Onboarding request. ${leadSummary}`.slice(0, 500),
         })
-        .select('id, name')
+        .select('id')
         .single()
 
       if (contactError) {
-        logger.error('Failed to create contact', { error: contactError.message })
-        await cleanupCreatedRecords(supabase, createdIds, 'companies')
-        await cleanupAuthUser(supabase, userId)
-        return NextResponse.json(
-          { error: 'Failed to create contact record' },
-          { status: 500 }
-        )
-      }
-
-      const contactId = contact.id
-      createdIds.push(contactId)
-
-      // 8. Parse trial dates
-      const now = new Date()
-      const trialEndsAt = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000)
-
-      // 9. Create InstallerProfile
-      const signedDocs = Object.entries(data.signedDocs || {})
-        .filter(([, signed]) => signed)
-        .map(([docId]) => ({
-          docId,
-          signedAt: now.toISOString(),
-        }))
-
-      const teamMembers = (data.team || []).map(t => ({
-        name: t.name || '',
-        email: t.email || '',
-        role: t.role || 'Consultant',
-      }))
-
-      const { data: installerProfile, error: installerError } = await supabase
-        .from('installer_profiles')
-        .insert({
-          user_id: userId,
-          contact_id: contactId,
-          company_id: companyId,
-          company_name: data.company_name,
-          contact_name: data.contact_name,
+        logger.error('Onboarding contact insert failed — lead not written to CRM', {
+          error: contactError.message,
           email: normalizedEmail,
-          phone: data.phone || null,
-          vat_number: data.vat || null,
-          business_address: data.address || null,
-          service_counties: data.counties || [],
-          plan_id: data.plan,
-          billing_cycle: data.billing,
-          billing_email: data.invoice_email || null,
-          billing_address: data.billing_address || null,
-          billing_city: data.billing_city || null,
-          billing_county: data.billing_county || null,
-          billing_eircode: data.billing_eircode || null,
-          integrations: data.tech_integrations || [],
-          security_features: data.security_features || [],
-          years_in_business: data.founded ? parseInt(data.founded) || null : null,
-          team_size: teamSize,
-          onboarding_complete: true,
-          onboarding_step: 9,
-          signed_documents: signedDocs,
-          team_members: teamMembers,
-          data_retention_months: data.data_retention,
-          lead_target_month: data.leads_target,
-          installs_month: data.installs_target,
-          revenue_target: data.revenue_target,
-          trial_start_at: now.toISOString(),
-          trial_ends_at: trialEndsAt.toISOString(),
-          demo_booking_date: data.demo_date ? new Date(data.demo_date).toISOString() : null,
-          demo_booking_time: data.demo_time || null,
-          demo_focus_areas: data.demo_focus || [],
-          demo_company_size: data.demo_company_size || null,
-          demo_role: data.demo_role || null,
         })
-        .select('id, company_name, plan_id, trial_ends_at')
-        .single()
-
-      if (installerError) {
-        logger.error('Failed to create installer profile', { error: installerError.message })
-        await cleanupCreatedRecords(supabase, createdIds, 'contacts')
-        await cleanupCreatedRecords(supabase, [companyId], 'companies')
-        await cleanupAuthUser(supabase, userId)
-        return NextResponse.json(
-          { error: 'Failed to create installer profile' },
-          { status: 500 }
-        )
+      } else if (contact) {
+        contactId = contact.id
       }
 
-      const installerProfileId = installerProfile.id
-      createdIds.push(installerProfileId)
-
-      // 10. Create Subscription (trialing, 14 days)
-      const { data: subscription, error: subscriptionError } = await supabase
-        .from('subscriptions')
-        .insert({
-          installer_id: installerProfileId,
-          plan_id: data.plan,
-          status: 'trialing',
-          billing_cycle: data.billing,
-          current_period_start: now.toISOString(),
-          current_period_end: trialEndsAt.toISOString(),
-          company_id: companyId,
-        })
-        .select('id, status')
-        .single()
-
-      if (subscriptionError) {
-        logger.error('Failed to create subscription', { error: subscriptionError.message })
-        await cleanupCreatedRecords(supabase, createdIds, 'installer_profiles')
-        await cleanupCreatedRecords(supabase, [companyId], 'companies')
-        await cleanupAuthUser(supabase, userId)
-        return NextResponse.json(
-          { error: 'Failed to create subscription' },
-          { status: 500 }
-        )
-      }
-
-      // 11. Create installer documents for each signed doc
-      const signedDocIds = Object.entries(data.signedDocs || {})
-        .filter(([, signed]) => signed)
-        .map(([docId]) => docId)
-
-      if (signedDocIds.length > 0) {
-        const documentsToInsert = signedDocIds.map(docId => ({
-          installer_id: installerProfileId,
-          document_type: docId,
-          signed_at: now.toISOString(),
-        }))
-
-        const { error: docsError } = await supabase
-          .from('installer_documents')
-          .insert(documentsToInsert)
-
-        if (docsError) {
-          logger.error('Failed to create installer documents', { error: docsError.message })
-          // Non-fatal — log but continue
-        }
-      }
-
-      // 12. Create Session (Redis-backed, not Supabase)
-      const sessionToken = await createSession({
-        id: userId,
-        email: normalizedEmail,
-        name: data.contact_name,
-        role: 'admin',
-        avatar: null,
+      // The new_lead deal IS the CRM-visible lead; its success is what
+      // "captured" means.
+      const value = estimateDealValue(data.plan)
+      const { error: dealError } = await supabase.from('deals').insert({
+        company_id: companyId,
+        product: 'solarpilot',
+        mrr: Math.round(value / 12),
+        setup_fee: 0,
+        stage: 'new_lead',
+        value,
+        notes: `Onboarding request from ${contactName || normalizedEmail}. ${leadSummary}`.slice(0, 600),
       })
 
-      // 13. Upsert OnboardingSubmission — mark as completed
-      const { data: existingSubmission, error: submissionFetchError } = await supabase
-        .from('onboarding_submissions')
-        .select('id')
-        .eq('email', normalizedEmail)
-        .single()
-
-      if (submissionFetchError && submissionFetchError.code !== 'PGRST116') {
-        logger.error('Failed to check existing onboarding submission', {
-          error: submissionFetchError.message,
+      if (dealError) {
+        logger.error('Onboarding deal insert failed — lead did not reach the pipeline', {
+          error: dealError.message,
+          email: normalizedEmail,
         })
-        // Non-fatal — continue
       }
 
-      if (existingSubmission) {
-        const { error: submissionUpdateError } = await supabase
-          .from('onboarding_submissions')
-          .update({
-            form_data: data,
-            status: 'completed',
-            user_id: userId,
-            company_id: companyId,
-            contact_id: contactId,
-            updated_at: now.toISOString(),
-          })
-          .eq('id', existingSubmission.id)
+      leadSaved = !contactError && !dealError && Boolean(contact)
 
-        if (submissionUpdateError) {
-          logger.error('Failed to update onboarding submission', {
-            error: submissionUpdateError.message,
-          })
-          // Non-fatal — continue
-        }
-      } else {
-        const { error: submissionInsertError } = await supabase
+      // Mark any in-progress onboarding record complete WITHOUT persisting the
+      // form blob (no password is collected, and we do not store the raw form).
+      try {
+        const { data: existing } = await supabase
           .from('onboarding_submissions')
-          .insert({
+          .select('id')
+          .eq('email', normalizedEmail)
+          .single()
+        if (existing) {
+          await supabase
+            .from('onboarding_submissions')
+            .update({
+              form_data: { summary: leadSummary },
+              status: 'completed',
+              company_id: companyId,
+              contact_id: contactId,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', existing.id)
+        } else {
+          await supabase.from('onboarding_submissions').insert({
             email: normalizedEmail,
-            form_data: data,
+            form_data: { summary: leadSummary },
             status: 'completed',
-            user_id: userId,
             company_id: companyId,
             contact_id: contactId,
           })
-
-        if (submissionInsertError) {
-          logger.error('Failed to insert onboarding submission', {
-            error: submissionInsertError.message,
-          })
-          // Non-fatal — continue
         }
+      } catch { /* non-fatal bookkeeping */ }
+
+      if (leadSaved) {
+        logger.info('Onboarding lead saved to CRM', { email: normalizedEmail, companyId })
       }
-
-      // 14. Create onboarding record for the company — tracks setup progress
-      const stepChecks = [
-        { step: 'account', done: true },
-        { step: 'company', done: true },
-        { step: 'territory', done: (data.counties || []).length > 0 },
-        { step: 'integrations', done: true },
-        { step: 'legal', done: signedDocIds.length >= 4 },
-        { step: 'finance', done: !!data.plan },
-        { step: 'tech', done: true },
-        { step: 'training', done: true },
-      ]
-      const completedSteps = stepChecks.filter(s => s.done).length
-      const progressPercent = Math.round((completedSteps / stepChecks.length) * 100)
-
-      const { data: existingOnboarding, error: onboardingFetchError } = await supabase
-        .from('onboarding')
-        .select('id')
-        .eq('company_id', companyId)
-        .single()
-
-      if (onboardingFetchError && onboardingFetchError.code !== 'PGRST116') {
-        logger.error('Failed to check existing onboarding record', {
-          error: onboardingFetchError.message,
-        })
-        // Non-fatal — continue
-      }
-
-      if (existingOnboarding) {
-        const { error: onboardingUpdateError } = await supabase
-          .from('onboarding')
-          .update({
-            solarpilot_progress: progressPercent,
-            solarpilot_steps: stepChecks,
-            completed_at: now.toISOString(),
-          })
-          .eq('id', existingOnboarding.id)
-
-        if (onboardingUpdateError) {
-          logger.error('Failed to update onboarding record', {
-            error: onboardingUpdateError.message,
-          })
-          // Non-fatal — continue
-        }
-      } else {
-        const { error: onboardingInsertError } = await supabase
-          .from('onboarding')
-          .insert({
-            company_id: companyId,
-            solarpilot_progress: progressPercent,
-            ai_workforce_progress: 0,
-            solarpilot_steps: stepChecks,
-            started_at: now.toISOString(),
-            completed_at: now.toISOString(),
-          })
-
-        if (onboardingInsertError) {
-          logger.error('Failed to create onboarding record', {
-            error: onboardingInsertError.message,
-          })
-          // Non-fatal — continue
-        }
-      }
-
-      // 15. Build response with session cookie
-      const result = {
-        user: {
-          id: userId,
-          email: normalizedEmail,
-          name: data.contact_name,
-          role: 'admin',
-        },
-        company: {
-          id: company.id,
-          name: company.name,
-        },
-        contact: {
-          id: contact.id,
-          name: contact.name,
-        },
-        installerProfile: {
-          id: installerProfile.id,
-          companyName: installerProfile.company_name,
-          planId: installerProfile.plan_id,
-          trialEndsAt: installerProfile.trial_ends_at,
-        },
-        subscription: {
-          id: subscription.id,
-          status: subscription.status,
-        },
-        sessionToken,
-      }
-
-      const response = NextResponse.json({
-        success: true,
-        message: 'Onboarding complete! Welcome to SolarPilot.',
-        ...result,
+    } catch (dbError) {
+      logger.warn('Could not save onboarding lead to Supabase', {
+        error: dbError instanceof Error ? dbError.message : String(dbError),
       })
-
-      response.headers.append('Set-Cookie', createSessionCookie(result.sessionToken))
-
-      logger.info('Onboarding completed', {
-        email: normalizedEmail,
-        companyName: data.company_name,
-        planId: data.plan,
-        userId,
-      })
-
-      return response
-    } catch (innerError) {
-      // An error occurred during sequential record creation — attempt cleanup
-      logger.error('Onboarding inner error, attempting cleanup', {
-        error: innerError instanceof Error ? innerError.message : String(innerError),
-        userId,
-        createdIds,
-      })
-
-      // Best-effort cleanup of created database records (in reverse order)
-      for (const table of ['installer_documents', 'subscriptions', 'installer_profiles', 'contacts', 'companies'] as const) {
-        await cleanupCreatedRecords(supabase, createdIds, table)
-      }
-      await cleanupAuthUser(supabase, userId)
-
-      throw innerError
     }
+
+    // ── 2. Notify the team ────────────────────────────────────────────────
+    let emailSent = false
+    try {
+      const rows = summaryLines
+        .map(line => {
+          const [k, ...rest] = line.split(': ')
+          const v = rest.join(': ')
+          return `<tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">${escapeHtml(k)}</td><td style="color:#fff;padding:8px 0;font-size:14px;">${escapeHtml(v)}</td></tr>`
+        })
+        .join('')
+
+      const htmlBody = `
+<!DOCTYPE html><html><head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#080808;font-family:system-ui,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;padding:40px 20px;">
+    <tr><td style="background:#141414;border-radius:16px;padding:32px;border:1px solid rgba(255,255,255,0.05);">
+      <div style="text-align:center;margin-bottom:24px;"><span style="font-size:22px;font-weight:800;color:#F3D840;">Renewably</span></div>
+      <h2 style="color:#fff;font-size:18px;margin:0 0 16px;">New Onboarding Request</h2>
+      <table style="width:100%;border-collapse:collapse;">
+        <tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Email</td><td style="padding:8px 0;font-size:14px;"><a href="mailto:${escapeHtml(normalizedEmail)}" style="color:#60A5FA;">${escapeHtml(normalizedEmail)}</a></td></tr>
+        ${rows}
+      </table>
+    </td></tr>
+  </table>
+</body></html>`
+
+      const textBody = `New Onboarding Request\n\nEmail: ${normalizedEmail}\n${summaryLines.join('\n')}`
+
+      const notifyResult = await sendEmail({
+        to: 'hello@renewably.ie',
+        subject: `New Onboarding Request${companyName ? ` — ${companyName}` : ''}`,
+        htmlBody,
+        textBody,
+        tag: 'onboarding-request-notification',
+        metadata: { source: 'onboarding', contactEmail: normalizedEmail },
+      })
+      emailSent = notifyResult?.success === true
+      if (!emailSent) {
+        logger.warn('Onboarding notification email not delivered', { error: notifyResult?.error, email: normalizedEmail })
+      }
+    } catch (emailError) {
+      logger.warn('Could not send onboarding notification email', {
+        error: emailError instanceof Error ? emailError.message : String(emailError),
+      })
+    }
+
+    // ── 3. Confirm to the sender ──────────────────────────────────────────
+    try {
+      const firstName = (contactName || 'there').split(' ')[0]
+      const replyHtml = `
+<!DOCTYPE html><html><head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#080808;font-family:system-ui,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;padding:40px 20px;">
+    <tr><td style="background:#141414;border-radius:16px;padding:32px;border:1px solid rgba(255,255,255,0.05);">
+      <div style="text-align:center;margin-bottom:24px;"><span style="font-size:22px;font-weight:800;color:#F3D840;">Renewably</span></div>
+      <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin:0 0 16px;">Hi ${escapeHtml(firstName)},</p>
+      <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin:0 0 16px;">Thanks for your details. We've got everything we need to get started, and one of our team will be in touch to walk you through setup and answer any questions.</p>
+      <p style="color:rgba(255,255,255,0.70);font-size:14px;line-height:1.6;margin:0;">If anything's urgent, reach us at <a href="mailto:hello@renewably.ie" style="color:#F3D840;">hello@renewably.ie</a>.</p>
+      <p style="color:rgba(255,255,255,0.50);font-size:13px;margin:24px 0 0;">Best regards,<br>The Renewably Team</p>
+    </td></tr>
+  </table>
+</body></html>`
+      const replyText = `Hi ${firstName},\n\nThanks for your details. We've got everything we need to get started, and one of our team will be in touch to walk you through setup.\n\nIf anything's urgent, reach us at hello@renewably.ie.\n\nBest regards,\nThe Renewably Team`
+
+      await sendEmail({
+        to: normalizedEmail,
+        subject: 'Thanks — we\'ll be in touch (Renewably)',
+        htmlBody: replyHtml,
+        textBody: replyText,
+        tag: 'onboarding-request-auto-reply',
+        metadata: { source: 'onboarding' },
+      })
+    } catch (replyError) {
+      logger.warn('Could not send onboarding auto-reply', {
+        error: replyError instanceof Error ? replyError.message : String(replyError),
+      })
+    }
+
+    // ── 4. Honest result ──────────────────────────────────────────────────
+    if (!leadSaved && !emailSent) {
+      logger.error('Both CRM save and notification failed for onboarding request', { email: normalizedEmail })
+      return NextResponse.json(
+        { success: false, error: 'Sorry, something went wrong. Please email hello@renewably.ie directly.' },
+        { status: 503 }
+      )
+    }
+
+    logger.info('Onboarding request received', {
+      email: normalizedEmail,
+      company: companyName || 'N/A',
+      savedToDb: leadSaved,
+      notificationSent: emailSent,
+      postmarkConfigured: isPostmarkConfigured(),
+    })
+
+    return NextResponse.json({
+      success: true,
+      message: 'Thanks — we\'ve got your details. The team will be in touch to get you set up.',
+    })
   } catch (error) {
     logger.error('Onboarding submission error', {
       error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
     })
-
     return NextResponse.json(
       { error: 'Internal server error. Please try again.' },
       { status: 500 }
     )
   }
-}
-
-// ─── Cleanup helpers ───
-
-async function cleanupAuthUser(supabase: ReturnType<typeof createServiceClient>, userId: string): Promise<void> {
-  try {
-    await supabase.auth.admin.deleteUser(userId)
-  } catch (err) {
-    logger.error('Failed to cleanup auth user during rollback', {
-      userId,
-      error: err instanceof Error ? err.message : String(err),
-    })
-  }
-}
-
-async function cleanupCreatedRecords(
-  supabase: ReturnType<typeof createServiceClient>,
-  ids: string[],
-  table: string
-): Promise<void> {
-  if (ids.length === 0) return
-  try {
-    await supabase.from(table).delete().in('id', ids)
-  } catch (err) {
-    logger.error(`Failed to cleanup records in ${table} during rollback`, {
-      ids,
-      error: err instanceof Error ? err.message : String(err),
-    })
-  }
-}
-
-// Helper: Convert team size range string to approximate number
-function parseTeamSize(size: string | undefined): number | null {
-  if (!size) return null
-  const sizeMap: Record<string, number> = {
-    '1-5': 3,
-    '6-15': 10,
-    '16-30': 23,
-    '31-50': 40,
-    '50+': 60,
-  }
-  return sizeMap[size] || null
 }

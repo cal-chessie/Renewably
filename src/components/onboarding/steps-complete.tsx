@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Card, Button, Icon } from './ui';
 
 // ─── Step 9 · Complete ────────────────────────────────────────────────────
+// Honest confirmation for a lead-capture flow. Nothing is provisioned here and
+// there is no portal to log in to — the team follows up to set the account up.
 
 interface StepCompleteProps {
   data: Record<string, unknown>;
@@ -13,15 +15,6 @@ interface StepCompleteProps {
 
 export function StepComplete({ data, submissionError, onRetry }: StepCompleteProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [checks, setChecks] = useState<string[]>([]);
-  const items = [
-    'Log in to your portal',
-    'Add remaining team members',
-    'Upload your past clients (CSV)',
-    'Connect inverter APIs',
-    'Book kick-off training call',
-  ];
-  const togCheck = (i: string) => setChecks(c => c.includes(i) ? c.filter(x => x !== i) : [...c, i]);
 
   // Confetti
   useEffect(() => {
@@ -65,6 +58,11 @@ export function StepComplete({ data, submissionError, onRetry }: StepCompletePro
   }, []);
 
   const contactName = (data.contact_name as string || '').split(' ')[0] || 'there';
+  const nextSteps = [
+    { k: '01', t: 'We review your details', d: 'The team looks over what you told us and gets your setup ready.' },
+    { k: '02', t: 'We reach out to you', d: `A quick call or email to ${data.email as string || 'your inbox'} to confirm the details and answer questions.` },
+    { k: '03', t: 'We set you up', d: 'We walk you through your account and get your first leads flowing.' },
+  ];
 
   return (
     <div className="fade-up" style={{ position: 'relative' }}>
@@ -83,7 +81,7 @@ export function StepComplete({ data, submissionError, onRetry }: StepCompletePro
           marginBottom: 20,
         }}>
           <div style={{ fontSize: 13, fontWeight: 500, color: 'oklch(0.65 0.2 25)', marginBottom: 4 }}>
-            Setup hit a snag
+            Something went wrong
           </div>
           <div style={{ fontSize: 12, color: 'var(--ink-3)', marginBottom: 10 }}>
             {submissionError}
@@ -103,42 +101,40 @@ export function StepComplete({ data, submissionError, onRetry }: StepCompletePro
           <Icon.Check size={28} />
         </div>
         <div className="mono" style={{ fontSize: 10.5, color: 'var(--solar)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 8, fontWeight: 500 }}>
-          Setup complete
+          Request received
         </div>
         <h1 style={{ fontSize: 36, fontWeight: 600, letterSpacing: '-0.03em', margin: '0 0 8px', lineHeight: 1.1 }}>
-          You&apos;re all set, <span style={{ color: 'var(--solar)' }}>{contactName}</span>.
+          Thanks, <span style={{ color: 'var(--solar)' }}>{contactName}</span>.
         </h1>
-        <p style={{ fontSize: 14, color: 'var(--ink-3)', margin: 0, maxWidth: 400, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.5 }}>
-          Your SolarPilot portal is provisioned and your first qualified leads are being routed.
+        <p style={{ fontSize: 14, color: 'var(--ink-3)', margin: 0, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.5 }}>
+          We&apos;ve got your details. Our team will be in touch to get you set up and walk you through the next steps.
         </p>
       </div>
 
-      {/* Portal handoff */}
+      {/* What happens next */}
       <Card tone="raised" style={{ padding: 18, marginBottom: 16 }}>
-        <div className="ob-portal-handoff" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, alignItems: 'center' }}>
-          <div>
-            <div className="mono" style={{ fontSize: 10, color: 'var(--ink-4)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 6 }}>
-              Your portal
+        <div className="mono" style={{ fontSize: 10, color: 'var(--ink-4)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 14 }}>
+          What happens next
+        </div>
+        <div style={{ display: 'grid', gap: 14 }}>
+          {nextSteps.map(s => (
+            <div key={s.k} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+              <span className="mono" style={{ fontSize: 11, color: 'var(--solar)', fontWeight: 500, paddingTop: 2 }}>{s.k}</span>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--ink-1)', marginBottom: 2 }}>{s.t}</div>
+                <div style={{ fontSize: 12.5, color: 'var(--ink-3)', lineHeight: 1.5 }}>{s.d}</div>
+              </div>
             </div>
-            <div className="mono" style={{ fontSize: 15, color: 'var(--solar)', fontWeight: 500, letterSpacing: '-0.005em' }}>
-              app.solarpilot.renewably.ie
-            </div>
-            <div style={{ fontSize: 11.5, color: 'var(--ink-4)', marginTop: 4 }}>
-              Login link sent to {data.email as string || 'your email'}
-            </div>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button size="lg" icon={<Icon.Arrow size={14} />}>Open my portal</Button>
-          </div>
+          ))}
         </div>
       </Card>
 
-      {/* Stats tiles */}
+      {/* Summary tiles — what you told us, not what's provisioned */}
       <div className="ob-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginBottom: 16 }}>
         {[
           { k: 'Counties', v: ((data.counties as string[]) || []).length, u: 'service area' },
-          { k: 'Team seats', v: (data.team as Array<{name: string}> | undefined)?.length || 0, u: 'provisioned' },
-          { k: 'Plan', v: data.plan === 'enterprise' ? 'Enterprise' : data.plan === 'starter' ? 'Starter' : 'Pro', u: `${data.billing === 'annual' ? 'annual' : 'monthly'} billing` },
+          { k: 'Team', v: (data.team as Array<{name: string}> | undefined)?.length || 0, u: 'people to add' },
+          { k: 'Plan', v: data.plan === 'enterprise' ? 'Enterprise' : data.plan === 'starter' ? 'Starter' : 'Pro', u: `${data.billing === 'annual' ? 'annual' : 'monthly'} interest` },
         ].map((s, i) => (
           <Card key={i} style={{ padding: 14 }}>
             <div className="mono" style={{ fontSize: 9.5, color: 'var(--ink-4)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 6 }}>{s.k}</div>
@@ -148,44 +144,11 @@ export function StepComplete({ data, submissionError, onRetry }: StepCompletePro
         ))}
       </div>
 
-      {/* Checklist */}
-      <Card style={{ padding: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-          <div className="mono" style={{ fontSize: 10, color: 'var(--ink-4)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-            Next steps · first week
-          </div>
-          <div className="mono" style={{ fontSize: 10, color: 'var(--solar)' }}>
-            {checks.length} / {items.length} done
-          </div>
-        </div>
-        <div style={{ display: 'grid', gap: 2 }}>
-          {items.map((item, i) => {
-            const on = checks.includes(item);
-            return (
-              <label key={item} style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '9px 10px',
-                borderRadius: 5, cursor: 'pointer',
-                background: on ? 'var(--bg-2)' : 'transparent',
-                transition: 'background 140ms',
-              }}>
-                <input type="checkbox" checked={on} onChange={() => togCheck(item)} />
-                <span className="mono" style={{ fontSize: 10.5, color: 'var(--ink-5)', letterSpacing: '0.04em' }}>
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <span style={{
-                  fontSize: 13,
-                  color: on ? 'var(--ink-4)' : 'var(--ink-2)',
-                  textDecoration: on ? 'line-through' : 'none',
-                  textDecorationColor: 'var(--ink-4)',
-                }}>
-                  {item}
-                </span>
-              </label>
-            );
-          })}
-        </div>
-      </Card>
+      <div style={{ textAlign: 'center' }}>
+        <a href="/" style={{ textDecoration: 'none' }}>
+          <Button size="lg" icon={<Icon.Arrow size={14} />}>Back to renewably.ie</Button>
+        </a>
+      </div>
     </div>
   );
 }

@@ -321,9 +321,8 @@ export default function OnboardingPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          // Account
+          // Contact (no password — onboarding no longer creates a login)
           email: formData.email || '',
-          password: formData.password || '',
           // Company
           company_name: formData.company_name || '',
           contact_name: formData.contact_name || '',
