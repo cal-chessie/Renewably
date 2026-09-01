@@ -142,12 +142,30 @@ function HeroSection() {
             lineHeight: 1.08,
             letterSpacing: '-0.02em',
             color: '#F3D840',
-            marginBottom: 'clamp(24px, 4vw, 48px)',
+            marginBottom: 'clamp(16px, 2.6vw, 26px)',
             animationDelay: '0.7s',
           }}
         >
           You need a workforce that never sleeps.
         </h1>
+
+        {/* Outcome line — states the value before the ask */}
+        <p
+          className="hp-rise"
+          style={{
+            fontSize: 'clamp(15px, 2vw, 20px)',
+            fontWeight: 400,
+            color: 'rgba(255,255,255,0.72)',
+            lineHeight: 1.55,
+            maxWidth: 620,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            marginBottom: 'clamp(26px, 4vw, 40px)',
+            animationDelay: '0.9s',
+          }}
+        >
+          Every lead caught. Every survey booked. Every estimate sent. Without hiring.
+        </p>
 
         {/* CTA */}
         <div className="hp-rise" style={{ animationDelay: '1.1s' }}>
@@ -157,6 +175,17 @@ function HeroSection() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </MagneticButton>
+          <p
+            style={{
+              marginTop: 'clamp(14px, 2vw, 18px)',
+              fontSize: 'clamp(12px, 1.4vw, 13.5px)',
+              color: 'rgba(255,255,255,0.66)',
+              fontWeight: 500,
+              letterSpacing: '0.01em',
+            }}
+          >
+            A 15-minute call. No pressure, no lock-in.
+          </p>
         </div>
       </div>
       {/* Responsive objectPosition — desktop centres, mobile shifts right to show the robot */}
@@ -274,7 +303,7 @@ function SolutionSection() {
         {/* Sub-text */}
         <ScrollReveal delay={0.15}>
           <p style={{ color: '#374151', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
-            Not robots. Not chatbots. Actual employees. With roles. With responsibilities. With a boss.
+            Not robots. Not chatbots. Digital employees. With roles. With responsibilities. With a boss.
           </p>
         </ScrollReveal>
 
@@ -799,7 +828,7 @@ function FAQSection() {
         {/* Bottom CTA */}
         <ScrollReveal delay={0.4}>
           <p style={{ textAlign: 'center', color: '#535353', fontSize: 'clamp(14px, 1.8vw, 16px)', lineHeight: 1.7, marginTop: 'clamp(32px, 4vw, 48px)', marginBottom: 'clamp(12px, 2vw, 16px)' }}>
-            Ready to automate your solar business?
+            Ready to stop losing leads after hours?
           </p>
           <div style={{ textAlign: 'center' }}>
             <Link
