@@ -3,7 +3,6 @@
 import { useState } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
-import Image from "next/image";
 import { pricingFaqs } from "@/data/pricingFaqs";
 
 const includedItems = [
@@ -113,20 +112,6 @@ export default function PricingPageClient() {
             <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 18, lineHeight: 1.7, textAlign: "center", maxWidth: 560, margin: "0 auto" }}>
               No hidden fees. No per-seat charges. No surprises. Just one monthly payment for your complete AI workforce.
             </p>
-          </ScrollReveal>
-          <ScrollReveal delay={0.3}>
-            <div style={{ display: "flex", justifyContent: "center", marginTop: "clamp(32px, 5vw, 48px)" }}>
-              <div style={{ width: "100%", maxWidth: 360, borderRadius: 24, overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}>
-                <Image
-                  src="/mascots/chief-of-staff.jpg"
-                  alt="A Renewably AI agent dressed for the office, handling a calendar, dashboard and inbox"
-                  width={1024}
-                  height={1024}
-                  sizes="(max-width: 768px) 80vw, 360px"
-                  style={{ width: "100%", height: "auto", display: "block" }}
-                />
-              </div>
-            </div>
           </ScrollReveal>
         </div>
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 64, background: "linear-gradient(to top, white, transparent)", zIndex: 2, pointerEvents: "none" }} />
