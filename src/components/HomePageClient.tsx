@@ -555,7 +555,7 @@ function AgentsSection() {
     },
     {
       title: "Marketing agent",
-      desc: "Coming soon. Runs campaigns. Generates leads. Writes copy. Manages socials.",
+      desc: "Runs campaigns. Generates leads. Writes copy. Manages your socials.",
       comingSoon: true,
     },
   ], []);
@@ -592,36 +592,49 @@ function AgentsSection() {
         </ScrollReveal>
 
         {/* Agent cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5" style={{ marginBottom: 'clamp(32px, 4vw, 48px)' }}>
-          {agents.map((agent, i) => (
-            <ScrollReveal key={agent.title} delay={i * 0.08}>
-              <div
-                className={`hp-lift-sm p-5 lg:p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer group h-full ${'comingSoon' in agent ? 'bg-[#0A0A0A] border-[#F3D840]/30 opacity-50' : 'bg-white border-[#F3D840]/30 hover:border-[#F3D840]/60'}`}
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={`w-3 h-3 rounded-full group-hover:scale-125 transition-transform duration-300 ${'comingSoon' in agent ? 'bg-[#F3D840]/40' : 'bg-[#F3D840]'}`} />
-                  <h3 className={`text-lg font-bold ${'comingSoon' in agent ? 'text-[#F3D840]/70' : 'text-[#1A1A1A]'}`}>
-                    {agent.title}
-                    {'comingSoon' in agent && <span className="ml-2 text-xs font-semibold text-[#F3D840]/50 uppercase tracking-wider">Coming soon</span>}
-                  </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6" style={{ marginBottom: 'clamp(32px, 4vw, 48px)' }}>
+          {agents.map((agent, i) => {
+            const isComingSoon = 'comingSoon' in agent;
+            return (
+              <ScrollReveal key={agent.title} delay={i * 0.08}>
+                <div
+                  style={{ padding: 'clamp(22px, 2.4vw, 28px)' }}
+                  className={`hp-lift-sm h-full min-h-[172px] flex flex-col rounded-2xl transition-all duration-300 cursor-pointer group ${
+                    isComingSoon
+                      ? 'bg-[#FAF8EF] border border-dashed border-[#F3D840]/50'
+                      : 'bg-[#FFFDF5] border border-[#0A0A0A]/[0.06] shadow-[0_1px_2px_rgba(20,18,5,0.04),0_10px_28px_rgba(20,18,5,0.06)] hover:border-[#F3D840]/70 hover:shadow-[0_2px_6px_rgba(20,18,5,0.05),0_18px_44px_rgba(20,18,5,0.10)]'
+                  }`}
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className={`w-2.5 h-2.5 rounded-full shrink-0 transition-transform duration-300 group-hover:scale-125 ${isComingSoon ? 'bg-[#F3D840]/40' : 'bg-[#F3D840]'}`} />
+                    <h3 className={`text-lg font-bold leading-snug ${isComingSoon ? 'text-[#8b857a]' : 'text-[#1A1A1A]'}`}>
+                      {agent.title}
+                    </h3>
+                    {isComingSoon && (
+                      <span style={{ padding: '4px 10px' }} className="ml-auto shrink-0 text-[10px] font-semibold uppercase tracking-wider text-[#8a6d05] bg-[#F3D840]/20 rounded-full">
+                        Coming soon
+                      </span>
+                    )}
+                  </div>
+                  <p className={`text-sm leading-relaxed ${isComingSoon ? 'text-[#a49e91]' : 'text-[#535353]'}`}>
+                    {agent.desc}
+                  </p>
                 </div>
-                <p className={`text-sm leading-relaxed ${'comingSoon' in agent ? 'text-white/40' : 'text-[#535353]'}`}>
-                  {agent.desc}
-                </p>
-              </div>
-            </ScrollReveal>
-          ))}
+              </ScrollReveal>
+            );
+          })}
 
           {/* Much more card */}
-          <ScrollReveal delay={0.72}>
+          <ScrollReveal delay={0.8}>
             <Link href="/workforce">
               <div
-                className="hp-lift-sm p-5 lg:p-6 rounded-2xl bg-[#0A0A0A] border-2 border-[#F3D840]/40 hover:border-[#F3D840] transition-all duration-300 cursor-pointer group h-full flex flex-col items-center justify-center text-center min-h-[100px]"
+                style={{ padding: 'clamp(22px, 2.4vw, 28px)' }}
+                className="hp-lift-sm h-full min-h-[172px] rounded-2xl bg-[#0A0A0A] border border-[#F3D840]/40 hover:border-[#F3D840] shadow-[0_1px_2px_rgba(20,18,5,0.06),0_12px_32px_rgba(20,18,5,0.14)] transition-all duration-300 cursor-pointer group flex flex-col items-center justify-center text-center"
               >
-                <span className="text-[#F3D840] text-2xl font-extrabold mb-2 group-hover:scale-110 transition-transform duration-300">
+                <span className="text-[#F3D840] text-2xl font-extrabold mb-1.5 transition-transform duration-300 group-hover:scale-110">
                   + Much More
                 </span>
-                <span className="text-white/50 text-sm">
+                <span className="text-white/55 text-sm">
                   See the full workforce
                 </span>
               </div>
