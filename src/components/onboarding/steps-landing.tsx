@@ -41,12 +41,12 @@ export function Landing({ onStart, onDemo }: { onStart: () => void; onDemo: () =
             color: 'var(--ink-3)', fontSize: 15, lineHeight: 1.55,
             margin: '0 0 28px', maxWidth: 460,
           }}>
-            Operating software for Irish solar installers. Qualified leads, grant paperwork, homeowner proposals and recurring PPA earnings — in one portal.
+            Operating software for Irish solar installers. Qualified leads, SEAI grant paperwork and homeowner proposals, in one place.
           </p>
 
           <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 18 }}>
             <Button onClick={onStart} size="xl" icon={<Icon.Arrow size={14} />}>
-              Start free trial
+              Get started
             </Button>
             <Button variant="ghost" size="xl" onClick={onDemo}>
               Book a demo
@@ -54,7 +54,7 @@ export function Landing({ onStart, onDemo }: { onStart: () => void; onDemo: () =
           </div>
 
           <div className="mono" style={{ fontSize: 10.5, color: 'var(--ink-4)', letterSpacing: '0.06em' }}>
-            No card required · 14-day trial · Setup in under 10 minutes
+            No card required · A few quick questions · The team gets you set up
           </div>
         </div>
 
@@ -71,9 +71,9 @@ export function Landing({ onStart, onDemo }: { onStart: () => void; onDemo: () =
         margin: '0 0 48px',
       }}>
         {[
-          { stat: '20–30', unit: 'leads / mo', label: 'Qualified homeowners, routed to your territory' },
-          { stat: '€84', unit: '/ home / yr', label: 'Passive PPA earnings, paid quarterly' },
-          { stat: '11 min', unit: 'avg. setup', label: 'From signup to live portal with team + integrations' },
+          { stat: 'Leads', unit: 'captured', label: 'Homeowner enquiries answered and routed to your territory, nothing missed' },
+          { stat: 'SEAI', unit: 'grants', label: 'Applications pre-filled, checked, and tracked to approval' },
+          { stat: 'Bill', unit: '→ proposal', label: 'Homeowner proposals built from the bill, in your brand' },
         ].map((v, i) => (
           <div key={i} style={{
             padding: '22px 24px',
@@ -98,7 +98,7 @@ export function Landing({ onStart, onDemo }: { onStart: () => void; onDemo: () =
       {/* Social proof */}
       <div style={{ marginBottom: 16 }}>
         <div className="mono" style={{ fontSize: 10, color: 'var(--ink-4)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 14 }}>
-          Trusted by installers across
+          Built for solar installers across Ireland
         </div>
         <div className="ob-social-tags" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {['Dublin', 'Cork', 'Galway', 'Limerick', 'Waterford', 'Kildare', 'Meath', 'Wicklow', '+ 24 more'].map(c => (

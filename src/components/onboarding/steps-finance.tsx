@@ -162,44 +162,24 @@ export function StepFinancial({ onNext, onBack, data }: StepFinancialProps) {
 
       <FooterBar>
         <Button variant="ghost" onClick={() => setSub(1)}>Back</Button>
-        <Button onClick={() => setSub(3)} icon={<Icon.Arrow size={14} />}>Continue to payment</Button>
+        <Button onClick={() => setSub(3)} icon={<Icon.Arrow size={14} />}>Continue to review</Button>
       </FooterBar>
     </div>
   );
 
-  // sub 3 — payment
+  // sub 3 — review (no payment; the team confirms pricing and sets you up)
   return (
     <div className="fade-up">
-      <SectionHead eyebrow="06 · Finance · 3 of 3" title="Payment method" desc="Securely processed by Stripe. You won't be charged until your trial ends on 3 May 2026." />
+      <SectionHead eyebrow="06 · Finance · 3 of 3" title="Review your plan" desc="No payment now. Confirm the plan you're interested in and the team will sort pricing and setup with you." />
 
-      <div className="ob-finance-grid" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 16, marginBottom: 18 }}>
-        <Card style={{ padding: 18 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <div className="mono" style={{ fontSize: 10, color: 'var(--ink-4)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-              Card details
-            </div>
-            <Badge tone="neutral"><Icon.Lock size={9} /> Stripe-secured</Badge>
-          </div>
-          <div style={{ display: 'grid', gap: 10 }}>
-            <Field label="Card number" mono>
-              <Input value="4242 4242 4242 4242" onChange={() => {}} mono />
-            </Field>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-              <Field label="Expiry" mono><Input value="12 / 28" onChange={() => {}} mono /></Field>
-              <Field label="CVC" mono><Input value="•••" onChange={() => {}} mono /></Field>
-              <Field label="Country"><Input value="Ireland" onChange={() => {}} /></Field>
-            </div>
-            <Field label="Name on card"><Input value="" onChange={() => {}} placeholder="Name on card" /></Field>
-          </div>
-        </Card>
-
-        <Card tone="raised" style={{ padding: 18, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ marginBottom: 18 }}>
+        <Card tone="raised" style={{ padding: 18, maxWidth: 440 }}>
           <div className="mono" style={{ fontSize: 10, color: 'var(--ink-4)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 12 }}>
-            Order summary
+            Your plan
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
             <span style={{ fontSize: 13 }}>{selectedPlan.name} · {billing}</span>
-            <span className="tabular" style={{ fontSize: 13, fontWeight: 500 }}>€{selectedPlan.price * annualMult}</span>
+            <span className="tabular" style={{ fontSize: 13, fontWeight: 500 }}>€{selectedPlan.price * annualMult}{billing === 'annual' ? '/yr' : '/mo'}</span>
           </div>
           {setupTotal > 0 && (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
@@ -207,27 +187,13 @@ export function StepFinancial({ onNext, onBack, data }: StepFinancialProps) {
               <span className="tabular" style={{ fontSize: 13, fontWeight: 500 }}>€{setupTotal.toLocaleString('en-IE')}</span>
             </div>
           )}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 }}>
             <span className="mono" style={{ fontSize: 11, color: 'var(--ink-4)' }}>VAT (23%)</span>
             <span className="tabular mono" style={{ fontSize: 11, color: 'var(--ink-3)' }}>€{Math.round((selectedPlan.price * annualMult + setupTotal) * 0.23)}</span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 }}>
-            <span className="mono" style={{ fontSize: 11, color: 'var(--ink-4)' }}>Trial credit (14 d)</span>
-            <span className="tabular mono" style={{ fontSize: 11, color: 'var(--green)' }}>−€{Math.round(selectedPlan.price * annualMult * 0.23 / 3)}</span>
-          </div>
-          <div style={{ height: 1, background: 'var(--line-soft)', marginBottom: 12 }} />
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-            <span style={{ fontSize: 13, fontWeight: 500 }}>Total today</span>
-            <span className="tabular" style={{ fontSize: 22, fontWeight: 600, color: 'var(--solar)' }}>€0.00</span>
-          </div>
-          <div className="mono" style={{ fontSize: 10, color: 'var(--ink-4)' }}>
-            First charge 19 May 2026
-            {setupTotal > 0 && <> · Setup billed after go-live</>}
-          </div>
-          <div style={{ flex: 1 }} />
-          <div style={{ height: 1, background: 'var(--line-soft)', margin: '14px 0' }} />
+          <div style={{ height: 1, background: 'var(--line-soft)', margin: '4px 0 12px' }} />
           <div style={{ fontSize: 11, color: 'var(--ink-4)', lineHeight: 1.5 }}>
-            Cancel anytime from Settings. Unused trial time is never charged.
+            Indicative pricing. Nothing is charged now, and we confirm the details with you before anything is set up. No card needed today.
           </div>
         </Card>
       </div>
@@ -238,7 +204,7 @@ export function StepFinancial({ onNext, onBack, data }: StepFinancialProps) {
           plan,
           billing,
           ...billingFields,
-        })} icon={<Icon.Arrow size={14} />}>Confirm & start trial</Button>
+        })} icon={<Icon.Arrow size={14} />}>Continue</Button>
       </FooterBar>
     </div>
   );

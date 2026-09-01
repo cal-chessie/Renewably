@@ -147,7 +147,7 @@ function OnboardingNav({ step }: { step: number }) {
         <div className="ob-top-bar-inner" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <Badge tone="solar">
             <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--solar)' }} />
-            Trial · 14 days
+            Getting set up
           </Badge>
           <div className="mono" style={{ fontSize: 11, color: 'var(--ink-4)', letterSpacing: '0.04em' }}>
             Need help? <span style={{ color: 'var(--ink-2)', textDecoration: 'underline' }}>hello@renewably.ie</span>

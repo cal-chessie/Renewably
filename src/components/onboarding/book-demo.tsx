@@ -160,7 +160,7 @@ export function BookDemo({ onBack, onDone }: { onBack: () => void; onDone: (d?: 
             demo_email: form.email,
             demo_phone: form.phone,
             demo_company: form.company,
-          })} icon={<Icon.Arrow size={14} />}>Or start a free trial now</Button>
+          })} icon={<Icon.Arrow size={14} />}>Skip and submit now</Button>
         </div>
       </div>
     );
