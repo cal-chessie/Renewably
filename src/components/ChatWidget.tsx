@@ -385,12 +385,7 @@ export default function ChatWidget() {
           }}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.94 }}
-          animate={!open ? { y: [0, -5, 0] } : {}}
-          transition={
-            !open
-              ? { y: { duration: 2.6, repeat: Infinity, ease: "easeInOut" } }
-              : { duration: 0.2 }
-          }
+          transition={{ duration: 0.2 }}
           aria-label={open ? "Close chat" : "Open chat"}
         >
           <AnimatePresence mode="wait">
@@ -419,15 +414,50 @@ export default function ChatWidget() {
                   height: "100%",
                 }}
               >
-                <Image
-                  src="/robot-2-nobg.png"
-                  alt="Chat with Renewably"
-                  fill
+                {/* soft warm glow behind the mascot (not a hard circle) */}
+                <div
+                  aria-hidden
                   style={{
-                    objectFit: "contain",
-                    filter: "drop-shadow(0 6px 14px rgba(10,10,10,0.30))",
+                    position: "absolute",
+                    inset: "-6px",
+                    background:
+                      "radial-gradient(circle at 50% 46%, rgba(243,216,64,0.42) 0%, rgba(243,216,64,0) 66%)",
+                    filter: "blur(3px)",
+                    zIndex: 0,
                   }}
                 />
+                {/* ground shadow so he reads as standing, not floating */}
+                <div
+                  aria-hidden
+                  style={{
+                    position: "absolute",
+                    left: "50%",
+                    bottom: 2,
+                    transform: "translateX(-50%)",
+                    width: 40,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "rgba(10,10,10,0.28)",
+                    filter: "blur(4px)",
+                    zIndex: 0,
+                  }}
+                />
+                {/* only the robot bobs; glow + ground shadow stay put */}
+                <motion.div
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+                  style={{ position: "absolute", inset: 0, zIndex: 1 }}
+                >
+                  <Image
+                    src="/robot-2-nobg.png"
+                    alt="Chat with Renewably"
+                    fill
+                    style={{
+                      objectFit: "contain",
+                      filter: "drop-shadow(0 6px 10px rgba(10,10,10,0.32))",
+                    }}
+                  />
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -437,13 +467,14 @@ export default function ChatWidget() {
         {unreadCount > 0 && (
           <motion.div
             initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
+            animate={{ scale: [1, 1.12, 1] }}
+            transition={{ scale: { duration: 1.8, repeat: Infinity, ease: "easeInOut" } }}
             style={{
               position: "absolute",
-              top: -2,
-              right: -2,
-              width: 20,
-              height: 20,
+              top: 2,
+              right: 4,
+              width: 21,
+              height: 21,
               borderRadius: "50%",
               background: "#EF4444",
               color: "#FFF",
@@ -452,8 +483,9 @@ export default function ChatWidget() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              border: `2px solid ${DARK}`,
-              zIndex: 1,
+              border: "2px solid #FFFDF5",
+              boxShadow: "0 2px 8px rgba(10,10,10,0.30)",
+              zIndex: 2,
             }}
           >
             1

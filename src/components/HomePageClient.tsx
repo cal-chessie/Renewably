@@ -606,7 +606,10 @@ function AgentsSection() {
                   }`}
                 >
                   <div className="flex items-center gap-3 mb-4">
-                    <span className={`w-2.5 h-2.5 rounded-full shrink-0 transition-transform duration-300 group-hover:scale-125 ${isComingSoon ? 'bg-[#F3D840]/40' : 'bg-[#F3D840]'}`} />
+                    <span
+                      style={isComingSoon ? undefined : { boxShadow: '0 0 10px rgba(243,216,64,0.65)' }}
+                      className={`w-2.5 h-2.5 rounded-full shrink-0 transition-transform duration-300 group-hover:scale-125 ${isComingSoon ? 'bg-[#F3D840]/40' : 'bg-[#F3D840]'}`}
+                    />
                     <h3 className={`text-lg font-bold leading-snug ${isComingSoon ? 'text-[#8b857a]' : 'text-[#1A1A1A]'}`}>
                       {agent.title}
                     </h3>
@@ -634,8 +637,11 @@ function AgentsSection() {
                 <span className="text-[#F3D840] text-2xl font-extrabold mb-1.5 transition-transform duration-300 group-hover:scale-110">
                   + Much More
                 </span>
-                <span className="text-white/55 text-sm">
+                <span className="text-white/55 text-sm inline-flex items-center gap-1.5">
                   See the full workforce
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F3D840" strokeWidth={2.5} className="transition-transform duration-300 group-hover:translate-x-1">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+                  </svg>
                 </span>
               </div>
             </Link>
