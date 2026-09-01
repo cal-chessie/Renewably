@@ -189,55 +189,74 @@ function ProblemSection() {
         overflow: 'hidden',
       }}
     >
-      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
-        {/* Badge */}
-        <ScrollReveal>
-          <div style={{ marginBottom: 'clamp(32px, 5vw, 40px)' }}>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '6px 14px',
-                borderRadius: 9999,
-                backgroundColor: 'rgba(255,255,255,0.1)',
-                border: '1px solid rgba(255,255,255,0.15)',
-              }}
-            >
-              <span
-                className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
-              />
-              <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                You know the problem.
-              </span>
+      <div style={{ maxWidth: 1120, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center" style={{ marginBottom: 'clamp(40px, 6vw, 48px)' }}>
+          {/* Text column */}
+          <div>
+            {/* Badge */}
+            <ScrollReveal>
+              <div style={{ marginBottom: 'clamp(24px, 4vw, 32px)' }}>
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    padding: '6px 14px',
+                    borderRadius: 9999,
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                  }}
+                >
+                  <span
+                    className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
+                  />
+                  <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
+                    You know the problem.
+                  </span>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            {/* Body paragraphs */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(18px, 2.5vw, 22px)' }}>
+              <ScrollReveal delay={0.1}>
+                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(17px, 2.5vw, 20px)', lineHeight: 1.7 }}>
+                  You have work. Lots of it. More quotes than you can price. More sites than you can assess. More customers than you can call back.
+                </p>
+              </ScrollReveal>
+
+              <ScrollReveal delay={0.2}>
+                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(17px, 2.5vw, 20px)', lineHeight: 1.7 }}>
+                  But you can&apos;t find the people.
+                </p>
+              </ScrollReveal>
+
+              <ScrollReveal delay={0.3}>
+                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7 }}>
+                  Electricians are booked out. Admin staff are impossible to keep. Project managers are burning out. And every time you lose someone, you lose three months of knowledge.
+                </p>
+              </ScrollReveal>
+
+              <ScrollReveal delay={0.4}>
+                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7 }}>
+                  So you do it yourself. You&apos;re answering emails at 10pm. You&apos;re chasing permits on a Saturday. You&apos;re quoting roofs on your phone between site visits.
+                </p>
+              </ScrollReveal>
             </div>
           </div>
-        </ScrollReveal>
 
-        {/* Body paragraphs */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(20px, 3vw, 24px)', marginBottom: 'clamp(40px, 6vw, 48px)' }}>
-          <ScrollReveal delay={0.1}>
-            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(17px, 2.5vw, 20px)', lineHeight: 1.7 }}>
-              You have work. Lots of it. More quotes than you can price. More sites than you can assess. More customers than you can call back.
-            </p>
-          </ScrollReveal>
-
+          {/* Image column — the juggle */}
           <ScrollReveal delay={0.2}>
-            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(17px, 2.5vw, 20px)', lineHeight: 1.7 }}>
-              But you can&apos;t find the people.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.3}>
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7 }}>
-              Electricians are booked out. Admin staff are impossible to keep. Project managers are burning out. And every time you lose someone, you lose three months of knowledge.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.4}>
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7 }}>
-              So you do it yourself. You&apos;re answering emails at 10pm. You&apos;re chasing permits on a Saturday. You&apos;re quoting roofs on your phone between site visits.
-            </p>
+            <div style={{ borderRadius: 24, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 30px 70px rgba(0,0,0,0.45)' }}>
+              <Image
+                src="/mascots/juggling.jpg"
+                alt="A Renewably robot juggling, keeping every task in the air at once"
+                width={1280}
+                height={720}
+                sizes="(max-width: 1024px) 100vw, 540px"
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              />
+            </div>
           </ScrollReveal>
         </div>
 
@@ -263,34 +282,53 @@ function ProblemSection() {
 function SolutionSection() {
   return (
     <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(48px, 6vw, 80px)', paddingBottom: 'clamp(48px, 6vw, 112px)', overflow: 'hidden' }}>
-      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
-        {/* Headline */}
-        <ScrollReveal>
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 48px)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
-            What if you could hire a team that never sleeps, never quits, and costs a fraction of what a person costs?
-          </h2>
-        </ScrollReveal>
+      <div style={{ maxWidth: 1120, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          {/* Text column */}
+          <div>
+            {/* Headline */}
+            <ScrollReveal>
+              <h2 style={{ fontSize: 'clamp(24px, 4vw, 44px)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
+                What if you could hire a team that never sleeps, never quits, and costs a fraction of what a person costs?
+              </h2>
+            </ScrollReveal>
 
-        {/* Sub-text */}
-        <ScrollReveal delay={0.15}>
-          <p style={{ color: '#374151', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
-            Not robots. Not chatbots. Actual employees. With roles. With responsibilities. With a boss.
-          </p>
-        </ScrollReveal>
+            {/* Sub-text */}
+            <ScrollReveal delay={0.15}>
+              <p style={{ color: '#374151', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
+                Not robots. Not chatbots. Actual employees. With roles. With responsibilities. With a boss.
+              </p>
+            </ScrollReveal>
 
-        {/* Body */}
-        <ScrollReveal delay={0.25}>
-          <p style={{ color: '#535353', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
-            They text back the missed calls. They fill out grant applications. They chase every follow-up. They coordinate installers. They order equipment. They flag problems before you know they exist.
-          </p>
-        </ScrollReveal>
+            {/* Body */}
+            <ScrollReveal delay={0.25}>
+              <p style={{ color: '#535353', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
+                They text back the missed calls. They fill out grant applications. They chase every follow-up. They coordinate installers. They order equipment. They flag problems before you know they exist.
+              </p>
+            </ScrollReveal>
 
-        {/* Closing */}
-        <ScrollReveal delay={0.35}>
-          <p style={{ color: '#1A1A1A', fontSize: 'clamp(16px, 2vw, 20px)', fontWeight: 700, lineHeight: 1.7 }}>
-            You manage them like a real team. They work like a real team.
-          </p>
-        </ScrollReveal>
+            {/* Closing */}
+            <ScrollReveal delay={0.35}>
+              <p style={{ color: '#1A1A1A', fontSize: 'clamp(16px, 2vw, 20px)', fontWeight: 700, lineHeight: 1.7 }}>
+                You manage them like a real team. They work like a real team.
+              </p>
+            </ScrollReveal>
+          </div>
+
+          {/* Image column */}
+          <ScrollReveal delay={0.2}>
+            <div style={{ borderRadius: 24, overflow: 'hidden', boxShadow: '0 24px 60px rgba(20,18,5,0.14)' }}>
+              <Image
+                src="/mascots/team-working.jpg"
+                alt="The Renewably AI workforce: four agents working together on laptops and tablets"
+                width={1360}
+                height={768}
+                sizes="(max-width: 1024px) 100vw, 540px"
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              />
+            </div>
+          </ScrollReveal>
+        </div>
       </div>
     </section>
   );
@@ -798,7 +836,19 @@ function FAQSection() {
 
         {/* Bottom CTA */}
         <ScrollReveal delay={0.4}>
-          <p style={{ textAlign: 'center', color: '#535353', fontSize: 'clamp(14px, 1.8vw, 16px)', lineHeight: 1.7, marginTop: 'clamp(32px, 4vw, 48px)', marginBottom: 'clamp(12px, 2vw, 16px)' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 'clamp(40px, 6vw, 64px)' }}>
+            <div style={{ maxWidth: 520, width: '100%', borderRadius: 24, overflow: 'hidden', boxShadow: '0 24px 60px rgba(20,18,5,0.14)' }}>
+              <Image
+                src="/mascots/team-trophy.jpg"
+                alt="The Renewably AI workforce celebrating a win with a trophy"
+                width={1360}
+                height={768}
+                sizes="(max-width: 768px) 100vw, 520px"
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              />
+            </div>
+          </div>
+          <p style={{ textAlign: 'center', color: '#535353', fontSize: 'clamp(14px, 1.8vw, 16px)', lineHeight: 1.7, marginTop: 'clamp(24px, 3vw, 32px)', marginBottom: 'clamp(12px, 2vw, 16px)' }}>
             Ready to automate your solar business?
           </p>
           <div style={{ textAlign: 'center' }}>
