@@ -149,7 +149,7 @@ function HeroSection() {
           You need a workforce that never&nbsp;sleeps.
         </h1>
 
-        {/* Outcome line — states the value before the ask */}
+        {/* Outcome line: states the value before the ask */}
         <p
           className="hp-rise"
           style={{
@@ -571,7 +571,7 @@ function AgentsSection() {
       desc: "Orders equipment. Schedules crews. Manages inventory.",
     },
     {
-      title: "Permitting agent",
+      title: "ESB agent",
       desc: "Handles ESB. Tracks submissions. Follows up on delays.",
     },
     {

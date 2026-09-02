@@ -28,7 +28,7 @@
       "End-to-end job tracking from enquiry to handover",
       "Automated scheduling for site visits and installation dates",
       "Installation team assignment and workload balancing",
-      "Dependency management between grants, permitting, and logistics",
+      "Dependency management between grants, ESB applications, and logistics",
       "Real-time pipeline visibility with status updates",
       "Automated customer notifications at every stage"
     ],
@@ -97,9 +97,9 @@
   {
     "id": "permitting-agent",
     "type": "service",
-    "title": "Permitting Agent",
+    "title": "ESB Agent",
     "slug": "permitting-agent",
-    "description": "Your regulatory compliance expert. The Permitting Agent manages ESB grid connection applications, planning permission checks, building control notifications, and all other regulatory requirements. It pre-checks every application for completeness, tracks submission status, and chases responses — removing the biggest bottleneck in Irish solar installations.",
+    "description": "Your regulatory compliance expert. The ESB Agent manages ESB grid connection applications, planning permission checks, building control notifications, and all other regulatory requirements. It pre-checks every application for completeness, tracks submission status, and chases responses — removing the biggest bottleneck in Irish solar installations.",
     "features": [
       "ESB microgeneration application preparation and submission",
       "Planning permission pre-checks and risk assessment",

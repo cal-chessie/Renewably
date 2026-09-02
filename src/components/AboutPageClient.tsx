@@ -29,7 +29,7 @@ const journey = [
   {
     phase: "The Build",
     year: "2024",
-    text: "We started building AI agents that could actually do the jobs. An agent that fills out SEAI grant applications correctly. An agent that responds to customer enquiries at midnight. An agent that tracks ESB permit submissions and follows up on delays. Not chatbots. Not automations. Actual digital employees.",
+    text: "We started building AI agents that could actually do the jobs. An agent that fills out SEAI grant applications correctly. An agent that responds to customer enquiries at midnight. An agent that tracks ESB Networks applications and follows up on delays. Not chatbots. Not automations. Actual digital employees.",
   },
   {
     phase: "The Launch",
@@ -60,7 +60,7 @@ const problems = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
       </svg>
     ),
-    desc: "Grant applications. ESB paperwork. Customer follow-ups. Equipment ordering. Permit chasing. You started a solar company to install panels. Instead you spend half your week on tasks that have nothing to do with your craft. That's not what you signed up for.",
+    desc: "Grant applications. ESB paperwork. Customer follow-ups. Equipment ordering. Chasing ESB Networks. You started a solar company to install panels. Instead you spend half your week on tasks that have nothing to do with your craft. That's not what you signed up for.",
   },
   {
     title: "The Lead Leakage",
@@ -79,14 +79,14 @@ const problems = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
     ),
-    desc: "Where is every job right now? Which grants are approved? Which permits are stuck? Which customer hasn't heard from you in two weeks? You don't know. Your spreadsheets don't know. Your WhatsApp groups don't know. Nobody knows. That's not a system. That's chaos.",
+    desc: "Where is every job right now? Which grants are approved? Which ESB applications are stuck? Which customer hasn't heard from you in two weeks? You don't know. Your spreadsheets don't know. Your WhatsApp groups don't know. Nobody knows. That's not a system. That's chaos.",
   },
 ];
 
 const values = [
   {
     title: "Built for Solar",
-    desc: "Every agent is trained on Irish solar operations. SEAI grants, ESB permits, Irish building regulations, Irish weather patterns. We know your industry because we work in your industry.",
+    desc: "Every agent is trained on Irish solar operations. SEAI grants, ESB Networks applications, Irish building regulations, Irish weather patterns. We know your industry because we work in your industry.",
     icon: (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
@@ -129,7 +129,7 @@ const agents: (string | { name: string; comingSoon?: boolean })[] = [
   "Customer Support Agent",
   "Grants Agent",
   "Logistics Agent",
-  "Permitting Agent",
+  "ESB Agent",
   "QA Agent",
   "Reporting Agent",
   { name: "Marketing Agent", comingSoon: true },
@@ -1076,7 +1076,7 @@ function FounderSection() {
                   asked for it. We didn&apos;t sit in an office theorising about
                   what the industry needs. We went on site visits. We sat in on
                   team meetings. We watched founders answer emails at midnight
-                  and chase permits on Saturdays.
+                  and chase ESB Networks on Saturdays.
                 </p>
               </ScrollReveal>
 

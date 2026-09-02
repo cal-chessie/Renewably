@@ -38,7 +38,7 @@ const agents = [
   },
   {
     num: "05",
-    title: "Permitting Agent",
+    title: "ESB Agent",
     desc: "Handles ESB Networks applications. Tracks grid connection paperwork. Follows up on delays. Alerts you only when something needs your attention.",
     image: "/agents/agent-permitting.jpg",
   },
