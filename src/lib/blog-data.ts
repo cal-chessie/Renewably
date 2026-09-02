@@ -6,6 +6,8 @@
 export interface BlogPost {
   slug: string;
   title: string;
+  seoTitle?: string; // <=48 chars, standalone <title> (no " | Renewably" suffix)
+  metaDescription?: string; // <=155 chars, search snippet
   date: string;
   category: string;
   readTime: string;
@@ -22,6 +24,9 @@ export const posts: BlogPost[] = [
     slug: "ai-site-assessment-2026-guide",
     title:
       "The Complete Guide to AI Site Assessment in 2026: Arrive Briefed, Quote Faster, Lose Nothing",
+    seoTitle: "AI Site Assessment for Solar Installers",
+    metaDescription:
+      "An AI agent files every photo, bill and access note against the job, so your site survey arrives briefed and your quote goes out faster.",
     date: "2026-04-10",
     category: "Operations",
     readTime: "10 min read",
@@ -120,6 +125,9 @@ Run it alongside your existing process to start. Same surveys, same quotes, just
     slug: "automating-seai-grant-applications",
     title:
       "How Solar Installers Are Automating SEAI Grant Applications (And Why So Many Get Rejected)",
+    seoTitle: "Automate SEAI Grants, Stop Rejections",
+    metaDescription:
+      "See how AI agents pre-fill SEAI grant forms, check every document before submission and track deadlines, so fewer applications come back rejected.",
     date: "2026-04-03",
     category: "Grants",
     readTime: "8 min read",
@@ -212,6 +220,9 @@ Start with the agent running alongside your existing process. The agent prepares
     slug: "solar-ops-dashboard-tracking",
     title:
       "One Dashboard for Solar Ops: Tracking Leads, Installs, Permits, and Paperwork",
+    seoTitle: "One Dashboard for Solar Operations",
+    metaDescription:
+      "Track every lead, site survey, ESB application, install and document in one AI dashboard, so you always know where each solar job stands.",
     date: "2026-03-27",
     category: "Operations",
     readTime: "11 min read",
@@ -318,6 +329,9 @@ Most installers start with just the lead tracking and assessment pipeline. Once 
     slug: "ai-customer-support-roi-solar",
     title:
       "The ROI of AI Customer Support for Solar Installers: Where Your Week Actually Goes",
+    seoTitle: "AI Customer Support for Solar Installers",
+    metaDescription:
+      "Repetitive questions, status chasing and booking admin quietly eat your week. See how an AI support agent answers customers and hands that time back.",
     date: "2026-03-20",
     category: "Customer Support",
     readTime: "7 min read",
@@ -420,6 +434,9 @@ Try it for one week. Count how many messages the agent handles. Count how many l
     slug: "esb-networks-ai-permit-tracking",
     title:
       "ESB Networks Applications Without the Chaos: AI Tracking That Works",
+    seoTitle: "ESB Networks Applications, Tracked by AI",
+    metaDescription:
+      "AI puts your ESB Networks applications on the right NC6 or NC7 form, checks every document and tracks each submission, so nothing stalls or gets lost.",
     date: "2026-03-13",
     category: "ESB Applications",
     readTime: "9 min read",
@@ -512,6 +529,9 @@ One customer. A handful of questions. No paperwork. No chasing. Nothing lost.`,
     slug: "ai-crew-equipment-logistics-solar",
     title:
       "7 Ways Solar Companies Are Using AI to Coordinate Crews, Order Equipment, and Stop Delays",
+    seoTitle: "7 Ways AI Fixes Solar Install Logistics",
+    metaDescription:
+      "Late equipment, idle crews and pushed jobs cost you every week. Here are seven ways solar companies use AI to coordinate crews and stop the delays.",
     date: "2026-03-06",
     category: "Logistics",
     readTime: "8 min read",
@@ -604,6 +624,9 @@ Same crews. Same trucks. Same customers. The difference is that nothing falls be
     slug: "forecasting-solar-revenue-ai",
     title:
       "Forecasting Solar Install Revenue Without Spreadsheets (Or Wishful Thinking)",
+    seoTitle: "Forecast Solar Revenue Without Spreadsheets",
+    metaDescription:
+      "Spreadsheets show what is possible, not what will land. See how AI weighs every job by stage and history to forecast solar revenue you can plan around.",
     date: "2026-02-27",
     category: "Reporting",
     readTime: "6 min read",
@@ -692,6 +715,9 @@ Start by running the forecast beside your spreadsheet for a month. Compare both 
     slug: "ai-answer-more-leads-solar",
     title:
       "How Solar Installers Are Using AI to Answer Every Lead Without Hiring Staff",
+    seoTitle: "Answer Every Solar Lead Without Hiring Staff",
+    metaDescription:
+      "Every hour a lead waits, they call a competitor. See how AI answers every call, form and chat, qualifies the lead and books the consultation for you.",
     date: "2026-02-20",
     category: "Lead Generation",
     readTime: "10 min read",

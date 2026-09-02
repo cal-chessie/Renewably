@@ -1006,7 +1006,7 @@ function TopicsSection({
           >
             Everything Irish solar
             <br />
-            <span style={{ color: YELLOW }}>in one place.</span>
+            <span style={{ color: "#1A1A1A" }}>in one place.</span>
           </h2>
         </ScrollReveal>
 

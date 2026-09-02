@@ -118,10 +118,10 @@
     "type": "service",
     "title": "QA Agent",
     "slug": "qa-agent",
-    "description": "Your quality guardian. The QA Agent monitors installation quality across every job, managing snag lists, verifying compliance with NCET standards, and tracking installer certifications. It ensures that every installation meets the high standards your customers expect, and that your reputation stays spotless.",
+    "description": "Your quality guardian. The QA Agent monitors installation quality across every job, managing snag lists, verifying compliance with I.S. 10101, the National Rules for Electrical Installations, and tracking installer certifications. It ensures that every installation meets the high standards your customers expect, and that your reputation stays spotless.",
     "features": [
       "Automated snag list generation and resolution tracking",
-      "NCET compliance verification for every installation",
+      "I.S. 10101 compliance verification for every installation",
       "Installer certification and training status monitoring",
       "Post-installation customer satisfaction surveys",
       "Quality trend analysis and improvement recommendations",

@@ -18,16 +18,22 @@ export async function generateMetadata({
   if (!post) return { title: "Post Not Found" };
 
   return {
-    title: post.title,
-    description: post.excerpt,
+    title: { absolute: post.seoTitle ?? post.title },
+    description: post.metaDescription ?? post.excerpt,
     alternates: { canonical: `https://renewably.ie/blog/${slug}` },
     openGraph: {
-      title: post.title,
-      description: post.excerpt,
+      title: post.seoTitle ?? post.title,
+      description: post.metaDescription ?? post.excerpt,
       type: "article",
       publishedTime: post.date,
       url: `https://renewably.ie/blog/${slug}`,
       images: [{ url: "/og-image.png", width: 1200, height: 630, alt: post.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.seoTitle ?? post.title,
+      description: post.metaDescription ?? post.excerpt,
+      images: ["/og-image.png"],
     },
   };
 }
