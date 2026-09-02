@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { m, useMotionValue, useSpring } from "framer-motion";
 
 export default function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
@@ -76,7 +76,7 @@ export default function CustomCursor() {
 
   return (
     <>
-      <motion.div
+      <m.div
         className="fixed top-0 left-0 pointer-events-none z-[10000] mix-blend-difference"
         style={{
           x: springX,
@@ -85,7 +85,7 @@ export default function CustomCursor() {
           translateY: "-50%",
         }}
       >
-        <motion.div
+        <m.div
           animate={{
             width: isHovering ? 48 : 16,
             height: isHovering ? 48 : 16,
@@ -94,7 +94,7 @@ export default function CustomCursor() {
           transition={{ duration: 0.2, ease: "easeOut" }}
           className="rounded-full bg-white"
         />
-      </motion.div>
+      </m.div>
     </>
   );
 }

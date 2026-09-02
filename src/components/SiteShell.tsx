@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 import { MotionConfig } from "framer-motion";
+import MotionProvider from "@/components/MotionProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 const ChatWidget = dynamic(() => import("./ChatWidget"), { ssr: false, loading: () => null });
@@ -33,13 +34,15 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
   // matching the CSS prefers-reduced-motion block in globals.css. MotionConfig adds
   // no DOM node, so it changes nothing about layout.
   return (
-    <MotionConfig reducedMotion="user">
-      <Header />
-      {children}
-      <Footer />
-      <ChatWidget />
-      <CookieBanner />
-      <ExitIntentPopup />
-    </MotionConfig>
+    <MotionProvider>
+      <MotionConfig reducedMotion="user">
+        <Header />
+        {children}
+        <Footer />
+        <ChatWidget />
+        <CookieBanner />
+        <ExitIntentPopup />
+      </MotionConfig>
+    </MotionProvider>
   );
 }

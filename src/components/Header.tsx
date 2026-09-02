@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useCallback, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { m, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
@@ -20,9 +20,9 @@ const portalLink = { href: "/crm/login", label: "Portal" };
 /* ─── Tap-scale wrapper for mobile ─── */
 function TapLink({ children, ...props }: React.ComponentProps<typeof Link>) {
   return (
-    <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
+    <m.div whileTap={{ scale: 0.97 }} transition={{ duration: 0.15 }}>
       <Link {...props}>{children}</Link>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -81,11 +81,11 @@ export default function Header() {
     <>
       {/* Scroll Progress Bar */}
       <div className="fixed top-0 left-0 right-0 z-[200] h-[2px] pointer-events-none">
-        <motion.div className="h-full bg-[#F3D840]" style={{ width: progressWidth }} />
+        <m.div className="h-full bg-[#F3D840]" style={{ width: progressWidth }} />
       </div>
 
       {/* Header */}
-      <motion.header
+      <m.header
         animate={{ y: hidden ? -100 : 0 }}
         transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] as const }}
         style={{
@@ -206,7 +206,7 @@ export default function Header() {
                 aria-haspopup="dialog"
               >
                 <div className="w-6 h-[20px] flex flex-col justify-between relative">
-                  <motion.span
+                  <m.span
                     className="absolute left-0 w-full h-[2px] rounded-full bg-white"
                     animate={{
                       top: mobileOpen ? 9 : 0,
@@ -214,7 +214,7 @@ export default function Header() {
                     }}
                     transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] as const }}
                   />
-                  <motion.span
+                  <m.span
                     className="absolute left-0 top-[9px] w-full h-[2px] rounded-full bg-white"
                     animate={{
                       opacity: mobileOpen ? 0 : 1,
@@ -222,7 +222,7 @@ export default function Header() {
                     }}
                     transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] as const }}
                   />
-                  <motion.span
+                  <m.span
                     className="absolute left-0 w-full h-[2px] rounded-full bg-white"
                     animate={{
                       top: mobileOpen ? 9 : 18,
@@ -235,7 +235,7 @@ export default function Header() {
             </div>
           </div>
         </div>
-      </motion.header>
+      </m.header>
 
       {/* ═══════════════════════════════════════════════════════
          MOBILE MENU - Slide-in panel from right
@@ -244,7 +244,7 @@ export default function Header() {
         {mobileOpen && (
           <>
             {/* Backdrop - tap to close */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -256,7 +256,7 @@ export default function Header() {
             />
 
             {/* Panel - slides in from right */}
-            <motion.div
+            <m.div
               ref={panelRef}
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -320,7 +320,7 @@ export default function Header() {
                     const isHovered = hoveredLink === link.href;
 
                     return (
-                      <motion.div
+                      <m.div
                         key={link.href}
                         initial={{ x: 30, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
@@ -349,7 +349,7 @@ export default function Header() {
                           }}
                         >
                           {/* Number */}
-                          <motion.span
+                          <m.span
                             animate={{
                               opacity: isHovered || isActive ? 1 : 0.25,
                             }}
@@ -364,10 +364,10 @@ export default function Header() {
                             }}
                           >
                             {link.num}
-                          </motion.span>
+                          </m.span>
 
                           {/* Label */}
-                          <motion.span
+                          <m.span
                             animate={{
                               color: isActive
                                 ? '#F3D840'
@@ -386,7 +386,7 @@ export default function Header() {
                           >
                             {link.label}
                             {/* Underline */}
-                            <motion.span
+                            <m.span
                               animate={{
                                 scaleX: isHovered || isActive ? 1 : 0,
                                 originX: 0,
@@ -403,10 +403,10 @@ export default function Header() {
                                 transformOrigin: 'left',
                               }}
                             />
-                          </motion.span>
+                          </m.span>
 
                           {/* Arrow */}
-                          <motion.svg
+                          <m.svg
                             animate={{
                               opacity: isHovered ? 1 : 0,
                               x: isHovered ? 0 : -6,
@@ -421,12 +421,12 @@ export default function Header() {
                             style={{ flexShrink: 0, marginLeft: 'auto' }}
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-                          </motion.svg>
+                          </m.svg>
                         </TapLink>
 
                         {/* Divider */}
                         {index < navLinks.length - 1 && (
-                          <motion.div
+                          <m.div
                             initial={{ scaleX: 0 }}
                             animate={{ scaleX: 1 }}
                             transition={{ delay: 0.2 + index * 0.04, duration: 0.4 }}
@@ -437,7 +437,7 @@ export default function Header() {
                             }}
                           />
                         )}
-                      </motion.div>
+                      </m.div>
                     );
                   })}
                 </div>
@@ -446,7 +446,7 @@ export default function Header() {
               {/* ── Bottom Section ── */}
               <div style={{ padding: '0 20px 32px' }}>
                 {/* Portal link - subtle */}
-                <motion.a
+                <m.a
                   href="/crm/login"
                   onClick={closeMobile}
                   whileTap={{ scale: 0.97 }}
@@ -469,10 +469,10 @@ export default function Header() {
                   <span style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.35)', letterSpacing: '-0.01em' }}>
                     Portal
                   </span>
-                </motion.a>
+                </m.a>
 
                 {/* CTA Button */}
-                <motion.a
+                <m.a
                   href="/contact"
                   onClick={closeMobile}
                   whileTap={{ scale: 0.97 }}
@@ -496,7 +496,7 @@ export default function Header() {
                   <svg width="16" height="16" fill="none" stroke="#1A1A1A" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
                   </svg>
-                </motion.a>
+                </m.a>
 
                 {/* Contact row */}
                 <div style={{
@@ -554,7 +554,7 @@ export default function Header() {
                   </span>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </>
         )}
       </AnimatePresence>

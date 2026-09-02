@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
 import { howItStartsSteps } from "@/data/howItStartsSteps";
@@ -52,7 +52,7 @@ export default function HowItStartsSection({
           style={{ gap: 'clamp(10px, 2vw, 16px)', marginBottom: 'clamp(24px, 4vw, 48px)' }}
         >
           {/* Connecting spine drawn through the step dots */}
-          <motion.div
+          <m.div
             aria-hidden="true"
             initial={{ scaleY: 0 }}
             animate={stepsInView ? { scaleY: 1 } : { scaleY: 0 }}
@@ -70,7 +70,7 @@ export default function HowItStartsSection({
             }}
           />
           {howItStartsSteps.map((step, i) => (
-            <motion.div
+            <m.div
               key={i}
               initial={{ opacity: 0, x: -20 }}
               animate={stepsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
@@ -78,7 +78,7 @@ export default function HowItStartsSection({
               className="flex items-center"
               style={{ gap: 'clamp(10px, 2vw, 16px)', position: 'relative', zIndex: 1 }}
             >
-              <motion.div
+              <m.div
                 initial={{ scale: 0 }}
                 animate={stepsInView ? { scale: 1 } : { scale: 0 }}
                 transition={{ delay: 0.2 + i * 0.15, duration: 0.3, type: "spring", stiffness: 300 }}
@@ -91,14 +91,14 @@ export default function HowItStartsSection({
                 >
                   {i + 1}
                 </span>
-              </motion.div>
+              </m.div>
               <p
                 className="text-[#1A1A1A] font-semibold"
                 style={{ fontSize: 'clamp(1rem, 1.8vw, 1.25rem)' }}
               >
                 {step}
               </p>
-            </motion.div>
+            </m.div>
           ))}
         </div>
 

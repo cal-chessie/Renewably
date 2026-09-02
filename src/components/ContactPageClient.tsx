@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { m, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import MagneticButton from "@/components/MagneticButton";
 import Image from "next/image";
@@ -121,13 +121,13 @@ function ClockIcon() {
 
 function ChevronDownIcon({ open }: { open: boolean }) {
   return (
-    <motion.svg
+    <m.svg
       width="20" height="20" fill="none" stroke="#535353" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
       animate={{ rotate: open ? 180 : 0 }}
       transition={{ duration: 0.3 }}
     >
       <polyline points="6 9 12 15 18 9" />
-    </motion.svg>
+    </m.svg>
   );
 }
 
@@ -139,7 +139,7 @@ function ContactCard({ item, index }: { item: typeof contactChannels[0]; index: 
   const iconMap = { phone: <PhoneIcon />, email: <EmailIcon />, location: <MapPinIcon /> };
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -187,11 +187,11 @@ function ContactCard({ item, index }: { item: typeof contactChannels[0]; index: 
         <p style={{ fontSize: 13, color: "#6B7280", marginTop: 2 }}>{item.desc}</p>
       </div>
       {item.href && (
-        <motion.div animate={{ x: isHovered ? 4 : 0 }} transition={{ duration: 0.2 }}>
+        <m.div animate={{ x: isHovered ? 4 : 0 }} transition={{ duration: 0.2 }}>
           <ArrowRightIcon color="#6B7280" />
-        </motion.div>
+        </m.div>
       )}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -229,7 +229,7 @@ function FAQItem({ item, index, isOpen, onToggle }: { item: typeof faqs[0]; inde
         </button>
         <AnimatePresence>
           {isOpen && (
-            <motion.div
+            <m.div
               id={`faq-answer-${index}`}
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
@@ -240,7 +240,7 @@ function FAQItem({ item, index, isOpen, onToggle }: { item: typeof faqs[0]; inde
               <p style={{ fontSize: 15, lineHeight: 1.7, color: "#535353", paddingBottom: 20 }}>
                 {item.a}
               </p>
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
       </div>
@@ -364,7 +364,7 @@ export default function ContactPageClient() {
         />
 
         {/* Yellow glow orb */}
-        <motion.div
+        <m.div
           animate={{
             x: [0, 30, -20, 0],
             y: [0, -20, 30, 0],
@@ -384,12 +384,12 @@ export default function ContactPageClient() {
           }}
         />
 
-        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-[1] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" >
+        <m.div style={{ y: heroY, opacity: heroOpacity }} className="relative z-[1] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" >
           <div style={{ padding: 'clamp(80px, 12vh, 100px) 0 clamp(40px, 6vh, 60px)' }}>
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-20 items-center">
               {/* Left: Copy */}
               <div>
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.6 }}
@@ -404,7 +404,7 @@ export default function ContactPageClient() {
                     marginBottom: 28,
                   }}
                 >
-                  <motion.span
+                  <m.span
                     animate={{ scale: [1, 1.3, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                     style={{ width: 8, height: 8, borderRadius: "50%", backgroundColor: YELLOW, boxShadow: "0 0 12px rgba(243,216,64,0.6)" }}
@@ -412,9 +412,9 @@ export default function ContactPageClient() {
                   <span style={{ color: YELLOW, fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>
                     Let&apos;s talk
                   </span>
-                </motion.div>
+                </m.div>
 
-                <motion.h1
+                <m.h1
                   initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
@@ -423,19 +423,19 @@ export default function ContactPageClient() {
                   Stop doing
                   <br />
                   <span style={{ color: YELLOW }}>everything yourself.</span>
-                </motion.h1>
+                </m.h1>
 
-                <motion.p
+                <m.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7, duration: 0.6 }}
                   style={{ fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7, color: "rgba(255,255,255,0.6)", marginBottom: 'clamp(24px, 3vw, 40px)', maxWidth: 480 }}
                 >
                   One hour. That is all it takes. We will look at your operation, show you what your AI team would look like, and give you a straight answer on whether it makes sense for your business. No fluff, no sales pitch.
-                </motion.p>
+                </m.p>
 
                 {/* Quick stats */}
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.9, duration: 0.6 }}
@@ -454,11 +454,11 @@ export default function ContactPageClient() {
                       </div>
                     </div>
                   ))}
-                </motion.div>
+                </m.div>
               </div>
 
               {/* Right: Founder photo */}
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
@@ -478,7 +478,7 @@ export default function ContactPageClient() {
                   <div className="absolute bottom-0 left-0 right-0 h-40" style={{ background: "linear-gradient(to top, rgba(243,216,64,0.4), transparent)" }} />
                 </div>
                 {/* Floating badge */}
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 1.2, duration: 0.5 }}
@@ -496,11 +496,11 @@ export default function ContactPageClient() {
                   }}
                 >
                   Free strategy call
-                </motion.div>
-              </motion.div>
+                </m.div>
+              </m.div>
             </div>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Bottom fade */}
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 80, background: "linear-gradient(to top, #FFFFFF, transparent)", zIndex: 2, pointerEvents: "none" }} />
@@ -524,7 +524,7 @@ export default function ContactPageClient() {
             {painPoints.map((point, i) => {
               const isSelected = selectedPainPoints.includes(point);
               return (
-                <motion.button
+                <m.button
                   key={point}
                   type="button"
                   initial={{ opacity: 0, y: 20 }}
@@ -569,14 +569,14 @@ export default function ContactPageClient() {
                     {isSelected && <CheckIcon />}
                   </div>
                   {point}
-                </motion.button>
+                </m.button>
               );
             })}
           </div>
 
           <AnimatePresence>
             {selectedPainPoints.length > 0 && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 20, height: 0 }}
                 animate={{ opacity: 1, y: 0, height: "auto" }}
                 exit={{ opacity: 0, y: 0, height: 0 }}
@@ -617,7 +617,7 @@ export default function ContactPageClient() {
                     Call Now
                   </a>
                 </div>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>
@@ -643,7 +643,7 @@ export default function ContactPageClient() {
 
               <AnimatePresence mode="wait">
                 {formState === "sent" ? (
-                  <motion.div
+                  <m.div
                     key="success"
                     initial={{ opacity: 0, scale: 0.96 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -658,7 +658,7 @@ export default function ContactPageClient() {
                       border: "1px solid rgba(243,216,64,0.2)",
                       textAlign: "center",
                     }}>
-                      <motion.div
+                      <m.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 12 }}
@@ -676,7 +676,7 @@ export default function ContactPageClient() {
                         <svg width="32" height="32" fill="none" stroke="#1A1A1A" viewBox="0 0 24 24" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
-                      </motion.div>
+                      </m.div>
 
                       <h3 style={{ fontSize: 24, fontWeight: 800, color: "#1A1A1A", marginBottom: 12 }}>
                         You are in.
@@ -695,9 +695,9 @@ export default function ContactPageClient() {
                         </a>
                       </div>
                     </div>
-                  </motion.div>
+                  </m.div>
                 ) : formState === "error" ? (
-                  <motion.div
+                  <m.div
                     key="error"
                     initial={{ opacity: 0, scale: 0.96 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -746,9 +746,9 @@ export default function ContactPageClient() {
                         Try Again
                       </button>
                     </div>
-                  </motion.div>
+                  </m.div>
                 ) : (
-                  <motion.form
+                  <m.form
                     key="form"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -762,7 +762,7 @@ export default function ContactPageClient() {
                           const fieldMap = ["firstName", "email", "company", "message"];
                           const isFilled = formData[fieldMap[i] as keyof typeof formData]?.trim().length > 0;
                           return (
-                            <motion.div
+                            <m.div
                               key={field}
                               animate={{
                                 backgroundColor: isFilled ? YELLOW : "#E5E7EB",
@@ -915,7 +915,7 @@ export default function ContactPageClient() {
 
                       {/* Submit */}
                       <div className="contact-submit-row" style={{ marginTop: 28, display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-                        <motion.button
+                        <m.button
                           type="submit"
                           disabled={formState === "sending"}
                           aria-busy={formState === "sending"}
@@ -951,7 +951,7 @@ export default function ContactPageClient() {
                               <ArrowRightIcon />
                             </>
                           )}
-                        </motion.button>
+                        </m.button>
                         <p style={{ fontSize: 13, color: "#6B7280" }}>
                           We will never spam you. Read our{" "}
                           <Link href="/privacy" style={{ color: "#535353", textDecoration: "underline" }}>Privacy Policy</Link>
@@ -975,7 +975,7 @@ export default function ContactPageClient() {
                       }
                     }
                   `}</style>
-                  </motion.form>
+                  </m.form>
                 )}
               </AnimatePresence>
             </div>
@@ -1094,7 +1094,7 @@ export default function ContactPageClient() {
                 <ScrollReveal key={step.num} delay={i * 0.08}>
                   <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
                     {/* Circle */}
-                    <motion.div
+                    <m.div
                       initial={{ scale: 0 }}
                       whileInView={{ scale: 1 }}
                       viewport={{ once: true }}
@@ -1116,7 +1116,7 @@ export default function ContactPageClient() {
                       }}
                     >
                       {step.num}
-                    </motion.div>
+                    </m.div>
 
                     {/* Content */}
                     <div style={{ paddingTop: 4, flex: 1 }}>
@@ -1185,7 +1185,7 @@ export default function ContactPageClient() {
       <section style={{ backgroundColor: YELLOW, paddingTop: 80, paddingBottom: 80 }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8" style={{ textAlign: "center" }}>
           <ScrollReveal>
-            <motion.h2
+            <m.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -1194,12 +1194,12 @@ export default function ContactPageClient() {
               Your AI team is ready.
               <br />
               Are you?
-            </motion.h2>
+            </m.h2>
             <p style={{ fontSize: 17, color: "#374151", marginBottom: 36, maxWidth: 480, margin: "0 auto 36px", lineHeight: 1.7 }}>
               Every day you wait is another day of doing admin that your AI team could handle in seconds.
             </p>
             <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-              <motion.a
+              <m.a
                 href="#contact-form"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
@@ -1219,8 +1219,8 @@ export default function ContactPageClient() {
               >
                 Book Your Call
                 <ArrowRightIcon color={YELLOW} />
-              </motion.a>
-              <motion.a
+              </m.a>
+              <m.a
                 href="tel:+353873958424"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
@@ -1239,7 +1239,7 @@ export default function ContactPageClient() {
               >
                 <PhoneIcon color="#1A1A1A" />
                 Call Instead
-              </motion.a>
+              </m.a>
             </div>
           </ScrollReveal>
         </div>

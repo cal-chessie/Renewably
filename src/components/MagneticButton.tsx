@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, type ReactNode, type MouseEvent, type ElementType } from "react";
-import { motion, useSpring } from "framer-motion";
+import { m, useSpring } from "framer-motion";
 import Link from "next/link";
 
 interface MagneticButtonProps {
@@ -84,7 +84,7 @@ export default function MagneticButton({
     : mergedStyle;
 
   return (
-    <motion.div style={{ x, y }} whileTap={{ scale: 0.98 }}>
+    <m.div style={{ x, y }} whileTap={{ scale: 0.98 }}>
       <Component
         ref={ref as React.Ref<HTMLAnchorElement & HTMLButtonElement>}
         href={href}
@@ -112,6 +112,6 @@ export default function MagneticButton({
           {children}
         </span>
       </Component>
-    </motion.div>
+    </m.div>
   );
 }

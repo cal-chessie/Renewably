@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
 interface Comparison {
@@ -44,7 +44,7 @@ export default function BeforeAfterSection({ comparisons, padding }: BeforeAfter
                 style={{ gap: 'clamp(12px, 2vw, 24px)' }}
               >
                 {/* Before */}
-                <motion.div
+                <m.div
                   whileHover={{ y: -2, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } }}
                   className="rounded-2xl bg-[#FFFDF5] border border-[rgba(239,68,68,0.15)] border-l-4 border-l-[rgba(239,68,68,0.4)]"
                   style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)' }}
@@ -61,10 +61,10 @@ export default function BeforeAfterSection({ comparisons, padding }: BeforeAfter
                   >
                     {item.before}
                   </p>
-                </motion.div>
+                </m.div>
 
                 {/* After */}
-                <motion.div
+                <m.div
                   whileHover={{ y: -2, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } }}
                   className="rounded-2xl bg-[#FFFDF5] border border-[rgba(243,216,64,0.15)] border-l-4 border-l-[#F3D840]"
                   style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)' }}
@@ -81,7 +81,7 @@ export default function BeforeAfterSection({ comparisons, padding }: BeforeAfter
                   >
                     {item.after}
                   </p>
-                </motion.div>
+                </m.div>
               </div>
             </ScrollReveal>
           ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import MagneticButton from "@/components/MagneticButton";
 import Link from "next/link";
@@ -103,7 +103,7 @@ function TableOfContents({ blocks }: { blocks: string[] }) {
           <h4 style={{ fontSize: 13, fontWeight: 700, color: "#1A1A1A", textTransform: "uppercase", letterSpacing: "0.08em" }}>
             Contents
           </h4>
-          <motion.button
+          <m.button
             type="button"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -116,7 +116,7 @@ function TableOfContents({ blocks }: { blocks: string[] }) {
             }}
           >
             <LinkIcon /> {copied ? "Copied!" : "Copy link"}
-          </motion.button>
+          </m.button>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {headings.map((h, i) => (
@@ -235,7 +235,7 @@ function RelatedCard({ post }: { post: typeof posts[0] }) {
 
   return (
     <Link href={`/blog/${post.slug}`} className="group block">
-      <motion.div
+      <m.div
         whileHover={{ y: -2 }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -260,11 +260,11 @@ function RelatedCard({ post }: { post: typeof posts[0] }) {
           <span style={{ fontSize: 12, color: "#6B7280", display: "flex", alignItems: "center", gap: 4 }}>
             <ClockIcon /> {post.readTime}
           </span>
-          <motion.div animate={{ x: isHovered ? 3 : 0 }} transition={{ duration: 0.2 }}>
+          <m.div animate={{ x: isHovered ? 3 : 0 }} transition={{ duration: 0.2 }}>
             <ArrowRightIcon color="#6B7280" />
-          </motion.div>
+          </m.div>
         </div>
-      </motion.div>
+      </m.div>
     </Link>
   );
 }
@@ -318,7 +318,7 @@ export default function BlogPostClient() {
           }} />
 
           {/* Glow */}
-          <motion.div
+          <m.div
             animate={{ x: [0, 30, -20, 0], y: [0, -20, 30, 0] }}
             transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
             style={{
@@ -403,7 +403,7 @@ export default function BlogPostClient() {
                     <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>AI Operations, Ireland</p>
                   </div>
                 </div>
-                <motion.button
+                <m.button
                   type="button"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -422,7 +422,7 @@ export default function BlogPostClient() {
                   }}
                 >
                   <ShareIcon /> Share
-                </motion.button>
+                </m.button>
               </div>
             </ScrollReveal>
           </div>
@@ -458,7 +458,7 @@ export default function BlogPostClient() {
                   { label: "LinkedIn", href: shareUrl ? `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}` : undefined },
                   { label: "Twitter", href: shareUrl ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(shareUrl)}` : undefined },
                 ].map((s) => (
-                  <motion.a
+                  <m.a
                     key={s.label}
                     href={s.href}
                     target="_blank"
@@ -471,7 +471,7 @@ export default function BlogPostClient() {
                     }}
                   >
                     {s.label}
-                  </motion.a>
+                  </m.a>
                 ))}
               </div>
             </div>
@@ -523,7 +523,7 @@ export default function BlogPostClient() {
                 Up next
               </p>
               <Link href={`/blog/${nextPost.slug}`} className="group block">
-                <motion.div whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
+                <m.div whileHover={{ x: 4 }} transition={{ duration: 0.2 }}>
                   <h3 style={{
                     fontSize: "clamp(18px, 3vw, 24px)", fontWeight: 700, color: "#fff",
                     lineHeight: 1.3, marginBottom: 8, transition: "color 0.2s",
@@ -542,7 +542,7 @@ export default function BlogPostClient() {
                       <ClockIcon color="rgba(255,255,255,0.4)" /> {nextPost.readTime}
                     </span>
                   </div>
-                </motion.div>
+                </m.div>
               </Link>
             </ScrollReveal>
           </div>

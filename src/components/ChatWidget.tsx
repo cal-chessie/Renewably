@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 
@@ -107,7 +107,7 @@ function TypingIndicator() {
         maxWidth: 60,
       }}>
         {[0, 1, 2].map((i) => (
-          <motion.span
+          <m.span
             key={i}
             style={{
               width: 7,
@@ -209,9 +209,9 @@ export default function ChatWidget() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            messages: [...messages, userMsg].map((m) => ({
-              role: m.role,
-              content: m.content,
+            messages: [...messages, userMsg].map((msg) => ({
+              role: msg.role,
+              content: msg.content,
             })),
             pageContext,
             visitorId,
@@ -367,7 +367,7 @@ export default function ChatWidget() {
     <>
       {/* ── Floating Button ── */}
       <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 150 }}>
-        <motion.button
+        <m.button
           onClick={() => setOpen((v) => !v)}
           style={{
             width: 74,
@@ -390,7 +390,7 @@ export default function ChatWidget() {
         >
           <AnimatePresence mode="wait">
             {open ? (
-              <motion.div
+              <m.div
                 key="close"
                 initial={{ rotate: -90, opacity: 0 }}
                 animate={{ rotate: 0, opacity: 1 }}
@@ -400,9 +400,9 @@ export default function ChatWidget() {
                 <svg width="24" height="24" fill="none" stroke="#FFF" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </motion.div>
+              </m.div>
             ) : (
-              <motion.div
+              <m.div
                 key="avatar"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -443,7 +443,7 @@ export default function ChatWidget() {
                   }}
                 />
                 {/* only the robot bobs; glow + ground shadow stay put */}
-                <motion.div
+                <m.div
                   animate={{ y: [0, -4, 0] }}
                   transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
                   style={{ position: "absolute", inset: 0, zIndex: 1 }}
@@ -457,15 +457,15 @@ export default function ChatWidget() {
                       filter: "drop-shadow(0 6px 10px rgba(10,10,10,0.32))",
                     }}
                   />
-                </motion.div>
-              </motion.div>
+                </m.div>
+              </m.div>
             )}
           </AnimatePresence>
-        </motion.button>
+        </m.button>
 
         {/* Unread badge: outside button so it's not clipped by overflow:hidden */}
         {unreadCount > 0 && (
-          <motion.div
+          <m.div
             initial={{ scale: 0 }}
             animate={{ scale: [1, 1.12, 1] }}
             transition={{ scale: { duration: 1.8, repeat: Infinity, ease: "easeInOut" } }}
@@ -489,14 +489,14 @@ export default function ChatWidget() {
             }}
           >
             1
-          </motion.div>
+          </m.div>
         )}
       </div>
 
       {/* ── Chat Panel ── */}
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -633,7 +633,7 @@ export default function ChatWidget() {
               }}
             >
               {messages.map((msg, index) => (
-                <motion.div
+                <m.div
                   key={msg.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -725,23 +725,23 @@ export default function ChatWidget() {
                       </div>
                     </div>
                   )}
-                </motion.div>
+                </m.div>
               ))}
 
               {/* Typing indicator */}
               {isTyping && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.2 }}
                 >
                   <TypingIndicator />
-                </motion.div>
+                </m.div>
               )}
 
               {/* Error message */}
               {error && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   style={{
@@ -768,12 +768,12 @@ export default function ChatWidget() {
                   >
                     Dismiss
                   </button>
-                </motion.div>
+                </m.div>
               )}
 
               {/* Quick reply suggestions */}
               {showSuggestions && !isTyping && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.2 }}
@@ -785,7 +785,7 @@ export default function ChatWidget() {
                   }}
                 >
                   {suggestions.map((s) => (
-                    <motion.button
+                    <m.button
                       key={s.text}
                       onClick={() => handleSuggestion(s.text)}
                       whileHover={{ y: -1, scale: 1.02 }}
@@ -815,9 +815,9 @@ export default function ChatWidget() {
                     >
                       <Icon d={s.icon} size={14} />
                       {s.text}
-                    </motion.button>
+                    </m.button>
                   ))}
-                </motion.div>
+                </m.div>
               )}
 
               <div ref={messagesEndRef} />
@@ -880,7 +880,7 @@ export default function ChatWidget() {
                     }}
                   />
                 </div>
-                <motion.button
+                <m.button
                   type="submit"
                   disabled={!input.trim() || isTyping}
                   whileHover={{ scale: 1.05 }}
@@ -914,7 +914,7 @@ export default function ChatWidget() {
                       d="M5 12h14M12 5l7 7-7 7"
                     />
                   </svg>
-                </motion.button>
+                </m.button>
               </form>
               <div
                 style={{
@@ -935,7 +935,7 @@ export default function ChatWidget() {
                 </a>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>
