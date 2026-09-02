@@ -24,7 +24,7 @@ export default function BeforeAfterSection({ comparisons, padding }: BeforeAfter
         <ScrollReveal>
           <div
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(243,216,64,0.1)] border border-[rgba(243,216,64,0.2)]"
-            style={{ marginBottom: 'clamp(20px, 4vw, 32px)' }}
+            style={{ marginBottom: 'clamp(24px, 4vw, 40px)' }}
           >
             <span
               className="text-[#374151] font-semibold tracking-[0.04em]"
@@ -45,7 +45,7 @@ export default function BeforeAfterSection({ comparisons, padding }: BeforeAfter
               >
                 {/* Before */}
                 <motion.div
-                  whileHover={{ y: -2 }}
+                  whileHover={{ y: -2, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } }}
                   className="rounded-2xl bg-[#FFFDF5] border border-[rgba(239,68,68,0.15)] border-l-4 border-l-[rgba(239,68,68,0.4)]"
                   style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)' }}
                 >
@@ -65,7 +65,7 @@ export default function BeforeAfterSection({ comparisons, padding }: BeforeAfter
 
                 {/* After */}
                 <motion.div
-                  whileHover={{ y: -2 }}
+                  whileHover={{ y: -2, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } }}
                   className="rounded-2xl bg-[#FFFDF5] border border-[rgba(243,216,64,0.15)] border-l-4 border-l-[#F3D840]"
                   style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)' }}
                 >

@@ -288,7 +288,7 @@ body {
 }
 .hp-rise {
   opacity: 0;
-  animation: hp-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: hp-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes hp-scale-pulse {
@@ -297,9 +297,11 @@ body {
 }
 .hp-pulse { animation: hp-scale-pulse 2s ease-in-out infinite; }
 
-/* Lifts glide, they never snap: the base transition was missing. */
+/* Lifts glide, they never snap. Transform, shadow and border all ride the one
+   page signature (0.16,1,0.3,1) at one duration, so a lift moves as a single
+   gesture instead of three properties easing on three different curves. */
 .hp-lift, .hp-lift-sm {
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
 .hp-lift:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(243,216,64,0.12); }
@@ -319,11 +321,32 @@ body {
   --elev-hover:  0 2px 6px rgba(20,18,5,0.05), 0 18px 44px rgba(20,18,5,0.10);
 }
 
+/* Real card depth: a layered warm shadow (contact, mid, ambient) with a light
+   top lip that catches light, deepening on hover. Warm-neutral ink, not the
+   brand yellow, so the card reads as a raised object rather than a glow.
+   Sourced AFTER .hp-lift so .hp-card owns the shadow while .hp-lift-sm keeps the
+   translateY glide: equal specificity, later source wins, they compose. The
+   inset lip alpha is ground-specific: 0.6 sits just inside the warm off-white
+   card's dark hairline as a crisp bevel; on the near-black card it drops to 0.08
+   so the lip stays a hint, never a white bar. */
+.hp-card {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 1px 2px rgba(20,18,5,0.04), 0 6px 16px rgba(20,18,5,0.05), 0 18px 40px rgba(20,18,5,0.07);
+}
+.hp-card:hover {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 2px 4px rgba(20,18,5,0.05), 0 10px 24px rgba(20,18,5,0.08), 0 28px 56px rgba(20,18,5,0.12);
+}
+.hp-card-dark {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 1px 2px rgba(0,0,0,0.40), 0 12px 32px rgba(0,0,0,0.45);
+}
+.hp-card-dark:hover {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 2px 6px rgba(0,0,0,0.45), 0 20px 48px rgba(0,0,0,0.55);
+}
+
 /* Figures line up in columns. */
 .tabular { font-variant-numeric: tabular-nums; }
 
 /* Primary CTA: the arrow leans in on hover. */
-.magnetic-cta svg { transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.magnetic-cta svg { transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
 .magnetic-cta:hover svg { transform: translateX(3px); }
 
 /* Typography: no orphaned words. Headlines break into even lines instead of
@@ -356,5 +379,5 @@ p, li, .text-pretty { text-wrap: pretty; }
 
 /* Agent ID card: the mono spec strip reveals on hover, in reserved space so
    nothing shifts. */
-.agent-meta { margin-top: auto; opacity: 0; transform: translateY(4px); transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1); }
+.agent-meta { margin-top: auto; opacity: 0; transform: translateY(4px); transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
 .group:hover .agent-meta, .group:focus-within .agent-meta { opacity: 1; transform: translateY(0); }

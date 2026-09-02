@@ -18,7 +18,7 @@ export default function AudienceSection({ badgeText = "Who is this for?", paddin
         <ScrollReveal>
           <div
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15"
-            style={{ marginBottom: 'clamp(28px, 5vw, 48px)' }}
+            style={{ marginBottom: 'clamp(24px, 4vw, 40px)' }}
           >
             <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
             <span
@@ -44,7 +44,7 @@ export default function AudienceSection({ badgeText = "Who is this for?", paddin
         <ScrollReveal delay={0.2}>
           <p
             className="text-white/70 leading-[1.7]"
-            style={{ fontSize: 'clamp(15px, 2vw, 20px)', marginBottom: 'clamp(12px, 2vw, 24px)' }}
+            style={{ fontSize: 'clamp(16px, 2vw, 20px)', marginBottom: 'clamp(12px, 2vw, 24px)' }}
           >
             You have more work than time. You&apos;re turning down leads because you can&apos;t handle the admin. You&apos;re burning out your best people.
           </p>
@@ -54,7 +54,7 @@ export default function AudienceSection({ badgeText = "Who is this for?", paddin
         <ScrollReveal delay={0.3}>
           <p
             className="text-white/50 leading-[1.7] max-w-[640px] mx-auto"
-            style={{ fontSize: 'clamp(14px, 1.8vw, 18px)' }}
+            style={{ fontSize: 'clamp(15px, 1.8vw, 18px)' }}
           >
             Not for one-person shows. Not for hobbyists. For actual solar companies that want to scale without hiring ten more humans.
           </p>

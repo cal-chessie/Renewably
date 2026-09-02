@@ -27,7 +27,7 @@ const btnStyle: React.CSSProperties = {
   border: "none",
   cursor: "pointer",
   textDecoration: "none",
-  transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease",
+  transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
   boxShadow: "0 10px 25px rgba(243,216,64,0.15)",
 };
 

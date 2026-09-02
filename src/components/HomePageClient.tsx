@@ -224,7 +224,7 @@ function ProblemSection() {
       <div className="hp-content" style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div style={{ marginBottom: 'clamp(32px, 5vw, 40px)' }}>
+          <div style={{ marginBottom: 'clamp(24px, 4vw, 40px)' }}>
             <div
               style={{
                 display: 'inline-flex',
@@ -249,25 +249,25 @@ function ProblemSection() {
         {/* Body paragraphs */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(20px, 3vw, 24px)', marginBottom: 'clamp(40px, 6vw, 48px)' }}>
           <ScrollReveal delay={0.1}>
-            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(17px, 2.5vw, 20px)', lineHeight: 1.7 }}>
+            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7 }}>
               You have work. Lots of it. More bills in your inbox than you can price. More site surveys than you can drive to. More homeowners waiting on a call back about the grant.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(17px, 2.5vw, 20px)', lineHeight: 1.7 }}>
+            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7 }}>
               But you can&apos;t find the people.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.3}>
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7 }}>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7 }}>
               Electricians are booked out. Admin staff are impossible to keep. Your best project manager is burning out. And every time you lose someone, three months of SEAI and ESB know-how walks out the door.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.4}>
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7 }}>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7 }}>
               So you do it yourself. You&apos;re answering emails at 10pm. You&apos;re chasing ESB Networks about an NC6 on a Saturday. You&apos;re pricing a roof off a photo of someone&apos;s bill between site visits.
             </p>
           </ScrollReveal>
@@ -299,7 +299,7 @@ function SolutionSection() {
       <div className="hp-content" style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Headline */}
         <ScrollReveal>
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 48px)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
+          <h2 style={{ fontSize: 'clamp(24px, 5vw, 48px)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
             What if you could hire a team that never sleeps, never quits, and costs a fraction of what a person costs?
           </h2>
         </ScrollReveal>
@@ -353,7 +353,7 @@ function PlatformTourSection() {
       <div className="hp-content" style={{ maxWidth: 1024, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div style={{ textAlign: 'center', marginBottom: 'clamp(28px, 4vw, 40px)' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
             <div
               style={{
                 display: 'inline-flex',
@@ -375,14 +375,14 @@ function PlatformTourSection() {
 
         {/* Headline */}
         <ScrollReveal delay={0.1}>
-          <h2 style={{ fontSize: 'clamp(24px, 5vw, 48px)', fontWeight: 800, color: '#fff', textAlign: 'center', lineHeight: 1.15, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
+          <h2 style={{ fontSize: 'clamp(24px, 5vw, 48px)', fontWeight: 800, color: '#fff', textAlign: 'center', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
             This is what your Monday looks like now.
           </h2>
         </ScrollReveal>
 
         {/* Sub-text */}
         <ScrollReveal delay={0.2}>
-          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 2.2vw, 20px)', textAlign: 'center', lineHeight: 1.7, marginBottom: 'clamp(32px, 5vw, 48px)', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
+          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(16px, 2vw, 20px)', textAlign: 'center', lineHeight: 1.7, marginBottom: 'clamp(32px, 5vw, 48px)', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
             No more chasing. No more spreadsheeting. No more &quot;I&apos;ll get to that tomorrow.&quot;
             Open the dashboard. Your team is already working.
           </p>
@@ -510,7 +510,7 @@ function FeaturesSection() {
       <div className="hp-content" style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 3vw, 40px)' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
             <div
               style={{
                 display: 'inline-flex',
@@ -535,12 +535,12 @@ function FeaturesSection() {
           {features.map((feature, i) => (
             <ScrollReveal key={feature.title} delay={i * 0.1}>
               <div
-                className="hp-lift p-5 lg:p-6 rounded-2xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 transition-all duration-300 cursor-pointer group h-full"
+                className="hp-lift p-5 lg:p-6 rounded-2xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 cursor-pointer group h-full"
               >
-                <div className="w-12 h-12 rounded-2xl bg-[#F3D840] flex items-center justify-center text-[#374151] group-hover:scale-110 transition-transform duration-300 mb-5">
+                <div className="w-12 h-12 rounded-2xl bg-[#F3D840] flex items-center justify-center text-[#374151] group-hover:scale-110 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] mb-5">
                   {feature.icon}
                 </div>
-                <h3 className="text-lg font-bold text-[#1A1A1A] mb-3 group-hover:text-[#374151] transition-colors">
+                <h3 className="text-lg font-bold leading-snug text-[#1A1A1A] mb-3 group-hover:text-[#374151] transition-colors duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
                   {feature.title}
                 </h3>
                 <p className="text-[#535353] text-sm leading-relaxed">
@@ -619,7 +619,7 @@ function AgentsSection() {
       <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 3vw, 40px)' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
             <div
               style={{
                 display: 'inline-flex',
@@ -646,16 +646,16 @@ function AgentsSection() {
               <ScrollReveal key={agent.title} delay={i * 0.08}>
                 <div
                   style={{ padding: 'clamp(22px, 2.4vw, 28px)' }}
-                  className={`hp-lift-sm h-full min-h-[210px] flex flex-col rounded-2xl transition-all duration-300 cursor-pointer group ${
+                  className={`hp-lift-sm h-full min-h-[210px] flex flex-col rounded-2xl cursor-pointer group ${
                     isComingSoon
                       ? 'bg-[#FAF8EF] border border-dashed border-[#F3D840]/50'
-                      : 'bg-[#FFFDF5] border border-[#0A0A0A]/[0.06] shadow-[0_1px_2px_rgba(20,18,5,0.04),0_10px_28px_rgba(20,18,5,0.06)] hover:border-[#F3D840]/70 hover:shadow-[0_2px_6px_rgba(20,18,5,0.05),0_18px_44px_rgba(20,18,5,0.10)]'
+                      : 'bg-[#FFFDF5] border border-[#0A0A0A]/[0.06] hp-card hover:border-[#F3D840]/70'
                   }`}
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <span
                       style={isComingSoon ? undefined : { boxShadow: '0 0 10px rgba(243,216,64,0.65)' }}
-                      className={`w-2.5 h-2.5 rounded-full shrink-0 transition-transform duration-300 group-hover:scale-125 ${isComingSoon ? 'bg-[#F3D840]/40' : 'bg-[#F3D840]'}`}
+                      className={`w-2.5 h-2.5 rounded-full shrink-0 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-125 ${isComingSoon ? 'bg-[#F3D840]/40' : 'bg-[#F3D840]'}`}
                     />
                     <h3 className={`text-lg font-bold leading-snug ${isComingSoon ? 'text-[#8b857a]' : 'text-[#1A1A1A]'}`}>
                       {agent.title}
@@ -689,14 +689,14 @@ function AgentsSection() {
             <Link href="/workforce">
               <div
                 style={{ padding: 'clamp(22px, 2.4vw, 28px)' }}
-                className="hp-lift-sm h-full min-h-[210px] rounded-2xl bg-[#0A0A0A] border border-[#F3D840]/40 hover:border-[#F3D840] shadow-[0_1px_2px_rgba(20,18,5,0.06),0_12px_32px_rgba(20,18,5,0.14)] transition-all duration-300 cursor-pointer group flex flex-col items-center justify-center text-center"
+                className="hp-lift-sm h-full min-h-[210px] rounded-2xl bg-[#0A0A0A] border border-[#F3D840]/40 hover:border-[#F3D840] hp-card-dark cursor-pointer group flex flex-col items-center justify-center text-center"
               >
-                <span className="text-[#F3D840] text-2xl font-extrabold mb-1.5 transition-transform duration-300 group-hover:scale-110">
+                <span className="text-[#F3D840] text-2xl font-extrabold mb-1.5 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110">
                   + Much More
                 </span>
                 <span className="text-white/55 text-sm inline-flex items-center gap-1.5">
                   See the full workforce
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F3D840" strokeWidth={2.5} className="transition-transform duration-300 group-hover:translate-x-1">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F3D840" strokeWidth={2.5} className="transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
                   </svg>
                 </span>
@@ -708,7 +708,7 @@ function AgentsSection() {
         {/* Callout + closing */}
         <ScrollReveal delay={0.3}>
           <div style={{ maxWidth: 768, marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}>
-            <p style={{ color: '#535353', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)' }}>
+            <p style={{ color: '#535353', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)' }}>
               You approve every hire. You set every budget. You review every strategy.
             </p>
             <p style={{ color: '#1A1A1A', fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 800 }}>
@@ -735,7 +735,7 @@ function FAQSection() {
       <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 3vw, 40px)' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)' }}>
               <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
                 Common questions.
@@ -746,7 +746,7 @@ function FAQSection() {
 
         {/* Headline */}
         <ScrollReveal delay={0.1}>
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 40px)', fontWeight: 800, color: '#1A1A1A', textAlign: 'center', lineHeight: 1.15, marginBottom: 'clamp(32px, 4vw, 48px)' }}>
+          <h2 style={{ fontSize: 'clamp(24px, 5vw, 48px)', fontWeight: 800, color: '#1A1A1A', textAlign: 'center', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(32px, 4vw, 48px)' }}>
             Still have questions?
           </h2>
         </ScrollReveal>
@@ -763,7 +763,7 @@ function FAQSection() {
                     backgroundColor: '#fff',
                     border: isOpen ? '1px solid rgba(243,216,64,0.4)' : '1px solid rgba(0,0,0,0.06)',
                     boxShadow: isOpen ? '0 4px 20px rgba(243,216,64,0.08)' : 'none',
-                    transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+                    transition: 'border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
                     overflow: 'hidden',
                   }}
                 >
@@ -801,7 +801,7 @@ function FAQSection() {
                         borderRadius: '50%',
                         backgroundColor: isOpen ? '#F3D840' : 'rgba(0,0,0,0.05)',
                         transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
-                        transition: 'background-color 0.3s ease, transform 0.2s ease',
+                        transition: 'background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
                         color: isOpen ? '#1A1A1A' : '#535353',
                         fontSize: 16,
                         fontWeight: 700,
@@ -833,7 +833,7 @@ function FAQSection() {
                       gridTemplateRows: isOpen ? '1fr' : '0fr',
                       opacity: isOpen ? 1 : 0,
                       overflow: 'hidden',
-                      transition: 'grid-template-rows 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease',
+                      transition: 'grid-template-rows 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                     }}
                   >
                     <div style={{ overflow: 'hidden' }}>
@@ -897,7 +897,7 @@ function PricingSection() {
       <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(20px, 4vw, 40px)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
             <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
               What it costs.
             </span>
@@ -911,19 +911,19 @@ function PricingSection() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.2}>
-          <p style={{ color: '#535353', fontSize: 'clamp(15px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
+          <p style={{ color: '#535353', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
             Most solar installers pay €1,000 – €1,500 per month plus a one-time setup fee.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.3}>
-          <p style={{ color: '#535353', fontSize: 'clamp(15px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
+          <p style={{ color: '#535353', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
             You bring your own AI keys. You pay the models directly. No markup from us.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.4}>
-          <p style={{ color: '#535353', fontSize: 'clamp(15px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
+          <p style={{ color: '#535353', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 24px)', maxWidth: 640, marginLeft: 'auto', marginRight: 'auto' }}>
             And you don&apos;t take the full team on day one. Most installers start with the front office: a PA that does the sending, a Chief of Staff that does the thinking. When you&apos;re ready, the same system grows into the full workforce. You approve every hire.
           </p>
         </ScrollReveal>

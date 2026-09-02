@@ -39,7 +39,7 @@ export default function HowItStartsSection({
         <ScrollReveal>
           <div
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1A1A1A]/10 border border-[#1A1A1A]/15"
-            style={{ marginBottom: 'clamp(20px, 4vw, 40px)' }}
+            style={{ marginBottom: 'clamp(24px, 4vw, 40px)' }}
           >
             <span
               className="text-[#1A1A1A] font-semibold tracking-[0.04em]"
@@ -61,7 +61,7 @@ export default function HowItStartsSection({
             aria-hidden="true"
             initial={{ scaleY: 0 }}
             animate={stepsInView ? { scaleY: 1 } : { scaleY: 0 }}
-            transition={{ delay: 0.25, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.25, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             style={{
               position: "absolute",
               top: "clamp(14px, 2vw, 16px)",
@@ -79,7 +79,7 @@ export default function HowItStartsSection({
               key={i}
               initial={{ opacity: 0, x: -20 }}
               animate={stepsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-              transition={{ delay: 0.2 + i * 0.15, duration: 0.4, ease: "easeOut" }}
+              transition={{ delay: 0.2 + i * 0.15, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="flex items-center"
               style={{ gap: 'clamp(10px, 2vw, 16px)', position: 'relative', zIndex: 1 }}
             >
@@ -111,7 +111,7 @@ export default function HowItStartsSection({
         <ScrollReveal delay={0.5}>
           <p
             className="text-gray-700 leading-[1.7]"
-            style={{ fontSize: 'clamp(1rem, 1.6vw, 1.125rem)', marginBottom: 'clamp(12px, 2vw, 24px)' }}
+            style={{ fontSize: 'clamp(0.9375rem, 1.8vw, 1.125rem)', marginBottom: 'clamp(12px, 2vw, 24px)' }}
           >
             You don&apos;t install software. You don&apos;t configure APIs. You don&apos;t learn a new system.
           </p>
@@ -131,13 +131,13 @@ export default function HowItStartsSection({
           <div className="text-center">
             <h2
               className="font-extrabold text-[#1A1A1A] leading-[1.15]"
-              style={{ fontSize: 'clamp(1.875rem, 5vw, 3rem)', marginBottom: 'clamp(10px, 1.5vw, 16px)' }}
+              style={{ fontSize: 'clamp(1.5rem, 5vw, 3rem)', letterSpacing: '-0.02em', marginBottom: 'clamp(10px, 1.5vw, 16px)' }}
             >
               {ctaTitle}
             </h2>
             <p
               className="text-gray-700"
-              style={{ fontSize: 'clamp(1rem, 1.6vw, 1.125rem)', marginBottom: 'clamp(20px, 3vw, 32px)' }}
+              style={{ fontSize: 'clamp(0.9375rem, 1.8vw, 1.125rem)', marginBottom: 'clamp(20px, 3vw, 32px)' }}
             >
               <a href="mailto:cal@renewably.ie" className="underline">
                 cal@renewably.ie

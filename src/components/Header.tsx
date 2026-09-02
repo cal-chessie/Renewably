@@ -134,7 +134,7 @@ export default function Header() {
                     }`}
                   >
                     {link.label}
-                    <span className="absolute bottom-1 left-4 right-4 h-[1.5px] rounded-full bg-[#F3D840] origin-left scale-x-0 group-hover:scale-x-100 group-focus-visible:scale-x-100 transition-transform duration-300 ease-out" />
+                    <span className="absolute bottom-1 left-4 right-4 h-[1.5px] rounded-full bg-[#F3D840] origin-left scale-x-0 group-hover:scale-x-100 group-focus-visible:scale-x-100 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]" />
                     {isActive && (
                       <span className="absolute bottom-1 left-4 right-4 h-[1.5px] rounded-full bg-[#F3D840]" />
                     )}
@@ -328,7 +328,7 @@ export default function Header() {
                         transition={{
                           delay: 0.08 + index * 0.04,
                           duration: 0.35,
-                          ease: [0.22, 1, 0.36, 1] as const,
+                          ease: [0.16, 1, 0.3, 1] as const,
                         }}
                         onMouseEnter={() => setHoveredLink(link.href)}
                         onMouseLeave={() => setHoveredLink(null)}
@@ -391,7 +391,7 @@ export default function Header() {
                                 scaleX: isHovered || isActive ? 1 : 0,
                                 originX: 0,
                               }}
-                              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
+                              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] as const }}
                               style={{
                                 position: 'absolute',
                                 bottom: -2,
