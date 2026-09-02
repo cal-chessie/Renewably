@@ -120,7 +120,7 @@ export default function TermsPageClient() {
               <div>
                 <h2 style={{ color: "#1A1A1A", fontSize: 20, fontWeight: 700, marginBottom: 12 }}>6. Data Protection</h2>
                 <p style={{ color: "#535353", fontSize: 15, lineHeight: 1.8 }}>
-                  Your privacy is important to us. Our collection, processing, and storage of personal data is governed by our <a href="/privacy" style={{ color: "#F3D840", fontWeight: 600 }}>Privacy Policy</a>, which forms part of these terms. By using our platform, you acknowledge that you have read and agree to our Privacy Policy. We process data in compliance with the General Data Protection Regulation (GDPR) and Irish data protection law.
+                  Your privacy is important to us. Our collection, processing, and storage of personal data is governed by our <a href="/privacy" style={{ color: "#8a6d05", fontWeight: 600, textDecoration: "underline" }}>Privacy Policy</a>, which forms part of these terms. By using our platform, you acknowledge that you have read and agree to our Privacy Policy. We process data in compliance with the General Data Protection Regulation (GDPR) and Irish data protection law.
                 </p>
               </div>
 
@@ -175,8 +175,8 @@ export default function TermsPageClient() {
                 <div style={{ padding: 20, borderRadius: 12, backgroundColor: "#FFFDF5", borderLeft: "4px solid #F3D840" }}>
                   <p style={{ color: "#1A1A1A", fontSize: 15, lineHeight: 1.8 }}>
                     <strong>Renewably</strong><br />
-                    <strong>Email:</strong> <a href="mailto:cal@renewably.ie" style={{ color: "#F3D840", fontWeight: 600 }}>cal@renewably.ie</a><br />
-                    <strong>Phone:</strong> <a href="tel:+353873958424" style={{ color: "#F3D840", fontWeight: 600 }}>+353 873958424</a><br />
+                    <strong>Email:</strong> <a href="mailto:cal@renewably.ie" style={{ color: "#8a6d05", fontWeight: 600, textDecoration: "underline" }}>cal@renewably.ie</a><br />
+                    <strong>Phone:</strong> <a href="tel:+353873958424" style={{ color: "#8a6d05", fontWeight: 600, textDecoration: "underline" }}>+353 873958424</a><br />
                     <strong>Website:</strong> renewably.ie
                   </p>
                 </div>
