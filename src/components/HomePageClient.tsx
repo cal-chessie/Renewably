@@ -240,7 +240,7 @@ function ProblemSection() {
                 className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse"
               />
               <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                You know the problem.
+<span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: 'rgba(255,255,255,0.55)', marginRight: 9 }}>01</span>You know the problem.
               </span>
             </div>
           </div>
@@ -367,7 +367,7 @@ function PlatformTourSection() {
             >
               <span className="w-2 h-2 rounded-full bg-[#F3D840] animate-pulse" />
               <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                See it in action.
+<span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: 'rgba(255,255,255,0.55)', marginRight: 9 }}>02</span>See it in action.
               </span>
             </div>
           </div>
@@ -441,56 +441,32 @@ function PlatformTourSection() {
 function FeaturesSection() {
   const features = useMemo(() => [
     {
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
-        </svg>
-      ),
+      img: "/robots/feat-answer.png",
       title: "Answer every customer. Immediately.",
       desc: "No more 'we'll call you back.' No more lost leads. Customer support agent responds 24/7. Books consultations. Answers questions. Escalates only what needs you.",
     },
     {
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-        </svg>
-      ),
+      img: "/robots/feat-site.png",
       title: "Every site detail. On the job file.",
       desc: "Roof photos, bill details, access notes. Filed against the job, not lost in someone's phone. Your surveyor arrives already briefed.",
     },
     {
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-        </svg>
-      ),
+      img: "/robots/feat-grant.png",
       title: "Handle every grant.",
       desc: "SEAI applications. Paperwork. Follow-ups. Resubmissions. Agent knows every form, every deadline, every requirement. Nothing sits forgotten. Nothing misses a deadline.",
     },
     {
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-        </svg>
-      ),
+      img: "/robots/feat-coord.png",
       title: "Coordinate installers.",
       desc: "Schedule crews. Order materials. Confirm deliveries. Reschedule when weather hits. Agent runs the logistics so you don't have to.",
     },
     {
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
-        </svg>
-      ),
+      img: "/robots/feat-esb.png",
       title: "Chase ESB Networks.",
       desc: "ESB Networks applications. Grid connection paperwork. Agent tracks every submission. Follows up on delays. Escalates only when stuck.",
     },
     {
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-        </svg>
-      ),
+      img: "/robots/feat-flag.png",
       title: "Flag problems before they blow up.",
       desc: "Job taking too long? Customer hasn't heard anything in a week? Budget running over? Agent alerts you. Not after the fact. Before.",
     },
@@ -524,7 +500,7 @@ function FeaturesSection() {
             >
               <span className="w-2 h-2 rounded-full bg-[#F3D840] hp-pulse" />
               <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                Here&apos;s what they do.
+<span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: '#8a6d05', marginRight: 9 }}>03</span>Here&apos;s what they do.
               </span>
             </div>
           </div>
@@ -537,8 +513,8 @@ function FeaturesSection() {
               <div
                 className="hp-lift p-5 lg:p-6 rounded-2xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 cursor-pointer group h-full"
               >
-                <div className="w-12 h-12 rounded-2xl bg-[#F3D840] flex items-center justify-center text-[#374151] group-hover:scale-110 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] mb-5">
-                  {feature.icon}
+                <div className="w-12 h-12 rounded-2xl overflow-hidden bg-[#F3D840] group-hover:scale-110 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] mb-5">
+                  <img src={feature.img} alt="" aria-hidden="true" className="w-full h-full object-cover" />
                 </div>
                 <h3 className="text-lg font-bold leading-snug text-[#1A1A1A] mb-3 group-hover:text-[#374151] transition-colors duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
                   {feature.title}
@@ -632,7 +608,7 @@ function AgentsSection() {
               }}
             >
               <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                What you actually get.
+<span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: '#8a6d05', marginRight: 9 }}>04</span>What you actually get.
               </span>
             </div>
           </div>
@@ -738,7 +714,7 @@ function FAQSection() {
           <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)' }}>
               <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                Common questions.
+<span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: '#8a6d05', marginRight: 9 }}>07</span>Common questions.
               </span>
             </div>
           </div>
@@ -899,7 +875,7 @@ function PricingSection() {
         <ScrollReveal>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
             <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
-              What it costs.
+<span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: '#8a6d05', marginRight: 9 }}>05</span>What it costs.
             </span>
           </div>
         </ScrollReveal>

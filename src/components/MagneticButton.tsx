@@ -26,6 +26,9 @@ const btnStyle: React.CSSProperties = {
   borderRadius: 9999,
   border: "none",
   cursor: "pointer",
+  position: "relative",
+  overflow: "hidden",
+  isolation: "isolate",
   textDecoration: "none",
   transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
   boxShadow: "0 10px 25px rgba(243,216,64,0.15)",
@@ -41,6 +44,8 @@ export default function MagneticButton({
 }: MagneticButtonProps) {
   const ref = useRef<HTMLAnchorElement | HTMLButtonElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  // Local pointer position, as percentages, for the cursor-follow glow.
+  const [glow, setGlow] = useState({ x: 50, y: 50 });
 
   const x = useSpring(0, { stiffness: 300, damping: 20 });
   const y = useSpring(0, { stiffness: 300, damping: 20 });
@@ -54,6 +59,10 @@ export default function MagneticButton({
     const deltaY = (e.clientY - centerY) * strength;
     x.set(deltaX);
     y.set(deltaY);
+    setGlow({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+    });
   };
 
   const handleMouseLeave = () => {
@@ -82,7 +91,22 @@ export default function MagneticButton({
         style={hoverStyle}
         className={`magnetic-cta ${className}`.trim()}
       >
-        {children}
+        <span
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 0,
+            pointerEvents: "none",
+            background: `radial-gradient(circle 80px at ${glow.x}% ${glow.y}%, rgba(255,255,255,0.55), transparent 70%)`,
+            opacity: isHovered ? 1 : 0,
+            transition: "opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+            mixBlendMode: "soft-light",
+          }}
+        />
+        <span style={{ position: "relative", zIndex: 1, display: "inline-flex", alignItems: "center", gap: 12 }}>
+          {children}
+        </span>
       </Component>
     </motion.div>
   );

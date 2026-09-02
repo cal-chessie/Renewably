@@ -9,6 +9,7 @@ interface HowItStartsSectionProps {
   ctaTitle?: string;
   ctaButtonLabel?: string;
   ctaButtonColor?: string;
+  sectionNumber?: string;
   padding?: { top: string; bottom: string };
 }
 
@@ -24,6 +25,7 @@ export default function HowItStartsSection({
   ctaTitle = "Let\u2019s talk.",
   ctaButtonLabel = "Get Started",
   ctaButtonColor = "#fff",
+  sectionNumber = "08",
   padding,
 }: HowItStartsSectionProps) {
   const paddingTop = padding?.top ?? 'clamp(40px, 6vw, 64px)';
@@ -45,7 +47,7 @@ export default function HowItStartsSection({
               className="text-[#1A1A1A] font-semibold tracking-[0.04em]"
               style={{ fontSize: 'clamp(11px, 1.3vw, 14px)' }}
             >
-              How it starts.
+<span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: 'rgba(26,26,26,0.5)', marginRight: 9 }}>{sectionNumber}</span>How it starts.
             </span>
           </div>
         </ScrollReveal>

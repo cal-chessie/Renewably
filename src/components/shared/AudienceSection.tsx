@@ -4,10 +4,11 @@ import ScrollReveal from "@/components/ScrollReveal";
 
 interface AudienceSectionProps {
   badgeText?: string;
+  sectionNumber?: string;
   padding?: { top: string; bottom: string };
 }
 
-export default function AudienceSection({ badgeText = "Who is this for?", padding }: AudienceSectionProps) {
+export default function AudienceSection({ badgeText = "Who is this for?", sectionNumber = "06", padding }: AudienceSectionProps) {
   const paddingTop = padding?.top ?? 'clamp(48px, 6vw, 80px)';
   const paddingBottom = padding?.bottom ?? 'clamp(48px, 6vw, 112px)';
 
@@ -25,7 +26,7 @@ export default function AudienceSection({ badgeText = "Who is this for?", paddin
               className="text-white font-semibold tracking-[0.04em]"
               style={{ fontSize: 'clamp(11px, 1.3vw, 14px)' }}
             >
-              {badgeText}
+<span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: 'rgba(255,255,255,0.55)', marginRight: 9 }}>{sectionNumber}</span>{badgeText}
             </span>
           </div>
         </ScrollReveal>
