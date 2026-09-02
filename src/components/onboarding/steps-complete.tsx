@@ -5,7 +5,7 @@ import { Card, Button, Icon } from './ui';
 
 // ─── Step 9 · Complete ────────────────────────────────────────────────────
 // Honest confirmation for a lead-capture flow. Nothing is provisioned here and
-// there is no portal to log in to — the team follows up to set the account up.
+// there is no portal to log in to - the team follows up to set the account up.
 
 interface StepCompleteProps {
   data: Record<string, unknown>;
@@ -129,7 +129,7 @@ export function StepComplete({ data, submissionError, onRetry }: StepCompletePro
         </div>
       </Card>
 
-      {/* Summary tiles — what you told us, not what's provisioned */}
+      {/* Summary tiles - what you told us, not what's provisioned */}
       <div className="ob-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginBottom: 16 }}>
         {[
           { k: 'Counties', v: ((data.counties as string[]) || []).length, u: 'service area' },

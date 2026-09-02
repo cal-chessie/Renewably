@@ -58,7 +58,7 @@ export function Landing({ onStart, onDemo }: { onStart: () => void; onDemo: () =
           </div>
         </div>
 
-        {/* Hero artwork — robot mascot */}
+        {/* Hero artwork - robot mascot */}
         <HeroArt />
       </div>
 

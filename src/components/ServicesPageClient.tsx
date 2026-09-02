@@ -91,7 +91,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 16, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
             <Image
               src={agent.image}
-              alt={`${agent.title} — AI workforce for solar`}
+              alt={`${agent.title}, AI workforce for solar`}
               width={1360}
               height={768}
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -190,7 +190,7 @@ function PricingSection() {
 
         <ScrollReveal delay={0.4}>
           <p style={{ textAlign: 'center', color: '#374151', fontSize: 'clamp(0.875rem, 1.2vw, 0.875rem)', fontWeight: 600 }}>
-            One-time setup fee. You bring your own AI keys — you pay the models directly.
+            One-time setup fee. You bring your own AI keys: you pay the models directly.
           </p>
         </ScrollReveal>
       </div>
@@ -206,7 +206,7 @@ function PricingSection() {
 export default function ServicesPageClient() {
   return (
     <div>
-        {/* ===== HERO — Full-Width Robot Banner ===== */}
+        {/* ===== HERO - Full-Width Robot Banner ===== */}
         <section data-theme="dark" style={{ position: 'relative', minHeight: '100dvh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
           {/* Robot image background */}
           <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
@@ -280,7 +280,7 @@ export default function ServicesPageClient() {
               </div>
             </ScrollReveal>
 
-            {/* Agent cards — alternating image/copy layout */}
+            {/* Agent cards - alternating image/copy layout */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(64px, 15vw, 120px)' }}>
               {agents.map((agent, i) => (
                 <AgentCard key={agent.num} agent={agent} index={i} />

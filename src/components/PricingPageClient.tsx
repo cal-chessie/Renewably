@@ -83,7 +83,7 @@ export default function PricingPageClient() {
 
   return (
     <div>
-      {/* Hero — Dark */}
+      {/* Hero - Dark */}
       <section style={{ position: "relative", overflow: "hidden", backgroundColor: "#0A0A0A" }}>
         <div
           style={{
@@ -255,7 +255,7 @@ export default function PricingPageClient() {
         </div>
       </section>
 
-      {/* CTA — Yellow */}
+      {/* CTA - Yellow */}
       <section style={{ backgroundColor: "#F3D840" }}>
         <div style={{ maxWidth: 640, margin: "0 auto", padding: "64px 20px", textAlign: "center" }}>
           <ScrollReveal>

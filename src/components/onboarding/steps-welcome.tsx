@@ -17,7 +17,7 @@ export function StepWelcome({ onNext, onBack, initialData }: StepWelcomeProps) {
   const [revenue, setRevenue] = useState((initialData?.revenue_target as number) || 65000);
 
   const resources = [
-    { t: 'Quick start guide', d: '15-min walkthrough — portal, pipeline, first proposal', icon: 'Book' as const, time: '15 min' },
+    { t: 'Quick start guide', d: '15-min walkthrough: portal, pipeline, first proposal', icon: 'Book' as const, time: '15 min' },
     { t: 'Video tutorials', d: 'Six short clips on AI Co-Pilot, grants, and PPA', icon: 'Chart' as const, time: '32 min' },
     { t: 'API documentation', d: 'Webhooks, REST, and Solis ingestion', icon: 'Plug' as const, time: 'Reference' },
     { t: '1-on-1 onboarding call', d: 'Book a 30-min session with your CSM', icon: 'Team' as const, time: 'Bookable' },

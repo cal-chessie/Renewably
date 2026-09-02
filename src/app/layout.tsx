@@ -13,7 +13,7 @@ const poppins = Poppins({
 
 const siteConfig = {
   name: "Renewably",
-  description: "AI workforce for solar installers in Ireland. Renewably deploys AI employees that handle grants, permits, customer support, and logistics — so you can focus on installing.",
+  description: "AI workforce for solar installers in Ireland. Renewably deploys AI employees that handle grants, ESB applications, customer support, and logistics - so you can focus on installing.",
   url: "https://renewably.ie",
   phone: "+353 873958424",
   email: "cal@renewably.ie",
@@ -24,7 +24,7 @@ const siteConfig = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — AI Workforce for Solar Installers`,
+    default: `${siteConfig.name} - AI Workforce for Solar Installers`,
     template: `%s | ${siteConfig.name}`,
   },
   icons: {
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     locale: siteConfig.locale,
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: `${siteConfig.name} — AI Workforce for Solar Installers`,
+    title: `${siteConfig.name} - AI Workforce for Solar Installers`,
     description: siteConfig.description,
     images: [
       {
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — AI Workforce for Solar Installers`,
+    title: `${siteConfig.name} - AI Workforce for Solar Installers`,
     description: siteConfig.description,
     images: [`${siteConfig.url}/og-image.png`],
   },
@@ -155,11 +155,11 @@ export default function RootLayout({
   return (
     <html lang="en-IE" suppressHydrationWarning>
       <head>
-        {/* Polyfill for framer-motion Turbopack compatibility — external file for CSP compliance */}
+        {/* Polyfill for framer-motion Turbopack compatibility - external file for CSP compliance */}
         <Script src="/scripts/polyfills.js" strategy="beforeInteractive" />
         <OrganizationSchema />
         <WebSiteSchema />
-        {/* Critical inline CSS — ensures page is never unstyled even if Tailwind HMR fails */}
+        {/* Critical inline CSS - ensures page is never unstyled even if Tailwind HMR fails */}
         <style
           dangerouslySetInnerHTML={{
             __html: `

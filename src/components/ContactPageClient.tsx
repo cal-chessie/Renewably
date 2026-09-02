@@ -627,7 +627,7 @@ export default function ContactPageClient() {
       <section id="contact-form" style={{ backgroundColor: "#F9FAFB", paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)', scrollMarginTop: 100 }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-12 lg:gap-16 items-start contact-form-grid">
-            {/* Form — 3 columns */}
+            {/* Form - 3 columns */}
             <div className="lg:col-span-3">
               <ScrollReveal>
                 <div style={{ marginBottom: 40 }}>
@@ -979,7 +979,7 @@ export default function ContactPageClient() {
               </AnimatePresence>
             </div>
 
-            {/* Sidebar — 2 columns */}
+            {/* Sidebar - 2 columns */}
             <div className="lg:col-span-2">
               <div style={{ display: "flex", flexDirection: "column", gap: 24, position: "sticky", top: 100 }}>
                 {/* Contact channels */}
@@ -991,7 +991,7 @@ export default function ContactPageClient() {
                   </div>
                 </ScrollReveal>
 
-                {/* What happens next — dark card */}
+                {/* What happens next - dark card */}
                 <ScrollReveal direction="right" delay={0.3}>
                   <div style={{
                     padding: 28,
@@ -1033,7 +1033,7 @@ export default function ContactPageClient() {
                   </div>
                 </ScrollReveal>
 
-                {/* Quick CTA — Yellow card */}
+                {/* Quick CTA - Yellow card */}
                 <ScrollReveal direction="right" delay={0.4}>
                   <div style={{
                     padding: 28,
@@ -1059,7 +1059,7 @@ export default function ContactPageClient() {
         </div>
       </section>
 
-      {/* ===== HOW IT WORKS — FULL TIMELINE ===== */}
+      {/* ===== HOW IT WORKS - FULL TIMELINE ===== */}
       <section style={{ backgroundColor: WHITE, paddingTop: 96, paddingBottom: 96 }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
@@ -1180,7 +1180,7 @@ export default function ContactPageClient() {
         </div>
       </section>
 
-      {/* ===== FINAL CTA — Yellow ===== */}
+      {/* ===== FINAL CTA - Yellow ===== */}
       <section style={{ backgroundColor: YELLOW, paddingTop: 80, paddingBottom: 80 }}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8" style={{ textAlign: "center" }}>
           <ScrollReveal>

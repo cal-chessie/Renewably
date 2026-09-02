@@ -4,7 +4,7 @@
     "type": "service",
     "title": "AI CEO Agent",
     "slug": "ai-ceo-agent",
-    "description": "Your strategic command centre. The AI CEO Agent provides high-level oversight of your entire solar installation business, monitoring KPIs, identifying growth opportunities, and flagging risks before they become problems. It synthesises data from every other agent into actionable strategic insights — like having a seasoned operations director who never sleeps.",
+    "description": "Your strategic command centre. The AI CEO Agent provides high-level oversight of your entire solar installation business, monitoring KPIs, identifying growth opportunities, and flagging risks before they become problems. It synthesises data from every other agent into actionable strategic insights, like having a seasoned operations director who never sleeps.",
     "features": [
       "Real-time business health monitoring with automated alerts",
       "Growth opportunity identification based on market and pipeline data",
@@ -61,7 +61,7 @@
     "type": "service",
     "title": "Grants Agent",
     "slug": "grants-agent",
-    "description": "Your SEAI grant specialist. The Grants Agent manages the entire grant application lifecycle — from checking customer eligibility to preparing, submitting, and tracking SEAI applications. It stays up to date with the latest grant rates, criteria changes, and deadlines, ensuring every application has the highest chance of approval.",
+    "description": "Your SEAI grant specialist. The Grants Agent manages the entire grant application lifecycle, from checking customer eligibility to preparing, submitting, and tracking SEAI applications. It stays up to date with the latest grant rates, criteria changes, and deadlines, ensuring every application has the highest chance of approval.",
     "features": [
       "Automatic SEAI eligibility checks for every customer",
       "Pre-filled grant applications with error validation",
@@ -80,7 +80,7 @@
     "type": "service",
     "title": "Logistics Agent",
     "slug": "logistics-agent",
-    "description": "Your supply chain manager. The Logistics Agent handles equipment ordering, delivery scheduling, and inventory management across all your active jobs. It coordinates with your suppliers, tracks deliveries, and ensures the right materials arrive at the right job site at the right time — eliminating costly stockouts and delays.",
+    "description": "Your supply chain manager. The Logistics Agent handles equipment ordering, delivery scheduling, and inventory management across all your active jobs. It coordinates with your suppliers, tracks deliveries, and ensures the right materials arrive at the right job site at the right time, eliminating costly stockouts and delays.",
     "features": [
       "Automated purchase order generation based on job requirements",
       "Supplier coordination and delivery scheduling",
@@ -99,7 +99,7 @@
     "type": "service",
     "title": "ESB Agent",
     "slug": "permitting-agent",
-    "description": "Your regulatory compliance expert. The ESB Agent manages ESB grid connection applications, planning permission checks, building control notifications, and all other regulatory requirements. It pre-checks every application for completeness, tracks submission status, and chases responses — removing the biggest bottleneck in Irish solar installations.",
+    "description": "Your regulatory compliance expert. The ESB Agent manages ESB grid connection applications, planning permission checks, building control notifications, and all other regulatory requirements. It pre-checks every application for completeness, tracks submission status, and chases responses, removing the biggest bottleneck in Irish solar installations.",
     "features": [
       "ESB microgeneration application preparation and submission",
       "Planning permission pre-checks and risk assessment",
@@ -118,7 +118,7 @@
     "type": "service",
     "title": "QA Agent",
     "slug": "qa-agent",
-    "description": "Your quality guardian. The QA Agent monitors installation quality across every job, managing snag lists, verifying compliance with NCET standards, and tracking installer certifications. It ensures that every installation meets the high standards your customers expect — and that your reputation stays spotless.",
+    "description": "Your quality guardian. The QA Agent monitors installation quality across every job, managing snag lists, verifying compliance with NCET standards, and tracking installer certifications. It ensures that every installation meets the high standards your customers expect, and that your reputation stays spotless.",
     "features": [
       "Automated snag list generation and resolution tracking",
       "NCET compliance verification for every installation",
@@ -137,7 +137,7 @@
     "type": "service",
     "title": "Reporting Agent",
     "slug": "reporting-agent",
-    "description": "Your business intelligence analyst. The Reporting Agent transforms raw operational data into clear, actionable insights. It generates real-time dashboards showing revenue, margins, pipeline health, installer productivity, and customer satisfaction — giving you the information you need to make confident decisions and drive growth.",
+    "description": "Your business intelligence analyst. The Reporting Agent transforms raw operational data into clear, actionable insights. It generates real-time dashboards showing revenue, margins, pipeline health, installer productivity, and customer satisfaction, giving you the information you need to make confident decisions and drive growth.",
     "features": [
       "Real-time revenue and margin tracking dashboards",
       "Pipeline analysis with conversion rate insights",

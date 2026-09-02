@@ -144,7 +144,7 @@ export default function Header() {
             </nav>
 
             <div className="flex items-center gap-2">
-              {/* Desktop — Portal (subtle utility link) */}
+              {/* Desktop - Portal (subtle utility link) */}
               <Link
                 href={portalLink.href}
                 className="hidden md:inline-flex items-center gap-1.5 rounded-lg transition-all duration-200 active:scale-[0.97] shrink-0"
@@ -238,12 +238,12 @@ export default function Header() {
       </motion.header>
 
       {/* ═══════════════════════════════════════════════════════
-         MOBILE MENU — Slide-in panel from right
+         MOBILE MENU - Slide-in panel from right
          ═══════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {mobileOpen && (
           <>
-            {/* Backdrop — tap to close */}
+            {/* Backdrop - tap to close */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -255,7 +255,7 @@ export default function Header() {
               aria-hidden="true"
             />
 
-            {/* Panel — slides in from right */}
+            {/* Panel - slides in from right */}
             <motion.div
               ref={panelRef}
               initial={{ x: '100%' }}
@@ -445,7 +445,7 @@ export default function Header() {
 
               {/* ── Bottom Section ── */}
               <div style={{ padding: '0 20px 32px' }}>
-                {/* Portal link — subtle */}
+                {/* Portal link - subtle */}
                 <motion.a
                   href="/crm/login"
                   onClick={closeMobile}

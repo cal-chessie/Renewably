@@ -12,7 +12,7 @@ import AudienceSection from "@/components/shared/AudienceSection";
 import HowItStartsSection from "@/components/shared/HowItStartsSection";
 
 /* ============================================================
-   SECTION 1: HERO — Full-bleed cinematic background, responsive
+   SECTION 1: HERO - Full-bleed cinematic background, responsive
    ============================================================ */
 function HeroSection() {
   return (
@@ -40,7 +40,7 @@ function HeroSection() {
         />
       </div>
 
-      {/* Dark gradient overlay — lighter on mobile so robot stays visible longer */}
+      {/* Dark gradient overlay - lighter on mobile so robot stays visible longer */}
       <div
         style={{
           position: 'absolute',
@@ -76,7 +76,7 @@ function HeroSection() {
         }}
       />
 
-      {/* Hero content — responsive sizing via clamp */}
+      {/* Hero content - responsive sizing via clamp */}
       <div
         style={{
           position: 'relative',
@@ -188,7 +188,7 @@ function HeroSection() {
           </p>
         </div>
       </div>
-      {/* Responsive objectPosition — desktop centres, mobile shifts right to show the robot */}
+      {/* Responsive objectPosition - desktop centres, mobile shifts right to show the robot */}
       <style>{`
         .hero-bg-img {
           object-position: 65% center !important;
@@ -204,7 +204,7 @@ function HeroSection() {
 }
 
 /* ============================================================
-   SECTION 2: PROBLEM SECTION — Dark Background
+   SECTION 2: PROBLEM SECTION - Dark Background
    ============================================================ */
 function ProblemSection() {
 
@@ -287,7 +287,7 @@ function ProblemSection() {
 }
 
 /* ============================================================
-   SECTION 3: SOLUTION SECTION — White Background
+   SECTION 3: SOLUTION SECTION - White Background
    ============================================================ */
 function SolutionSection() {
   return (
@@ -326,7 +326,7 @@ function SolutionSection() {
 }
 
 /* ============================================================
-   SECTION 4: PLATFORM TOUR — Dark Background (Lazy Video)
+   SECTION 4: PLATFORM TOUR - Dark Background (Lazy Video)
    ============================================================ */
 function PlatformTourSection() {
   const [videoRef, videoInView] = useInViewOnce<HTMLDivElement>("200px");
@@ -380,7 +380,7 @@ function PlatformTourSection() {
           </p>
         </ScrollReveal>
 
-        {/* Video container — lazy loaded when scrolled into view */}
+        {/* Video container - lazy loaded when scrolled into view */}
         <ScrollReveal delay={0.3}>
           <div ref={videoRef} className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50" style={{ background: '#0A0A0A' }}>
             {/* Yellow glow accent */}
@@ -398,7 +398,7 @@ function PlatformTourSection() {
               </div>
             )}
 
-            {/* Video — only rendered when in viewport */}
+            {/* Video - only rendered when in viewport */}
             {videoInView && (
               <video
                 autoPlay
@@ -428,7 +428,7 @@ function PlatformTourSection() {
 }
 
 /* ============================================================
-   SECTION 5: FEATURES SECTION — Off-White Background
+   SECTION 5: FEATURES SECTION - Off-White Background
    ============================================================ */
 function FeaturesSection() {
   const features = useMemo(() => [
@@ -546,7 +546,7 @@ function FeaturesSection() {
 }
 
 /* ============================================================
-   SECTION 5: AGENTS SECTION — White Background
+   SECTION 5: AGENTS SECTION - White Background
    ============================================================ */
 function AgentsSection() {
   const agents = useMemo(() => [
@@ -694,7 +694,7 @@ function AgentsSection() {
 }
 
 /* ============================================================
-   SECTION 7: FAQ SECTION — Off-White Background
+   SECTION 7: FAQ SECTION - Off-White Background
    ============================================================ */
 function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -861,7 +861,7 @@ function FAQSection() {
 }
 
 /* ============================================================
-   SECTION 8: PRICING SECTION — Off-White Background
+   SECTION 8: PRICING SECTION - Off-White Background
    ============================================================ */
 function PricingSection() {
   return (
@@ -932,7 +932,7 @@ function PricingSection() {
 
 
 /* ============================================================
-   DEFAULT EXPORT — Page Assembly
+   DEFAULT EXPORT - Page Assembly
    ============================================================ */
 export default function HomePageClient() {
   return (

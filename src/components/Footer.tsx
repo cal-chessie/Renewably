@@ -33,7 +33,7 @@ export default function Footer() {
         padding: "clamp(2rem, 5vw, 4rem) clamp(1.25rem, 5vw, 6rem)",
       }}
     >
-      {/* Top section — 4-col grid on desktop, 2 on tablet, 1 on mobile */}
+      {/* Top section - 4-col grid on desktop, 2 on tablet, 1 on mobile */}
       <div
         style={{
           display: "grid",
@@ -336,7 +336,7 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Responsive overrides via a tiny style tag — no Tailwind, no external CSS */}
+      {/* Responsive overrides via a tiny style tag - no Tailwind, no external CSS */}
       <style>{`
         .footer-grid {
           grid-template-columns: 1fr !important;

@@ -42,7 +42,7 @@ const QADashboard = dynamic(() => import("@/components/QADashboard"), { ssr: fal
 const ReportingDashboard = dynamic(() => import("@/components/ReportingDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
 
 /* ============================================================
-   DATA — 8 AI Agents (+ 1 Coming Soon)
+   DATA - 8 AI Agents (+ 1 Coming Soon)
    ============================================================ */
 const agents: Array<{ num: string; title: string; tagline: string; body: string; closing: string; image?: string }> = [
   {
@@ -64,20 +64,20 @@ const agents: Array<{ num: string; title: string; tagline: string; body: string;
     title: "Customer Support Agent",
     tagline: "Answers every message. Books every consult. Never sleeps.",
     body: "The support agent is your front desk. It answers emails, web forms and chat messages, and texts back missed calls on the hours you set, whether that's business hours or around the clock. It answers questions about pricing, grants, timelines, and technical specifications. It books consultations directly into your calendar. It follows up with customers who haven't responded.",
-    closing: "Only what needs you gets to you. Everything else — handled.",
+    closing: "Only what needs you gets to you. Everything else: handled.",
   },
   {
     num: "04",
     title: "Grants Agent",
     tagline: "Knows every SEAI scheme. Fills every form. Chases every application.",
-    body: "The grants agent is your SEAI expert. It knows every grant scheme — Solar PV, Battery Storage, Heat Pumps. It knows every form, every requirement, every deadline. It completes applications. It gathers supporting documents. It tracks submission status. It follows up on delays. It resubmits rejections within 24 hours.",
+    body: "The grants agent is your SEAI expert. It knows every grant scheme: Solar PV, Battery Storage, Heat Pumps. It knows every form, every requirement, every deadline. It completes applications. It gathers supporting documents. It tracks submission status. It follows up on delays. It resubmits rejections within 24 hours.",
     closing: "Nothing sits forgotten. Nothing misses a deadline.",
   },
   {
     num: "05",
     title: "Logistics Agent",
     tagline: "Orders equipment. Schedules crews. Manages inventory.",
-    body: "The logistics agent runs your supply chain. It tracks inventory levels — panels, inverters, rails, brackets. It places orders before you run out. It schedules crews based on job requirements and availability. It confirms deliveries. It reschedules when weather hits or customers cancel.",
+    body: "The logistics agent runs your supply chain. It tracks inventory levels: panels, inverters, rails, brackets. It places orders before you run out. It schedules crews based on job requirements and availability. It confirms deliveries. It reschedules when weather hits or customers cancel.",
     closing: "No more crews showing up without materials. No more jobs delayed because equipment arrived late.",
   },
   {
@@ -103,7 +103,7 @@ const agents: Array<{ num: string; title: string; tagline: string; body: string;
   },
 ];
 
-/* How It Works Together — scenario steps */
+/* How It Works Together - scenario steps */
 const scenarioSteps = [
   { agent: "Support Agent", action: "answers instantly. Books a consultation." },
   { agent: "CEO Agent", action: "assigns the lead to operations." },
@@ -155,7 +155,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
             <div className="relative overflow-hidden rounded-2xl shadow-xl">
               <Image
                 src={agent.image!}
-                alt={`${agent.title} — Renewably AI Workforce`}
+                alt={`${agent.title}, Renewably AI Workforce`}
                 width={1344}
                 height={768}
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -192,7 +192,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
 }
 
 /* ============================================================
-   HOW IT WORKS TOGETHER — Scenario Flow
+   HOW IT WORKS TOGETHER - Scenario Flow
    ============================================================ */
 function ScenarioSection() {
   return (
@@ -412,7 +412,7 @@ export default function WorkforcePageClient() {
               <AgentCard key={agent.num} agent={agent} index={i} />
             ))}
 
-          {/* ===== MARKETING AGENT — Coming Soon ===== */}
+          {/* ===== MARKETING AGENT - Coming Soon ===== */}
           <ScrollReveal>
             <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto', opacity: 0.5, filter: 'grayscale(0.5)' }}>
               <div style={{ background: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)', borderRadius: 12, padding: 'clamp(24px, 5vw, 48px)', textAlign: 'center', minHeight: 300, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -428,7 +428,7 @@ export default function WorkforcePageClient() {
                   Runs campaigns. Generates leads. Writes copy. Manages socials.
                 </p>
                 <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 'clamp(0.875rem, 1.3vw, 1rem)', lineHeight: 1.7, maxWidth: 480 }}>
-                  The ninth member of your AI workforce. Fills your pipeline while you sleep. Runs Google Ads, Meta campaigns, SEO content, email sequences, and social media — all optimised for Irish solar customers.
+                  The ninth member of your AI workforce. Fills your pipeline while you sleep. Runs Google Ads, Meta campaigns, SEO content, email sequences, and social media, all optimised for Irish solar customers.
                 </p>
                 <div style={{ marginTop: 20, display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 20px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.25)', color: '#F3D840', fontSize: 'clamp(12px, 1.3vw, 14px)', fontWeight: 600 }}>
                   <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#F3D840', animation: 'pulse 2s infinite' }} />

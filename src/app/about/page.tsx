@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import AboutPageClient from "@/components/AboutPageClient";
 
 export const metadata: Metadata = {
-  title: "About — AI Workforce for Solar Installers in Ireland | Renewably",
+  title: "About: AI Workforce for Solar Installers in Ireland | Renewably",
   description:
-    "Renewably deploys 8 AI employees across your solar operations — grants, permits, customer support, logistics, QA, and reporting. Based in Ireland. Built for solar installers.",
+    "Renewably deploys 8 AI employees across your solar operations: grants, ESB applications, customer support, logistics, QA, and reporting. Based in Ireland. Built for solar installers.",
   alternates: { canonical: "https://renewably.ie/about" },
   openGraph: {
-    title: "About Renewably — The AI Workforce for Irish Solar Installers",
+    title: "About Renewably: The AI Workforce for Irish Solar Installers",
     description:
       "We built the team you can't find. Eight AI agents live, ninth coming soon. Built for Irish solar companies doing 20+ jobs a month.",
     url: "https://renewably.ie/about",

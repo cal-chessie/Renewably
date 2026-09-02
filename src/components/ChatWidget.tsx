@@ -44,11 +44,11 @@ const FOLLOW_UP_SUGGESTIONS: Suggestion[] = [
 const PAGE_CONTEXT_MAP: Record<string, string> = {
   "/": "the homepage",
   "/about": "the About Us page",
-  "/workforce": "the AI Workforce page — the 8 AI agents, with a ninth (Marketing) in development",
+  "/workforce": "the AI Workforce page: the 8 AI agents, with a ninth (Marketing) in development",
   "/services": "the Services page",
   "/pricing": "the Pricing page",
   "/blog": "the Blog page",
-  "/contact": "the Contact page — looking to get in touch",
+  "/contact": "the Contact page: looking to get in touch",
 };
 
 let msgCounter = 0;
@@ -463,7 +463,7 @@ export default function ChatWidget() {
           </AnimatePresence>
         </motion.button>
 
-        {/* Unread badge — outside button so it's not clipped by overflow:hidden */}
+        {/* Unread badge: outside button so it's not clipped by overflow:hidden */}
         {unreadCount > 0 && (
           <motion.div
             initial={{ scale: 0 }}

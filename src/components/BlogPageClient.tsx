@@ -1275,7 +1275,7 @@ export default function BlogPageClient() {
             </div>
           </ScrollReveal>
 
-          {/* Posts grid — re-animates on category change via key + hp-rise */}
+          {/* Posts grid - re-animates on category change via key + hp-rise */}
           <div
             key={activeCategory}
             className="hp-rise"

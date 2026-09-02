@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { SectionHead, Field, Input, Button, Icon } from './ui';
 
 // ─── Step 1 · Your details ────────────────────────────────────────────────
-// Lead capture, not account creation. No password is collected here — installers
+// Lead capture, not account creation. No password is collected here - installers
 // do not sign in to the CRM; the team provisions any access after setup.
 
 interface StepAccountProps {

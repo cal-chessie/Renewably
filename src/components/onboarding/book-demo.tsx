@@ -98,7 +98,7 @@ export function BookDemo({ onBack, onDone }: { onBack: () => void; onDone: (d?: 
                 When
               </div>
               <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 4 }}>{selectedDateStr}</div>
-              <div className="mono tabular" style={{ fontSize: 13, color: 'var(--solar)' }}>{selTime} — {addMins(selTime!, 30)} IST</div>
+              <div className="mono tabular" style={{ fontSize: 13, color: 'var(--solar)' }}>{selTime} to {addMins(selTime!, 30)} IST</div>
             </div>
             <div>
               <div className="mono" style={{ fontSize: 10, color: 'var(--ink-4)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
@@ -177,14 +177,14 @@ export function BookDemo({ onBack, onDone }: { onBack: () => void; onDone: (d?: 
             See SolarPilot in action.
           </h1>
           <p style={{ fontSize: 14, color: 'var(--ink-3)', margin: 0, maxWidth: 460, lineHeight: 1.5 }}>
-            30 minutes with a Solutions Engineer. We&apos;ll walk through your pipeline, grant flow, and PPA earnings — tailored to your business.
+            30 minutes with a Solutions Engineer. We&apos;ll walk through your pipeline, grant flow, and PPA earnings, tailored to your business.
           </p>
         </div>
         <Button variant="ghost" onClick={onBack}>← Back</Button>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 18, marginBottom: 20 }} className="ob-demo-grid">
-        {/* Left — Calendar + time */}
+        {/* Left - Calendar + time */}
         <Card style={{ padding: 18 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, gap: 10 }}>
             <div style={{ minWidth: 0 }}>
@@ -269,7 +269,7 @@ export function BookDemo({ onBack, onDone }: { onBack: () => void; onDone: (d?: 
           </div>
         </Card>
 
-        {/* Right — Details */}
+        {/* Right - Details */}
         <Card style={{ padding: 18 }}>
           <div className="mono" style={{ fontSize: 10, color: 'var(--ink-4)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 14 }}>
             Your details

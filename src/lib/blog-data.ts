@@ -1,5 +1,5 @@
 /* ============================================================
-   BLOG DATA — Single source of truth for all blog posts.
+   BLOG DATA - Single source of truth for all blog posts.
    Both BlogPageClient and BlogPostClient import from here.
    ============================================================ */
 
@@ -16,7 +16,7 @@ export interface BlogPost {
 
 export const posts: BlogPost[] = [
   /* ─────────────────────────────────────────────────────────
-     1 — AI Site Assessment
+     1: AI Site Assessment
      ───────────────────────────────────────────────────────── */
   {
     slug: "ai-site-assessment-2026-guide",
@@ -114,7 +114,7 @@ Run it alongside your existing process to start. Same surveys, same quotes, just
   },
 
   /* ─────────────────────────────────────────────────────────
-     2 — SEAI Grant Automation
+     2: SEAI Grant Automation
      ───────────────────────────────────────────────────────── */
   {
     slug: "automating-seai-grant-applications",
@@ -206,7 +206,7 @@ Start with the agent running alongside your existing process. The agent prepares
   },
 
   /* ─────────────────────────────────────────────────────────
-     3 — Solar Ops Dashboard
+     3: Solar Ops Dashboard
      ───────────────────────────────────────────────────────── */
   {
     slug: "solar-ops-dashboard-tracking",
@@ -312,7 +312,7 @@ Most installers start with just the lead tracking and assessment pipeline. Once 
   },
 
   /* ─────────────────────────────────────────────────────────
-     4 — Customer Support ROI
+     4: Customer Support ROI
      ───────────────────────────────────────────────────────── */
   {
     slug: "ai-customer-support-roi-solar",
@@ -414,7 +414,7 @@ Try it for one week. Count how many messages the agent handles. Count how many l
   },
 
   /* ─────────────────────────────────────────────────────────
-     5 — ESB Permit Tracking
+     5: ESB Permit Tracking
      ───────────────────────────────────────────────────────── */
   {
     slug: "esb-networks-ai-permit-tracking",
@@ -506,7 +506,7 @@ One customer. A handful of questions. No paperwork. No chasing. Nothing lost.`,
   },
 
   /* ─────────────────────────────────────────────────────────
-     6 — AI Logistics (7 Ways)
+     6: AI Logistics (7 Ways)
      ───────────────────────────────────────────────────────── */
   {
     slug: "ai-crew-equipment-logistics-solar",
@@ -598,7 +598,7 @@ Same crews. Same trucks. Same customers. The difference is that nothing falls be
   },
 
   /* ─────────────────────────────────────────────────────────
-     7 — Revenue Forecasting
+     7: Revenue Forecasting
      ───────────────────────────────────────────────────────── */
   {
     slug: "forecasting-solar-revenue-ai",
@@ -686,7 +686,7 @@ Start by running the forecast beside your spreadsheet for a month. Compare both 
   },
 
   /* ─────────────────────────────────────────────────────────
-     8 — Answer Every Lead
+     8: Answer Every Lead
      ───────────────────────────────────────────────────────── */
   {
     slug: "ai-answer-more-leads-solar",

@@ -167,7 +167,7 @@ export function StepFinancial({ onNext, onBack, data }: StepFinancialProps) {
     </div>
   );
 
-  // sub 3 — review (no payment; the team confirms pricing and sets you up)
+  // sub 3 - review (no payment; the team confirms pricing and sets you up)
   return (
     <div className="fade-up">
       <SectionHead eyebrow="06 · Finance · 3 of 3" title="Review your plan" desc="No payment now. Confirm the plan you're interested in and the team will sort pricing and setup with you." />
