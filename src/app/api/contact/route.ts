@@ -271,7 +271,7 @@ export async function POST(request: NextRequest) {
     let autoReplySent = false;
 
     try {
-      const replySubject = "Thanks for reaching out — Renewably";
+      const replySubject = "Thanks for reaching out to Renewably";
       const replyHtml = `
 <!DOCTYPE html><html><head><meta charset="utf-8"></head>
 <body style="margin:0;padding:0;background:#080808;font-family:system-ui,sans-serif;">

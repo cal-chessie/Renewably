@@ -10,7 +10,7 @@ export interface HomeFaq {
 export const homeFaqs: HomeFaq[] = [
   {
     q: "What does Renewably do?",
-    a: "Renewably deploys 8 specialised AI agents that automate every part of a solar PV installation business in Ireland. Our AI handles SEAI grant applications, ESB permit tracking, customer support, logistics coordination, quality assurance, operations management, and reporting, so you can focus on installing panels instead of drowning in admin.",
+    a: "Renewably deploys 8 specialised AI agents that automate every part of a solar PV installation business in Ireland. Our AI handles SEAI grant applications, ESB Networks application tracking, customer support, logistics coordination, quality assurance, operations management, and reporting, so you can focus on installing panels instead of drowning in admin.",
   },
   {
     q: "How does the AI workforce work?",

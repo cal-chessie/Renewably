@@ -267,7 +267,7 @@ function HeroSection() {
               animationDelay: "0.8s",
             }}
           >
-            Practical guides on AI operations, SEAI grants, ESB permitting,
+            Practical guides on AI operations, SEAI grants, ESB Networks,
             logistics, and customer support. Written for solar companies doing
             20+ jobs a month in Ireland.
           </p>
@@ -845,7 +845,7 @@ function NewsletterSection() {
             }}
           >
             One email per week. No spam. No fluff. Practical insights on AI
-            operations, SEAI grant changes, ESB permit updates, and what&apos;s
+            operations, SEAI grant changes, ESB Networks updates, and what&apos;s
             actually working for Irish solar installers right now.
           </p>
         </ScrollReveal>

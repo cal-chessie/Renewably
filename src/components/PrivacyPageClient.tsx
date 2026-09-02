@@ -5,7 +5,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 export default function PrivacyPageClient() {
   return (
     <div>
-      {/* Hero — Dark */}
+      {/* Hero - Dark */}
       <section style={{ position: "relative", overflow: "hidden", backgroundColor: "#0A0A0A" }}>
         <div
           style={{
@@ -82,7 +82,7 @@ export default function PrivacyPageClient() {
                 </p>
                 <h3 style={{ color: "#1A1A1A", fontSize: 16, fontWeight: 600, marginBottom: 8 }}>CRM and Business Data</h3>
                 <p style={{ color: "#535353", fontSize: 15, lineHeight: 1.8 }}>
-                  If you use our CRM dashboard, the data you input — including customer details, leads, job progress, grant applications, and communications — is stored securely. This data belongs to you; we process it only to provide the service.
+                  If you use our CRM dashboard, the data you input (customer details, leads, job progress, grant applications, and communications) is stored securely. This data belongs to you; we process it only to provide the service.
                 </p>
               </div>
 
@@ -94,7 +94,7 @@ export default function PrivacyPageClient() {
                 </p>
                 <ul style={{ color: "#535353", fontSize: 15, lineHeight: 1.8, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 8 }}>
                   <li><strong style={{ color: "#1A1A1A" }}>Service delivery:</strong> To provide and maintain our AI-as-a-Service platform, including CRM functionality, AI agent operations, and reporting dashboards.</li>
-                  <li><strong style={{ color: "#1A1A1A" }}>AI processing:</strong> To process your inputs through our AI agents (grant writing, permit applications, customer communications, reporting). Inputs may be sent to third-party AI providers (e.g. OpenAI) for processing. See Section 5 for details.</li>
+                  <li><strong style={{ color: "#1A1A1A" }}>AI processing:</strong> To process your inputs through our AI agents (grant writing, ESB Networks applications, customer communications, reporting). Inputs may be sent to third-party AI providers (e.g. OpenAI) for processing. See Section 5 for details.</li>
                   <li><strong style={{ color: "#1A1A1A" }}>Communications:</strong> To respond to your enquiries, send service updates, provide weekly reports, and deliver marketing communications (only where you have consented).</li>
                   <li><strong style={{ color: "#1A1A1A" }}>Platform improvement:</strong> To analyse usage patterns, improve our AI agents, and enhance the user experience.</li>
                   <li><strong style={{ color: "#1A1A1A" }}>Legal compliance:</strong> To comply with applicable laws, regulations, and legal processes.</li>

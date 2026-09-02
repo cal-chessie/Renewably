@@ -148,7 +148,7 @@ export default function MiniDesktop() {
       <style>{`@media (max-width:767px){.md-dash .wg{grid-template-columns:1fr!important;height:auto!important}.md-dash .screen{aspect-ratio:auto!important;min-height:600px}}`}</style>
       {/* Screen */}
       <div style={styles.screen}>
-        {/* Taskbar — NO LOGO */}
+        {/* Taskbar - NO LOGO */}
         <div style={styles.taskbar}>
           <div style={styles.taskbarIcons}>
             {["⚡", "📄", "🤖", "🔧"].map((icon) => (
