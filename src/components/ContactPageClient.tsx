@@ -257,6 +257,9 @@ export default function ContactPageClient() {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [selectedPainPoints, setSelectedPainPoints] = useState<string[]>([]);
+  // Whether the message field still reflects the auto pain-point fill. Once the
+  // user edits the message themselves, we stop overwriting it.
+  const messageIsAutoRef = useRef(true);
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 100]);
@@ -277,14 +280,17 @@ export default function ContactPageClient() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
+    if (e.target.name === "message") messageIsAutoRef.current = false;
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handlePainPointToggle = (point: string) => {
     setSelectedPainPoints((prev) => {
       const next = prev.includes(point) ? prev.filter((p) => p !== point) : [...prev, point];
-      // Pre-fill message from selected pain points
-      if (next.length > 0) {
+      // Compose the message from the selected pain points, but only while the
+      // user has not written their own. This never clobbers typed text, and it
+      // clears the fill when every pain point is deselected.
+      if (messageIsAutoRef.current) {
         setFormData((fd) => ({
           ...fd,
           message: next.map((p) => p.replace("?", ".")).join(" "),
