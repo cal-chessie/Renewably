@@ -7,7 +7,7 @@ import Image from "next/image";
 /* Skeleton loader for lazy-loaded dashboards */
 function DashboardSkeleton() {
   return (
-    <div style={{ background: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%)', borderRadius: 12, aspectRatio: '16/10', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div style={{ background: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%)', borderRadius: 16, aspectRatio: '16/10', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       {/* Top bar skeleton */}
       <div style={{ padding: '12px 16px', display: 'flex', gap: 12, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ width: 120, height: 12, borderRadius: 4, background: 'rgba(255,255,255,0.06)' }} />
@@ -145,7 +145,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
         >
           {DashboardComponent ? (
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
+            <div className="hp-lift hp-card-dark" style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
               <DashboardComponent />
               <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
                 {agent.num}
@@ -173,16 +173,16 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
         <div
           className={isReversed ? "lg:order-first" : "lg:order-last"}
         >
-          <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, marginBottom: 12 }}>
+          <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 12 }}>
             {agent.title}
           </h2>
-          <p style={{ color: '#B89A10', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', fontWeight: 700, marginBottom: 20, lineHeight: 1.5 }}>
+          <p style={{ color: '#B89A10', fontSize: 'clamp(16px, 2vw, 20px)', fontWeight: 700, marginBottom: 20, lineHeight: 1.7 }}>
             {agent.tagline}
           </p>
-          <p style={{ color: '#535353', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', lineHeight: 1.7, marginBottom: 16 }}>
+          <p style={{ color: '#535353', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, marginBottom: 16 }}>
             {agent.body}
           </p>
-          <p style={{ color: '#1A1A1A', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', lineHeight: 1.7, fontWeight: 600 }}>
+          <p style={{ color: '#1A1A1A', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, fontWeight: 600 }}>
             {agent.closing}
           </p>
         </div>
@@ -200,20 +200,20 @@ function ScenarioSection() {
       <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', padding: '6px 16px', borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', marginBottom: 'clamp(20px, 4vw, 32px)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', padding: '6px 14px', borderRadius: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
             <span
               className="hp-pulse"
               style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840' }}
             />
-            <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.5vw, 14px)', fontWeight: 600, letterSpacing: '0.03em' }}>
-              How it works together.
+            <span style={{ color: '#fff', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
+              <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: 'rgba(255,255,255,0.55)', marginRight: 9 }}>01</span>How it works together.
             </span>
           </div>
         </ScrollReveal>
 
         {/* Intro */}
         <ScrollReveal delay={0.1}>
-          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(16px, 2.2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(20px, 4vw, 32px)' }}>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(20px, 4vw, 32px)' }}>
             A customer submits a web form at 10pm.
           </p>
         </ScrollReveal>
@@ -230,7 +230,7 @@ function ScenarioSection() {
                 >
                   <span style={{ color: '#1A1A1A', fontWeight: 800, fontSize: 11 }}>{i + 1}</span>
                 </div>
-                <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(14px, 2vw, 18px)', lineHeight: 1.7 }}>
+                <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7 }}>
                   <span style={{ color: '#F3D840', fontWeight: 700 }}>{step.agent}</span>{" "}
                   {step.action}
                 </p>
@@ -242,7 +242,7 @@ function ScenarioSection() {
         {/* Closing */}
         <ScrollReveal delay={0.3}>
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 'clamp(20px, 4vw, 32px)' }}>
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(14px, 2vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 16px)' }}>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(12px, 2vw, 16px)' }}>
               You review the weekly summary. You approve the strategy. You intervene only when you want to.
             </p>
             <p style={{ color: '#F3D840', fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 800 }}>
@@ -264,21 +264,21 @@ function InvestmentSection() {
       <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', padding: '6px 16px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(20px, 4vw, 32px)' }}>
-            <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.5vw, 14px)', fontWeight: 600, letterSpacing: '0.03em' }}>
-              Investment
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', padding: '6px 14px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
+            <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
+              <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: '#8a6d05', marginRight: 9 }}>02</span>Investment
             </span>
           </div>
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
-          <p style={{ color: '#535353', fontSize: 'clamp(16px, 2.2vw, 20px)', lineHeight: 1.7, maxWidth: 672, marginLeft: 'auto', marginRight: 'auto', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
+          <p style={{ color: '#535353', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, fontVariantNumeric: 'tabular-nums', maxWidth: 672, marginLeft: 'auto', marginRight: 'auto', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
             Most solar installers pay €1,000 – €1,500 per month plus a one-time setup fee. You bring your own AI keys. You pay the models directly. No markup from us.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.2}>
-          <p style={{ color: '#1A1A1A', fontSize: 'clamp(16px, 2.2vw, 20px)', fontWeight: 600, marginBottom: 'clamp(24px, 5vw, 40px)' }}>
+          <p style={{ color: '#1A1A1A', fontSize: 'clamp(16px, 2vw, 20px)', fontWeight: 600, marginBottom: 'clamp(24px, 5vw, 40px)' }}>
             Book a 15 minute call. If it fits, we scope your build and give you a fixed quote.
           </p>
         </ScrollReveal>
@@ -287,7 +287,7 @@ function InvestmentSection() {
           <div style={{ marginTop: 'clamp(16px, 3vw, 32px)' }}>
           <Link
             href="/contact"
-            className="hover:bg-[#374151] transition-all duration-300 shadow-md hover:shadow-lg"
+            className="hover:bg-[#374151] transition-colors duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
             style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', padding: '10px 24px', backgroundColor: '#1A1A1A', color: '#fff', fontWeight: 700, fontSize: 'clamp(13px, 1.5vw, 14px)', letterSpacing: '0.02em', borderRadius: 9999, textDecoration: 'none' }}
           >
             Book a Call
@@ -310,16 +310,16 @@ function CTASection() {
     <section style={{ backgroundColor: '#F3D840', paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
       <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)', textAlign: 'center' }}>
         <ScrollReveal>
-          <h2 style={{ fontSize: 'clamp(1.875rem, 5vw, 3rem)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.1, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
+          <h2 style={{ fontSize: 'clamp(24px, 5vw, 48px)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
             Let&apos;s build yours.
           </h2>
         </ScrollReveal>
 
         <ScrollReveal delay={0.15}>
-          <p style={{ color: '#374151', fontSize: 'clamp(16px, 2.2vw, 20px)', marginBottom: 'clamp(24px, 5vw, 40px)' }}>
+          <p style={{ color: '#374151', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(24px, 5vw, 40px)' }}>
             <a
               href="mailto:cal@renewably.ie"
-              className="hover:text-[#1A1A1A] transition-colors"
+              className="hover:text-[#1A1A1A] transition-colors duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
               style={{ textDecoration: 'underline', fontWeight: 600 }}
             >
               cal@renewably.ie
@@ -331,7 +331,7 @@ function CTASection() {
           <div style={{ marginTop: 'clamp(16px, 3vw, 32px)' }}>
           <Link
             href="/contact"
-            className="hover:bg-[#374151] transition-all duration-300 shadow-md hover:shadow-lg"
+            className="hover:bg-[#374151] transition-colors duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
             style={{ display: 'inline-flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', padding: '10px 24px', backgroundColor: '#1A1A1A', color: '#fff', fontWeight: 700, fontSize: 'clamp(13px, 1.5vw, 14px)', letterSpacing: '0.02em', borderRadius: 9999, textDecoration: 'none' }}
           >
             Book a Call
@@ -352,7 +352,7 @@ function CTASection() {
 export default function WorkforcePageClient() {
   return (
     <div>
-      <style>{`.workforce-hero-bg { object-position: 60% 45% !important; } @media (min-width: 768px) { .workforce-hero-bg { object-position: center center !important; } } @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }`}</style>
+      <style>{`.workforce-hero-bg { object-position: 60% 45% !important; } @media (min-width: 768px) { .workforce-hero-bg { object-position: center center !important; } }`}</style>
 
       {/* ===== HERO ===== */}
       <section data-theme="dark" style={{ position: 'relative', minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
@@ -414,24 +414,24 @@ export default function WorkforcePageClient() {
 
           {/* ===== MARKETING AGENT - Coming Soon ===== */}
           <ScrollReveal>
-            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', maxWidth: 640, margin: '0 auto', opacity: 0.5, filter: 'grayscale(0.5)' }}>
-              <div style={{ background: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)', borderRadius: 12, padding: 'clamp(24px, 5vw, 48px)', textAlign: 'center', minHeight: 300, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="hp-lift hp-card-dark" style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', maxWidth: 640, margin: '0 auto', opacity: 0.5, filter: 'grayscale(0.5)' }}>
+              <div style={{ background: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)', borderRadius: 16, padding: 'clamp(24px, 5vw, 48px)', textAlign: 'center', minHeight: 300, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(243,216,64,0.15)', border: '1px solid rgba(243,216,64,0.3)', marginBottom: 16 }}>
                   <span style={{ color: '#F3D840', fontSize: 'clamp(10px, 1.3vw, 13px)', fontWeight: 600, letterSpacing: '0.04em' }}>
                     COMING SOON
                   </span>
                 </div>
-                <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 800, color: '#F3D840', lineHeight: 1.15, marginBottom: 12 }}>
+                <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, color: '#F3D840', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 12 }}>
                   Marketing Agent
                 </h2>
-                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', fontWeight: 700, marginBottom: 20, lineHeight: 1.5 }}>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(16px, 2vw, 20px)', fontWeight: 700, marginBottom: 20, lineHeight: 1.7 }}>
                   Runs campaigns. Generates leads. Writes copy. Manages socials.
                 </p>
-                <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 'clamp(0.875rem, 1.3vw, 1rem)', lineHeight: 1.7, maxWidth: 480 }}>
+                <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, maxWidth: 480 }}>
                   The ninth member of your AI workforce. Fills your pipeline while you sleep. Runs Google Ads, Meta campaigns, SEO content, email sequences, and social media, all optimised for Irish solar customers.
                 </p>
                 <div style={{ marginTop: 20, display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 20px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.25)', color: '#F3D840', fontSize: 'clamp(12px, 1.3vw, 14px)', fontWeight: 600 }}>
-                  <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#F3D840', animation: 'pulse 2s infinite' }} />
+                  <span className="hp-pulse" style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#F3D840' }} />
                   In development
                 </div>
               </div>

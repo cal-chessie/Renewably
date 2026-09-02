@@ -27,7 +27,12 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
   return (
     <div
       style={{
-        borderBottom: "1px solid #E5E7EB",
+        borderRadius: 12,
+        backgroundColor: "#fff",
+        border: isOpen ? "1px solid rgba(243,216,64,0.4)" : "1px solid rgba(0,0,0,0.06)",
+        boxShadow: isOpen ? "0 4px 20px rgba(243,216,64,0.08)" : "none",
+        transition: "border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+        overflow: "hidden",
       }}
     >
       <button
@@ -37,11 +42,12 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "20px 0",
+          padding: "clamp(16px, 2.5vw, 20px) clamp(16px, 3vw, 24px)",
           cursor: "pointer",
           border: "none",
           backgroundColor: "transparent",
           textAlign: "left",
+          gap: 16,
         }}
         aria-expanded={isOpen}
       >
@@ -49,13 +55,22 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
           {q}
         </span>
         <span
+          aria-hidden="true"
           style={{
-            color: "#B89A10",
-            fontSize: 24,
-            fontWeight: 300,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 24,
+            height: 24,
+            minWidth: 24,
+            borderRadius: "50%",
+            backgroundColor: isOpen ? "#F3D840" : "rgba(0,0,0,0.05)",
+            color: isOpen ? "#1A1A1A" : "#535353",
+            fontSize: 16,
+            fontWeight: 700,
             lineHeight: 1,
             transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
-            transition: "transform 0.3s ease",
+            transition: "background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
             flexShrink: 0,
           }}
         >
@@ -64,15 +79,18 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
       </button>
       <div
         style={{
-          overflow: "hidden",
-          maxHeight: isOpen ? 300 : 0,
+          display: "grid",
+          gridTemplateRows: isOpen ? "1fr" : "0fr",
           opacity: isOpen ? 1 : 0,
-          transition: "max-height 0.3s ease, opacity 0.3s ease",
+          overflow: "hidden",
+          transition: "grid-template-rows 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
-        <p style={{ color: "#535353", fontSize: 15, lineHeight: 1.8, paddingBottom: 20 }}>
-          {a}
-        </p>
+        <div style={{ overflow: "hidden" }}>
+          <p style={{ color: "#535353", fontSize: 15, lineHeight: 1.7, padding: "0 clamp(16px, 3vw, 24px) clamp(16px, 2.5vw, 20px)" }}>
+            {a}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -104,12 +122,12 @@ export default function PricingPageClient() {
             </div>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <h1 style={{ color: "#FFFFFF", fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 800, lineHeight: 1.1, marginBottom: 16, textAlign: "center" }}>
+            <h1 style={{ color: "#FFFFFF", fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: 16, textAlign: "center" }}>
               One price. Your whole AI team.
             </h1>
           </ScrollReveal>
           <ScrollReveal delay={0.2}>
-            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 18, lineHeight: 1.7, textAlign: "center", maxWidth: 560, margin: "0 auto" }}>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "clamp(16px, 2vw, 20px)", lineHeight: 1.7, textAlign: "center", maxWidth: 560, margin: "0 auto" }}>
               No hidden fees. No per-seat charges. No surprises. Just one monthly payment for your complete AI workforce.
             </p>
           </ScrollReveal>
@@ -121,8 +139,8 @@ export default function PricingPageClient() {
       <section style={{ backgroundColor: "#FFFFFF" }}>
         <div style={{ maxWidth: 560, margin: "0 auto", padding: "64px 24px 48px" }}>
           <ScrollReveal>
-            <div style={{
-              borderRadius: 20,
+            <div className="hp-card" style={{
+              borderRadius: 16,
               border: "2px solid #F3D840",
               backgroundColor: "#FFFFFF",
               overflow: "hidden",
@@ -137,8 +155,8 @@ export default function PricingPageClient() {
                   AI Workforce Plan
                 </p>
                 <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 4 }}>
-                  <span style={{ color: "#FFFFFF", fontSize: "clamp(32px, 10vw, 48px)", fontWeight: 800, lineHeight: 1 }}>&euro;1,000</span>
-                  <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 18 }}>&ndash; &euro;1,500</span>
+                  <span style={{ color: "#FFFFFF", fontSize: "clamp(32px, 10vw, 48px)", fontWeight: 800, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>&euro;1,000</span>
+                  <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 18, fontVariantNumeric: "tabular-nums" }}>&ndash; &euro;1,500</span>
                 </div>
                 <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, marginTop: 8 }}>per month, depending on team size</p>
                 <div style={{ marginTop: 12, display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 9999, backgroundColor: "rgba(243,216,64,0.15)", border: "1px solid rgba(243,216,64,0.3)" }}>
@@ -201,7 +219,7 @@ export default function PricingPageClient() {
                     fontWeight: 700,
                     borderRadius: 12,
                     textDecoration: "none",
-                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                    transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-2px)";
@@ -231,16 +249,20 @@ export default function PricingPageClient() {
         <div style={{ maxWidth: 640, margin: "0 auto", padding: "40px 20px 64px" }}>
           <ScrollReveal>
             <div style={{ textAlign: "center", marginBottom: 48 }}>
-              <p style={{ color: "#1A1A1A", fontSize: 14, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
-                Common Questions
-              </p>
-              <h2 style={{ color: "#1A1A1A", fontSize: "clamp(1.5rem, 3vw, 2rem)", fontWeight: 800, lineHeight: 1.2 }}>
+              <div style={{ marginBottom: "clamp(24px, 4vw, 40px)" }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 9999, backgroundColor: "rgba(243,216,64,0.1)", border: "1px solid rgba(243,216,64,0.2)" }}>
+                  <span style={{ color: "#374151", fontSize: "clamp(11px, 1.3vw, 14px)", fontWeight: 600, letterSpacing: "0.04em" }}>
+                    <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontWeight: 700, fontSize: "0.9em", letterSpacing: "0.06em", color: "#8a6d05", marginRight: 9 }}>01</span>Common Questions
+                  </span>
+                </div>
+              </div>
+              <h2 style={{ color: "#1A1A1A", fontSize: "clamp(24px, 5vw, 48px)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.02em" }}>
                 Frequently asked questions
               </h2>
             </div>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(8px, 1.5vw, 12px)" }}>
               {faqs.map((faq, i) => (
                 <FAQItem
                   key={faq.q}
@@ -259,10 +281,10 @@ export default function PricingPageClient() {
       <section style={{ backgroundColor: "#F3D840" }}>
         <div style={{ maxWidth: 640, margin: "0 auto", padding: "64px 20px", textAlign: "center" }}>
           <ScrollReveal>
-            <h2 style={{ color: "#0A0A0A", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 800, lineHeight: 1.2, marginBottom: 12 }}>
+            <h2 style={{ color: "#0A0A0A", fontSize: "clamp(24px, 5vw, 48px)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.02em", marginBottom: 12 }}>
               Ready to meet your team?
             </h2>
-            <p style={{ color: "#374151", fontSize: 16, lineHeight: 1.7, marginBottom: 32, maxWidth: 440, margin: "0 auto 32px" }}>
+            <p style={{ color: "#374151", fontSize: "clamp(16px, 2vw, 20px)", lineHeight: 1.7, marginBottom: 32, maxWidth: 440, margin: "0 auto 32px" }}>
               Book a 15 minute call. We scope your build, quote it fixed, and you approve every hire before anything goes live.
             </p>
             <Link
@@ -280,7 +302,7 @@ export default function PricingPageClient() {
                 fontWeight: 700,
                 borderRadius: 9999,
                 textDecoration: "none",
-                transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-2px)";

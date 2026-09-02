@@ -250,8 +250,8 @@ function HeroSection() {
             style={{
               animationDelay: '0.8s',
               color: "rgba(255,255,255,0.6)",
-              fontSize: "clamp(17px, 2vw, 21px)",
-              lineHeight: 1.6,
+              fontSize: "clamp(16px, 2vw, 20px)",
+              lineHeight: 1.7,
               maxWidth: 640,
               margin: "0 auto",
             }}
@@ -325,22 +325,22 @@ function StorySection() {
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              padding: "6px 16px",
+              padding: "6px 14px",
               borderRadius: 9999,
               backgroundColor: "rgba(243,216,64,0.1)",
               border: "1px solid rgba(243,216,64,0.2)",
-              marginBottom: 'clamp(14px, 3vw, 32px)',
+              marginBottom: 'clamp(24px, 4vw, 40px)',
             }}
           >
             <span
               style={{
                 color: "#374151",
-                fontSize: 'clamp(11px, 1.5vw, 13px)',
+                fontSize: 'clamp(11px, 1.3vw, 14px)',
                 fontWeight: 600,
-                letterSpacing: "0.03em",
+                letterSpacing: "0.04em",
               }}
             >
-              How it started.
+              <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: '#8a6d05', marginRight: 9 }}>01</span>How it started.
             </span>
           </div>
         </ScrollReveal>
@@ -349,10 +349,10 @@ function StorySection() {
         <ScrollReveal delay={0.1}>
           <h2
             style={{
-              fontSize: "clamp(24px, 6vw, 48px)",
+              fontSize: "clamp(24px, 5vw, 48px)",
               fontWeight: 800,
               color: "#1A1A1A",
-              lineHeight: 1.1,
+              lineHeight: 1.15,
               letterSpacing: "-0.02em",
               marginBottom: 'clamp(8px, 2vw, 16px)',
               maxWidth: 600,
@@ -367,8 +367,8 @@ function StorySection() {
         <ScrollReveal delay={0.2}>
           <p
             style={{
-              fontSize: 'clamp(14px, 2vw, 17px)',
-              lineHeight: 1.65,
+              fontSize: 'clamp(16px, 2vw, 20px)',
+              lineHeight: 1.7,
               color: "#535353",
               maxWidth: 560,
               marginBottom: 'clamp(16px, 4vw, 48px)',
@@ -419,6 +419,7 @@ function StorySection() {
                           color: YELLOW,
                           textTransform: "uppercase",
                           letterSpacing: "0.1em",
+                          fontVariantNumeric: "tabular-nums",
                         }}
                       >
                         {step.year}
@@ -438,7 +439,7 @@ function StorySection() {
                     <div style={{ flex: 1 }}>
                       <p
                         style={{
-                          fontSize: 'clamp(14px, 2vw, 15px)',
+                          fontSize: 'clamp(15px, 1.8vw, 18px)',
                           lineHeight: 1.7,
                           color: isExpanded ? "#374151" : "#535353",
                           overflow: "hidden",
@@ -470,7 +471,7 @@ function StorySection() {
                         alignItems: "flex-start",
                         paddingTop: 4,
                         transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                        transition: "transform 0.3s ease",
+                        transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
                       }}
                     >
                       <svg
@@ -517,11 +518,11 @@ function ProblemsSection() {
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              padding: "6px 16px",
+              padding: "6px 14px",
               borderRadius: 9999,
               backgroundColor: "rgba(59,130,246,0.08)",
               border: "1px solid rgba(59,130,246,0.15)",
-              marginBottom: 'clamp(20px, 4vw, 32px)',
+              marginBottom: 'clamp(24px, 4vw, 40px)',
             }}
           >
             <span
@@ -536,12 +537,12 @@ function ProblemsSection() {
             <span
               style={{
                 color: "#374151",
-                fontSize: 13,
+                fontSize: 'clamp(11px, 1.3vw, 14px)',
                 fontWeight: 600,
-                letterSpacing: "0.03em",
+                letterSpacing: "0.04em",
               }}
             >
-              The problems we solve.
+              <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: '#8a6d05', marginRight: 9 }}>02</span>The problems we solve.
             </span>
           </div>
         </ScrollReveal>
@@ -549,10 +550,10 @@ function ProblemsSection() {
         <ScrollReveal delay={0.1}>
           <h2
             style={{
-              fontSize: "clamp(28px, 5vw, 48px)",
+              fontSize: "clamp(24px, 5vw, 48px)",
               fontWeight: 800,
               color: "#1A1A1A",
-              lineHeight: 1.1,
+              lineHeight: 1.15,
               letterSpacing: "-0.02em",
               marginBottom: 'clamp(24px, 5vw, 48px)',
               maxWidth: 640,
@@ -583,7 +584,7 @@ function ProblemsSection() {
                     activeProblem === i
                       ? "0 8px 30px rgba(243,216,64,0.1)"
                       : "none",
-                  transition: "all 0.3s ease",
+                  transition: "background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
                 }}
               >
                 <div
@@ -608,7 +609,7 @@ function ProblemsSection() {
                       alignItems: "center",
                       justifyContent: "center",
                       color: activeProblem === i ? YELLOW : "#6B7280",
-                      transition: "all 0.3s ease",
+                      transition: "background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
                     }}
                   >
                     {problem.icon}
@@ -641,7 +642,7 @@ function ProblemsSection() {
                     {activeProblem === i && (
                       <p
                         style={{
-                          fontSize: 'clamp(14px, 2vw, 15px)',
+                          fontSize: 'clamp(15px, 1.8vw, 18px)',
                           lineHeight: 1.7,
                           color: "#535353",
                           overflow: "hidden",
@@ -666,27 +667,18 @@ function ProblemsSection() {
    ============================================================ */
 function ValuesSection() {
   return (
-    <section data-theme="dark" style={{ backgroundColor: DARK, paddingTop: 'clamp(32px, 8vw, 96px)', paddingBottom: 'clamp(32px, 8vw, 96px)' }}>
-      {/* Dot grid */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          opacity: 0.03,
-          backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-          pointerEvents: "none",
-        }}
-      />
+    <section data-theme="dark" style={{ position: "relative", overflow: "hidden", backgroundColor: DARK, paddingTop: 'clamp(32px, 8vw, 96px)', paddingBottom: 'clamp(32px, 8vw, 96px)' }}>
+      <div aria-hidden="true" className="hp-overlay hp-dot-grid" />
+      <div aria-hidden="true" className="hp-overlay hp-grain" />
+      <div aria-hidden="true" className="hp-seam-top hp-seam-from-light" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ position: "relative", zIndex: 1 }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 hp-content">
         {/* Badge */}
         <ScrollReveal>
           <div
             style={{
               textAlign: "center",
-              marginBottom: 16,
+              marginBottom: 'clamp(24px, 4vw, 40px)',
             }}
           >
             <div
@@ -694,7 +686,7 @@ function ValuesSection() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
-                padding: "6px 16px",
+                padding: "6px 14px",
                 borderRadius: 9999,
                 background: "rgba(255,255,255,0.08)",
                 border: "1px solid rgba(255,255,255,0.12)",
@@ -703,12 +695,12 @@ function ValuesSection() {
               <span
                 style={{
                   color: "rgba(255,255,255,0.7)",
-                  fontSize: 13,
+                  fontSize: 'clamp(11px, 1.3vw, 14px)',
                   fontWeight: 600,
-                  letterSpacing: "0.03em",
+                  letterSpacing: "0.04em",
                 }}
               >
-                What we stand for.
+                <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: 'rgba(255,255,255,0.55)', marginRight: 9 }}>03</span>What we stand for.
               </span>
             </div>
           </div>
@@ -717,10 +709,10 @@ function ValuesSection() {
         <ScrollReveal delay={0.1}>
           <h2
             style={{
-              fontSize: "clamp(32px, 5vw, 48px)",
+              fontSize: "clamp(24px, 5vw, 48px)",
               fontWeight: 800,
               color: "#fff",
-              lineHeight: 1.1,
+              lineHeight: 1.15,
               letterSpacing: "-0.02em",
               textAlign: "center",
               marginBottom: 32,
@@ -743,15 +735,14 @@ function ValuesSection() {
           {values.map((v, i) => (
             <ScrollReveal key={v.title} delay={i * 0.1}>
               <div
-                className="hp-lift"
+                className="hp-card-dark hp-lift"
                 style={{
                   padding: "24px 20px",
-                  borderRadius: 20,
+                  borderRadius: 16,
                   backgroundColor: "rgba(255,255,255,0.04)",
                   border: "1px solid rgba(255,255,255,0.08)",
                   height: "100%",
                   cursor: "default",
-                  transition: "border-color 0.3s ease",
                 }}
               >
                 <div
@@ -815,22 +806,22 @@ function WorkforceSection() {
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              padding: "6px 16px",
+              padding: "6px 14px",
               borderRadius: 9999,
               backgroundColor: "rgba(243,216,64,0.1)",
               border: "1px solid rgba(243,216,64,0.2)",
-              marginBottom: 32,
+              marginBottom: 'clamp(24px, 4vw, 40px)',
             }}
           >
             <span
               style={{
                 color: "#374151",
-                fontSize: 13,
+                fontSize: 'clamp(11px, 1.3vw, 14px)',
                 fontWeight: 600,
-                letterSpacing: "0.03em",
+                letterSpacing: "0.04em",
               }}
             >
-              Your new team.
+              <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: '#8a6d05', marginRight: 9 }}>04</span>Your new team.
             </span>
           </div>
         </ScrollReveal>
@@ -838,10 +829,10 @@ function WorkforceSection() {
         <ScrollReveal delay={0.1}>
           <h2
             style={{
-              fontSize: "clamp(32px, 5vw, 48px)",
+              fontSize: "clamp(24px, 5vw, 48px)",
               fontWeight: 800,
               color: "#1A1A1A",
-              lineHeight: 1.1,
+              lineHeight: 1.15,
               letterSpacing: "-0.02em",
               marginBottom: 16,
               maxWidth: 500,
@@ -854,7 +845,7 @@ function WorkforceSection() {
         <ScrollReveal delay={0.2}>
           <p
             style={{
-              fontSize: 17,
+              fontSize: 'clamp(16px, 2vw, 20px)',
               lineHeight: 1.7,
               color: "#535353",
               maxWidth: 520,
@@ -977,7 +968,7 @@ function FounderSection() {
                     position: "relative",
                     borderRadius: 20,
                     overflow: "hidden",
-                    boxShadow: "0 20px 60px rgba(0,0,0,0.1)",
+                    boxShadow: 'var(--elev-raised)',
                   }}
                 >
                   <Image
@@ -1032,22 +1023,22 @@ function FounderSection() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 8,
-                  padding: "6px 16px",
+                  padding: "6px 14px",
                   borderRadius: 9999,
                   backgroundColor: "rgba(243,216,64,0.1)",
                   border: "1px solid rgba(243,216,64,0.2)",
-                  marginBottom: 24,
+                  marginBottom: 'clamp(24px, 4vw, 40px)',
                 }}
               >
                 <span
                   style={{
                     color: "#374151",
-                    fontSize: 13,
+                    fontSize: 'clamp(11px, 1.3vw, 14px)',
                     fontWeight: 600,
-                    letterSpacing: "0.03em",
+                    letterSpacing: "0.04em",
                   }}
                 >
-                  Why we exist.
+                  <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: '#8a6d05', marginRight: 9 }}>05</span>Why we exist.
                 </span>
               </div>
             </ScrollReveal>
@@ -1055,7 +1046,7 @@ function FounderSection() {
             <ScrollReveal delay={0.1}>
               <h2
                 style={{
-                  fontSize: "clamp(28px, 4vw, 40px)",
+                  fontSize: "clamp(24px, 4vw, 36px)",
                   fontWeight: 800,
                   color: "#1A1A1A",
                   lineHeight: 1.15,
@@ -1071,7 +1062,7 @@ function FounderSection() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <ScrollReveal delay={0.2}>
-                <p style={{ fontSize: 16, lineHeight: 1.7, color: "#535353" }}>
+                <p style={{ fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, color: "#535353" }}>
                   Every feature in our platform exists because a solar installer
                   asked for it. We didn&apos;t sit in an office theorising about
                   what the industry needs. We went on site visits. We sat in on
@@ -1081,7 +1072,7 @@ function FounderSection() {
               </ScrollReveal>
 
               <ScrollReveal delay={0.3}>
-                <p style={{ fontSize: 16, lineHeight: 1.7, color: "#535353" }}>
+                <p style={{ fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, color: "#535353" }}>
                   What we found was simple: solar installers don&apos;t need
                   better tools. They need more people. And since they can&apos;t
                   find the people, we built them. Digital people. Who work
@@ -1091,7 +1082,7 @@ function FounderSection() {
               </ScrollReveal>
 
               <ScrollReveal delay={0.4}>
-                <p style={{ fontSize: 16, lineHeight: 1.7, color: "#535353" }}>
+                <p style={{ fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, color: "#535353" }}>
                   That&apos;s Renewably. That&apos;s what we do. And we&apos;re
                   just getting started.
                 </p>
@@ -1144,10 +1135,10 @@ function FinalCTA() {
         <ScrollReveal>
           <h2
             style={{
-              fontSize: "clamp(32px, 5vw, 44px)",
+              fontSize: "clamp(24px, 5vw, 48px)",
               fontWeight: 800,
               color: DARK,
-              lineHeight: 1.1,
+              lineHeight: 1.15,
               letterSpacing: "-0.02em",
               marginBottom: 16,
             }}
@@ -1159,8 +1150,8 @@ function FinalCTA() {
         <ScrollReveal delay={0.15}>
           <p
             style={{
-              fontSize: 17,
-              lineHeight: 1.6,
+              fontSize: 'clamp(16px, 2vw, 20px)',
+              lineHeight: 1.7,
               color: "#374151",
               marginBottom: 32,
               maxWidth: 500,

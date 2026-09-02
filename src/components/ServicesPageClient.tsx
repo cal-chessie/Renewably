@@ -88,7 +88,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           duration={0.7}
           className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
         >
-          <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 16, boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
+          <div className="hp-lift" style={{ position: 'relative', overflow: 'hidden', borderRadius: 16, boxShadow: 'var(--elev-raised)' }}>
             <Image
               src={agent.image}
               alt={`${agent.title}, AI workforce for solar`}
@@ -111,10 +111,10 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           delay={0.15}
           className={isReversed ? "lg:order-1" : "lg:order-2"}
         >
-          <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, marginBottom: 'clamp(10px, 1.5vw, 16px)' }}>
+          <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(10px, 1.5vw, 16px)' }}>
             {agent.title}
           </h2>
-          <p style={{ color: '#535353', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', lineHeight: 1.7 }}>
+          <p style={{ color: '#535353', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7 }}>
             {agent.desc}
           </p>
         </ScrollReveal>
@@ -134,16 +134,16 @@ function PricingSection() {
       <div style={{ maxWidth: 896, margin: '0 auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(20px, 3vw, 24px)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
             <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
-              What it costs.
+              <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: '#8a6d05', marginRight: 9 }}>02</span>What it costs.
             </span>
           </div>
         </ScrollReveal>
 
         {/* Intro */}
         <ScrollReveal delay={0.1}>
-          <p style={{ color: '#535353', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', lineHeight: 1.7, marginBottom: 'clamp(32px, 5vw, 48px)', maxWidth: 640 }}>
+          <p style={{ color: '#535353', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, marginBottom: 'clamp(32px, 5vw, 48px)', maxWidth: 640 }}>
             Less than one junior admin. Less than the time you spend on grants yourself. Less than the customers you lose because nobody called back.
           </p>
         </ScrollReveal>
@@ -152,12 +152,12 @@ function PricingSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" style={{ marginBottom: 'clamp(24px, 4vw, 40px)' }}>
           {pricingItems.map((item, i) => (
             <ScrollReveal key={item.name} delay={0.1 + i * 0.06}>
-              <div className="flex items-center justify-between p-4 sm:p-5 rounded-xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 transition-all duration-300 group">
+              <div className="flex items-center justify-between p-4 sm:p-5 rounded-2xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 hp-lift-sm group">
                 <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-[#F3D840] group-hover:scale-125 transition-transform" />
+                  <div className="w-2 h-2 rounded-full bg-[#F3D840] group-hover:scale-125 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]" />
                   <span style={{ color: '#1A1A1A', fontWeight: 600, fontSize: 'clamp(0.875rem, 1.2vw, 1rem)' }}>{item.name}</span>
                 </div>
-                <span style={{ color: '#374151', fontWeight: 700, fontSize: 'clamp(0.875rem, 1.2vw, 1rem)' }}>{item.price}</span>
+                <span style={{ color: '#374151', fontWeight: 700, fontSize: 'clamp(0.875rem, 1.2vw, 1rem)', fontVariantNumeric: 'tabular-nums' }}>{item.price}</span>
               </div>
             </ScrollReveal>
           ))}
@@ -174,16 +174,16 @@ function PricingSection() {
             marginBottom: 'clamp(12px, 2vw, 16px)',
             opacity: totalInView ? 1 : 0,
             transform: totalInView ? 'scale(1)' : 'scale(0.95)',
-            transition: 'opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s',
+            transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
           }}
         >
-          <p style={{ color: '#1A1A1A', fontSize: 'clamp(1.25rem, 4vw, 2.5rem)', fontWeight: 800, lineHeight: 1.2 }}>
+          <p style={{ color: '#1A1A1A', fontSize: 'clamp(1.25rem, 4vw, 2.5rem)', fontWeight: 800, lineHeight: 1.2, fontVariantNumeric: 'tabular-nums' }}>
             €1,000 – €1,500/month for your full AI team
           </p>
         </div>
 
         <ScrollReveal delay={0.3}>
-          <p style={{ textAlign: 'center', color: '#535353', fontSize: 'clamp(1rem, 1.5vw, 1.125rem)', marginBottom: 'clamp(10px, 1.5vw, 16px)' }}>
+          <p style={{ textAlign: 'center', color: '#535353', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(10px, 1.5vw, 16px)' }}>
             That&apos;s less than one day of a contractor. For a full team.
           </p>
         </ScrollReveal>
@@ -251,7 +251,7 @@ export default function ServicesPageClient() {
 
               <p
                 className="hp-rise"
-                style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(1rem, 2vw, 1.25rem)', lineHeight: 1.7, maxWidth: 640, animationDelay: '0.8s' }}
+                style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, maxWidth: 640, animationDelay: '0.8s' }}
               >
                 A fully managed AI workforce deployed across your operations, customer support, grants, and logistics. Built for solar companies that want to scale without finding staff they can&apos;t hire.
               </p>
@@ -267,14 +267,14 @@ export default function ServicesPageClient() {
           <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
             {/* Badge */}
             <ScrollReveal>
-              <div style={{ textAlign: 'center', maxWidth: 768, margin: '0 auto clamp(32px, 5vw, 80px)' }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)' }}>
+              <div style={{ textAlign: 'center', maxWidth: 768, margin: '0 auto clamp(24px, 4vw, 40px)' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)' }}>
                   <span
                     className="hp-pulse"
                     style={{ width: 8, height: 8, borderRadius: '50%', background: '#F3D840' }}
                   />
                   <span style={{ color: '#374151', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                    Here&apos;s what we deploy.
+                    <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontWeight: 700, fontSize: '0.9em', letterSpacing: '0.06em', color: '#8a6d05', marginRight: 9 }}>01</span>Here&apos;s what we deploy.
                   </span>
                 </div>
               </div>
@@ -322,6 +322,7 @@ export default function ServicesPageClient() {
         {/* ===== AUDIENCE ===== */}
         <AudienceSection
           badgeText="Who is this for."
+          sectionNumber="03"
           padding={{ top: 'clamp(48px, 10vw, 112px)', bottom: 'clamp(48px, 10vw, 112px)' }}
         />
 
@@ -330,6 +331,7 @@ export default function ServicesPageClient() {
           ctaTitle="Let\u2019s talk."
           ctaButtonLabel="Book a Call"
           ctaButtonColor="#fff"
+          sectionNumber="04"
           padding={{ top: 'clamp(48px, 10vw, 112px)', bottom: 'clamp(48px, 10vw, 112px)' }}
         />
       </div>
