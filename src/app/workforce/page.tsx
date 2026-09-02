@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import WorkforcePageClient from "@/components/WorkforcePageClient";
 
 export const metadata: Metadata = {
-  title: "AI Workforce: 8 AI Employees for Solar Installers (+ 1 Coming Soon) | Renewably",
+  title: "AI Workforce: 8 AI Employees for Solar Installers (+ 1 Coming Soon)",
   description: "Meet your AI workforce. Eight specialised agents: CEO, Operations, Support, Grants, Logistics, ESB, QA, and Reporting: that automate your Irish solar business. Marketing agent coming soon.",
   alternates: { canonical: "https://renewably.ie/workforce" },
   openGraph: {

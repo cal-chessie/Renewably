@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ContactPageClient from "@/components/ContactPageClient";
 
 export const metadata: Metadata = {
-  title: "Contact: Let's Talk | Renewably",
+  title: "Contact: Let's Talk",
   description:
     "Get in touch with Renewably. We deploy AI agents across your solar operations. Book a free strategy call and we will show you what your AI team looks like. Reply within 24 hours.",
   alternates: { canonical: "https://renewably.ie/contact" },

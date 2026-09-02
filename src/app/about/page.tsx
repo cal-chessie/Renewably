@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import AboutPageClient from "@/components/AboutPageClient";
 
 export const metadata: Metadata = {
-  title: "About: AI Workforce for Solar Installers in Ireland | Renewably",
+  title: "About: AI Workforce for Solar Installers in Ireland",
   description:
     "Renewably deploys 8 AI employees across your solar operations: grants, ESB applications, customer support, logistics, QA, and reporting. Based in Ireland. Built for solar installers.",
   alternates: { canonical: "https://renewably.ie/about" },

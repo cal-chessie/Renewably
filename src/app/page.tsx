@@ -2,7 +2,7 @@ import HomePageClient from "@/components/HomePageClient";
 import { homeFaqs } from "@/data/homeFaqs";
 
 export const metadata = {
-  title: 'Renewably: AI Workforce for Solar Installers in Ireland',
+  title: { absolute: 'Renewably: AI Workforce for Solar Installers in Ireland' },
   description: 'Renewably deploys 8 AI agents that automate your solar PV business: grants, ESB applications, customer support, logistics, and more. Purpose-built for Irish solar installers doing 20+ jobs a month.',
   alternates: {
     canonical: 'https://renewably.ie',

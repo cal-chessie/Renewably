@@ -3,7 +3,7 @@ import PricingPageClient from "@/components/PricingPageClient";
 import { pricingFaqs } from "@/data/pricingFaqs";
 
 export const metadata: Metadata = {
-  title: "Pricing: AI Workforce for Solar Installers | Renewably",
+  title: "Pricing: AI Workforce for Solar Installers",
   description:
     "Simple pricing for Renewably's AI workforce. From €1,000/month with no hidden fees. All 8 agents, an operations dashboard, and dedicated support included. Purpose-built for Irish solar installers.",
   alternates: { canonical: "https://renewably.ie/pricing" },
