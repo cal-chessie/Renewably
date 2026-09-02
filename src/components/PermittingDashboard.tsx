@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 /* ============================================================
-   PERMITTING DASHBOARD — Interactive permitting agent laptop mockup
+   PERMITTING DASHBOARD - Interactive permitting agent laptop mockup
    ============================================================ */
 
 type PermitStatus = "submitted" | "under-review" | "approved" | "rejected" | "escalated";
@@ -51,12 +51,12 @@ const INITIAL_FOLLOWUPS: Followup[] = [
 ];
 
 const INITIAL_TIMELINE: TimelineEvent[] = [
-  { time: "09:30", event: "ESB permit approved \u2014 Mary Walsh (NC6, Cork)" },
-  { time: "10:15", event: "Application submitted \u2014 Anne Doyle (NC7, Galway)" },
-  { time: "11:00", event: "Day 5 follow-up sent \u2014 Anne Doyle (NC7)" },
-  { time: "13:30", event: "Day 10 follow-up sent \u2014 Pat Smith (NC6)" },
-  { time: "14:45", event: "Application escalated \u2014 Tom Kelly (18 days pending)" },
-  { time: "15:30", event: "New application submitted \u2014 Declan Finnerty (NC6, Mayo)" },
+  { time: "09:30", event: "Grid connection approved: Mary Walsh (NC6, Cork)" },
+  { time: "10:15", event: "Application submitted: Anne Doyle (NC7, Galway)" },
+  { time: "11:00", event: "Day 5 follow-up sent: Anne Doyle (NC7)" },
+  { time: "13:30", event: "Day 10 follow-up sent: Pat Smith (NC6)" },
+  { time: "14:45", event: "Application escalated: Tom Kelly (18 days pending)" },
+  { time: "15:30", event: "New application submitted: Declan Finnerty (NC6, Mayo)" },
 ];
 
 const NEW_CUSTOMERS = ["Eileen Collins", "Michael Ryan", "Catherine Lynch", "John Keane"];
@@ -93,8 +93,8 @@ function getFollowupColor(days: number): string {
 }
 
 function getFollowupLabel(days: number): string {
-  if (days >= 15) return "URGENT \u2014 ESCALATE";
-  if (days >= 8) return "WARNING \u2014 FOLLOW UP";
+  if (days >= 15) return "URGENT: ESCALATE";
+  if (days >= 8) return "WARNING: FOLLOW UP";
   return "NORMAL";
 }
 
@@ -137,7 +137,7 @@ export default function PermittingDashboard() {
             if (permit.daysPending >= 5) {
               permit.status = "under-review";
               permit.progress = 45;
-              newEvents.push({ time: fmtTime(), event: `Application under review \u2014 ${permit.customer} (${permit.type})` });
+              newEvents.push({ time: fmtTime(), event: `Application under review: ${permit.customer} (${permit.type})` });
             }
           } else if (permit.status === "under-review") {
             permit.progress = Math.min(90, permit.progress + 3);
@@ -145,17 +145,17 @@ export default function PermittingDashboard() {
             // Day 5 follow-up
             if (permit.daysPending === 5) {
               followupDelta++;
-              newEvents.push({ time: fmtTime(), event: `Day 5 follow-up sent \u2014 ${permit.customer} (${permit.type})` });
+              newEvents.push({ time: fmtTime(), event: `Day 5 follow-up sent: ${permit.customer} (${permit.type})` });
             }
             // Day 10 follow-up
             if (permit.daysPending === 10) {
               followupDelta++;
-              newEvents.push({ time: fmtTime(), event: `Day 10 follow-up sent \u2014 ${permit.customer} (${permit.type})` });
+              newEvents.push({ time: fmtTime(), event: `Day 10 follow-up sent: ${permit.customer} (${permit.type})` });
             }
             // Day 15 escalation
             if (permit.daysPending === 15) {
               permit.status = "escalated";
-              newEvents.push({ time: fmtTime(), event: `Application escalated \u2014 ${permit.customer} (${permit.type}) \u2014 manager notified` });
+              newEvents.push({ time: fmtTime(), event: `Application escalated: ${permit.customer} (${permit.type}), manager notified` });
             }
             // Random approval
             if (Math.random() > 0.92) {
@@ -163,14 +163,14 @@ export default function PermittingDashboard() {
               permit.progress = 100;
               permit.approved = new Date().toISOString().slice(0, 10);
               approvedDelta++;
-              newEvents.push({ time: fmtTime(), event: `ESB permit approved \u2014 ${permit.customer} (${permit.type})` });
+              newEvents.push({ time: fmtTime(), event: `Grid connection approved: ${permit.customer} (${permit.type})` });
             }
           } else if (permit.status === "escalated" && Math.random() > 0.8) {
             permit.status = "approved";
             permit.progress = 100;
             permit.approved = new Date().toISOString().slice(0, 10);
             approvedDelta++;
-            newEvents.push({ time: fmtTime(), event: `ESB permit approved (escalated) \u2014 ${permit.customer} (${permit.type})` });
+            newEvents.push({ time: fmtTime(), event: `Grid connection approved (escalated): ${permit.customer} (${permit.type})` });
           }
         });
 
@@ -208,7 +208,7 @@ export default function PermittingDashboard() {
             approved: null,
             daysPending: 0,
           });
-          newEvents.push({ time: fmtTime(), event: `New permit application \u2014 ${NEW_CUSTOMERS[idx]} (${type}, ${NEW_COUNTIES[idx]})` });
+          newEvents.push({ time: fmtTime(), event: `New ESB Networks application: ${NEW_CUSTOMERS[idx]} (${type}, ${NEW_COUNTIES[idx]})` });
         }
 
         // Update timeline
@@ -257,7 +257,7 @@ export default function PermittingDashboard() {
         <div style={S.permittingMain}>
           {/* Stats Row */}
           <div className="sr" style={S.statsRow}>
-            <div style={S.statCard}><div style={S.statNumber}>{stats.activePermits}</div><div style={S.statLabel}>ACTIVE PERMITS</div></div>
+            <div style={S.statCard}><div style={S.statNumber}>{stats.activePermits}</div><div style={S.statLabel}>ACTIVE APPLICATIONS</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.approvedToday}</div><div style={S.statLabel}>APPROVED TODAY</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.avgProcessing.toFixed(2)}</div><div style={S.statLabel}>AVG PROCESSING (days)</div></div>
             <div style={S.statCard}><div style={S.statNumber}>{stats.followupsToday}</div><div style={S.statLabel}>FOLLOW-UPS TODAY</div></div>
@@ -267,7 +267,7 @@ export default function PermittingDashboard() {
           <div className="tc" style={S.twoCol}>
             {/* Active Permits */}
             <div style={S.panel}>
-              <div style={S.panelHeader}>ACTIVE PERMITS</div>
+              <div style={S.panelHeader}>ACTIVE APPLICATIONS</div>
               <div style={S.panelContent}>
                 {permits.map((permit) => (
                   <div key={permit.id} style={S.permitCard}>
@@ -312,7 +312,7 @@ export default function PermittingDashboard() {
 
           {/* Permit Timeline */}
           <div style={S.panel}>
-            <div style={S.panelHeader}>PERMIT TIMELINE</div>
+            <div style={S.panelHeader}>APPLICATION TIMELINE</div>
             <div style={S.panelContent}>
               {timeline.map((item, i) => (
                 <div key={i} style={S.timelineItem}>
@@ -326,7 +326,7 @@ export default function PermittingDashboard() {
 
         {/* Footer */}
         <div className="ft" style={S.permittingFooter}>
-          <span>AI-powered permitting &middot; ESB Networks &middot; NC6/NC7 &middot; Auto-follow-up</span>
+          <span>AI-powered grid connections &middot; ESB Networks &middot; NC6/NC7 &middot; Auto-follow-up</span>
           <span>Auto-refresh every 4 seconds</span>
         </div>
       </div>

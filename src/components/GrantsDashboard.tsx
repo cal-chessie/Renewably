@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 /* ============================================================
-   GRANTS DASHBOARD — Interactive grants agent laptop mockup
+   GRANTS DASHBOARD - Interactive grants agent laptop mockup
    ============================================================ */
 
 type AppStatus = "submitted" | "under-review" | "approved" | "rejected" | "resubmitted";
@@ -52,11 +52,11 @@ const INITIAL_DOCUMENTS: GrantDoc[] = [
 ];
 
 const INITIAL_TIMELINE: TimelineEvent[] = [
-  { time: "09:30", event: "SEAI grant approved \u2014 Mary Walsh (\u20ac1,800.00)" },
-  { time: "10:15", event: "Application submitted \u2014 Anne Doyle (Solar PV)" },
-  { time: "11:00", event: "Document request sent \u2014 Pat Smith (MPRN missing)" },
-  { time: "13:30", event: "Resubmission received \u2014 Tom Kelly (Battery Storage)" },
-  { time: "14:45", event: "BER certificate verified \u2014 Mary Walsh" },
+  { time: "09:30", event: "SEAI grant approved: Mary Walsh (\u20ac1,800.00)" },
+  { time: "10:15", event: "Application submitted: Anne Doyle (Solar PV)" },
+  { time: "11:00", event: "Document request sent: Pat Smith (MPRN missing)" },
+  { time: "13:30", event: "Resubmission received: Tom Kelly (Battery Storage)" },
+  { time: "14:45", event: "BER certificate verified: Mary Walsh" },
 ];
 
 const NEW_CUSTOMERS = ["Eileen Collins", "Michael Ryan", "Catherine Lynch", "John Keane"];
@@ -129,21 +129,21 @@ export default function GrantsDashboard() {
           if (app.status === "submitted" && Math.random() > 0.8) {
             app.status = "under-review";
             app.progress = 50;
-            newEvents.push({ time: fmtTime(), event: `Application under review \u2014 ${app.customer} (${app.scheme})` });
+            newEvents.push({ time: fmtTime(), event: `Application under review: ${app.customer} (${app.scheme})` });
           } else if (app.status === "under-review" && Math.random() > 0.85) {
             app.status = "approved";
             app.progress = 100;
             app.approved = new Date().toISOString().slice(0, 10);
             approvedDelta++;
-            newEvents.push({ time: fmtTime(), event: `SEAI grant approved \u2014 ${app.customer} (\u20ac${app.amount.toLocaleString('en-IE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})` });
+            newEvents.push({ time: fmtTime(), event: `SEAI grant approved: ${app.customer} (\u20ac${app.amount.toLocaleString('en-IE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})` });
           } else if (app.status === "under-review" && Math.random() > 0.95) {
             app.status = "rejected";
             app.progress = 100;
-            newEvents.push({ time: fmtTime(), event: `Application rejected \u2014 ${app.customer} \u2014 resubmission required` });
+            newEvents.push({ time: fmtTime(), event: `Application rejected: ${app.customer}, resubmission required` });
           } else if (app.status === "rejected" && Math.random() > 0.9) {
             app.status = "resubmitted";
             app.progress = 80;
-            newEvents.push({ time: fmtTime(), event: `Application resubmitted \u2014 ${app.customer}` });
+            newEvents.push({ time: fmtTime(), event: `Application resubmitted: ${app.customer}` });
           } else if (app.status === "resubmitted" && Math.random() > 0.8) {
             app.status = "under-review";
             app.progress = 65;
@@ -166,7 +166,7 @@ export default function GrantsDashboard() {
             submitted: new Date().toISOString().slice(0, 10),
             approved: null,
           });
-          newEvents.push({ time: fmtTime(), event: `New application submitted \u2014 ${NEW_CUSTOMERS[idx]} (${scheme})` });
+          newEvents.push({ time: fmtTime(), event: `New application submitted: ${NEW_CUSTOMERS[idx]} (${scheme})` });
         }
 
         // Update timeline
@@ -205,10 +205,10 @@ export default function GrantsDashboard() {
         next.forEach((doc) => {
           if (doc.status === "pending" && Math.random() > 0.85) {
             doc.status = "verified";
-            newEvents.push({ time: fmtTime(), event: `Document verified \u2014 ${doc.name} (${doc.customer})` });
+            newEvents.push({ time: fmtTime(), event: `Document verified: ${doc.name} (${doc.customer})` });
           } else if (doc.status === "missing" && Math.random() > 0.9) {
             doc.status = "pending";
-            newEvents.push({ time: fmtTime(), event: `Document uploaded \u2014 ${doc.name} (${doc.customer})` });
+            newEvents.push({ time: fmtTime(), event: `Document uploaded: ${doc.name} (${doc.customer})` });
           }
         });
 

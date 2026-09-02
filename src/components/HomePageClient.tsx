@@ -314,7 +314,7 @@ function SolutionSection() {
         {/* Body */}
         <ScrollReveal delay={0.25}>
           <p style={{ color: '#535353', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
-            They text back the missed calls. They prepare the SEAI grant paperwork. They chase ESB Networks on the NC6. They book the site surveys. They order the panels and inverters. They flag a stalled grant before the homeowner rings you about it.
+            They answer every enquiry the moment it lands. They prepare the SEAI grant paperwork. They chase ESB Networks on the NC6. They book the site surveys. They order the panels and inverters. They flag a stalled grant before the homeowner rings you about it.
           </p>
         </ScrollReveal>
 

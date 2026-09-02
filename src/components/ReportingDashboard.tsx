@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 /* ============================================================
-   REPORTING DASHBOARD — Interactive reporting agent laptop mockup
+   REPORTING DASHBOARD - Interactive reporting agent laptop mockup
    ============================================================ */
 
 interface Bottleneck {
@@ -26,7 +26,7 @@ interface TimelineEvent {
 }
 
 const INITIAL_BOTTLENECKS: Bottleneck[] = [
-  { name: "ESB Permits", severity: "high", count: 3, detail: "3.00 applications pending >10 days" },
+  { name: "ESB Networks Applications", severity: "high", count: 3, detail: "3.00 applications pending >10 days" },
   { name: "SEAI Grants", severity: "medium", count: 2, detail: "2.00 applications awaiting customer docs" },
   { name: "Equipment Delivery", severity: "medium", count: 1, detail: "1.00 order delayed (ETA +3 days)" },
   { name: "Customer Follow-up", severity: "low", count: 4, detail: "4.00 quotes awaiting customer response" },
@@ -38,7 +38,7 @@ const INITIAL_AGENT_PERF: AgentPerf[] = [
   { name: "Customer Support", metric: "Response time", value: "2.40 min avg", status: "excellent" },
   { name: "Grants Agent", metric: "Applications", value: "12.00 active / 92.00% approval", status: "good" },
   { name: "Logistics Agent", metric: "On-time delivery", value: "94.00%", status: "good" },
-  { name: "Permitting Agent", metric: "Permits tracked", value: "9.00 active / 3.00 delayed", status: "warning" },
+  { name: "ESB agent", metric: "NC6 applications tracked", value: "9.00 active / 3.00 delayed", status: "warning" },
   { name: "QA Agent", metric: "Quality score", value: "98.50%", status: "excellent" },
   { name: "Reporting Agent", metric: "Reports generated", value: "Weekly summary sent", status: "excellent" },
 ];
@@ -146,7 +146,7 @@ export default function ReportingDashboard() {
       setBottlenecks((prev) => {
         const next = prev.map((b) => ({ ...b }));
         next.forEach((b) => {
-          if (b.name === "ESB Permits" && Math.random() > 0.7) {
+          if (b.name === "ESB Networks Applications" && Math.random() > 0.7) {
             let countChange = Math.random() > 0.6 ? 1 : -1;
             let newCount = b.count + countChange;
             if (newCount < 0) newCount = 0;
@@ -182,7 +182,7 @@ export default function ReportingDashboard() {
       setAgentPerf((prev) => {
         return prev.map((a) => {
           const copy = { ...a };
-          if (copy.name === "Permitting Agent") {
+          if (copy.name === "ESB agent") {
             const permitCount = 3;
             if (permitCount > 2) {
               copy.status = "warning";

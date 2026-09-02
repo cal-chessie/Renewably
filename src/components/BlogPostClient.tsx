@@ -487,7 +487,7 @@ export default function BlogPostClient() {
               Ready to see this in action?
             </h2>
             <p style={{ fontSize: 16, color: "#374151", marginBottom: 32, maxWidth: 480, margin: "0 auto 32px", lineHeight: 1.7 }}>
-              Every agent on this page is deployed in real solar companies across Ireland. Book a call and we will show you how.
+              Every agent on this page is built for real solar companies in Ireland. Book a call and we will show you how.
             </p>
             <MagneticButton href="/contact">
               Book a Free Call <ArrowRightIcon />

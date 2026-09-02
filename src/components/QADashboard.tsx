@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 /* ============================================================
-   QA DASHBOARD — Interactive QA agent laptop mockup
+   QA DASHBOARD - Interactive QA agent laptop mockup
    ============================================================ */
 
 type QAStatus = "pending" | "in-review" | "approved" | "rejected";
@@ -45,11 +45,11 @@ const INITIAL_REVIEWS: QAReview[] = [
 ];
 
 const INITIAL_TIMELINE: TimelineEvent[] = [
-  { time: "09:30", event: "QA review started \u2014 Mary Walsh (JOB-1042)" },
-  { time: "10:15", event: "Missing paperwork flagged \u2014 Pat Smith (JOB-1041)" },
-  { time: "11:00", event: "ESB permit pending \u2014 Anne Doyle (JOB-1040)" },
-  { time: "13:30", event: "Customer notified of missing paperwork \u2014 Pat Smith" },
-  { time: "14:45", event: "QA approved \u2014 Mary Walsh \u2014 ready for handover" },
+  { time: "09:30", event: "QA review started: Mary Walsh (JOB-1042)" },
+  { time: "10:15", event: "Missing paperwork flagged: Pat Smith (JOB-1041)" },
+  { time: "11:00", event: "NC6 pending: Anne Doyle (JOB-1040)" },
+  { time: "13:30", event: "Customer notified of missing paperwork: Pat Smith" },
+  { time: "14:45", event: "QA approved: Mary Walsh, ready for handover" },
 ];
 
 const NEW_CUSTOMERS = ["Eileen Collins", "Michael Ryan", "Catherine Lynch", "John Keane"];
@@ -97,7 +97,7 @@ function renderCheckIcon(passed: boolean): { icon: string; color: string } {
 
 function renderCheckText(passed: boolean, label: string): { text: string; color: string } {
   if (passed) return { text: label, color: "#CCC" };
-  return { text: `${label} \u2014 MISSING`, color: "#EF4444" };
+  return { text: `${label}: MISSING`, color: "#EF4444" };
 }
 
 export default function QADashboard() {
@@ -127,16 +127,16 @@ export default function QADashboard() {
           if (review.status === "pending" && Math.random() > 0.7) {
             review.status = "in-review";
             review.progress = 40;
-            newEvents.push({ time: fmtTime(), event: `QA review started \u2014 ${review.customer} (${review.id})` });
+            newEvents.push({ time: fmtTime(), event: `QA review started: ${review.customer} (${review.id})` });
           } else if (review.status === "in-review" && review.progress < 100) {
             review.progress = Math.min(100, review.progress + Math.floor(Math.random() * 15) + 5);
 
             const checks: { key: keyof Checklist; label: string; eventMsg: string; probability: number }[] = [
-              { key: "paperwork", label: "Signed Paperwork", eventMsg: `Paperwork received \u2014 ${review.customer}`, probability: 0.6 },
-              { key: "photos", label: "Installation Photos", eventMsg: `Photos uploaded \u2014 ${review.customer}`, probability: 0.6 },
-              { key: "permit", label: "ESB Permit", eventMsg: `ESB permit approved \u2014 ${review.customer}`, probability: 0.5 },
-              { key: "grant", label: "SEAI Grant", eventMsg: `SEAI grant confirmed \u2014 ${review.customer}`, probability: 0.5 },
-              { key: "satisfaction", label: "Customer Satisfaction", eventMsg: `Customer satisfaction survey completed \u2014 ${review.customer}`, probability: 0.7 },
+              { key: "paperwork", label: "Signed Paperwork", eventMsg: `Paperwork received: ${review.customer}`, probability: 0.6 },
+              { key: "photos", label: "Installation Photos", eventMsg: `Photos uploaded: ${review.customer}`, probability: 0.6 },
+              { key: "permit", label: "ESB Permit", eventMsg: `NC6 approved: ${review.customer}`, probability: 0.5 },
+              { key: "grant", label: "SEAI Grant", eventMsg: `SEAI grant confirmed: ${review.customer}`, probability: 0.5 },
+              { key: "satisfaction", label: "Customer Satisfaction", eventMsg: `Customer satisfaction survey completed: ${review.customer}`, probability: 0.7 },
             ];
 
             checks.forEach((c) => {
@@ -151,7 +151,7 @@ export default function QADashboard() {
               review.status = "approved";
               review.progress = 100;
               approvedDelta++;
-              newEvents.push({ time: fmtTime(), event: `QA approved \u2014 ${review.customer} \u2014 ready for handover` });
+              newEvents.push({ time: fmtTime(), event: `QA approved: ${review.customer}, ready for handover` });
             }
           }
         });
@@ -162,7 +162,7 @@ export default function QADashboard() {
           if (review.status === "approved") return;
           if (!review.checklist.paperwork) flaggedErrors.push({ customer: review.customer, issue: "Missing signed installation paperwork", severity: "critical", detected: "Active" });
           if (!review.checklist.photos) flaggedErrors.push({ customer: review.customer, issue: "No installation photos uploaded", severity: "critical", detected: "Active" });
-          if (!review.checklist.permit) flaggedErrors.push({ customer: review.customer, issue: "ESB permit not approved", severity: "critical", detected: "Active" });
+          if (!review.checklist.permit) flaggedErrors.push({ customer: review.customer, issue: "NC6 not approved", severity: "critical", detected: "Active" });
           if (!review.checklist.grant) flaggedErrors.push({ customer: review.customer, issue: "SEAI grant not confirmed", severity: "warning", detected: "Active" });
           if (!review.checklist.satisfaction) flaggedErrors.push({ customer: review.customer, issue: "Customer satisfaction survey pending", severity: "warning", detected: "Active" });
         });
@@ -179,7 +179,7 @@ export default function QADashboard() {
             progress: 5,
             checklist: { paperwork: false, photos: false, permit: false, grant: false, satisfaction: false },
           });
-          newEvents.push({ time: fmtTime(), event: `New job ready for QA \u2014 ${NEW_CUSTOMERS[idx]} (${NEW_COUNTIES[idx]})` });
+          newEvents.push({ time: fmtTime(), event: `New job ready for QA: ${NEW_CUSTOMERS[idx]} (${NEW_COUNTIES[idx]})` });
         }
 
         // Update timeline
@@ -245,7 +245,7 @@ export default function QADashboard() {
                       {([
                         ["paperwork", "Signed Paperwork"] as const,
                         ["photos", "Installation Photos"] as const,
-                        ["permit", "ESB Permit"] as const,
+                        ["permit", "NC6 Application"] as const,
                         ["grant", "SEAI Grant"] as const,
                         ["satisfaction", "Customer Satisfaction"] as const,
                       ]).map(([key, label]) => {

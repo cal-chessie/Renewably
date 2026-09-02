@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 /* ============================================================
-   LOGISTICS DASHBOARD — Interactive logistics agent laptop mockup
+   LOGISTICS DASHBOARD - Interactive logistics agent laptop mockup
    ============================================================ */
 
 type OrderStatus = "ordered" | "dispatched" | "delivered" | "delayed";
@@ -52,12 +52,12 @@ const INITIAL_INVENTORY: InventoryItem[] = [
 ];
 
 const INITIAL_TIMELINE: TimelineEvent[] = [
-  { time: "08:30", event: "Order ORD-2026-1042 delivered \u2014 Mary Walsh (Cork)" },
-  { time: "09:45", event: "Order ORD-2026-1041 dispatched \u2014 Pat Smith (Dublin)" },
+  { time: "08:30", event: "Order ORD-2026-1042 delivered: Mary Walsh (Cork)" },
+  { time: "09:45", event: "Order ORD-2026-1041 dispatched: Pat Smith (Dublin)" },
   { time: "10:15", event: "Inventory alert: Batteries below reorder point (23/25)" },
-  { time: "11:30", event: "New order created \u2014 Anne Doyle (10 panels, 1 inverter)" },
-  { time: "13:00", event: "Supplier order placed \u2014 50 batteries (ETA 3 days)" },
-  { time: "14:20", event: "Order ORD-2026-1039 delayed \u2014 Tom Kelly (weather)" },
+  { time: "11:30", event: "New order created: Anne Doyle (10 panels, 1 inverter)" },
+  { time: "13:00", event: "Supplier order placed: 50 batteries (ETA 3 days)" },
+  { time: "14:20", event: "Order ORD-2026-1039 delayed: Tom Kelly (weather)" },
 ];
 
 const NEW_CUSTOMERS = ["Eileen Collins", "Michael Ryan", "Catherine Lynch", "John Keane"];
@@ -128,17 +128,17 @@ export default function LogisticsDashboard() {
           if (order.status === "ordered" && Math.random() > 0.75) {
             order.status = "dispatched";
             order.progress = 60;
-            newEvents.push({ time: fmtTime(), event: `Order ${order.id} dispatched \u2014 ${order.customer}` });
+            newEvents.push({ time: fmtTime(), event: `Order ${order.id} dispatched: ${order.customer}` });
           } else if (order.status === "dispatched" && Math.random() > 0.8) {
             order.status = "delivered";
             order.progress = 100;
             order.delivered = new Date().toISOString().slice(0, 10);
             deliveredDelta++;
-            newEvents.push({ time: fmtTime(), event: `Order ${order.id} delivered \u2014 ${order.customer}` });
+            newEvents.push({ time: fmtTime(), event: `Order ${order.id} delivered: ${order.customer}` });
           } else if (order.status === "delayed" && Math.random() > 0.7) {
             order.status = "dispatched";
             order.progress = 50;
-            newEvents.push({ time: fmtTime(), event: `Order ${order.id} resolved \u2014 now dispatched` });
+            newEvents.push({ time: fmtTime(), event: `Order ${order.id} resolved: now dispatched` });
           }
         });
 
@@ -158,7 +158,7 @@ export default function LogisticsDashboard() {
             delivered: null,
             eta: etaDate,
           });
-          newEvents.push({ time: fmtTime(), event: `New order created \u2014 ${NEW_CUSTOMERS[idx]} (${items})` });
+          newEvents.push({ time: fmtTime(), event: `New order created: ${NEW_CUSTOMERS[idx]} (${items})` });
         }
 
         // Update timeline
@@ -192,7 +192,7 @@ export default function LogisticsDashboard() {
             item.stock += restockAmount;
             item.status = "high";
             valueDelta += restockAmount * item.unitValue;
-            newEvents.push({ time: fmtTime(), event: `Auto-reorder triggered \u2014 ${item.name} (+${restockAmount} units)` });
+            newEvents.push({ time: fmtTime(), event: `Auto-reorder triggered: ${item.name} (+${restockAmount} units)` });
           }
           // Random consumption
           if (Math.random() > 0.6 && item.stock > 0) {
@@ -200,7 +200,7 @@ export default function LogisticsDashboard() {
             item.stock = Math.max(0, item.stock - consumed);
             if (item.stock < item.reorderPoint && item.status !== "low") {
               item.status = "low";
-              newEvents.push({ time: fmtTime(), event: `Low stock alert \u2014 ${item.name} (${item.stock} units remaining)` });
+              newEvents.push({ time: fmtTime(), event: `Low stock alert: ${item.name} (${item.stock} units remaining)` });
             } else if (item.stock > item.reorderPoint * 2) {
               item.status = "high";
             } else if (item.stock > item.reorderPoint) {

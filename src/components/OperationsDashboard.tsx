@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 /* ============================================================
-   OPERATIONS DASHBOARD — Interactive ops agent laptop mockup
+   OPERATIONS DASHBOARD - Interactive ops agent laptop mockup
    ============================================================ */
 
 const INITIAL_JOBS: Array<{ id: number; name: string; county: string; stage: string; progress: number; crew: string | null }> = [
@@ -17,18 +17,18 @@ const INITIAL_JOBS: Array<{ id: number; name: string; county: string; stage: str
 
 const INITIAL_CREWS: Array<{ id: number; name: string; task: string; status: string; progress: number }> = [
   { id: 1, name: "Sean's Team", task: "Installing Mary Walsh (Cork)", status: "active", progress: 68 },
-  { id: 2, name: "Mary's Team", task: "Waiting on ESB permit — Pat Smith", status: "waiting", progress: 45 },
+  { id: 2, name: "Mary's Team", task: "Waiting on NC6 approval, Pat Smith", status: "waiting", progress: 45 },
   { id: 3, name: "Owen's Team", task: "Installing Declan Finnerty (Mayo)", status: "active", progress: 45 },
-  { id: 4, name: "Pat's Team", task: "Awaiting SEAI grant — Anne Doyle", status: "idle", progress: 80 },
+  { id: 4, name: "Pat's Team", task: "Awaiting SEAI grant, Anne Doyle", status: "idle", progress: 80 },
 ];
 
 const INITIAL_TIMELINE = [
-  { time: "08:00", event: "Crews dispatched — Sean, Mary, Owen" },
-  { time: "09:30", event: "Assessment completed — Tom Kelly (Limerick)" },
-  { time: "11:00", event: "ESB permit filed — Pat Smith (Dublin)" },
-  { time: "13:00", event: "Equipment delivered — Mary Walsh (Cork)" },
-  { time: "14:00", event: "Installation started — Mary Walsh (Cork)" },
-  { time: "15:30", event: "SEAI grant approved — Anne Doyle (Galway)" },
+  { time: "08:00", event: "Crews dispatched: Sean, Mary, Owen" },
+  { time: "09:30", event: "Assessment completed: Tom Kelly (Limerick)" },
+  { time: "11:00", event: "NC6 filed: Pat Smith (Dublin)" },
+  { time: "13:00", event: "Equipment delivered: Mary Walsh (Cork)" },
+  { time: "14:00", event: "Installation started: Mary Walsh (Cork)" },
+  { time: "15:30", event: "SEAI grant approved: Anne Doyle (Galway)" },
 ];
 
 const NEW_NAMES = ["Eileen Collins", "Michael Ryan", "Catherine Lynch", "John Keane"];
@@ -52,7 +52,7 @@ function getStageLabel(stage: string) {
     assessment: "📐 ASSESSMENT",
     quote: "📊 QUOTE",
     grant: "💰 GRANT",
-    permit: "📜 PERMIT",
+    permit: "📜 NC6",
     install: "🔧 INSTALL",
     complete: "✅ COMPLETE",
   };
@@ -63,8 +63,8 @@ function getStageHint(stage: string): { text: string; color: string } {
   const map: Record<string, { text: string; color: string }> = {
     install: { text: "", color: "" },
     assessment: { text: "📐 Site survey scheduled", color: "#3B82F6" },
-    permit: { text: "⏳ ESB Networks — awaiting approval", color: "#F97316" },
-    grant: { text: "⏳ SEAI — under review", color: "#F2CC2E" },
+    permit: { text: "⏳ ESB Networks, awaiting approval", color: "#F97316" },
+    grant: { text: "⏳ SEAI, under review", color: "#F2CC2E" },
     quote: { text: "", color: "" },
     complete: { text: "", color: "" },
   };
@@ -110,7 +110,7 @@ export default function OperationsDashboard() {
             job.progress = Math.min(100, job.progress + Math.floor(Math.random() * 6) + 2);
             if (job.progress >= 100) {
               job.stage = "complete";
-              newEvents.push({ time: fmtTime(), event: `Installation completed — ${job.name} (${job.county})` });
+              newEvents.push({ time: fmtTime(), event: `Installation completed: ${job.name} (${job.county})` });
             }
           }
           if (job.stage === "permit" && job.progress < 100) {
@@ -118,7 +118,7 @@ export default function OperationsDashboard() {
             if (job.progress >= 100) {
               job.stage = "install";
               job.progress = 0;
-              newEvents.push({ time: fmtTime(), event: `ESB permit approved — ${job.name} (${job.county})` });
+              newEvents.push({ time: fmtTime(), event: `NC6 approved: ${job.name} (${job.county})` });
             }
           }
           if (job.stage === "grant" && job.progress < 100) {
@@ -126,7 +126,7 @@ export default function OperationsDashboard() {
             if (job.progress >= 100) {
               job.stage = "permit";
               job.progress = 0;
-              newEvents.push({ time: fmtTime(), event: `SEAI grant approved — ${job.name} (${job.county})` });
+              newEvents.push({ time: fmtTime(), event: `SEAI grant approved: ${job.name} (${job.county})` });
             }
           }
         });
@@ -135,7 +135,7 @@ export default function OperationsDashboard() {
         if (Math.random() > 0.9) {
           const idx = Math.floor(Math.random() * NEW_NAMES.length);
           next.unshift({ id: Date.now(), name: NEW_NAMES[idx], county: NEW_COUNTIES[idx], stage: "assessment", progress: 0, crew: null });
-          newEvents.push({ time: fmtTime(), event: `New lead — ${NEW_NAMES[idx]} (${NEW_COUNTIES[idx]})` });
+          newEvents.push({ time: fmtTime(), event: `New lead: ${NEW_NAMES[idx]} (${NEW_COUNTIES[idx]})` });
         }
 
         // Update timeline

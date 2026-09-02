@@ -1123,7 +1123,7 @@ function FinalCTA() {
             }}
           >
             The ones who act on it are the ones winning. Stop reading. Start
-            deploying. Every article on this page is already deployed in real
+            deploying. Every article on this page is built for real
             solar companies across Ireland.
           </p>
         </ScrollReveal>

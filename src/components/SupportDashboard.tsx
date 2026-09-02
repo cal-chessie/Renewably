@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 /* ============================================================
-   SUPPORT DASHBOARD — Interactive customer support agent mockup
+   SUPPORT DASHBOARD - Interactive customer support agent mockup
    ============================================================ */
 
 const SATISFACTION = 98.47;
@@ -11,7 +11,7 @@ const SATISFACTION = 98.47;
 const INITIAL_TICKETS: Array<{ id: string; customer: string; county: string; subject: string; status: string; time: string }> = [
   { id: "TKT-1042", customer: "Mary Walsh", county: "Cork", subject: "When will my installation start?", status: "in-progress", time: "2 min ago" },
   { id: "TKT-1041", customer: "Pat Smith", county: "Dublin", subject: "Grant application status update", status: "open", time: "15 min ago" },
-  { id: "TKT-1040", customer: "Anne Doyle", county: "Galway", subject: "ESB permit delay", status: "escalated", time: "45 min ago" },
+  { id: "TKT-1040", customer: "Anne Doyle", county: "Galway", subject: "ESB Networks application delay", status: "escalated", time: "45 min ago" },
   { id: "TKT-1039", customer: "Tom Kelly", county: "Limerick", subject: "Quote revision request", status: "open", time: "1 hour ago" },
   { id: "TKT-1038", customer: "Siobhán Ní Fhaoláin", county: "Kerry", subject: "Battery storage compatibility", status: "in-progress", time: "2 hours ago" },
 ];
@@ -19,20 +19,20 @@ const INITIAL_TICKETS: Array<{ id: string; customer: string; county: string; sub
 const INITIAL_CONVERSATIONS = [
   { customer: "Mary Walsh", agent: "Sophie", message: "Your installation is scheduled for tomorrow at 8am. Crew will call 30 mins before.", time: "Just now", type: "agent" as const },
   { customer: "Pat Smith", agent: "system", message: "Your SEAI grant application has been submitted. Tracking ID: SEAI-2026-0382", time: "5 min ago", type: "system" as const },
-  { customer: "Anne Doyle", agent: "David", message: "I've escalated your permit issue to ESB Networks. Will update within 24 hours.", time: "12 min ago", type: "agent" as const },
+  { customer: "Anne Doyle", agent: "David", message: "I've escalated your grid connection issue to ESB Networks. Will update within 24 hours.", time: "12 min ago", type: "agent" as const },
   { customer: "Tom Kelly", agent: "system", message: "Your quote has been revised. Check your email for details.", time: "25 min ago", type: "system" as const },
 ];
 
 const INITIAL_RESPONSES = [
   { customer: "Mary Walsh", question: "Installation date?", responseTime: "1.2 min", delay: false },
   { customer: "Pat Smith", question: "Grant status?", responseTime: "3.5 min", delay: false },
-  { customer: "Anne Doyle", question: "Permit delay?", responseTime: "12.0 min", delay: true },
+  { customer: "Anne Doyle", question: "Grid connection delay?", responseTime: "12.0 min", delay: true },
   { customer: "John McCarthy", question: "Battery pricing?", responseTime: "2.1 min", delay: false },
 ];
 
 const NEW_CUSTOMERS = ["Eileen Collins", "Michael Ryan", "Catherine Lynch", "John Keane"];
 const NEW_COUNTIES = ["Clare", "Waterford", "Wexford", "Kilkenny"];
-const NEW_SUBJECTS = ["Quote request", "Installation question", "Grant enquiry", "Permit status"];
+const NEW_SUBJECTS = ["Quote request", "Installation question", "Grant enquiry", "Grid connection status"];
 
 function statusStyle(status: string): React.CSSProperties {
   const map: Record<string, { bg: string; color: string }> = {
