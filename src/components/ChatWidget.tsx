@@ -599,7 +599,7 @@ export default function ChatWidget() {
                         display: "block",
                       }}
                     />
-                    <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 11, fontWeight: 500 }}>
+                    <span style={{ color: "rgba(255,255,255,0.55)", fontSize: 11, fontWeight: 500 }}>
                       {isTyping ? "Typing..." : "Online now"}
                     </span>
                   </div>

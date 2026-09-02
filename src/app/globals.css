@@ -78,7 +78,7 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-/* Renewably Brand Colors — Yellow + Slate Theme */
+/* Renewably Brand Colors: Yellow + Slate Theme */
 :root {
   --color-brand-yellow: #F3D840;
   --color-brand-yellow-dark: #E5C832;
@@ -217,7 +217,7 @@ body {
   }
 }
 
-/* CRM Meetings — Utility classes replacing arbitrary Tailwind values (SWC compat) */
+/* CRM Meetings: Utility classes replacing arbitrary Tailwind values (SWC compat) */
 .text-crm-muted { color: #A0A0A0; }
 .text-crm-dim { color: #666666; }
 .text-crm-brand { color: #F3D840; }

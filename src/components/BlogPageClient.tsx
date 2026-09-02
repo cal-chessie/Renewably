@@ -834,7 +834,7 @@ function NewsletterSection() {
                 letterSpacing: "0.03em",
               }}
             >
-              Weekly Briefing
+              Stay in the loop
             </span>
           </div>
         </ScrollReveal>
@@ -850,7 +850,7 @@ function NewsletterSection() {
               marginBottom: 16,
             }}
           >
-            Get the weekly briefing.
+            Want these insights in your inbox?
           </h2>
         </ScrollReveal>
 
@@ -864,9 +864,9 @@ function NewsletterSection() {
               margin: "0 auto 36px",
             }}
           >
-            One email per week. No spam. No fluff. Practical insights on AI
-            operations, SEAI grant changes, ESB Networks updates, and what&apos;s
-            actually working for Irish solar installers right now.
+            No newsletter yet. But we track AI operations, SEAI grant changes,
+            ESB Networks updates, and what&apos;s actually working for Irish
+            solar installers right now.
           </p>
         </ScrollReveal>
 
@@ -890,7 +890,7 @@ function NewsletterSection() {
                 margin: 0,
               }}
             >
-              Want these in your inbox? Talk to us.
+              Talk to us and we will keep you in the loop.
             </p>
             <Link
               href="/contact"
@@ -1166,7 +1166,7 @@ function FinalCTA() {
                 boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
               }}
             >
-              Get Started <ArrowIcon color={YELLOW} />
+              Book a Call <ArrowIcon color={YELLOW} />
             </a>
             <a
               href="/workforce"

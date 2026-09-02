@@ -104,6 +104,7 @@ function WebSiteSchema() {
         __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
+          "@id": "https://renewably.ie/#website",
           name: "Renewably",
           url: siteConfig.url,
         }),

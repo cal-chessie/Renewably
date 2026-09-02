@@ -219,7 +219,7 @@ Start with the agent running alongside your existing process. The agent prepares
   {
     slug: "solar-ops-dashboard-tracking",
     title:
-      "One Dashboard for Solar Ops: Tracking Leads, Installs, Permits, and Paperwork",
+      "One Dashboard for Solar Ops: Tracking Leads, Installs, Grid Connections, and Paperwork",
     seoTitle: "One Dashboard for Solar Operations",
     metaDescription:
       "Track every lead, site survey, ESB application, install and document in one AI dashboard, so you always know where each solar job stands.",

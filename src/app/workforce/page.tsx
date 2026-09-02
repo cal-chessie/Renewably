@@ -4,7 +4,7 @@ import { serviceList, breadcrumb } from "@/lib/seo-schema";
 
 const ogTitle = "Meet Your AI Workforce: 8 Agents for Irish Solar Installers";
 const ogDescription =
-  "Eight AI employees that run your solar company on autopilot. Grants, ESB applications, logistics, customer support: all handled.";
+  "Eight AI agents that run your solar back office, with your approval. Grants, ESB applications, logistics and customer support.";
 
 export const metadata: Metadata = {
   title: "AI Workforce: 8 AI Employees for Solar Installers in Ireland",

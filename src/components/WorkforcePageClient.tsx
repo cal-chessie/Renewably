@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import ScrollReveal from "@/components/ScrollReveal";
+import { useInViewOnce } from "@/lib/useInViewOnce";
 import Link from "next/link";
 import Image from "next/image";
 /* Skeleton loader for lazy-loaded dashboards */
@@ -133,6 +134,7 @@ const dashboardMap: Record<string, React.ComponentType> = {
 function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number }) {
   const isReversed = index % 2 === 1;
   const DashboardComponent = dashboardMap[agent.num];
+  const [frameRef, frameInView] = useInViewOnce<HTMLDivElement>("200px");
 
   return (
     <ScrollReveal>
@@ -144,10 +146,15 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
         <div
           className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
         >
-          <div className="hp-lift hp-card-dark" style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
-            <DashboardComponent />
+          <div ref={frameRef} className="hp-lift hp-card-dark" style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
+            {/* Dashboard mounts only when scrolled into view, so its animation timers stay idle until then */}
+            {frameInView ? <DashboardComponent /> : <DashboardSkeleton />}
             <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
               {agent.num}
+            </div>
+            {/* Illustrative data caption - figures shown are mockups, not real customer results */}
+            <div style={{ position: 'absolute', bottom: 8, right: 10, zIndex: 10, display: 'inline-flex', alignItems: 'center', background: 'rgba(10,10,10,0.55)', color: 'rgba(255,255,255,0.65)', fontSize: 11, fontWeight: 500, letterSpacing: '0.02em', padding: '2px 8px', borderRadius: 6, backdropFilter: 'blur(4px)', pointerEvents: 'none' }}>
+              Illustrative data
             </div>
           </div>
         </div>
