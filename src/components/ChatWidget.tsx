@@ -143,6 +143,7 @@ export default function ChatWidget() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [cookieBannerOpen, setCookieBannerOpen] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -177,6 +178,19 @@ export default function ChatWidget() {
       ]);
     }
   }, [open, hasInteracted, messages.length]);
+
+  /* ─── Yield the corner to the cookie banner ─── */
+  // The cookie banner is a full-width bottom bar that overlaps the launcher on
+  // mobile. Hide the launcher while the banner is up (no consent stored yet);
+  // CookieBanner dispatches "cookie-consent" the moment the visitor chooses.
+  useEffect(() => {
+    try {
+      setCookieBannerOpen(!localStorage.getItem("renewably_cookie_consent"));
+    } catch { /* ignore */ }
+    const onConsent = () => setCookieBannerOpen(false);
+    window.addEventListener("cookie-consent", onConsent);
+    return () => window.removeEventListener("cookie-consent", onConsent);
+  }, []);
 
   /* ─── Send message ─── */
   const sendMessage = useCallback(
@@ -365,8 +379,8 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* ── Floating Button ── */}
-      <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 9999 }}>
+      {/* ── Floating Button (yields the corner while the cookie banner is up) ── */}
+      <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 9999, display: cookieBannerOpen && !open ? "none" : "block" }}>
         <m.button
           onClick={() => setOpen((v) => !v)}
           style={{
@@ -719,7 +733,7 @@ export default function ChatWidget() {
                       <div
                         style={{
                           fontSize: 10,
-                          color: "#AAA",
+                          color: "#6B7280",
                           marginTop: 3,
                           paddingRight: 4,
                           textAlign: "right",

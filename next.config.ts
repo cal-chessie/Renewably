@@ -35,6 +35,13 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 86400,
   },
+  async redirects() {
+    return [
+      // /workforce supersedes /services; consolidate onto one page with a 301
+      // so the old URL and its inbound equity fold into /workforce.
+      { source: "/services", destination: "/workforce", permanent: true },
+    ];
+  },
   async headers() {
     return [
       // Static assets — aggressive cache in production (content-hashed filenames),
@@ -78,8 +85,11 @@ const nextConfig: NextConfig = {
         source: "/(.*)",
         headers: [
           // ── Content Security Policy (environment-aware) ──────────────────
-          // DEV:  unsafe-inline + unsafe-eval required by Turbopack HMR
-          // PROD: strict — no unsafe-inline, no unsafe-eval, no object-src
+          // DEV:  unsafe-inline + unsafe-eval required by Turbopack HMR.
+          // PROD: drops unsafe-eval, adds object-src 'none' and a frame-src allowlist.
+          //       script-src still allows unsafe-inline for the inline JSON-LD schema
+          //       blocks; a real nonce needs per-request dynamic rendering, deferred
+          //       to the login-security / dynamic-render decision.
           {
             key: "Content-Security-Policy",
             value: process.env.NODE_ENV === "development"

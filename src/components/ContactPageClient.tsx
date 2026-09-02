@@ -421,9 +421,9 @@ export default function ContactPageClient() {
                 </m.div>
 
                 <m.h1
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
+                  initial={{ y: 40 }}
+                  animate={{ y: 0 }}
+                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
                   style={{ fontSize: "clamp(30px, 6vw, 64px)", fontWeight: 800, color: WHITE, lineHeight: 1.08, letterSpacing: "-0.02em", marginBottom: 'clamp(16px, 2.5vw, 24px)' }}
                 >
                   Stop doing
@@ -463,11 +463,11 @@ export default function ContactPageClient() {
                 </m.div>
               </div>
 
-              {/* Right: Founder photo */}
+              {/* Right: Founder photo (LCP candidate: paints at full opacity, glides on scale only) */}
               <m.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }}
                 className="relative max-w-md mx-auto lg:mx-0"
                 style={{ maxWidth: 400 }}
               >
