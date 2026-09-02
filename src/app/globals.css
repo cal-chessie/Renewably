@@ -325,3 +325,10 @@ body {
 /* Primary CTA: the arrow leans in on hover. */
 .magnetic-cta svg { transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .magnetic-cta:hover svg { transform: translateX(3px); }
+
+/* Typography: no orphaned words. Headlines break into even lines instead of
+   stranding a single word ("company.", "Ireland", "sleeps.") on its own line;
+   paragraphs avoid a lone word on the last line. Pure line-break redistribution,
+   never changes size, never overflows. Older browsers simply ignore it. */
+h1, h2, h3, .text-balance { text-wrap: balance; }
+p, li, .text-pretty { text-wrap: pretty; }

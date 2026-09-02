@@ -358,9 +358,9 @@ function StorySection() {
               maxWidth: 600,
             }}
           >
-            We didn&apos;t start an AI company.
+            We didn&apos;t start an AI&nbsp;company.
             <br />
-            <span style={{ color: YELLOW }}>We started a workforce company.</span>
+            <span style={{ color: YELLOW }}>We started a workforce&nbsp;company.</span>
           </h2>
         </ScrollReveal>
 
@@ -549,18 +549,18 @@ function ProblemsSection() {
         <ScrollReveal delay={0.1}>
           <h2
             style={{
-              fontSize: "clamp(32px, 5vw, 48px)",
+              fontSize: "clamp(28px, 5vw, 48px)",
               fontWeight: 800,
               color: "#1A1A1A",
               lineHeight: 1.1,
               letterSpacing: "-0.02em",
               marginBottom: 'clamp(24px, 5vw, 48px)',
-              maxWidth: 600,
+              maxWidth: 640,
             }}
           >
-            Every solar installer in Ireland
+            Every solar installer in&nbsp;Ireland
             <br />
-            <span style={{ color: "#3B82F6" }}>has the same problems.</span>
+            <span style={{ color: "#3B82F6" }}>has the same&nbsp;problems.</span>
           </h2>
         </ScrollReveal>
 
