@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { homeFaqs } from "@/data/homeFaqs";
 import { useInViewOnce } from "@/lib/useInViewOnce";
 import Image from "next/image";
@@ -692,6 +692,16 @@ function AgentsSection() {
             </p>
           </div>
         </ScrollReveal>
+        <ScrollReveal delay={0.4}>
+          <div style={{ textAlign: 'center', marginTop: 'clamp(28px, 4vw, 40px)' }}>
+            <MagneticButton href="/contact">
+              Book a Call
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </MagneticButton>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -936,6 +946,100 @@ function PricingSection() {
 
 
 /* ============================================================
+   RECEIPTS - honest guarantees, in place of testimonials until real proof
+   ============================================================ */
+function ReceiptsSection() {
+  const receipts = [
+    { label: "Approval mode", body: "Week one, nothing sends until you sign it off." },
+    { label: "Month to month", body: "No lock in. Cancel whenever you want." },
+    { label: "Your brand", body: "Every homeowner sees you, never us." },
+    { label: "Indicative pricing", body: "No price is final until the site survey." },
+  ];
+  return (
+    <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(48px, 6vw, 80px)', paddingBottom: 'clamp(48px, 6vw, 112px)', overflow: 'hidden' }}>
+      <div style={{ maxWidth: 1120, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
+        <ScrollReveal>
+          <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 4vw, 40px)' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 9999, backgroundColor: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)' }}>
+              <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: 'clamp(11px, 1.3vw, 14px)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#8a6d05' }}>In writing</span>
+            </div>
+            <h2 style={{ fontSize: 'clamp(24px, 5vw, 48px)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em', marginTop: 'clamp(12px, 2vw, 16px)' }}>
+              What you can count on.
+            </h2>
+          </div>
+        </ScrollReveal>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" style={{ gap: 'clamp(12px, 2vw, 16px)' }}>
+          {receipts.map((r, i) => (
+            <ScrollReveal key={r.label} delay={i * 0.08}>
+              <div className="hp-lift-sm hp-card" style={{ height: '100%', backgroundColor: '#FFFDF5', border: '1px solid rgba(10,10,10,0.06)', borderRadius: 16, padding: 'clamp(18px, 2.2vw, 24px)', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 'clamp(10px, 1.5vw, 14px)' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8a6d05" strokeWidth={2.5} style={{ flexShrink: 0 }}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#8a6d05' }}>{r.label}</span>
+                </div>
+                <p style={{ fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.6, color: '#1A1A1A', fontWeight: 500 }}>{r.body}</p>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   STICKY MOBILE CTA - one persistent ask once the hero scrolls out
+   ============================================================ */
+function StickyMobileCTA() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShow(window.scrollY > window.innerHeight * 0.9);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return (
+    <div
+      className="md:hidden"
+      aria-hidden={!show}
+      style={{
+        position: "fixed",
+        left: "50%",
+        bottom: "calc(16px + env(safe-area-inset-bottom))",
+        zIndex: 90,
+        transform: show ? "translateX(-50%) translateY(0)" : "translateX(-50%) translateY(160%)",
+        opacity: show ? 1 : 0,
+        pointerEvents: show ? "auto" : "none",
+        transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease",
+      }}
+    >
+      <a
+        href="/contact"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "12px 22px",
+          borderRadius: 9999,
+          background: "linear-gradient(to right, #F3D840, #E5C832)",
+          color: "#1A1A1A",
+          fontWeight: 700,
+          fontSize: 15,
+          textDecoration: "none",
+          boxShadow: "0 10px 30px rgba(243,216,64,0.3), 0 2px 8px rgba(0,0,0,0.12)",
+        }}
+      >
+        Book a Call
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  );
+}
+
+/* ============================================================
    DEFAULT EXPORT - Page Assembly
    ============================================================ */
 export default function HomePageClient() {
@@ -948,6 +1052,7 @@ export default function HomePageClient() {
       <FeaturesSection />
       <AgentsSection />
       <PricingSection />
+      <ReceiptsSection />
       <BeforeAfterSection
         comparisons={[
           {
@@ -975,6 +1080,7 @@ export default function HomePageClient() {
         ctaButtonLabel="Let's Talk"
         ctaButtonColor="#F3D840"
       />
+      <StickyMobileCTA />
     </>
   );
 }
