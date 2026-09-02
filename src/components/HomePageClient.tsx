@@ -146,7 +146,7 @@ function HeroSection() {
             animationDelay: '0.7s',
           }}
         >
-          You need a workforce that never sleeps.
+          You need a workforce that never&nbsp;sleeps.
         </h1>
 
         {/* Outcome line — states the value before the ask */}
@@ -247,7 +247,7 @@ function ProblemSection() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(20px, 3vw, 24px)', marginBottom: 'clamp(40px, 6vw, 48px)' }}>
           <ScrollReveal delay={0.1}>
             <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(17px, 2.5vw, 20px)', lineHeight: 1.7 }}>
-              You have work. Lots of it. More quotes than you can price. More sites than you can assess. More customers than you can call back.
+              You have work. Lots of it. More bills in your inbox than you can price. More site surveys than you can drive to. More homeowners waiting on a call back about the grant.
             </p>
           </ScrollReveal>
 
@@ -259,13 +259,13 @@ function ProblemSection() {
 
           <ScrollReveal delay={0.3}>
             <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7 }}>
-              Electricians are booked out. Admin staff are impossible to keep. Project managers are burning out. And every time you lose someone, you lose three months of knowledge.
+              Electricians are booked out. Admin staff are impossible to keep. Your best project manager is burning out. And every time you lose someone, three months of SEAI and ESB know-how walks out the door.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.4}>
             <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: 1.7 }}>
-              So you do it yourself. You&apos;re answering emails at 10pm. You&apos;re chasing permits on a Saturday. You&apos;re quoting roofs on your phone between site visits.
+              So you do it yourself. You&apos;re answering emails at 10pm. You&apos;re chasing ESB Networks about an NC6 on a Saturday. You&apos;re pricing a roof off a photo of someone&apos;s bill between site visits.
             </p>
           </ScrollReveal>
         </div>
@@ -310,7 +310,7 @@ function SolutionSection() {
         {/* Body */}
         <ScrollReveal delay={0.25}>
           <p style={{ color: '#535353', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, marginBottom: 'clamp(16px, 3vw, 24px)' }}>
-            They text back the missed calls. They fill out grant applications. They chase every follow-up. They coordinate installers. They order equipment. They flag problems before you know they exist.
+            They text back the missed calls. They prepare the SEAI grant paperwork. They chase ESB Networks on the NC6. They book the site surveys. They order the panels and inverters. They flag a stalled grant before the homeowner rings you about it.
           </p>
         </ScrollReveal>
 
@@ -474,7 +474,7 @@ function FeaturesSection() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
         </svg>
       ),
-      title: "Chase permits.",
+      title: "Chase ESB Networks.",
       desc: "ESB Networks applications. Grid connection paperwork. Agent tracks every submission. Follows up on delays. Escalates only when stuck.",
     },
     {
