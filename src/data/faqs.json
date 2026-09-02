@@ -3,7 +3,7 @@
     "id": "what-is-renewably",
     "type": "faq",
     "question": "What is Renewably?",
-    "answer": "Renewably is an AI-as-a-Service platform built specifically for Irish solar PV installers. We provide a workforce of specialised AI agents that handle everything from customer enquiries and SEAI grant applications to logistics, permitting, and business reporting, taking on the back-office work so your team can focus on installing instead of drowning in admin.",
+    "answer": "Renewably is an AI-as-a-Service platform built specifically for Irish solar PV installers. We provide a workforce of specialised AI agents that handle everything from customer enquiries and SEAI grant applications to logistics, ESB grid applications, and business reporting, taking on the back-office work so your team can focus on installing instead of drowning in admin.",
     "category": "general",
     "order": 1,
     "published": true,

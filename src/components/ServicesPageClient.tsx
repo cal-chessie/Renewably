@@ -214,6 +214,7 @@ export default function ServicesPageClient() {
               src="/service-hero.jpg"
               alt=""
               fill
+              sizes="100vw"
               className="services-hero-bg"
               style={{ objectFit: 'cover' }}
               priority

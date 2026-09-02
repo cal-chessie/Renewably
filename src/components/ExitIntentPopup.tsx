@@ -84,11 +84,6 @@ export default function ExitIntentPopup() {
     };
   }, [isOpen]);
 
-  // Reset sessionStorage flag when navigating (optional UX improvement)
-  useEffect(() => {
-    // Clear on navigation so exit intent can fire again on new page visits
-  }, [pathname]);
-
   const close = useCallback(() => {
     setIsOpen(false);
     previousFocusRef.current?.focus();
@@ -107,7 +102,7 @@ export default function ExitIntentPopup() {
           style={{
             position: "fixed",
             inset: 0,
-            zIndex: 9999,
+            zIndex: 10000,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

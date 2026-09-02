@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 
 /* ============================================================
-   MINI DESKTOP — Interactive laptop mockup dashboard
+   MINI DESKTOP - Interactive laptop mockup dashboard
    ============================================================ */
 
 const AGENTS_DATA = [
@@ -292,7 +292,7 @@ export default function MiniDesktop() {
 }
 
 /* ============================================================
-   INLINE STYLES — all styles via inline objects (Tailwind HMR safe)
+   INLINE STYLES - all styles via inline objects (Tailwind HMR safe)
    ============================================================ */
 const styles: Record<string, React.CSSProperties> = {
   laptopMockup: {

@@ -287,7 +287,7 @@ export default function Header() {
                   paddingTop: 72,
                 }}
               >
-                <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                   Menu
                 </span>
                 <div
@@ -466,7 +466,7 @@ export default function Header() {
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                     <path d="M7 11V7a5 5 0 0110 0v4" />
                   </svg>
-                  <span style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.35)', letterSpacing: '-0.01em' }}>
+                  <span style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.6)', letterSpacing: '-0.01em' }}>
                     Portal
                   </span>
                 </m.a>
@@ -513,7 +513,7 @@ export default function Header() {
                       alignItems: 'center',
                       gap: 5,
                       textDecoration: 'none',
-                      color: 'rgba(255,255,255,0.3)',
+                      color: 'rgba(255,255,255,0.6)',
                       fontSize: 12,
                       fontWeight: 500,
                       transition: 'color 0.2s',
@@ -533,7 +533,7 @@ export default function Header() {
                       alignItems: 'center',
                       gap: 5,
                       textDecoration: 'none',
-                      color: 'rgba(255,255,255,0.3)',
+                      color: 'rgba(255,255,255,0.6)',
                       fontSize: 12,
                       fontWeight: 500,
                       transition: 'color 0.2s',
@@ -546,7 +546,7 @@ export default function Header() {
                     Email
                   </a>
                   <div style={{ width: 1, height: 12, backgroundColor: 'rgba(255,255,255,0.08)' }} />
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.3)', fontSize: 12, fontWeight: 500 }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 500 }}>
                     <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>

@@ -44,7 +44,7 @@ const ReportingDashboard = dynamic(() => import("@/components/ReportingDashboard
 /* ============================================================
    DATA - 8 AI Agents (+ 1 Coming Soon)
    ============================================================ */
-const agents: Array<{ num: string; title: string; tagline: string; body: string; closing: string; image?: string }> = [
+const agents: Array<{ num: string; title: string; tagline: string; body: string; closing: string }> = [
   {
     num: "01",
     title: "CEO Agent",
@@ -144,29 +144,12 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
         <div
           className={`${isReversed ? "lg:order-2" : "lg:order-1"}`}
         >
-          {DashboardComponent ? (
-            <div className="hp-lift hp-card-dark" style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
-              <DashboardComponent />
-              <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
-                {agent.num}
-              </div>
+          <div className="hp-lift hp-card-dark" style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', maxWidth: 640, margin: '0 auto' }}>
+            <DashboardComponent />
+            <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, background: '#F3D840', color: '#1A1A1A', fontWeight: 800, fontSize: 14, padding: '6px 12px', borderRadius: 9999 }}>
+              {agent.num}
             </div>
-          ) : (
-            <div className="relative overflow-hidden rounded-2xl shadow-xl">
-              <Image
-                src={agent.image!}
-                alt={`${agent.title}, Renewably AI Workforce`}
-                width={1344}
-                height={768}
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="w-full object-cover"
-              />
-              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#F3D840]/40 to-transparent" />
-              <div className="absolute top-4 left-4 bg-[#F3D840] text-[#1A1A1A] font-extrabold text-sm px-3 py-1.5 rounded-full shadow-lg">
-                {agent.num}
-              </div>
-            </div>
-          )}
+          </div>
         </div>
 
         {/* Copy */}
@@ -362,6 +345,7 @@ export default function WorkforcePageClient() {
             src="/robot-2.jpg"
             alt=""
             fill
+            sizes="100vw"
             className="workforce-hero-bg"
             style={{ objectFit: 'cover' }}
             priority

@@ -37,7 +37,7 @@ export default function TermsPageClient() {
             </p>
           </ScrollReveal>
           <ScrollReveal delay={0.3}>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14, marginTop: 24 }}>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, marginTop: 24 }}>
               Last updated: April 2026
             </p>
           </ScrollReveal>

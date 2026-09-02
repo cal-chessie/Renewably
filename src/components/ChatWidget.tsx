@@ -350,8 +350,8 @@ export default function ChatWidget() {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
     return escaped
-      .replace(/\*\*(.*?)\*\*/g, '<strong style="fontWeight:600;color:#1A1A1A">$1</strong>')
-      .replace(/`(.*?)`/g, '<code style="background:#F3D84022;padding:1px 5px;borderRadius:4px;fontSize:12px;color:#1A1A1A">$1</code>');
+      .replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight:600;color:#1A1A1A">$1</strong>')
+      .replace(/`(.*?)`/g, '<code style="background:#F3D84022;padding:1px 5px;border-radius:4px;font-size:12px;color:#1A1A1A">$1</code>');
   };
 
   /* ─── SVG Icon helper ─── */
@@ -366,7 +366,7 @@ export default function ChatWidget() {
   return (
     <>
       {/* ── Floating Button ── */}
-      <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 150 }}>
+      <div style={{ position: "fixed", bottom: 20, right: 20, zIndex: 9999 }}>
         <m.button
           onClick={() => setOpen((v) => !v)}
           style={{
@@ -387,6 +387,8 @@ export default function ChatWidget() {
           whileTap={{ scale: 0.94 }}
           transition={{ duration: 0.2 }}
           aria-label={open ? "Close chat" : "Open chat"}
+          aria-expanded={open}
+          aria-controls="chat-panel"
         >
           <AnimatePresence mode="wait">
             {open ? (
@@ -452,6 +454,7 @@ export default function ChatWidget() {
                     src="/robot-2-nobg.png"
                     alt="Chat with Renewably"
                     fill
+                    sizes="74px"
                     style={{
                       objectFit: "contain",
                       filter: "drop-shadow(0 6px 10px rgba(10,10,10,0.32))",
@@ -497,6 +500,7 @@ export default function ChatWidget() {
       <AnimatePresence>
         {open && (
           <m.div
+            id="chat-panel"
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -505,7 +509,7 @@ export default function ChatWidget() {
               position: "fixed",
               bottom: 90,
               right: 20,
-              zIndex: 150,
+              zIndex: 9999,
               width: 380,
               maxWidth: "calc(100vw - 24px)",
               borderRadius: 20,
@@ -686,7 +690,7 @@ export default function ChatWidget() {
                         <div
                           style={{
                             fontSize: 10,
-                            color: "#AAA",
+                            color: "#6B7280",
                             marginTop: 3,
                             paddingLeft: 4,
                           }}
@@ -870,7 +874,6 @@ export default function ChatWidget() {
                       fontSize: 13.5,
                       color: DARK,
                       resize: "none",
-                      outline: "none",
                       fontFamily: "inherit",
                       lineHeight: 1.4,
                       height: 40,
@@ -921,7 +924,7 @@ export default function ChatWidget() {
                   textAlign: "center",
                   marginTop: 6,
                   fontSize: 10,
-                  color: "#BBB",
+                  color: "#6B7280",
                   letterSpacing: "0.01em",
                 }}
               >
@@ -929,7 +932,7 @@ export default function ChatWidget() {
                 <a
                   href="/contact"
                   onClick={() => setOpen(false)}
-                  style={{ color: YELLOW, textDecoration: "none", fontWeight: 500 }}
+                  style={{ color: "#8a6d05", textDecoration: "underline", fontWeight: 500 }}
                 >
                   Talk to a human
                 </a>

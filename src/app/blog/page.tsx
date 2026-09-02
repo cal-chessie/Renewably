@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import BlogPageClient from "@/components/BlogPageClient";
+import { breadcrumb } from "@/lib/seo-schema";
+
+const blogDescription = "Guides on AI automation for Irish solar installers.";
 
 export const metadata: Metadata = {
   title: "Blog: AI Operations, Grants & Logistics for Irish Solar Installers",
@@ -18,8 +21,34 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
   return (
-    <main id="main-content">
-      <BlogPageClient />
-    </main>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumb([
+              { name: "Home", path: "/" },
+              { name: "Blog", path: "/blog" },
+            ])
+          ),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: "Renewably Blog",
+            description: blogDescription,
+            url: "https://renewably.ie/blog",
+            isPartOf: { "@id": "https://renewably.ie/#website" },
+          }),
+        }}
+      />
+      <main id="main-content">
+        <BlogPageClient />
+      </main>
+    </>
   );
 }

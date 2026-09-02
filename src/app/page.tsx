@@ -9,6 +9,21 @@ export const metadata = {
   alternates: {
     canonical: 'https://renewably.ie',
   },
+  openGraph: {
+    title: 'Renewably: AI Workforce for Solar Installers in Ireland',
+    description: 'Renewably deploys 8 AI agents that automate your solar PV business: grants, ESB applications, customer support, logistics, and more. Purpose-built for Irish solar installers doing 20+ jobs a month.',
+    url: 'https://renewably.ie',
+    siteName: 'Renewably',
+    locale: 'en_IE',
+    type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Renewably' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Renewably: AI Workforce for Solar Installers in Ireland',
+    description: 'Renewably deploys 8 AI agents that automate your solar PV business: grants, ESB applications, customer support, logistics, and more. Purpose-built for Irish solar installers doing 20+ jobs a month.',
+    images: ['/og-image.png'],
+  },
 }
 
 function HomePageSchema() {

@@ -158,6 +158,7 @@ function HeroSection() {
           src="/robot-4.jpg"
           alt=""
           fill
+          sizes="100vw"
           className="blog-hero-bg"
           style={{ objectFit: "cover" }}
           priority
@@ -321,7 +322,7 @@ function SearchBar() {
       </span>
       <span
         style={{
-          color: "rgba(255,255,255,0.35)",
+          color: "rgba(255,255,255,0.62)",
           fontSize: 15,
           fontWeight: 400,
         }}
@@ -334,7 +335,7 @@ function SearchBar() {
           padding: "4px 10px",
           borderRadius: 6,
           backgroundColor: "rgba(255,255,255,0.08)",
-          color: "rgba(255,255,255,0.3)",
+          color: "rgba(255,255,255,0.62)",
           fontSize: 11,
           fontWeight: 600,
           flexShrink: 0,
@@ -485,7 +486,7 @@ function FeaturedCard({ post }: { post: (typeof posts)[0] }) {
                 <span
                   style={{
                     fontSize: 12,
-                    color: "rgba(255,255,255,0.3)",
+                    color: "rgba(255,255,255,0.62)",
                   }}
                 >
                   |
@@ -505,7 +506,7 @@ function FeaturedCard({ post }: { post: (typeof posts)[0] }) {
                 <span
                   style={{
                     fontSize: 12,
-                    color: "rgba(255,255,255,0.3)",
+                    color: "rgba(255,255,255,0.62)",
                   }}
                 >
                   |
@@ -516,7 +517,7 @@ function FeaturedCard({ post }: { post: (typeof posts)[0] }) {
                     alignItems: "center",
                     gap: 5,
                     fontSize: 12,
-                    color: "rgba(255,255,255,0.4)",
+                    color: "rgba(255,255,255,0.62)",
                   }}
                 >
                   <ClockIcon /> {post.readTime}
@@ -568,7 +569,7 @@ function FeaturedCard({ post }: { post: (typeof posts)[0] }) {
                 <span
                   style={{
                     fontSize: 13,
-                    color: "rgba(255,255,255,0.3)",
+                    color: "rgba(255,255,255,0.62)",
                   }}
                 >
                   {new Date(post.date).toLocaleDateString("en-IE", {
@@ -905,7 +906,7 @@ function NewsletterSection() {
           <p
             style={{
               fontSize: 13,
-              color: "rgba(255,255,255,0.25)",
+              color: "rgba(255,255,255,0.62)",
             }}
           >
             Join 200+ Irish solar professionals. Unsubscribe anytime.

@@ -34,6 +34,7 @@ function HeroSection() {
           src="/robot-hero.jpg"
           alt=""
           fill
+          sizes="100vw"
           className="hero-bg-img"
           style={{ objectFit: 'cover', objectPosition: '65% center' }}
           priority
@@ -400,7 +401,7 @@ function PlatformTourSection() {
                   <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
                     <svg width="20" height="20" fill="none" stroke="#F3D840" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" /></svg>
                   </div>
-                  <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 13, fontWeight: 500 }}>Loading platform tour...</span>
+                  <span style={{ color: 'rgba(255,255,255,0.55)', fontSize: 13, fontWeight: 500 }}>Loading platform tour...</span>
                 </div>
               </div>
             )}
@@ -413,7 +414,6 @@ function PlatformTourSection() {
                 loop
                 playsInline
                 className="w-full aspect-video object-cover"
-                poster=""
                 onCanPlay={() => setVideoLoaded(true)}
                 style={videoLoaded ? {} : { position: 'absolute', inset: 0, opacity: 0 }}
               >
@@ -425,7 +425,7 @@ function PlatformTourSection() {
 
         {/* Bottom line */}
         <ScrollReveal delay={0.4}>
-          <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 'clamp(12px, 1.4vw, 14px)', marginTop: 'clamp(24px, 3vw, 32px)' }}>
+          <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(12px, 1.4vw, 14px)', marginTop: 'clamp(24px, 3vw, 32px)' }}>
             That is the platform. That is your workforce.
           </p>
         </ScrollReveal>

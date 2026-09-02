@@ -134,7 +134,7 @@ export default function QADashboard() {
             const checks: { key: keyof Checklist; label: string; eventMsg: string; probability: number }[] = [
               { key: "paperwork", label: "Signed Paperwork", eventMsg: `Paperwork received: ${review.customer}`, probability: 0.6 },
               { key: "photos", label: "Installation Photos", eventMsg: `Photos uploaded: ${review.customer}`, probability: 0.6 },
-              { key: "permit", label: "ESB Permit", eventMsg: `NC6 approved: ${review.customer}`, probability: 0.5 },
+              { key: "permit", label: "NC6 Application", eventMsg: `NC6 approved: ${review.customer}`, probability: 0.5 },
               { key: "grant", label: "SEAI Grant", eventMsg: `SEAI grant confirmed: ${review.customer}`, probability: 0.5 },
               { key: "satisfaction", label: "Customer Satisfaction", eventMsg: `Customer satisfaction survey completed: ${review.customer}`, probability: 0.7 },
             ];

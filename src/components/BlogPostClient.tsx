@@ -79,9 +79,13 @@ function LinkIcon() {
    TABLE OF CONTENTS
    ============================================================ */
 function TableOfContents({ blocks }: { blocks: string[] }) {
+  // Keep each heading paired with its index in the full blocks array, because
+  // RenderedBlock assigns h2 ids as section-<blocks index>. Using the filtered
+  // position here would point the TOC links at ids that do not exist.
   const headings = blocks
-    .filter((b) => b.startsWith("## "))
-    .map((b) => b.replace("## ", "").trim());
+    .map((b, idx) => ({ text: b, idx }))
+    .filter((h) => h.text.startsWith("## "))
+    .map((h) => ({ text: h.text.replace("## ", "").trim(), idx: h.idx }));
 
   const [copied, setCopied] = useState(false);
 
@@ -122,10 +126,10 @@ function TableOfContents({ blocks }: { blocks: string[] }) {
           {headings.map((h, i) => (
             <a
               key={i}
-              href={`#section-${i}`}
+              href={`#section-${h.idx}`}
               onClick={(e) => {
                 e.preventDefault();
-                document.getElementById(`section-${i}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                document.getElementById(`section-${h.idx}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
               }}
               style={{
                 fontSize: 14, color: "#535353", lineHeight: 1.6,
@@ -135,15 +139,15 @@ function TableOfContents({ blocks }: { blocks: string[] }) {
               onMouseEnter={(e) => {
                 e.currentTarget.style.color = YELLOW;
                 e.currentTarget.style.borderLeftColor = YELLOW;
-                e.currentTarget.style.paddingLeft = '16';
+                e.currentTarget.style.paddingLeft = '16px';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.color = "#535353";
                 e.currentTarget.style.borderLeftColor = "rgba(26,26,26,0.08)";
-                e.currentTarget.style.paddingLeft = '12';
+                e.currentTarget.style.paddingLeft = '12px';
               }}
             >
-              {h}
+              {h.text}
             </a>
           ))}
         </div>
@@ -355,10 +359,10 @@ export default function BlogPostClient() {
                 }}>
                   {post.category}
                 </span>
-                <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 13, color: "rgba(255,255,255,0.4)" }}>
-                  <ClockIcon color="rgba(255,255,255,0.4)" /> {post.readTime}
+                <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 13, color: "rgba(255,255,255,0.62)" }}>
+                  <ClockIcon color="rgba(255,255,255,0.62)" /> {post.readTime}
                 </span>
-                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.3)" }}>
+                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.62)" }}>
                   {new Date(post.date).toLocaleDateString("en-IE", { day: "numeric", month: "long", year: "numeric" })}
                 </span>
               </div>
@@ -377,7 +381,7 @@ export default function BlogPostClient() {
             {/* Excerpt */}
             <ScrollReveal delay={0.3}>
               <p style={{
-                fontSize: 17, lineHeight: 1.7, color: "rgba(255,255,255,0.45)",
+                fontSize: 17, lineHeight: 1.7, color: "rgba(255,255,255,0.62)",
                 maxWidth: 600, marginBottom: 32,
               }}>
                 {post.excerpt}
@@ -400,7 +404,7 @@ export default function BlogPostClient() {
                   </div>
                   <div>
                     <p style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>Renewably Team</p>
-                    <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>AI Operations, Ireland</p>
+                    <p style={{ fontSize: 12, color: "rgba(255,255,255,0.62)" }}>AI Operations, Ireland</p>
                   </div>
                 </div>
                 <m.button
@@ -438,14 +442,9 @@ export default function BlogPostClient() {
             <TableOfContents blocks={blocks} />
 
             {/* Content blocks */}
-            {blocks.map((block, i) => {
-              const el = RenderedBlock({ text: block, index: i });
-              // Assign heading IDs for TOC navigation
-              if (block.startsWith("## ")) {
-                return <div key={i}>{el}</div>;
-              }
-              return <div key={i}>{el}</div>;
-            })}
+            {blocks.map((block, i) => (
+              <div key={i}>{RenderedBlock({ text: block, index: i })}</div>
+            ))}
 
             {/* Inline share bar */}
             <div style={{

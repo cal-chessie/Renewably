@@ -450,7 +450,7 @@ export default function ContactPageClient() {
                       <div style={{ width: 4, height: 'clamp(24px, 4vw, 32px)', borderRadius: 2, backgroundColor: YELLOW }} />
                       <div>
                         <p style={{ fontSize: 'clamp(16px, 2.5vw, 20px)', fontWeight: 800, color: WHITE, lineHeight: 1.2 }}>{stat.value}</p>
-                        <p style={{ fontSize: 'clamp(10px, 1.3vw, 12px)', color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: "0.06em" }}>{stat.label}</p>
+                        <p style={{ fontSize: 'clamp(10px, 1.3vw, 12px)', color: "rgba(255,255,255,0.6)", textTransform: "uppercase", letterSpacing: "0.06em" }}>{stat.label}</p>
                       </div>
                     </div>
                   ))}
@@ -527,6 +527,7 @@ export default function ContactPageClient() {
                 <m.button
                   key={point}
                   type="button"
+                  aria-pressed={isSelected}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -558,7 +559,7 @@ export default function ContactPageClient() {
                     height: 28,
                     borderRadius: 8,
                     border: "2px solid",
-                    borderColor: isSelected ? YELLOW : "#d1d5db",
+                    borderColor: isSelected ? YELLOW : "#6B7280",
                     backgroundColor: isSelected ? YELLOW : "transparent",
                     display: "flex",
                     alignItems: "center",
@@ -1027,7 +1028,7 @@ export default function ContactPageClient() {
                       ))}
                     </div>
                     <div style={{ marginTop: 20, padding: "12px 16px", borderRadius: 12, backgroundColor: "rgba(255,255,255,0.05)" }}>
-                      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", lineHeight: 1.6 }}>
+                      <p style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", lineHeight: 1.6 }}>
                         <strong style={{ color: YELLOW }}>Zero commitment.</strong> No contracts, no lock-in. We earn your business every month.
                       </p>
                     </div>

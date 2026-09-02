@@ -921,7 +921,7 @@ function WorkforceSection() {
                     color: isComingSoon ? "rgba(243,216,64,0.7)" : "#1A1A1A",
                   }}
                 >
-                  {label}{isComingSoon && <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 500, color: "rgba(255,255,255,0.4)" }}>COMING SOON</span>}
+                  {label}{isComingSoon && <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 500, color: "rgba(255,255,255,0.6)" }}>COMING SOON</span>}
                 </span>
               </div>
             </ScrollReveal>
@@ -1001,7 +1001,6 @@ function FounderSection() {
                       display: "block",
                       objectFit: "cover",
                     }}
-                    priority
                   />
                   <div
                     style={{

@@ -6,7 +6,7 @@ import Image from "next/image";
 const BRAND_YELLOW = "#F3D840";
 const DARK = "#0A0A0A";
 const LIGHT_TEXT = "rgba(255, 255, 255, 0.75)";
-const FAINT_TEXT = "rgba(255, 255, 255, 0.45)";
+const FAINT_TEXT = "rgba(255, 255, 255, 0.55)";
 
 const quickLinks = [
   { label: "Home", href: "/" },
