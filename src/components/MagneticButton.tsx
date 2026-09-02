@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState, type ReactNode, type MouseEvent } from "react";
+import { useRef, useState, type ReactNode, type MouseEvent, type ElementType } from "react";
 import { motion, useSpring } from "framer-motion";
+import Link from "next/link";
 
 interface MagneticButtonProps {
   children: ReactNode;
@@ -71,7 +72,10 @@ export default function MagneticButton({
     setIsHovered(false);
   };
 
-  const Component = href ? "a" : "button";
+  // Internal routes go through next/link for client-side navigation and
+  // prefetch. External URLs, mailto and in-page hashes stay a plain anchor.
+  const isInternalLink = !!href && href.startsWith("/");
+  const Component: ElementType = href ? (isInternalLink ? Link : "a") : "button";
 
   const mergedStyle = customStyle ? { ...btnStyle, ...customStyle } : btnStyle;
 

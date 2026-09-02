@@ -291,6 +291,19 @@ body {
   animation: hp-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* LCP-safe entrance for the hero headline. The headline is the Largest
+   Contentful Paint element, so it must be painted at full opacity from the
+   first frame: it glides on transform only and never fades from 0, so LCP
+   fires at once instead of waiting out a fade. Same signature and duration as
+   .hp-rise; reduced-motion neutralises it via the block above. */
+@keyframes hp-rise-lcp {
+  from { transform: translateY(14px); }
+  to   { transform: translateY(0); }
+}
+.hp-rise-lcp {
+  animation: hp-rise-lcp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 @keyframes hp-scale-pulse {
   0%, 100% { transform: scale(1); }
   50%      { transform: scale(1.3); }

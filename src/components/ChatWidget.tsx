@@ -615,6 +615,10 @@ export default function ChatWidget() {
             {/* ── Messages Area ── */}
             <div
               id="chat-messages"
+              role="log"
+              aria-live="polite"
+              aria-relevant="additions"
+              aria-label="Chat conversation"
               style={{
                 flex: 1,
                 overflowY: "auto",

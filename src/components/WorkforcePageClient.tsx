@@ -176,7 +176,7 @@ function AgentCard({ agent, index }: { agent: (typeof agents)[0]; index: number 
           <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 12 }}>
             {agent.title}
           </h2>
-          <p style={{ color: '#B89A10', fontSize: 'clamp(16px, 2vw, 20px)', fontWeight: 700, marginBottom: 20, lineHeight: 1.7 }}>
+          <p style={{ color: '#8a6d05', fontSize: 'clamp(16px, 2vw, 20px)', fontWeight: 700, marginBottom: 20, lineHeight: 1.7 }}>
             {agent.tagline}
           </p>
           <p style={{ color: '#535353', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, marginBottom: 16 }}>

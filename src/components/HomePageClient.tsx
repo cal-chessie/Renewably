@@ -133,9 +133,9 @@ function HeroSection() {
           You don&apos;t need more staff.
         </p>
 
-        {/* Hero statement */}
+        {/* Hero statement (LCP element: paints at full opacity, glides on transform only) */}
         <h1
-          className="hp-rise"
+          className="hp-rise-lcp"
           style={{
             fontSize: 'clamp(28px, 7vw, 72px)',
             fontWeight: 800,
@@ -143,7 +143,6 @@ function HeroSection() {
             letterSpacing: '-0.02em',
             color: '#F3D840',
             marginBottom: 'clamp(16px, 2.6vw, 26px)',
-            animationDelay: '0.7s',
           }}
         >
           You need a workforce that never&nbsp;sleeps.
@@ -514,7 +513,7 @@ function FeaturesSection() {
                 className="hp-lift p-5 lg:p-6 rounded-2xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 cursor-pointer group h-full"
               >
                 <div className="w-12 h-12 rounded-2xl overflow-hidden bg-[#F3D840] group-hover:scale-110 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] mb-5">
-                  <img src={feature.img} alt="" aria-hidden="true" className="w-full h-full object-cover" />
+                  <Image src={feature.img} alt="" aria-hidden width={48} height={48} className="w-full h-full object-cover" />
                 </div>
                 <h3 className="text-lg font-bold leading-snug text-[#1A1A1A] mb-3 group-hover:text-[#374151] transition-colors duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
                   {feature.title}

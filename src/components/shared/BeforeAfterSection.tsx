@@ -70,7 +70,7 @@ export default function BeforeAfterSection({ comparisons, padding }: BeforeAfter
                   style={{ padding: 'clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px)' }}
                 >
                   <span
-                    className="block text-[#B89A10] text-[11px] font-bold uppercase tracking-[0.08em]"
+                    className="block text-[#8a6d05] text-[11px] font-bold uppercase tracking-[0.08em]"
                     style={{ marginBottom: 'clamp(8px, 1.5vw, 12px)' }}
                   >
                     After

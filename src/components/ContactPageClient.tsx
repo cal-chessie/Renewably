@@ -651,7 +651,7 @@ export default function ContactPageClient() {
                     transition={{ duration: 0.5 }}
                   >
                     {/* Success State */}
-                    <div style={{
+                    <div role="status" aria-live="polite" style={{
                       padding: "32px 20px",
                       borderRadius: 24,
                       backgroundColor: "#FFFDF5",
@@ -703,7 +703,7 @@ export default function ContactPageClient() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
                   >
-                    <div style={{
+                    <div role="alert" style={{
                       padding: "32px 20px",
                       borderRadius: 24,
                       backgroundColor: "#FEF2F2",
@@ -918,6 +918,7 @@ export default function ContactPageClient() {
                         <motion.button
                           type="submit"
                           disabled={formState === "sending"}
+                          aria-busy={formState === "sending"}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           style={{
@@ -938,7 +939,7 @@ export default function ContactPageClient() {
                         >
                           {formState === "sending" ? (
                             <>
-                              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" style={{ animation: "spin 1s linear infinite" }}>
+                              <svg aria-hidden="true" width="18" height="18" fill="none" viewBox="0 0 24 24" style={{ animation: "spin 1s linear infinite" }}>
                                 <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
                                 <path d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor" opacity="0.75" />
                               </svg>

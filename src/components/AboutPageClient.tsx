@@ -388,7 +388,16 @@ function StorySection() {
             return (
               <ScrollReveal key={i} delay={i * 0.08}>
                 <div
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={isExpanded}
                   onClick={() => setExpandedStep(isExpanded ? null : i)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setExpandedStep(isExpanded ? null : i);
+                    }
+                  }}
                   style={{ cursor: "pointer" }}
                 >
                   {/* Row */}
@@ -570,7 +579,16 @@ function ProblemsSection() {
           {problems.map((problem, i) => (
             <ScrollReveal key={problem.title} delay={i * 0.08}>
               <div
+                role="button"
+                tabIndex={0}
+                aria-pressed={activeProblem === i}
                 onClick={() => setActiveProblem(i)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setActiveProblem(i);
+                  }
+                }}
                 style={{
                   cursor: "pointer",
                   padding: 'clamp(14px, 2vw, 20px) 16px',
