@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
+import { howItStartsSteps } from "@/data/howItStartsSteps";
 
 interface HowItStartsSectionProps {
   ctaTitle?: string;
@@ -12,14 +13,6 @@ interface HowItStartsSectionProps {
   sectionNumber?: string;
   padding?: { top: string; bottom: string };
 }
-
-const steps = [
-  "We talk for an hour.",
-  "You show us how you work today.",
-  "We build your team.",
-  "You approve the hires.",
-  "We turn it on.",
-];
 
 export default function HowItStartsSection({
   ctaTitle = "Let\u2019s talk.",
@@ -76,7 +69,7 @@ export default function HowItStartsSection({
               zIndex: 0,
             }}
           />
-          {steps.map((step, i) => (
+          {howItStartsSteps.map((step, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, x: -20 }}

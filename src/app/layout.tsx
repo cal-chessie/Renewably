@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import SiteShell from "@/components/SiteShell";
 import Script from "next/script";
+import { professionalService } from "@/lib/seo-schema";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -89,44 +90,7 @@ function OrganizationSchema() {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          name: "Renewably",
-          url: siteConfig.url,
-          logo: `${siteConfig.url}/logo.png`,
-          description: siteConfig.description,
-          telephone: siteConfig.phone,
-          email: siteConfig.email,
-          address: {
-            "@type": "PostalAddress",
-            addressCountry: "IE",
-          },
-          areaServed: {
-            "@type": "Country",
-            name: "Ireland",
-          },
-          knowsAbout: [
-            "Solar PV installation",
-            "SEAI solar grants",
-            "ESB Networks grid connection",
-            "Battery storage",
-            "AI automation for solar installers",
-          ],
-          sameAs: [
-            "https://www.facebook.com/Renewably.ie/",
-            "https://www.instagram.com/renewablyhq/",
-          ],
-          contactPoint: {
-            "@type": "ContactPoint",
-            telephone: siteConfig.phone,
-            contactType: "sales",
-            email: siteConfig.email,
-            availableLanguage: ["English"],
-          },
-        }),
-      }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(professionalService()) }}
     />
   );
 }

@@ -1,5 +1,7 @@
 import HomePageClient from "@/components/HomePageClient";
 import { homeFaqs } from "@/data/homeFaqs";
+import { howItStartsSteps } from "@/data/howItStartsSteps";
+import { howTo } from "@/lib/seo-schema";
 
 export const metadata = {
   title: { absolute: 'Renewably: AI Workforce for Solar Installers in Ireland' },
@@ -62,11 +64,28 @@ function FAQSchema() {
   );
 }
 
+function HowToSchema() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(
+          howTo(
+            "How Renewably starts",
+            howItStartsSteps.map((step) => ({ name: step, text: step }))
+          )
+        ),
+      }}
+    />
+  );
+}
+
 export default function Home() {
   return (
     <>
       <HomePageSchema />
       <FAQSchema />
+      <HowToSchema />
       <main id="main-content">
         <HomePageClient />
       </main>

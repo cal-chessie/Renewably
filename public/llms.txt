@@ -34,9 +34,10 @@ model usage directly, with no markup.
 - The workforce and what each agent does: https://renewably.ie/workforce
 - Services: https://renewably.ie/services
 - Pricing: https://renewably.ie/pricing
+- Machine-readable pricing for AI agents: https://renewably.ie/pricing.md
 - Blog (solar operations, SEAI grants, the Irish market): https://renewably.ie/blog
 - Contact and book a call: https://renewably.ie/contact
 
 ## Contact
-- Email: hello@renewably.ie
+- Email: cal@renewably.ie
 - Book a call: https://renewably.ie/contact
