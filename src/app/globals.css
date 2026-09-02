@@ -332,3 +332,29 @@ body {
    never changes size, never overflows. Older browsers simply ignore it. */
 h1, h2, h3, .text-balance { text-wrap: balance; }
 p, li, .text-pretty { text-wrap: pretty; }
+
+/* One material across the dark sections: a shared dot field + fine grain, so
+   the site reads as one object rather than stacked slides. Overlays sit behind
+   content (.hp-content lifts the real content above them). */
+.hp-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.hp-dot-grid {
+  opacity: 0.05;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.5) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.hp-grain {
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+/* Soft seams: a short gradient bleed at the top of a section that follows a
+   contrasting one, so dark and light meet without a hard cut. */
+.hp-seam-top { position: absolute; top: 0; left: 0; right: 0; height: 64px; pointer-events: none; z-index: 0; }
+.hp-seam-from-dark  { background: linear-gradient(to bottom, rgba(10,10,10,0.08), transparent); }
+.hp-seam-from-light { background: linear-gradient(to bottom, rgba(255,255,255,0.10), transparent); }
+.hp-content { position: relative; z-index: 1; }
+
+/* Agent ID card: the mono spec strip reveals on hover, in reserved space so
+   nothing shifts. */
+.agent-meta { margin-top: auto; opacity: 0; transform: translateY(4px); transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1); }
+.group:hover .agent-meta, .group:focus-within .agent-meta { opacity: 1; transform: translateY(0); }

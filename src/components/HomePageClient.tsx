@@ -216,9 +216,12 @@ function ProblemSection() {
         paddingTop: 'clamp(80px, 10vw, 112px)',
         paddingBottom: 'clamp(60px, 8vw, 112px)',
         overflow: 'hidden',
+        position: 'relative',
       }}
     >
-      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
+      <div aria-hidden="true" className="hp-overlay hp-dot-grid" />
+      <div aria-hidden="true" className="hp-overlay hp-grain" />
+      <div className="hp-content" style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
           <div style={{ marginBottom: 'clamp(32px, 5vw, 40px)' }}>
@@ -291,8 +294,9 @@ function ProblemSection() {
    ============================================================ */
 function SolutionSection() {
   return (
-    <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(48px, 6vw, 80px)', paddingBottom: 'clamp(48px, 6vw, 112px)', overflow: 'hidden' }}>
-      <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
+    <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(48px, 6vw, 80px)', paddingBottom: 'clamp(48px, 6vw, 112px)', overflow: 'hidden', position: 'relative' }}>
+      <div aria-hidden="true" className="hp-seam-top hp-seam-from-dark" />
+      <div className="hp-content" style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Headline */}
         <ScrollReveal>
           <h2 style={{ fontSize: 'clamp(24px, 4vw, 48px)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
@@ -340,9 +344,13 @@ function PlatformTourSection() {
         paddingTop: 'clamp(80px, 10vw, 112px)',
         paddingBottom: 'clamp(60px, 8vw, 112px)',
         overflow: 'hidden',
+        position: 'relative',
       }}
     >
-      <div style={{ maxWidth: 1024, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
+      <div aria-hidden="true" className="hp-overlay hp-dot-grid" />
+      <div aria-hidden="true" className="hp-overlay hp-grain" />
+      <div aria-hidden="true" className="hp-seam-top hp-seam-from-light" />
+      <div className="hp-content" style={{ maxWidth: 1024, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
           <div style={{ textAlign: 'center', marginBottom: 'clamp(28px, 4vw, 40px)' }}>
@@ -495,9 +503,11 @@ function FeaturesSection() {
         paddingTop: 'clamp(48px, 6vw, 80px)',
         paddingBottom: 'clamp(48px, 6vw, 112px)',
         overflow: 'hidden',
+        position: 'relative',
       }}
     >
-      <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
+      <div aria-hidden="true" className="hp-seam-top hp-seam-from-dark" />
+      <div className="hp-content" style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
         {/* Badge */}
         <ScrollReveal>
           <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 3vw, 40px)' }}>
@@ -553,34 +563,42 @@ function AgentsSection() {
     {
       title: "CEO agent",
       desc: "Sets strategy. Assigns work. Manages the team. Reports to you weekly.",
+      meta: [["Reads", "the whole pipeline"], ["Sends", "your Monday summary"], ["Escalates", "when a job stalls"]],
     },
     {
       title: "Operations agent",
       desc: "Runs the day to day. Coordinates installs. Manages timelines.",
+      meta: [["Reads", "every job's stage"], ["Sends", "the status update"], ["Escalates", "when a timeline slips"]],
     },
     {
       title: "Customer support agent",
       desc: "Answers every message. Books every consult. Never sleeps.",
+      meta: [["Reads", "every enquiry"], ["Sends", "a reply on your hours"], ["Escalates", "when it needs you"]],
     },
     {
       title: "Grants agent",
       desc: "Knows every SEAI scheme. Fills every form. Chases every application.",
+      meta: [["Reads", "the SEAI criteria"], ["Sends", "the grant application"], ["Escalates", "on a rejection"]],
     },
     {
       title: "Logistics agent",
       desc: "Orders equipment. Schedules crews. Manages inventory.",
+      meta: [["Reads", "your stock levels"], ["Sends", "the purchase order"], ["Escalates", "before you run out"]],
     },
     {
       title: "ESB agent",
       desc: "Handles ESB. Tracks submissions. Follows up on delays.",
+      meta: [["Reads", "the NC6 rules"], ["Sends", "the ESB application"], ["Escalates", "on day 5, 10, 15"]],
     },
     {
       title: "QA agent",
       desc: "Reviews every job before handover. Checks paperwork. Catches mistakes.",
+      meta: [["Reads", "the job file"], ["Sends", "the snag list"], ["Escalates", "if paperwork's missing"]],
     },
     {
       title: "Reporting agent",
       desc: "Shows you exactly what's happening. Weekly summaries. Bottlenecks identified.",
+      meta: [["Reads", "every metric"], ["Sends", "the weekly report"], ["Escalates", "on a bottleneck"]],
     },
     {
       title: "Marketing agent",
@@ -628,7 +646,7 @@ function AgentsSection() {
               <ScrollReveal key={agent.title} delay={i * 0.08}>
                 <div
                   style={{ padding: 'clamp(22px, 2.4vw, 28px)' }}
-                  className={`hp-lift-sm h-full min-h-[172px] flex flex-col rounded-2xl transition-all duration-300 cursor-pointer group ${
+                  className={`hp-lift-sm h-full min-h-[210px] flex flex-col rounded-2xl transition-all duration-300 cursor-pointer group ${
                     isComingSoon
                       ? 'bg-[#FAF8EF] border border-dashed border-[#F3D840]/50'
                       : 'bg-[#FFFDF5] border border-[#0A0A0A]/[0.06] shadow-[0_1px_2px_rgba(20,18,5,0.04),0_10px_28px_rgba(20,18,5,0.06)] hover:border-[#F3D840]/70 hover:shadow-[0_2px_6px_rgba(20,18,5,0.05),0_18px_44px_rgba(20,18,5,0.10)]'
@@ -651,6 +669,16 @@ function AgentsSection() {
                   <p className={`text-sm leading-relaxed ${isComingSoon ? 'text-[#a49e91]' : 'text-[#535353]'}`}>
                     {agent.desc}
                   </p>
+                  {!isComingSoon && (agent as { meta?: string[][] }).meta && (
+                    <div className="agent-meta" style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid rgba(10,10,10,0.06)' }}>
+                      {(agent as { meta: string[][] }).meta.map(([k, v]) => (
+                        <div key={k} style={{ display: 'flex', gap: 8, fontSize: 11, lineHeight: 1.7, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }}>
+                          <span style={{ width: 66, flexShrink: 0, color: '#8a6d05', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em' }}>{k}</span>
+                          <span style={{ color: '#6b6b6b' }}>{v}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </ScrollReveal>
             );
@@ -661,7 +689,7 @@ function AgentsSection() {
             <Link href="/workforce">
               <div
                 style={{ padding: 'clamp(22px, 2.4vw, 28px)' }}
-                className="hp-lift-sm h-full min-h-[172px] rounded-2xl bg-[#0A0A0A] border border-[#F3D840]/40 hover:border-[#F3D840] shadow-[0_1px_2px_rgba(20,18,5,0.06),0_12px_32px_rgba(20,18,5,0.14)] transition-all duration-300 cursor-pointer group flex flex-col items-center justify-center text-center"
+                className="hp-lift-sm h-full min-h-[210px] rounded-2xl bg-[#0A0A0A] border border-[#F3D840]/40 hover:border-[#F3D840] shadow-[0_1px_2px_rgba(20,18,5,0.06),0_12px_32px_rgba(20,18,5,0.14)] transition-all duration-300 cursor-pointer group flex flex-col items-center justify-center text-center"
               >
                 <span className="text-[#F3D840] text-2xl font-extrabold mb-1.5 transition-transform duration-300 group-hover:scale-110">
                   + Much More

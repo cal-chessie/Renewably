@@ -53,9 +53,27 @@ export default function HowItStartsSection({
         {/* Steps */}
         <div
           ref={stepsRef}
-          className="flex flex-col"
+          className="flex flex-col relative"
           style={{ gap: 'clamp(10px, 2vw, 16px)', marginBottom: 'clamp(24px, 4vw, 48px)' }}
         >
+          {/* Connecting spine drawn through the step dots */}
+          <motion.div
+            aria-hidden="true"
+            initial={{ scaleY: 0 }}
+            animate={stepsInView ? { scaleY: 1 } : { scaleY: 0 }}
+            transition={{ delay: 0.25, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              position: "absolute",
+              top: "clamp(14px, 2vw, 16px)",
+              bottom: "clamp(14px, 2vw, 16px)",
+              left: "calc(clamp(28px, 4vw, 32px) / 2 - 1px)",
+              width: 2,
+              background: "rgba(26,26,26,0.18)",
+              transformOrigin: "top",
+              borderRadius: 2,
+              zIndex: 0,
+            }}
+          />
           {steps.map((step, i) => (
             <motion.div
               key={i}
@@ -63,7 +81,7 @@ export default function HowItStartsSection({
               animate={stepsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
               transition={{ delay: 0.2 + i * 0.15, duration: 0.4, ease: "easeOut" }}
               className="flex items-center"
-              style={{ gap: 'clamp(10px, 2vw, 16px)' }}
+              style={{ gap: 'clamp(10px, 2vw, 16px)', position: 'relative', zIndex: 1 }}
             >
               <motion.div
                 initial={{ scale: 0 }}
