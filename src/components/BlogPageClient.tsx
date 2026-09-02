@@ -21,26 +21,35 @@ const allCategories = [
   ...Array.from(new Set(posts.map((p) => p.category))),
 ];
 
-const topics = [
-  { label: "SEAI Grants", count: 2 },
-  { label: "ESB Networks", count: 2 },
-  { label: "AI Operations", count: 3 },
-  { label: "Customer Retention", count: 2 },
-  { label: "Lead Generation", count: 2 },
-  { label: "Solar PV", count: 5 },
-  { label: "Revenue Growth", count: 3 },
-  { label: "Site Assessment", count: 2 },
-  { label: "Equipment Logistics", count: 2 },
-  { label: "Permit Tracking", count: 2 },
-  { label: "Forecasting", count: 1 },
-  { label: "Automation", count: 4 },
+/* The featured post sits above the grid, so both the browse counts and the
+   grid exclude it. That keeps every chip count equal to what the list shows. */
+const featuredSlug = posts[0].slug;
+const browsablePosts = posts.filter((p) => p.slug !== featuredSlug);
+
+const categoryCounts: Record<string, number> = browsablePosts.reduce(
+  (acc, p) => {
+    acc[p.category] = (acc[p.category] || 0) + 1;
+    return acc;
+  },
+  {} as Record<string, number>
+);
+
+/* Real topics, real counts: one chip per category actually present. */
+const topics = Array.from(new Set(browsablePosts.map((p) => p.category))).map(
+  (label) => ({ label, count: categoryCounts[label] })
+);
+
+/* "All" clears the filter; the rest are the real categories. */
+const topicChips = [
+  { label: "All", count: browsablePosts.length },
+  ...topics,
 ];
 
 const categoryColors: Record<string, string> = {
   Operations: "#3B82F6",
   Grants: "#10B981",
   "Customer Support": "#F59E0B",
-  Permitting: "#8B5CF6",
+  "ESB Applications": "#8B5CF6",
   Logistics: "#EF4444",
   Reporting: "#06B6D4",
   "Lead Generation": "#EC4899",
@@ -142,7 +151,13 @@ function TagIcon() {
 /* ============================================================
    HERO SECTION
    ============================================================ */
-function HeroSection() {
+function HeroSection({
+  searchQuery,
+  setSearchQuery,
+}: {
+  searchQuery: string;
+  setSearchQuery: (v: string) => void;
+}) {
   return (
     <section
       data-theme="dark"
@@ -278,7 +293,7 @@ function HeroSection() {
             className="hp-rise"
             style={{ maxWidth: 520, margin: "0 auto", animationDelay: "1s" }}
           >
-            <SearchBar />
+            <SearchBar value={searchQuery} onChange={setSearchQuery} />
           </div>
         </div>
       </div>
@@ -303,7 +318,13 @@ function HeroSection() {
 /* ============================================================
    SEARCH BAR (used in hero)
    ============================================================ */
-function SearchBar() {
+function SearchBar({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <div
       style={{
@@ -320,29 +341,27 @@ function SearchBar() {
       <span style={{ color: "rgba(255,255,255,0.4)", flexShrink: 0 }}>
         <SearchIcon />
       </span>
-      <span
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Search articles, topics, guides..."
+        aria-label="Search articles"
+        className="blog-search-input"
         style={{
-          color: "rgba(255,255,255,0.62)",
+          flex: 1,
+          minWidth: 0,
+          border: "none",
+          outline: "none",
+          background: "transparent",
+          color: "#fff",
           fontSize: 15,
           fontWeight: 400,
         }}
-      >
-        Search articles, topics, guides...
-      </span>
-      <span
-        style={{
-          marginLeft: "auto",
-          padding: "4px 10px",
-          borderRadius: 6,
-          backgroundColor: "rgba(255,255,255,0.08)",
-          color: "rgba(255,255,255,0.62)",
-          fontSize: 11,
-          fontWeight: 600,
-          flexShrink: 0,
-        }}
-      >
-        CMD+K
-      </span>
+      />
+      <style>{`
+        .blog-search-input::placeholder { color: rgba(255,255,255,0.5); }
+      `}</style>
     </div>
   );
 }
@@ -851,36 +870,30 @@ function NewsletterSection() {
           </p>
         </ScrollReveal>
 
-        {/* Email input + button */}
+        {/* No automated list yet, so route to a real conversation
+            instead of faking a subscription. */}
         <ScrollReveal delay={0.3}>
           <div
             style={{
               display: "flex",
-              gap: 12,
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 16,
               maxWidth: 480,
               margin: "0 auto 24px",
-              flexWrap: "wrap",
-              justifyContent: "center",
             }}
           >
-            <input
-              type="email"
-              placeholder="your@email.com"
+            <p
               style={{
-                flex: 1,
-                minWidth: 240,
-                padding: "14px 20px",
-                borderRadius: 12,
-                border: "1px solid rgba(255,255,255,0.12)",
-                backgroundColor: "rgba(255,255,255,0.06)",
-                color: "#fff",
-                fontSize: 15,
-                fontWeight: 400,
-                outline: "none",
+                fontSize: "clamp(15px, 2vw, 17px)",
+                color: "rgba(255,255,255,0.7)",
+                margin: 0,
               }}
-            />
-            <button
-              type="button"
+            >
+              Want these in your inbox? Talk to us.
+            </p>
+            <Link
+              href="/contact"
               className="hp-lift-sm"
               style={{
                 padding: "14px 28px",
@@ -889,28 +902,16 @@ function NewsletterSection() {
                 color: "#1A1A1A",
                 fontSize: 15,
                 fontWeight: 700,
-                border: "none",
-                cursor: "pointer",
-                display: "flex",
+                textDecoration: "none",
+                display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
                 whiteSpace: "nowrap",
               }}
             >
-              Subscribe <ArrowIcon />
-            </button>
+              Talk to us <ArrowIcon />
+            </Link>
           </div>
-        </ScrollReveal>
-
-        <ScrollReveal delay={0.4}>
-          <p
-            style={{
-              fontSize: 13,
-              color: "rgba(255,255,255,0.62)",
-            }}
-          >
-            Join 200+ Irish solar professionals. Unsubscribe anytime.
-          </p>
         </ScrollReveal>
 
         {/* Ambient glow */}
@@ -936,8 +937,23 @@ function NewsletterSection() {
 /* ============================================================
    TOPICS CLOUD SECTION
    ============================================================ */
-function TopicsSection() {
+function TopicsSection({
+  activeCategory,
+  setActiveCategory,
+}: {
+  activeCategory: string;
+  setActiveCategory: (cat: string) => void;
+}) {
   const [hoveredTopic, setHoveredTopic] = useState<string | null>(null);
+
+  const handleTopicClick = (label: string) => {
+    setActiveCategory(label);
+    if (typeof document !== "undefined") {
+      document
+        .getElementById("blog-articles")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   return (
     <section
@@ -1017,64 +1033,58 @@ function TopicsSection() {
             gap: "clamp(6px, 1.2vw, 12px)",
           }}
         >
-          {topics.map((topic, i) => (
-            <ScrollReveal key={topic.label} delay={i * 0.04}>
-              <button
-                type="button"
-                onMouseEnter={() => setHoveredTopic(topic.label)}
-                onMouseLeave={() => setHoveredTopic(null)}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "clamp(4px, 0.8vw, 10px)",
-                  padding: "clamp(7px, 1.2vw, 12px) clamp(10px, 2vw, 22px)",
-                  borderRadius: "clamp(8px, 1.5vw, 14px)",
-                  backgroundColor:
-                    hoveredTopic === topic.label
-                      ? DARK
-                      : "#F9FAFB",
-                  border:
-                    hoveredTopic === topic.label
+          {topicChips.map((topic, i) => {
+            const isActive = activeCategory === topic.label;
+            const isHot = hoveredTopic === topic.label || isActive;
+            return (
+              <ScrollReveal key={topic.label} delay={i * 0.04}>
+                <button
+                  type="button"
+                  aria-pressed={isActive}
+                  onClick={() => handleTopicClick(topic.label)}
+                  onMouseEnter={() => setHoveredTopic(topic.label)}
+                  onMouseLeave={() => setHoveredTopic(null)}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "clamp(4px, 0.8vw, 10px)",
+                    padding: "clamp(7px, 1.2vw, 12px) clamp(10px, 2vw, 22px)",
+                    borderRadius: "clamp(8px, 1.5vw, 14px)",
+                    backgroundColor: isHot ? DARK : "#F9FAFB",
+                    border: isHot
                       ? "1.5px solid rgba(243,216,64,0.4)"
                       : "1.5px solid rgba(26,26,26,0.06)",
-                  color:
-                    hoveredTopic === topic.label
-                      ? YELLOW
-                      : "#374151",
-                  fontSize: "clamp(11px, 1.4vw, 14px)",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.25s ease",
-                  boxShadow:
-                    hoveredTopic === topic.label
+                    color: isHot ? YELLOW : "#374151",
+                    fontSize: "clamp(11px, 1.4vw, 14px)",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    transition: "all 0.25s ease",
+                    boxShadow: isHot
                       ? "0 8px 24px rgba(243,216,64,0.12)"
                       : "none",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {topic.label}
-                <span
-                  style={{
-                    fontSize: "clamp(9px, 1.2vw, 11px)",
-                    fontWeight: 700,
-                    padding: "clamp(1px, 0.3vw, 2px) clamp(4px, 0.8vw, 8px)",
-                    borderRadius: 9999,
-                    backgroundColor:
-                      hoveredTopic === topic.label
-                        ? "rgba(243,216,64,0.15)"
-                        : "rgba(0,0,0,0.05)",
-                    color:
-                      hoveredTopic === topic.label
-                        ? YELLOW
-                        : "#6B7280",
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {topic.count}
-                </span>
-              </button>
-            </ScrollReveal>
-          ))}
+                  {topic.label}
+                  <span
+                    style={{
+                      fontSize: "clamp(9px, 1.2vw, 11px)",
+                      fontWeight: 700,
+                      padding: "clamp(1px, 0.3vw, 2px) clamp(4px, 0.8vw, 8px)",
+                      borderRadius: 9999,
+                      backgroundColor: isHot
+                        ? "rgba(243,216,64,0.15)"
+                        : "rgba(0,0,0,0.05)",
+                      color: isHot ? YELLOW : "#6B7280",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {topic.count}
+                  </span>
+                </button>
+              </ScrollReveal>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -1198,19 +1208,28 @@ function FinalCTA() {
    ============================================================ */
 export default function BlogPageClient() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const featuredPost = posts[0];
   const filteredPosts = useMemo(() => {
-    if (activeCategory === "All") return posts.slice(1);
-    return posts.filter(
-      (p) => p.category === activeCategory && p.slug !== featuredPost.slug
-    );
-  }, [activeCategory, featuredPost.slug]);
+    const q = searchQuery.trim().toLowerCase();
+    return posts.filter((p) => {
+      if (p.slug === featuredPost.slug) return false;
+      if (activeCategory !== "All" && p.category !== activeCategory) return false;
+      if (q) {
+        const haystack = `${p.title} ${p.excerpt} ${p.category}`.toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [activeCategory, searchQuery, featuredPost.slug]);
+
+  const isSearching = searchQuery.trim().length > 0;
 
   return (
     <div>
       {/* 1. HERO */}
-      <HeroSection />
+      <HeroSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       {/* 2. FEATURED POST */}
       <section
@@ -1226,7 +1245,10 @@ export default function BlogPageClient() {
       </section>
 
       {/* 3. CATEGORY FILTERS (sticky) */}
-      <div style={{ backgroundColor: "#F9FAFB" }}>
+      <div
+        id="blog-articles"
+        style={{ backgroundColor: "#F9FAFB", scrollMarginTop: 64 }}
+      >
         <CategoryFilters
           activeCategory={activeCategory}
           setActiveCategory={setActiveCategory}
@@ -1259,7 +1281,9 @@ export default function BlogPageClient() {
                   color: "#1A1A1A",
                 }}
               >
-                {activeCategory === "All"
+                {isSearching
+                  ? "Search results"
+                  : activeCategory === "All"
                   ? "All articles"
                   : activeCategory}
               </h2>
@@ -1295,7 +1319,9 @@ export default function BlogPageClient() {
           {filteredPosts.length === 0 && (
             <div style={{ textAlign: "center", padding: "60px 20px" }}>
               <p style={{ fontSize: 16, color: "#6B7280" }}>
-                No articles in this category yet.
+                {isSearching
+                  ? "No articles match your search."
+                  : "No articles in this category yet."}
               </p>
             </div>
           )}
@@ -1306,7 +1332,10 @@ export default function BlogPageClient() {
       <NewsletterSection />
 
       {/* 6. TOPICS CLOUD */}
-      <TopicsSection />
+      <TopicsSection
+        activeCategory={activeCategory}
+        setActiveCategory={setActiveCategory}
+      />
 
       {/* 7. FINAL CTA */}
       <FinalCTA />

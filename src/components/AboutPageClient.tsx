@@ -39,7 +39,7 @@ const journey = [
   {
     phase: "The Scale",
     year: "2025",
-    text: "Today we build AI workforces for Irish solar companies doing 20+ jobs a month. Eight specialised agents live, with a ninth (Marketing) in development. One unified dashboard. Full management and reporting. The goal has not changed: installers installing more panels, serving more customers, and getting home before dark.",
+    text: "Today we build AI workforces for Irish solar companies doing 20+ jobs a month. Eight specialised agents live, with a Marketing agent on the roadmap. One unified dashboard. Full management and reporting. The goal has not changed: installers installing more panels, serving more customers, and getting home before dark.",
   },
 ];
 

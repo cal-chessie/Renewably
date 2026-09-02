@@ -7,8 +7,8 @@ const ogDescription =
   "Eight AI employees that run your solar company on autopilot. Grants, ESB applications, logistics, customer support: all handled.";
 
 export const metadata: Metadata = {
-  title: "AI Workforce: 8 AI Employees for Solar Installers (+ 1 Coming Soon)",
-  description: "Meet your AI workforce. Eight specialised agents: CEO, Operations, Support, Grants, Logistics, ESB, QA, and Reporting: that automate your Irish solar business. Marketing agent coming soon.",
+  title: "AI Workforce: 8 AI Employees for Solar Installers in Ireland",
+  description: "Your AI workforce for Irish solar. Start with two agents, scale to eight: CEO, Operations, Support, Grants, Logistics, ESB, QA and Reporting.",
   alternates: { canonical: "https://renewably.ie/workforce" },
   openGraph: {
     title: ogTitle,

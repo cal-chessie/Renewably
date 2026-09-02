@@ -6,7 +6,7 @@ import Link from "next/link";
 import { pricingFaqs } from "@/data/pricingFaqs";
 
 const includedItems = [
-  "All 8 AI agents (CEO, Operations, Support, Grants, Logistics, ESB, QA, Reporting) + Marketing Agent coming soon",
+  "Your full workforce of eight AI agents (CEO, Operations, Support, Grants, Logistics, ESB, QA, Reporting); start with two and add the rest as you scale, with the Marketing Agent on the roadmap",
   "Operations dashboard (works alongside your existing CRM)",
   "Calendar integration",
   "Email integration",

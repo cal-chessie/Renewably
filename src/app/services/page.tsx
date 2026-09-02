@@ -5,7 +5,7 @@ import servicesData from "@/data/services.json";
 
 const pageTitle = "Services: AI Workforce for Solar PV Installers";
 const pageDescription =
-  "Explore Renewably's 8 AI agents: grants management, ESB applications, customer support, logistics, operations, QA, and reporting: purpose-built for Irish solar installers.";
+  "Renewably's AI agents for Irish solar installers: grants, ESB applications, support, logistics, operations, QA, reporting. Start with two, scale to eight.";
 
 export const metadata: Metadata = {
   title: pageTitle,

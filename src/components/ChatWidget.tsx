@@ -44,7 +44,7 @@ const FOLLOW_UP_SUGGESTIONS: Suggestion[] = [
 const PAGE_CONTEXT_MAP: Record<string, string> = {
   "/": "the homepage",
   "/about": "the About Us page",
-  "/workforce": "the AI Workforce page: the 8 AI agents, with a ninth (Marketing) in development",
+  "/workforce": "the AI Workforce page: a full team of eight agents; installers start with two and scale up as the operation strengthens, with the Marketing agent on the roadmap",
   "/services": "the Services page",
   "/pricing": "the Pricing page",
   "/blog": "the Blog page",

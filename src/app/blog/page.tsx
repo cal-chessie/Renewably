@@ -7,7 +7,7 @@ const blogDescription = "Guides on AI automation for Irish solar installers.";
 export const metadata: Metadata = {
   title: "Blog: AI Operations, Grants & Logistics for Irish Solar Installers",
   description:
-    "Practical guides on AI-powered operations, SEAI grants, ESB permitting, logistics, customer support, and revenue forecasting. Written for solar companies doing 20+ jobs a month in Ireland.",
+    "Practical guides on AI operations, SEAI grants, ESB applications, logistics and customer support for Irish solar installers doing 20+ jobs a month.",
   alternates: { canonical: "https://renewably.ie/blog" },
   openGraph: {
     title: "Renewably Blog: Solar is Changing. Stay Ahead.",

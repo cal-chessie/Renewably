@@ -42,7 +42,7 @@ const QADashboard = dynamic(() => import("@/components/QADashboard"), { ssr: fal
 const ReportingDashboard = dynamic(() => import("@/components/ReportingDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
 
 /* ============================================================
-   DATA - 8 AI Agents (+ 1 Coming Soon)
+   DATA - 8 AI Agents (Marketing on the roadmap)
    ============================================================ */
 const agents: Array<{ num: string; title: string; tagline: string; body: string; closing: string }> = [
   {
@@ -380,7 +380,7 @@ export default function WorkforcePageClient() {
             className="hp-rise"
             style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(1.1rem, 2vw, 1.35rem)', lineHeight: 1.6, maxWidth: 640, margin: '0 auto', animationDelay: '0.8s' }}
           >
-            Eight AI employees. One team. Your solar company, automated. (Ninth coming soon.)
+            Eight AI agents at full strength. You start with the two that move the needle first, then switch on the rest as your operation captures evidence and strengthens.
           </p>
         </div>
 
@@ -388,7 +388,7 @@ export default function WorkforcePageClient() {
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 120, background: 'linear-gradient(to top, #F3D840, transparent)', zIndex: 3, pointerEvents: 'none' }} />
       </section>
 
-      {/* ===== NINE AGENTS ===== */}
+      {/* ===== EIGHT AGENTS ===== */}
       <section style={{ backgroundColor: '#fff', paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}>
         <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 4vw, 32px)', paddingRight: 'clamp(16px, 4vw, 32px)' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: "clamp(64px, 15vw, 120px)" }}>
@@ -412,7 +412,7 @@ export default function WorkforcePageClient() {
                   Runs campaigns. Generates leads. Writes copy. Manages socials.
                 </p>
                 <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, maxWidth: 480 }}>
-                  The ninth member of your AI workforce. Fills your pipeline while you sleep. Runs Google Ads, Meta campaigns, SEO content, email sequences, and social media, all optimised for Irish solar customers.
+                  Next to join your workforce. Fills your pipeline while you sleep. Runs Google Ads, Meta campaigns, SEO content, email sequences, and social media, all optimised for Irish solar customers.
                 </p>
                 <div style={{ marginTop: 20, display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 20px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.25)', color: '#F3D840', fontSize: 'clamp(12px, 1.3vw, 14px)', fontWeight: 600 }}>
                   <span className="hp-pulse" style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#F3D840' }} />

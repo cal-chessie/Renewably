@@ -5,7 +5,7 @@ import { howTo } from "@/lib/seo-schema";
 
 export const metadata = {
   title: { absolute: 'Renewably: AI Workforce for Solar Installers in Ireland' },
-  description: 'Renewably deploys 8 AI agents that automate your solar PV business: grants, ESB applications, customer support, logistics, and more. Purpose-built for Irish solar installers doing 20+ jobs a month.',
+  description: 'AI agents for Irish solar installers. Start with the two that move the needle, scale to a team of eight: grants, ESB applications, support, logistics.',
   alternates: {
     canonical: 'https://renewably.ie',
   },

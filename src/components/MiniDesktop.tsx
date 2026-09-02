@@ -12,7 +12,7 @@ const AGENTS_DATA = [
   { name: "Support", icon: "💬", progress: 100 },
   { name: "Grants", icon: "💰", progress: 45 },
   { name: "Logistics", icon: "🚚", progress: 88 },
-  { name: "Permitting", icon: "📜", progress: 32 },
+  { name: "ESB", icon: "📜", progress: 32 },
   { name: "QA", icon: "🔍", progress: 100 },
   { name: "Reporting", icon: "📊", progress: 55 },
 ];
@@ -23,7 +23,7 @@ const RT_AGENTS = [
   { name: "Support", task: "Answered", progress: 100, icon: "💬" },
   { name: "Grants", task: "Submitted", progress: 38, icon: "💰" },
   { name: "Logistics", task: "Ordered", progress: 88, icon: "🚚" },
-  { name: "Permitting", task: "Follow up", progress: 52, icon: "📜" },
+  { name: "ESB", task: "Follow up", progress: 52, icon: "📜" },
   { name: "QA", task: "Reviewed", progress: 100, icon: "🔍" },
   { name: "Reporting", task: "Summary", progress: 45, icon: "📊" },
 ];
@@ -94,7 +94,7 @@ export default function MiniDesktop() {
         prev.map((a) => {
           if (a.progress < 100 && a.name !== "Support" && a.name !== "QA") {
             const newProg = Math.min(100, a.progress + Math.floor(Math.random() * 8) + 2);
-            const resetMap: Record<string, number> = { Grants: 3000, CEO: 4000, Logistics: 3500, Permitting: 5000, Reporting: 4000 };
+            const resetMap: Record<string, number> = { Grants: 3000, CEO: 4000, Logistics: 3500, ESB: 5000, Reporting: 4000 };
             if (newProg >= 100) {
               setTimeout(() => {
                 setRtAgents((inner) =>
@@ -210,7 +210,7 @@ export default function MiniDesktop() {
               <div style={styles.kpiRow}>
                 <div style={styles.kpiCard}><div style={styles.kpiValue}>{forms}</div><div style={styles.kpiLabel}>FORMS DONE</div></div>
                 <div style={styles.kpiCard}><div style={styles.kpiValue}>{grants}</div><div style={styles.kpiLabel}>GRANTS</div></div>
-                <div style={styles.kpiCard}><div style={styles.kpiValue}>{permits}</div><div style={styles.kpiLabel}>PERMITS</div></div>
+                <div style={styles.kpiCard}><div style={styles.kpiValue}>{permits}</div><div style={styles.kpiLabel}>NC6</div></div>
                 <div style={styles.kpiCard}><div style={styles.kpiValue}>{hoursSaved}</div><div style={styles.kpiLabel}>HOURS SAVED</div></div>
               </div>
               <div style={styles.mockForm}>

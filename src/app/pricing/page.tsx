@@ -10,7 +10,7 @@ const ogDescription =
 export const metadata: Metadata = {
   title: "Pricing: AI Workforce for Solar Installers",
   description:
-    "Simple pricing for Renewably's AI workforce. From €1,000/month with no hidden fees. All 8 agents, an operations dashboard, and dedicated support included. Purpose-built for Irish solar installers.",
+    "AI workforce for Irish solar installers from €1,000/month. Start with two agents, scale to eight. One-time setup, no hidden fees, bring your own keys.",
   alternates: { canonical: "https://renewably.ie/pricing" },
   openGraph: {
     title: ogTitle,

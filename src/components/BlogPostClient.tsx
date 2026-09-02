@@ -18,7 +18,7 @@ const categoryColors: Record<string, string> = {
   Operations: "#3B82F6",
   Grants: "#10B981",
   "Customer Support": "#F59E0B",
-  Permitting: "#8B5CF6",
+  "ESB Applications": "#8B5CF6",
   Logistics: "#EF4444",
   Reporting: "#06B6D4",
   "Lead Generation": "#EC4899",

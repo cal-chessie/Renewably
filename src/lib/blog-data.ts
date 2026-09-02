@@ -288,11 +288,11 @@ The operations agent doesn't replace your team. It connects them. Every handoff 
 
 **Assessor** uploads roof photos. Dashboard updates. Operations agent drafts the quote from the job file. The customer hears back while the job is still warm, not after it has sat in a drafts folder for a week.
 
-**Customer** accepts the quote. Dashboard updates. Grants agent starts the SEAI application. Permitting agent begins the ESB process. Both run in parallel.
+**Customer** accepts the quote. Dashboard updates. Grants agent starts the SEAI application. ESB agent begins the ESB process. Both run in parallel.
 
 **Grants agent** submits the application. Dashboard updates. Status changes to "Grant Pending." Everyone sees it. Nobody emails to ask.
 
-**Permitting agent** gets approval. Dashboard updates. Logistics agent orders equipment. Delivery is tracked automatically.
+**ESB agent** gets approval. Dashboard updates. Logistics agent orders equipment. Delivery is tracked automatically.
 
 **Logistics agent** confirms delivery. Dashboard updates. Install coordinator schedules the crew. Customer receives a confirmation email with date and arrival window.
 
@@ -414,14 +414,14 @@ Try it for one week. Count how many messages the agent handles. Count how many l
   },
 
   /* ─────────────────────────────────────────────────────────
-     5: ESB Permit Tracking
+     5: ESB Application Tracking
      ───────────────────────────────────────────────────────── */
   {
     slug: "esb-networks-ai-permit-tracking",
     title:
-      "ESB Networks Applications Without the Chaos: AI Permit Tracking That Works",
+      "ESB Networks Applications Without the Chaos: AI Tracking That Works",
     date: "2026-03-13",
-    category: "Permitting",
+    category: "ESB Applications",
     readTime: "9 min read",
     excerpt:
       "ESB Networks applications are the single biggest bottleneck in solar installation. Application submitted. No response for two weeks. You follow up. Nothing. You call. Hold music. The customer asks where their install is. You don't know. Here's how AI agents take the permit process off your desk: right form, complete documents, every submission tracked, nothing lost.",
@@ -436,7 +436,7 @@ Weeks pass. Customer calls you. Where's my install? You don't have an answer. Yo
 
 You just know you hate ESB paperwork.
 
-## Why Permitting Takes So Long
+## Why ESB Applications Take So Long
 
 Not because ESB Networks is slow. Because your application is incomplete.
 
@@ -446,7 +446,7 @@ Each mistake adds a week to your timeline. Each correction request adds a week. 
 
 And here's the part that hurts: so much of the delay is self-inflicted. An application submitted correctly, with every document attached, on the right form, to the right channel, moves through the process the way it's supposed to. One that isn't bounces back, and every bounce costs you weeks.
 
-## What an AI Permitting Agent Does
+## What an AI ESB Agent Does
 
 An agent that knows every ESB application. Every form. Every requirement. Every submission method. Every common rejection reason.
 

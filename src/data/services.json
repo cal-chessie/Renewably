@@ -95,10 +95,10 @@
     "updatedAt": "2026-04-01T09:00:00.000Z"
   },
   {
-    "id": "permitting-agent",
+    "id": "esb-agent",
     "type": "service",
     "title": "ESB Agent",
-    "slug": "permitting-agent",
+    "slug": "esb-agent",
     "description": "Your regulatory compliance expert. The ESB Agent manages ESB grid connection applications, planning permission checks, building control notifications, and all other regulatory requirements. It pre-checks every application for completeness, tracks submission status, and chases responses, removing the biggest bottleneck in Irish solar installations.",
     "features": [
       "ESB microgeneration application preparation and submission",
