@@ -965,6 +965,19 @@ function FounderSection() {
       }}
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Celebrating team poster (brand-yellow panel — the crew behind the platform) */}
+        <ScrollReveal>
+          <div style={{ borderRadius: 20, overflow: "hidden", boxShadow: "var(--elev-raised)", marginBottom: "clamp(40px, 6vw, 64px)" }}>
+            <Image
+              src="/robots/team-celebrating.jpg"
+              alt="The Renewably AI team"
+              width={1500}
+              height={779}
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              style={{ width: "100%", height: "auto", display: "block" }}
+            />
+          </div>
+        </ScrollReveal>
         <div
           style={{
             display: "grid",

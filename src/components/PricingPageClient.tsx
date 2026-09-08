@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import Link from "next/link";
+import Image from "next/image";
 import { pricingFaqs } from "@/data/pricingFaqs";
 
 const includedItems = [
@@ -278,8 +279,11 @@ export default function PricingPageClient() {
       </section>
 
       {/* CTA - Yellow */}
-      <section style={{ backgroundColor: "#F3D840" }}>
-        <div style={{ maxWidth: 640, margin: "0 auto", padding: "64px 20px", textAlign: "center" }}>
+      <section style={{ backgroundColor: "#F3D840", position: "relative", overflow: "hidden" }}>
+        {/* Flanking team robots (desktop only): coffee on the left, box on the right */}
+        <Image src="/robots/coffee-nobg.png" alt="" aria-hidden width={170} height={312} className="cta-team-bot cta-team-bot-left" />
+        <Image src="/robots/box-nobg.png" alt="" aria-hidden width={188} height={310} className="cta-team-bot cta-team-bot-right" />
+        <div style={{ maxWidth: 640, margin: "0 auto", padding: "64px 20px", textAlign: "center", position: "relative", zIndex: 2 }}>
           <ScrollReveal>
             <h2 style={{ color: "#0A0A0A", fontSize: "clamp(24px, 5vw, 48px)", fontWeight: 800, lineHeight: 1.15, letterSpacing: "-0.02em", marginBottom: 12 }}>
               Ready to meet your team?
@@ -320,6 +324,20 @@ export default function PricingPageClient() {
             </Link>
           </ScrollReveal>
           <style>{`
+            .cta-team-bot {
+              position: absolute;
+              bottom: 0;
+              width: clamp(130px, 14vw, 185px);
+              height: auto;
+              pointer-events: none;
+              z-index: 1;
+              filter: drop-shadow(0 12px 18px rgba(0,0,0,0.18));
+            }
+            .cta-team-bot-left { left: clamp(8px, 4vw, 72px); }
+            .cta-team-bot-right { right: clamp(8px, 4vw, 72px); }
+            @media (max-width: 1023px) {
+              .cta-team-bot { display: none; }
+            }
             @media (max-width: 767px) {
               .pricing-bottom-cta {
                 width: 100% !important;
