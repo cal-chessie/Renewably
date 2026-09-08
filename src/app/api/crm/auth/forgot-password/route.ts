@@ -91,8 +91,13 @@ export async function POST(request: NextRequest) {
     // which respects Supabase email templates and redirect config
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+    // Reset links MUST point at the stable production portal, never a
+    // per-deployment URL. NEXT_PUBLIC_BASE_URL was resolving to an old Vercel
+    // deployment, so reset links landed on a dead build and locked people out.
+    // Pin the redirect to the canonical domain; Supabase must also allowlist it
+    // (Auth > URL Configuration > Redirect URLs) or it falls back to Site URL.
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
-      redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://renewably.ie'}/crm/reset-password`,
+      redirectTo: 'https://renewably.ie/crm/reset-password',
     })
 
     if (error) {
