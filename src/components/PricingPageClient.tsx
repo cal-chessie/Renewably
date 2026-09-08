@@ -6,13 +6,13 @@ import Link from "next/link";
 import { pricingFaqs } from "@/data/pricingFaqs";
 
 const includedItems = [
-  "Your full workforce of eight AI agents (CEO, Operations, Support, Grants, Logistics, ESB, QA, Reporting); start with two and add the rest as you scale, with the Marketing Agent on the roadmap",
+  "Your AI team of specialist agents (lead response, operations, site survey, proposals, grants, follow-up, install coordination, aftercare); start with the two that move the needle and add the rest as you grow",
   "Operations dashboard (works alongside your existing CRM)",
   "Calendar integration",
   "Email integration",
   "Weekly reports",
   "Dedicated support",
-  "Free updates and new agents",
+  "Free updates and improvements",
 ];
 
 const separateItems = [

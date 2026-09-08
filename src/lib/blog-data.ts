@@ -295,19 +295,19 @@ One dashboard. Every job. Every status. Every problem. One place.
 
 The operations agent doesn't replace your team. It connects them. Every handoff is tracked. Every status update is shared. Everyone sees the same picture.
 
-**Salesperson** enters a lead. Dashboard updates. Assessment agent gets notified. Customer receives confirmation email automatically.
+**Salesperson** enters a lead. Dashboard updates. Site Survey agent gets notified. Customer receives confirmation email automatically.
 
-**Assessor** uploads roof photos. Dashboard updates. Operations agent drafts the quote from the job file. The customer hears back while the job is still warm, not after it has sat in a drafts folder for a week.
+**Assessor** uploads roof photos. Dashboard updates. Proposal agent drafts the quote from the job file. The customer hears back while the job is still warm, not after it has sat in a drafts folder for a week.
 
-**Customer** accepts the quote. Dashboard updates. Grants agent starts the SEAI application. ESB agent begins the ESB process. Both run in parallel.
+**Customer** accepts the quote. Dashboard updates. Grants agent starts the SEAI application. Install Coordinator agent lines up the ESB Networks grid connection paperwork. Both run in parallel.
 
 **Grants agent** tracks the SEAI application. Dashboard updates. Status changes to "Grant Pending." Everyone sees it. Nobody emails to ask.
 
-**ESB agent** gets approval. Dashboard updates. Logistics agent orders equipment. Delivery is tracked automatically.
+**Install Coordinator agent** gets the grid connection approved. Dashboard updates. Equipment gets ordered against the confirmed job. Delivery is tracked automatically.
 
-**Logistics agent** confirms delivery. Dashboard updates. Install coordinator schedules the crew. Customer receives a confirmation email with date and arrival window.
+**Delivery** is confirmed. Dashboard updates. Install Coordinator agent schedules the crew. Customer receives a confirmation email with date and arrival window.
 
-**Installer** completes the job. Dashboard updates. QA agent reviews the paperwork. Customer receives the handover pack. Sign-off is captured digitally.
+**Installer** completes the job. Dashboard updates. Aftercare agent handles the handover. Customer receives the handover pack. Sign-off is captured digitally.
 
 Every step. Every handoff. Every status change. One dashboard. One source of truth. No email chains. No WhatsApp groups asking "where are we with this one?"
 
@@ -463,7 +463,7 @@ Each mistake adds a week to your timeline. Each correction request adds a week. 
 
 And here's the part that hurts: so much of the delay is self-inflicted. An application submitted correctly, with every document attached, on the right form, to the right channel, moves through the process the way it's supposed to. One that isn't bounces back, and every bounce costs you weeks.
 
-## What an AI ESB Agent Does
+## What the Install Coordinator Agent Does
 
 An agent that knows every ESB application. Every form. Every requirement. Every submission method. Every common rejection reason.
 
@@ -471,7 +471,7 @@ An agent that knows every ESB application. Every form. Every requirement. Every 
 
 **Gathers documents.** Agent knows what ESB requires for each application type. Single-line diagram for systems above a certain size. Equipment certification for panels and inverters. Site plan showing proposed equipment location. Proof of property ownership or landlord consent. Agent requests what's missing. Verifies what's uploaded. Validates file formats and sizes.
 
-**Submits correctly.** Agent knows where each application goes. NC6 for domestic solar under a certain threshold. NC7 for larger domestic systems or commercial installations. Online portal for most applications. Email for specific circumstances. Physical post for a few rare cases. Never wrong channel. Never wrong form.
+**Puts it on the right form.** Agent knows which application each job needs. NC6 for domestic solar under a certain threshold. NC7 for larger domestic systems or commercial installations. Online portal for most applications. Email for specific circumstances. Physical post for a few rare cases. It preps the application on the correct channel, ready for you to submit. Never wrong channel. Never wrong form.
 
 **Tracks every submission.** Agent logs submission date and time. Records the reference number. Follows up on day five. Escalates on day ten. Alerts you on day fifteen if no progress. No applications lost. No applications forgotten. No "I think we submitted that one but I'm not sure."
 
@@ -548,7 +548,7 @@ Here are seven ways solar companies are using AI to fix logistics. Each one solv
 
 **The problem:** You finish a job on Thursday. You realise you're low on inverters. You meant to order more last week but forgot because you were dealing with a customer complaint. You order on Friday afternoon. Supplier doesn't process until Monday. They take a week to deliver. Your next install is next Wednesday. No inverters. Job gets pushed. Crew sits idle for a day.
 
-**The fix:** Logistics agent tracks your inventory in real time. Every panel. Every inverter. Every rail. Every bracket. Every cable. Every connector. Agent knows your minimum stock levels based on your install rate. When stock drops below the threshold, the agent places an order automatically. Before you need the equipment. Before you even notice you're running low.
+**The fix:** Install Coordinator agent tracks your inventory in real time. Every panel. Every inverter. Every rail. Every bracket. Every cable. Every connector. Agent knows your minimum stock levels based on your install rate. When stock drops below the threshold, the agent places an order automatically. Before you need the equipment. Before you even notice you're running low.
 
 **The result:** The order goes in before anyone notices the shelf getting light. Your crews show up to jobs with what the job needs, and the Friday-afternoon scramble for inverters stops being part of your week.
 
@@ -556,7 +556,7 @@ Here are seven ways solar companies are using AI to fix logistics. Each one solv
 
 **The problem:** You have three crews. Ten jobs scheduled this week. Weather forecast changes daily. Customers reschedule without notice. One crew member calls in sick. You spend thirty minutes every morning rearranging the schedule. Then another customer cancels. You rearrange again. Then it rains. You rearrange a third time. By nine o'clock you've spent more time on scheduling than on managing.
 
-**The fix:** Logistics agent knows every crew's skills, certifications, and availability. Every job's requirements: system size, roof type, scaffold needs, estimated duration. Every site's location and travel time between them. Agent optimises the schedule overnight. Crews wake up knowing exactly where they're going. When weather changes, the agent reschedules automatically. When a customer cancels, the agent fills the gap with the next available job. When someone calls in sick, the agent redistributes work to available crews.
+**The fix:** Install Coordinator agent knows every crew's skills, certifications, and availability. Every job's requirements: system size, roof type, scaffold needs, estimated duration. Every site's location and travel time between them. Agent optimises the schedule overnight. Crews wake up knowing exactly where they're going. When weather changes, the agent reschedules automatically. When a customer cancels, the agent fills the gap with the next available job. When someone calls in sick, the agent redistributes work to available crews.
 
 **The result:** No more morning scheduling chaos. No more wrong crew on the wrong job. No more wasted driving time between sites that are an hour apart when they could have been in the same area.
 
@@ -564,7 +564,7 @@ Here are seven ways solar companies are using AI to fix logistics. Each one solv
 
 **The problem:** You ordered materials for a job on Monday. Supplier said they'd arrive Tuesday. It's Wednesday afternoon. Nobody knows where the materials are. Crews are scheduled for Thursday. You spend forty minutes calling the supplier. On hold. Transferred. Disconnected. Call back. Finally get through. "The driver had a flat tyre." Great. Crew has nothing to install tomorrow.
 
-**The fix:** Logistics agent tracks every order with every supplier. Knows when materials ship. Knows the expected delivery date. Monitors for delivery confirmation. Alerts you the moment something is late, not the moment crews show up without materials. If a delivery is delayed, the agent reschedules the install and notifies the customer. Proactively. Before anyone is standing in a driveway with nothing to do.
+**The fix:** Install Coordinator agent tracks every order with every supplier. Knows when materials ship. Knows the expected delivery date. Monitors for delivery confirmation. Alerts you the moment something is late, not the moment crews show up without materials. If a delivery is delayed, the agent reschedules the install and notifies the customer. Proactively. Before anyone is standing in a driveway with nothing to do.
 
 **The result:** Crews never wait for materials. You never chase deliveries on the phone. Customers never get rescheduled due to missing equipment. Problems are caught and fixed before they become disruptions.
 
@@ -572,7 +572,7 @@ Here are seven ways solar companies are using AI to fix logistics. Each one solv
 
 **The problem:** Forecast says rain tomorrow. You have two roof installations scheduled. You spend the evening calling customers. Rescheduling. Apologising. Trying to find alternative dates. The first customer is flexible. The second isn't. You squeeze them in next week. Your schedule is now a mess for the next five days.
 
-**The fix:** Logistics agent checks weather forecasts for every job site, every night. It knows which jobs can proceed in light rain (ground-mounted systems, internal electrical work, battery installations) and which cannot (roof work, scaffold erection). When rain is forecast for a roof job, the agent automatically reschedules it to the next dry day. Notifies the crew. Notifies the customer. Books the replacement date. Finds indoor work for the crew if available.
+**The fix:** Install Coordinator agent checks weather forecasts for every job site, every night. It knows which jobs can proceed in light rain (ground-mounted systems, internal electrical work, battery installations) and which cannot (roof work, scaffold erection). When rain is forecast for a roof job, the agent automatically reschedules it to the next dry day. Notifies the crew. Notifies the customer. Books the replacement date. Finds indoor work for the crew if available.
 
 **The result:** No more late-night calls to reschedule. No more crews showing up to rainy roofs and sitting in the van for four hours. No more customers standing in their garden in waterproofs wondering when the solar panels are going up.
 
@@ -580,7 +580,7 @@ Here are seven ways solar companies are using AI to fix logistics. Each one solv
 
 **The problem:** Crew arrives at a semi-detached property in a housing estate. Truck is parked on the street because the driveway is too narrow. Crew spends forty-five minutes carrying panels, rails, and inverters one by one from the truck, through the gate, around the side, and into the back garden. The job that should take six hours takes seven. The next job is pushed back.
 
-**The fix:** Logistics agent knows each site's specific layout from the assessment photos and site notes. Where the truck can park. Where materials need to be staged. What the access route is. Agent creates a staging plan: panels go here, rails go here, inverter goes here. Crew follows the plan. Everything is in the right place before anyone climbs a ladder. No extra trips. No wasted steps. No time lost to poor logistics.
+**The fix:** Install Coordinator agent knows each site's specific layout from the assessment photos and site notes. Where the truck can park. Where materials need to be staged. What the access route is. Agent creates a staging plan: panels go here, rails go here, inverter goes here. Crew follows the plan. Everything is in the right place before anyone climbs a ladder. No extra trips. No wasted steps. No time lost to poor logistics.
 
 **The result:** Installs start faster and finish faster. Crews do more jobs per week because they're not losing time on logistics. Same hours in the day. More output.
 
@@ -588,7 +588,7 @@ Here are seven ways solar companies are using AI to fix logistics. Each one solv
 
 **The problem:** Install is scheduled for tomorrow. Customer has no idea what time the crew will arrive. Doesn't know how long it will take. Doesn't know if they need to do anything to prepare. Customer calls you at eight o'clock at night. You're eating dinner. You answer anyway because you don't want to lose the job. This is the fifth call this week.
 
-**The fix:** Logistics agent sends customers everything they need, automatically, at the right time. Seven days before install: confirmation email with date, estimated arrival window, and preparation checklist. Three days before: reminder with arrival time and crew details. Day before: final confirmation with weather check. Morning of: text message with crew's estimated arrival time.
+**The fix:** Install Coordinator agent sends customers everything they need, automatically, at the right time. Seven days before install: confirmation email with date, estimated arrival window, and preparation checklist. Three days before: reminder with arrival time and crew details. Day before: final confirmation with weather check. Morning of: text message with crew's estimated arrival time.
 
 **The result:** Customers know exactly what to expect. Customers stop calling you with questions the agent has already answered. Customers are prepared when the crew arrives. The job starts on time. Everyone is less stressed.
 
@@ -596,7 +596,7 @@ Here are seven ways solar companies are using AI to fix logistics. Each one solv
 
 **The problem:** Job is finished. Crew packs up. Leaves. Two weeks later, you're doing stocktake and realise you're short panels. And rails. And cable. Turns out there were leftovers at three different job sites that nobody brought back. Each one a few hundred euros. Total loss: over a thousand euros this month. Every month.
 
-**The fix:** Logistics agent knows exactly what materials were sent to each job. Knows the system size. Knows the material quantities required. Calculates what should be left over. Creates a recovery checklist for each job. Crew checks the list before leaving site. Leftover materials come back. Agent updates inventory automatically. If something is missing, the agent flags it. If a pattern emerges, the agent alerts you.
+**The fix:** Install Coordinator agent knows exactly what materials were sent to each job. Knows the system size. Knows the material quantities required. Calculates what should be left over. Creates a recovery checklist for each job. Crew checks the list before leaving site. Leftover materials come back. Agent updates inventory automatically. If something is missing, the agent flags it. If a pattern emerges, the agent alerts you.
 
 **The result:** Materials come back from every job. Inventory stays accurate. The slow leak of abandoned materials, the one you only ever discover at stocktake, gets plugged.
 
@@ -653,7 +653,7 @@ Every stage means something different but your spreadsheet treats them identical
 
 Your spreadsheet says five hundred thousand euros this quarter. You actually bank two hundred and fifty thousand. You're not surprised. You're just used to it. You've been doing this long enough to know the spreadsheet number is fictional. But you keep updating it anyway because it's the only tool you have.
 
-## What an AI Reporting Agent Does
+## What the Operations Agent Does
 
 An agent that analyses every job. Every stage. Every delay. Every outcome. Every pattern. And tells you what will actually happen.
 
@@ -701,7 +701,7 @@ The spreadsheet adds up hopes. The agent weighs evidence. That's the whole diffe
 
 You don't change your CRM. You don't change your process. You don't hire a data analyst.
 
-The reporting agent connects to what you already use. Pulls data from your forms. Your spreadsheets. Your email. Your calendar. Your accounting software. Builds the forecast automatically.
+The operations agent connects to what you already use. Pulls data from your forms. Your spreadsheets. Your email. Your calendar. Your accounting software. Builds the forecast automatically.
 
 One dashboard. Accurate forecast. Every morning. Open it. See what's coming. Close it. Run your business.
 
@@ -761,7 +761,7 @@ Not because you don't want to. Because you're busy running a solar installation 
 
 This isn't a scheduling problem. This isn't a staffing problem. This is a physics problem. You are one person. You cannot be available twenty-four hours a day. You need something that can.
 
-## What an AI Lead Generation Agent Does
+## What the Lead Response Agent Does
 
 Answers every lead, on the hours you set, business hours or around the clock. Inside them, straight away; anything outside is captured, logged and queued so it's answered the moment you open. Nothing waits in an inbox. Nothing gets forgotten.
 

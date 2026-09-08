@@ -442,7 +442,7 @@ function FeaturesSection() {
     {
       img: "/robots/feat-answer.png",
       title: "Answer every customer. Immediately.",
-      desc: "No more 'we'll call you back.' No more lost leads. Customer support agent responds 24/7. Books consultations. Answers questions. Escalates only what needs you.",
+      desc: "No more 'we'll call you back.' No more lost leads. Customer support agent answers on the hours you set, captures the rest. Books consultations. Answers questions. Escalates only what needs you.",
     },
     {
       img: "/robots/feat-site.png",
@@ -452,7 +452,7 @@ function FeaturesSection() {
     {
       img: "/robots/feat-grant.png",
       title: "Handle every grant.",
-      desc: "SEAI applications. Paperwork. Follow-ups. Resubmissions. Agent knows every form, every deadline, every requirement. Nothing sits forgotten. Nothing misses a deadline.",
+      desc: "SEAI applications. Paperwork. Follow-ups. Agent fills every form, tracks every deadline, every requirement. Nothing sits forgotten. Nothing misses a deadline.",
     },
     {
       img: "/robots/feat-coord.png",
@@ -536,49 +536,44 @@ function FeaturesSection() {
 function AgentsSection() {
   const agents = useMemo(() => [
     {
-      title: "CEO agent",
-      desc: "Sets strategy. Assigns work. Manages the team. Reports to you weekly.",
-      meta: [["Reads", "the whole pipeline"], ["Sends", "your Monday summary"], ["Escalates", "when a job stalls"]],
+      title: "Lead Response agent",
+      desc: "Answers every enquiry. Texts back missed calls. Books the call.",
+      meta: [["Reads", "every enquiry"], ["Sends", "a reply on your hours"], ["Books", "straight into your diary"]],
     },
     {
       title: "Operations agent",
-      desc: "Runs the day to day. Coordinates installs. Manages timelines.",
-      meta: [["Reads", "every job's stage"], ["Sends", "the status update"], ["Escalates", "when a timeline slips"]],
+      desc: "Runs the pipeline. Briefs you weekly. Spots the stalls.",
+      meta: [["Reads", "every job's stage"], ["Sends", "your weekly brief"], ["Flags", "when a job stalls"]],
     },
     {
-      title: "Customer support agent",
-      desc: "Answers every message. Books every consult. Never sleeps.",
-      meta: [["Reads", "every enquiry"], ["Sends", "a reply on your hours"], ["Escalates", "when it needs you"]],
+      title: "Site Survey agent",
+      desc: "Books the survey. Preps the details. Confirms the visit.",
+      meta: [["Reads", "the warm lead"], ["Books", "your next free day"], ["Sends", "the confirmation"]],
+    },
+    {
+      title: "Proposal agent",
+      desc: "Drafts the proposal. Prices the job. Ready for your sign-off.",
+      meta: [["Reads", "the survey"], ["Drafts", "the proposal"], ["Waits", "for your sign-off"]],
     },
     {
       title: "Grants agent",
-      desc: "Knows every SEAI scheme. Fills every form. Chases every application.",
-      meta: [["Reads", "the SEAI criteria"], ["Sends", "the grant application"], ["Escalates", "on a rejection"]],
+      desc: "Fills the SEAI paperwork and NC6/NC7 forms. Tracks every application.",
+      meta: [["Reads", "the SEAI criteria"], ["Fills", "the forms"], ["Flags", "every deadline"]],
     },
     {
-      title: "Logistics agent",
-      desc: "Orders equipment. Schedules crews. Manages inventory.",
-      meta: [["Reads", "your stock levels"], ["Sends", "the purchase order"], ["Escalates", "before you run out"]],
+      title: "Follow-Up agent",
+      desc: "Chases the quiet leads. Re-warms the cold ones. Never forgets.",
+      meta: [["Reads", "time since last contact"], ["Sends", "the nudge"], ["Flags", "before they go cold"]],
     },
     {
-      title: "ESB agent",
-      desc: "Handles ESB. Tracks submissions. Follows up on delays.",
-      meta: [["Reads", "the NC6 rules"], ["Sends", "the ESB application"], ["Escalates", "on day 5, 10, 15"]],
+      title: "Install Coordinator agent",
+      desc: "Schedules the install. Lines up the ESB Networks paperwork. Confirms the crew.",
+      meta: [["Reads", "the job"], ["Books", "the crew"], ["Tracks", "the grid connection"]],
     },
     {
-      title: "QA agent",
-      desc: "Reviews every job before handover. Checks paperwork. Catches mistakes.",
-      meta: [["Reads", "the job file"], ["Sends", "the snag list"], ["Escalates", "if paperwork's missing"]],
-    },
-    {
-      title: "Reporting agent",
-      desc: "Shows you exactly what's happening. Weekly summaries. Bottlenecks identified.",
-      meta: [["Reads", "every metric"], ["Sends", "the weekly report"], ["Escalates", "on a bottleneck"]],
-    },
-    {
-      title: "Marketing agent",
-      desc: "Runs campaigns. Generates leads. Writes copy. Manages your socials.",
-      comingSoon: true,
+      title: "Aftercare agent",
+      desc: "Handles the handover. Follows up after. Asks for the review.",
+      meta: [["Reads", "the finished job"], ["Sends", "the handover pack"], ["Asks", "for the review"]],
     },
   ], []);
 

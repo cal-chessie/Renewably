@@ -29,8 +29,8 @@ export const homeFaqs: HomeFaq[] = [
     a: "Absolutely. Your data is encrypted at rest and in transit, stored in EU-based data centres, and never shared with third parties. We comply with GDPR and Irish data protection regulations. Your customer data, business information, and conversation histories are yours alone. We do not use them to train AI models.",
   },
   {
-    q: "Do I have to take all eight agents at once?",
-    a: "No. Most installers start with the front office: a PA that does the sending and a Chief of Staff that decides and drafts. It works the front of your funnel, and your CRM stays yours. When you're ready, the same system grows into the full workforce. You approve every hire.",
+    q: "Do I have to take the whole workforce at once?",
+    a: "No. Most installers start with the front desk: the Lead Response agent that answers every enquiry and texts back missed calls, and the Operations agent that runs your pipeline and briefs you each week. It works the front of your funnel, and your CRM stays yours. When you're ready, the same system grows into the full workforce. You approve every hire.",
   },
   {
     q: "How do I get started?",

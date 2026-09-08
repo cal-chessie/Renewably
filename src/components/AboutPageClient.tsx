@@ -114,7 +114,7 @@ const values = [
   },
   {
     title: "Grows With You",
-    desc: "Start with the front office: a PA and a Chief of Staff. Add the next hire when you're ready. Build out the full team at your pace. You approve every hire. Cancel anytime. No contracts. No lock-in.",
+    desc: "Start with the front office: one agent answering every enquiry, one running your pipeline. Add the next hire when you're ready. Build out the full team at your pace. You approve every hire. Cancel anytime. No contracts. No lock-in.",
     icon: (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />

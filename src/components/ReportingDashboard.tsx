@@ -35,10 +35,10 @@ const INITIAL_BOTTLENECKS: Bottleneck[] = [
 const INITIAL_AGENT_PERF: AgentPerf[] = [
   { name: "Lead Response Agent", metric: "Strategy reviews", value: "4/4 completed", status: "excellent" },
   { name: "Operations Agent", metric: "Jobs coordinated", value: "47.00 jobs", status: "excellent" },
-  { name: "Customer Support", metric: "Response time", value: "2.40 min avg", status: "excellent" },
+  { name: "Site Survey Agent", metric: "Response time", value: "2.40 min avg", status: "excellent" },
   { name: "Grants Agent", metric: "Applications", value: "12.00 active / 92.00% approval", status: "good" },
-  { name: "Logistics Agent", metric: "On-time delivery", value: "94.00%", status: "good" },
-  { name: "ESB agent", metric: "NC6 applications tracked", value: "9.00 active / 3.00 delayed", status: "warning" },
+  { name: "Proposal Agent", metric: "On-time delivery", value: "94.00%", status: "good" },
+  { name: "Install Coordinator Agent", metric: "NC6 applications tracked", value: "9.00 active / 3.00 delayed", status: "warning" },
   { name: "Aftercare Agent", metric: "Quality score", value: "98.50%", status: "excellent" },
   { name: "Follow-Up Agent", metric: "Reports generated", value: "Weekly summary sent", status: "excellent" },
 ];
@@ -182,7 +182,7 @@ export default function ReportingDashboard() {
       setAgentPerf((prev) => {
         return prev.map((a) => {
           const copy = { ...a };
-          if (copy.name === "ESB agent") {
+          if (copy.name === "Install Coordinator Agent") {
             const permitCount = 3;
             if (permitCount > 2) {
               copy.status = "warning";
@@ -192,7 +192,7 @@ export default function ReportingDashboard() {
               copy.value = `${fmt2(permitCount)} active / ${fmt2(permitCount)} delayed`;
             }
           }
-          if (copy.name === "Logistics Agent") {
+          if (copy.name === "Proposal Agent") {
             if (Math.random() > 0.5) {
               copy.status = "warning";
               copy.value = "93.00% on-time";

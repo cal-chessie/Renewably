@@ -97,7 +97,7 @@ export default function Header() {
           height: 64,
           // Transparent over the hero; a glassy dark bar once you scroll so the
           // white nav stays legible over light sections.
-          backgroundColor: scrolled ? 'rgba(10,10,10,0.72)' : 'transparent',
+          backgroundColor: scrolled ? 'rgba(10,10,10,0.92)' : 'transparent',
           backdropFilter: scrolled ? 'blur(14px) saturate(140%)' : 'none',
           WebkitBackdropFilter: scrolled ? 'blur(14px) saturate(140%)' : 'none',
           borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : '1px solid transparent',
@@ -130,7 +130,7 @@ export default function Header() {
                     key={link.href}
                     href={link.href}
                     className={`relative px-4 py-2 text-[13.5px] font-medium rounded-lg group transition-colors duration-200 ${
-                      isActive ? "text-[#F3D840]" : "text-white/80 hover:text-white focus-visible:text-white"
+                      isActive ? "text-[#F3D840]" : "text-white/90 hover:text-white focus-visible:text-white"
                     }`}
                   >
                     {link.label}

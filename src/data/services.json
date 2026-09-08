@@ -1,154 +1,154 @@
 [
   {
-    "id": "ai-ceo-agent",
+    "id": "lead-response-agent",
     "type": "service",
-    "title": "AI CEO Agent",
-    "slug": "ai-ceo-agent",
-    "description": "Your strategic command centre. The AI CEO Agent provides high-level oversight of your entire solar installation business, monitoring KPIs, identifying growth opportunities, and flagging risks before they become problems. It synthesises data from every other agent into actionable strategic insights, like having a seasoned operations director who never sleeps.",
+    "title": "Lead Response Agent",
+    "slug": "lead-response-agent",
+    "description": "Answers every enquiry the second it lands. Someone fills in your form or rings while you're up a roof, and the Lead Response agent replies, texts back the missed call, and books them straight into your calendar. No lead sits waiting. No callback gets forgotten.",
     "features": [
-      "Real-time business health monitoring with automated alerts",
-      "Growth opportunity identification based on market and pipeline data",
-      "Risk detection and proactive mitigation recommendations",
-      "Strategic goal tracking with weekly progress summaries",
-      "Cross-agent coordination and priority management",
-      "Competitive landscape analysis for the Irish solar market"
+      "Replies to every web, email, and social enquiry on the hours you set",
+      "Texts back missed calls so no caller goes cold",
+      "Answers the common questions on pricing, grants, and timelines",
+      "Qualifies the lead and books the call into your calendar",
+      "Captures the after-hours enquiries and hands them to you in the morning",
+      "Passes anything tricky straight to you"
     ],
-    "icon": "Brain",
+    "icon": "MessageSquare",
     "published": true,
     "createdAt": "2026-04-01T09:00:00.000Z",
-    "updatedAt": "2026-04-01T09:00:00.000Z"
+    "updatedAt": "2026-09-08T00:00:00.000Z"
   },
   {
     "id": "operations-agent",
     "type": "service",
     "title": "Operations Agent",
     "slug": "operations-agent",
-    "description": "The backbone of your installation workflow. The Operations Agent tracks every job from initial enquiry through to completion, coordinating site visits, scheduling installation teams, and managing dependencies. It ensures nothing falls through the cracks and every job progresses smoothly through your pipeline.",
+    "description": "Keeps the whole pipeline moving. The Operations agent tracks every job from first enquiry to handover, briefs you once a week on where things stand, and spots the jobs that have stalled before they cost you. Nothing slips.",
     "features": [
-      "End-to-end job tracking from enquiry to handover",
-      "Automated scheduling for site visits and installation dates",
-      "Installation team assignment and workload balancing",
-      "Dependency management between grants, ESB applications, and logistics",
-      "Real-time pipeline visibility with status updates",
-      "Automated customer notifications at every stage"
+      "Tracks every job from enquiry through to handover",
+      "Weekly brief on pipeline health and what needs you",
+      "Flags the stalled jobs before they go cold",
+      "Keeps grants, ESB Networks paperwork, and scheduling in step",
+      "Live view of where every job stands",
+      "Nudges the next step so nothing waits on you"
     ],
     "icon": "Settings",
     "published": true,
     "createdAt": "2026-04-01T09:00:00.000Z",
-    "updatedAt": "2026-04-01T09:00:00.000Z"
+    "updatedAt": "2026-09-08T00:00:00.000Z"
   },
   {
-    "id": "customer-support-agent",
+    "id": "site-survey-agent",
     "type": "service",
-    "title": "Customer Support Agent",
-    "slug": "customer-support-agent",
-    "description": "Your front desk that never drops an enquiry. The Customer Support Agent handles incoming enquiries from your website, social media, and email. It works around the clock and replies to customers on the hours you set, whether that's inside business hours or 24/7, so nothing is ever lost overnight. It answers questions about pricing, SEAI grants, and installation timelines, qualifies leads, and books them directly into your calendar.",
+    "title": "Site Survey Agent",
+    "slug": "site-survey-agent",
+    "description": "Gets the survey booked and the crew ready. The Site Survey agent finds a slot that suits the homeowner, pulls together the site details you need, and confirms the visit the day before so nobody's left standing on a driveway.",
     "features": [
-      "Replies on the hours you set, business hours or 24/7; nothing lost overnight",
-      "Multi-channel: web, email, and social media",
-      "Intelligent lead qualification with tailored questions",
-      "Automatic booking into your scheduling system",
-      "Consistent, accurate information about grants and pricing",
-      "Escalation handling for complex queries to your human team"
+      "Books the survey around the homeowner's availability",
+      "Preps the site details and MPRN ahead of the visit",
+      "Confirms the appointment the day before",
+      "Sends the homeowner what to have ready",
+      "Reschedules cleanly when plans change",
+      "Hands the surveyor a tidy brief"
     ],
-    "icon": "HeadphonesIcon",
+    "icon": "MapPin",
     "published": true,
     "createdAt": "2026-04-01T09:00:00.000Z",
-    "updatedAt": "2026-04-01T09:00:00.000Z"
+    "updatedAt": "2026-09-08T00:00:00.000Z"
+  },
+  {
+    "id": "proposal-agent",
+    "type": "service",
+    "title": "Proposal Agent",
+    "slug": "proposal-agent",
+    "description": "Turns a survey into a proposal you can send. The Proposal agent drafts the quote, prices the job off your own numbers, and lays it out clean, ready for your sign-off. You check it and send. No more evenings lost to writing quotes.",
+    "features": [
+      "Drafts the proposal from the survey and the bill",
+      "Prices the job on your own rates",
+      "Lays out panels, savings, and grant clearly",
+      "Ready for your sign-off before it goes out",
+      "Keeps every quote consistent and on-brand",
+      "Sends it on once you approve"
+    ],
+    "icon": "FileText",
+    "published": true,
+    "createdAt": "2026-04-01T09:00:00.000Z",
+    "updatedAt": "2026-09-08T00:00:00.000Z"
   },
   {
     "id": "grants-agent",
     "type": "service",
     "title": "Grants Agent",
     "slug": "grants-agent",
-    "description": "Your SEAI grant specialist. The Grants Agent manages the entire grant application lifecycle, from checking customer eligibility to preparing, submitting, and tracking SEAI applications. It stays up to date with the latest grant rates, criteria changes, and deadlines, ensuring every application has the highest chance of approval.",
+    "description": "Fills the SEAI paperwork and the ESB Networks NC6 and NC7 forms for you, then tracks every application and deadline so none of them slip. You approve and submit; the agent does the filling and the chasing.",
     "features": [
-      "Automatic SEAI eligibility checks for every customer",
-      "Pre-filled grant applications with error validation",
-      "Real-time tracking of application status and deadlines",
-      "Automatic updates when grant rates or criteria change",
-      "Documentation management and compliance verification",
-      "Customer communication throughout the grant process"
+      "Fills the SEAI grant paperwork for each job",
+      "Fills the ESB Networks NC6 and NC7 forms",
+      "Tracks every application and its deadline",
+      "Flags what's due before it lapses",
+      "Keeps the grant rates and criteria current",
+      "You approve and submit; nothing goes without your say-so"
     ],
-    "icon": "FileText",
+    "icon": "FileCheck",
     "published": true,
     "createdAt": "2026-04-01T09:00:00.000Z",
-    "updatedAt": "2026-04-01T09:00:00.000Z"
+    "updatedAt": "2026-09-08T00:00:00.000Z"
   },
   {
-    "id": "logistics-agent",
+    "id": "follow-up-agent",
     "type": "service",
-    "title": "Logistics Agent",
-    "slug": "logistics-agent",
-    "description": "Your supply chain manager. The Logistics Agent handles equipment ordering, delivery scheduling, and inventory management across all your active jobs. It coordinates with your suppliers, tracks deliveries, and ensures the right materials arrive at the right job site at the right time, eliminating costly stockouts and delays.",
+    "title": "Follow-Up Agent",
+    "slug": "follow-up-agent",
+    "description": "Chases the leads you don't have time to. The Follow-Up agent keeps after the quiet ones, re-warms the cold ones, and follows up on every proposal until you get a yes or a no. It never forgets, and it never gets awkward about asking.",
     "features": [
-      "Automated purchase order generation based on job requirements",
-      "Supplier coordination and delivery scheduling",
-      "Real-time inventory tracking across warehouses and job sites",
-      "Stockout prevention with proactive reorder alerts",
-      "Material cost tracking and budget management",
-      "Multi-supplier price comparison for best-value procurement"
+      "Follows up on every proposal until there's an answer",
+      "Re-warms the leads that went quiet",
+      "Keeps the timing right, not pushy",
+      "Brings the warm ones back to you",
+      "Logs every touch so you can see the trail",
+      "Frees you from remembering who to ring"
     ],
-    "icon": "Truck",
+    "icon": "Clock",
     "published": true,
     "createdAt": "2026-04-01T09:00:00.000Z",
-    "updatedAt": "2026-04-01T09:00:00.000Z"
+    "updatedAt": "2026-09-08T00:00:00.000Z"
   },
   {
-    "id": "esb-agent",
+    "id": "install-coordinator-agent",
     "type": "service",
-    "title": "ESB Agent",
-    "slug": "esb-agent",
-    "description": "Your regulatory compliance expert. The ESB Agent manages ESB grid connection applications, planning permission checks, building control notifications, and all other regulatory requirements. It pre-checks every application for completeness, tracks submission status, and chases responses, removing the biggest bottleneck in Irish solar installations.",
+    "title": "Install Coordinator Agent",
+    "slug": "install-coordinator-agent",
+    "description": "Lines up the install so the day runs itself. The Install Coordinator agent schedules the job, gets the ESB Networks grid connection paperwork in order, and confirms the crew and the homeowner so everyone shows up ready.",
     "features": [
-      "ESB microgeneration application preparation and submission",
-      "Planning permission pre-checks and risk assessment",
-      "Building control compliance notifications",
-      "Document completeness validation before submission",
-      "Application status tracking with automated follow-ups",
-      "Knowledge base of current ESB and regulatory requirements"
+      "Schedules the install around the crew and the homeowner",
+      "Lines up the ESB Networks grid connection paperwork",
+      "Confirms the crew and the materials for the day",
+      "Keeps the homeowner in the loop on timing",
+      "Flags clashes before they hit the calendar",
+      "Hands the crew a clear plan for the day"
     ],
-    "icon": "ShieldCheck",
+    "icon": "CalendarCheck",
     "published": true,
     "createdAt": "2026-04-01T09:00:00.000Z",
-    "updatedAt": "2026-04-01T09:00:00.000Z"
+    "updatedAt": "2026-09-08T00:00:00.000Z"
   },
   {
-    "id": "qa-agent",
+    "id": "aftercare-agent",
     "type": "service",
-    "title": "QA Agent",
-    "slug": "qa-agent",
-    "description": "Your quality guardian. The QA Agent monitors installation quality across every job, managing snag lists, verifying compliance with I.S. 10101, the National Rules for Electrical Installations, and tracking installer certifications. It ensures that every installation meets the high standards your customers expect, and that your reputation stays spotless.",
+    "title": "Aftercare Agent",
+    "slug": "aftercare-agent",
+    "description": "Looks after the customer once the panels are on. The Aftercare agent handles the handover, checks in after the job, and asks for the review while the homeowner's still delighted. Happy customers, more referrals, no chasing from you.",
     "features": [
-      "Automated snag list generation and resolution tracking",
-      "I.S. 10101 compliance verification for every installation",
-      "Installer certification and training status monitoring",
-      "Post-installation customer satisfaction surveys",
-      "Quality trend analysis and improvement recommendations",
-      "Photo documentation and quality record management"
+      "Walks the homeowner through the handover",
+      "Checks in after the install is done",
+      "Asks for the review at the right moment",
+      "Surfaces any snag straight to you",
+      "Turns happy customers into referrals",
+      "Keeps the relationship warm after sign-off"
     ],
-    "icon": "CheckCircle",
+    "icon": "Star",
     "published": true,
     "createdAt": "2026-04-01T09:00:00.000Z",
-    "updatedAt": "2026-04-01T09:00:00.000Z"
-  },
-  {
-    "id": "reporting-agent",
-    "type": "service",
-    "title": "Reporting Agent",
-    "slug": "reporting-agent",
-    "description": "Your business intelligence analyst. The Reporting Agent transforms raw operational data into clear, actionable insights. It generates real-time dashboards showing revenue, margins, pipeline health, installer productivity, and customer satisfaction, giving you the information you need to make confident decisions and drive growth.",
-    "features": [
-      "Real-time revenue and margin tracking dashboards",
-      "Pipeline analysis with conversion rate insights",
-      "Installer and team productivity metrics",
-      "Customer acquisition cost and lifetime value analysis",
-      "Automated weekly and monthly business reports",
-      "Custom report generation for stakeholder presentations"
-    ],
-    "icon": "BarChart3",
-    "published": true,
-    "createdAt": "2026-04-01T09:00:00.000Z",
-    "updatedAt": "2026-04-01T09:00:00.000Z"
+    "updatedAt": "2026-09-08T00:00:00.000Z"
   }
 ]

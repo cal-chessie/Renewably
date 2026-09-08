@@ -15,19 +15,19 @@ const agents = [
   {
     num: "01",
     title: "Lead Response Agent",
-    desc: "Answers every enquiry. Immediately. 24/7. Texts back missed calls. Books the consultation. Escalates only what needs you. No lost leads. No email left sitting.",
+    desc: "Answers every enquiry, around the clock. Texts back missed calls. Books the call. Escalates only what needs you. No lost leads. No email left sitting.",
     image: "/agents/agent-support.jpg",
   },
   {
     num: "02",
     title: "Grants Agent",
-    desc: "Tracks every SEAI grant application and deadline. Flags what is due. Chases what is missing. Tells you the moment something needs signing. You submit, it makes sure nothing slips.",
+    desc: "Fills the SEAI paperwork and the ESB Networks NC6/NC7 forms. Tracks every application and deadline. Chases what is missing. Tells you the moment something needs signing. You approve and submit, nothing slips.",
     image: "/agents/agent-grants.jpg",
   },
   {
     num: "03",
     title: "Operations Agent",
-    desc: "Your chief of staff. Tracks the whole pipeline. Flags delays before they cost you. Sends a weekly brief. You know where every job stands without chasing anyone.",
+    desc: "Runs the whole pipeline. Flags delays before they cost you. Sends a weekly brief. You know where every job stands without chasing anyone.",
     image: "/agents/agent-operations.jpg",
   },
   {
@@ -254,7 +254,7 @@ export default function ServicesPageClient() {
                 className="hp-rise"
                 style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7, maxWidth: 640, animationDelay: '0.8s' }}
               >
-                A fully managed AI workforce deployed across your operations, customer support, grants, and logistics. Built for solar companies that want to scale without finding staff they can&apos;t hire.
+                An AI workforce deployed across your operations, customer support, grants, and install coordination. Built for solar companies that want to scale without finding staff they can&apos;t hire.
               </p>
             </div>
           </div>
