@@ -965,16 +965,16 @@ function FounderSection() {
       }}
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Celebrating team poster (brand-yellow panel — the crew behind the platform) */}
+        {/* Celebrating team (transparent — the crew behind the platform, floats on the cream) */}
         <ScrollReveal>
-          <div style={{ borderRadius: 20, overflow: "hidden", boxShadow: "var(--elev-raised)", marginBottom: "clamp(40px, 6vw, 64px)" }}>
+          <div style={{ marginBottom: "clamp(24px, 4vw, 40px)", textAlign: "center" }}>
             <Image
-              src="/robots/team-celebrating.jpg"
+              src="/robots/team-celebrating.png"
               alt="The Renewably AI team"
               width={1500}
-              height={779}
+              height={724}
               sizes="(max-width: 1024px) 100vw, 1024px"
-              style={{ width: "100%", height: "auto", display: "block" }}
+              style={{ width: "100%", height: "auto", display: "block", filter: "drop-shadow(0 18px 24px rgba(0,0,0,0.12))" }}
             />
           </div>
         </ScrollReveal>
