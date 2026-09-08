@@ -5,8 +5,76 @@ import { m, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+const YELLOW = "#F3D840";
+const DARK = "#0A0A0A";
+
+/* ------------------------------------------------------------------ */
+/*  The wizard: our own installer-qualification questions.            */
+/*  "Which part of your business do you want help with" is the spine. */
+/* ------------------------------------------------------------------ */
+type ChoiceStep = { key: string; title: string; subtitle?: string; type: "choice"; options: string[] };
+type ContactStep = { key: string; title: string; subtitle?: string; type: "contact" };
+type Step = ChoiceStep | ContactStep;
+
+const STEPS: Step[] = [
+  {
+    key: "pain",
+    title: "Which part of your business is eating you alive?",
+    type: "choice",
+    options: [
+      "Chasing leads",
+      "Quotes & proposals",
+      "SEAI / ESB paperwork",
+      "Scheduling & surveys",
+      "Follow-ups & aftercare",
+      "All of it",
+    ],
+  },
+  {
+    key: "volume",
+    title: "How many installs a month?",
+    type: "choice",
+    options: ["Just starting", "1–5", "6–15", "16–40", "40+"],
+  },
+  {
+    key: "who",
+    title: "Who's handling it right now?",
+    type: "choice",
+    options: ["Just me", "A small office team", "A mix, and things still slip", "Nobody, it piles up"],
+  },
+  {
+    key: "handoff",
+    title: "What would you hand off first?",
+    subtitle: "The one you'd take off your plate today.",
+    type: "choice",
+    options: [
+      "Chasing leads",
+      "Quotes & proposals",
+      "SEAI / ESB paperwork",
+      "Scheduling & surveys",
+      "Follow-ups & aftercare",
+    ],
+  },
+  {
+    key: "contact",
+    title: "Almost done",
+    subtitle: "Where do we send your setup plan?",
+    type: "contact",
+  },
+];
+
+const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+
 export default function ExitIntentPopup() {
   const [isOpen, setIsOpen] = useState(false);
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [form, setForm] = useState({ name: "", company: "", email: "", phone: "", notes: "" });
+  const [consent, setConsent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -30,7 +98,6 @@ export default function ExitIntentPopup() {
 
   useEffect(() => {
     if (!isPublicPage) return;
-
     // Don't add listener on mobile/touch devices
     if (typeof window !== "undefined" && !window.matchMedia("(hover: none)").matches) {
       document.addEventListener("mouseleave", handleMouseLeave);
@@ -41,8 +108,6 @@ export default function ExitIntentPopup() {
   // Focus trap + Escape key handling
   useEffect(() => {
     if (!isOpen) return;
-
-    // Focus the close button when modal opens
     closeButtonRef.current?.focus();
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -51,15 +116,12 @@ export default function ExitIntentPopup() {
         previousFocusRef.current?.focus();
         return;
       }
-
-      // Focus trap: Tab / Shift+Tab cycles within the modal
       if (e.key === "Tab" && modalRef.current) {
         const focusableSelectors =
           'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
         const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(focusableSelectors);
         const firstEl = focusableElements[0];
         const lastEl = focusableElements[focusableElements.length - 1];
-
         if (e.shiftKey) {
           if (document.activeElement === firstEl) {
             e.preventDefault();
@@ -76,7 +138,6 @@ export default function ExitIntentPopup() {
 
     document.addEventListener("keydown", handleKeyDown);
     document.body.style.overflow = "hidden";
-
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
@@ -89,7 +150,78 @@ export default function ExitIntentPopup() {
     previousFocusRef.current?.focus();
   }, []);
 
+  const chooseOption = (key: string, value: string) => {
+    setAnswers((a) => ({ ...a, [key]: value }));
+    setError(null);
+    // brief highlight, then advance
+    window.setTimeout(() => setStep((s) => Math.min(s + 1, STEPS.length - 1)), 180);
+  };
+
+  const submit = async () => {
+    setError(null);
+    const name = form.name.trim();
+    if (!name) return setError("Please add your name.");
+    if (!isEmail(form.email)) return setError("Please add a valid email address.");
+    if (!consent) return setError("Please tick the box so we can share your details with the team.");
+
+    const parts = name.split(/\s+/);
+    const firstName = parts[0];
+    const lastName = parts.slice(1).join(" ") || parts[0];
+    const message = [
+      "Popup qualification:",
+      `- Biggest drain: ${answers.pain || "—"}`,
+      `- Installs/month: ${answers.volume || "—"}`,
+      `- Handled by now: ${answers.who || "—"}`,
+      `- Would hand off first: ${answers.handoff || "—"}`,
+      form.notes.trim() ? `- Notes: ${form.notes.trim()}` : null,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email: form.email.trim(),
+          phone: form.phone.trim() || undefined,
+          company: form.company.trim() || undefined,
+          jobsPerMonth: answers.volume,
+          message,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.success === false) {
+        setError(data.message || data.error || "Something went wrong. Please try again.");
+        setSubmitting(false);
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError("Something went wrong. Please try again, or email cal@renewably.ie.");
+    }
+    setSubmitting(false);
+  };
+
   if (!isPublicPage) return null;
+
+  const current = STEPS[step];
+  const progress = ((step + 1) / STEPS.length) * 100;
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "12px 14px",
+    borderRadius: 12,
+    border: "1px solid #E5E7EB",
+    fontSize: 15,
+    color: "#1A1A1A",
+    outline: "none",
+    fontFamily: "inherit",
+  };
 
   return (
     <AnimatePresence>
@@ -111,17 +243,11 @@ export default function ExitIntentPopup() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="exit-intent-title"
-          aria-describedby="exit-intent-desc"
         >
           {/* Backdrop */}
           <div
             onClick={close}
-            style={{
-              position: "absolute",
-              inset: 0,
-              backgroundColor: "rgba(10,10,10,0.7)",
-              backdropFilter: "blur(8px)",
-            }}
+            style={{ position: "absolute", inset: 0, backgroundColor: "rgba(10,10,10,0.7)", backdropFilter: "blur(8px)" }}
             aria-hidden="true"
           />
 
@@ -136,28 +262,21 @@ export default function ExitIntentPopup() {
               position: "relative",
               backgroundColor: "#fff",
               borderRadius: 20,
-              maxWidth: 480,
+              maxWidth: 500,
               width: "100%",
-              padding: "clamp(28px, 5vw, 40px)",
-              textAlign: "center",
+              maxHeight: "92vh",
+              overflowY: "auto",
+              padding: "clamp(24px, 4vw, 36px)",
               boxShadow: "0 25px 60px rgba(0,0,0,0.3)",
-              overflow: "hidden",
             }}
           >
-            {/* Yellow accent bar at top */}
+            {/* Yellow accent bar */}
             <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                height: 4,
-                background: "linear-gradient(90deg, #F3D840, #E5C832, #F3D840)",
-              }}
+              style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: `linear-gradient(90deg, ${YELLOW}, #E5C832, ${YELLOW})` }}
               aria-hidden="true"
             />
 
-            {/* Close button */}
+            {/* Close */}
             <button
               ref={closeButtonRef}
               onClick={close}
@@ -174,120 +293,186 @@ export default function ExitIntentPopup() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                transition: "background-color 0.2s",
+                zIndex: 2,
               }}
-              aria-label="Close popup"
+              aria-label="Close"
             >
               <svg width="16" height="16" fill="none" stroke="#535353" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
-            {/* Content */}
-            <div
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: 14,
-                backgroundColor: "#F3D840",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 20px",
-              }}
-              aria-hidden="true"
-            >
-              <svg width="24" height="24" fill="none" stroke="#1A1A1A" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-            </div>
+            {submitted ? (
+              /* ---------- SUCCESS ---------- */
+              <div style={{ textAlign: "center", paddingTop: 8 }}>
+                <div
+                  style={{ width: 56, height: 56, borderRadius: 16, backgroundColor: YELLOW, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}
+                  aria-hidden="true"
+                >
+                  <svg width="28" height="28" fill="none" stroke={DARK} strokeWidth={2.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h2 id="exit-intent-title" style={{ fontSize: "clamp(20px, 4vw, 26px)", fontWeight: 800, color: "#1A1A1A", marginBottom: 10 }}>
+                  You&apos;re in.
+                </h2>
+                <p style={{ fontSize: 15, color: "#535353", lineHeight: 1.7, marginBottom: 24, maxWidth: 380, margin: "0 auto 24px" }}>
+                  Thanks{form.name.trim() ? `, ${form.name.trim().split(/\s+/)[0]}` : ""}. We&apos;ve got your details and we&apos;ll be in touch within 24 hours. Want to grab a slot now?
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  <Link
+                    href="/contact"
+                    onClick={close}
+                    style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "13px 24px", borderRadius: 9999, backgroundColor: YELLOW, color: "#1A1A1A", fontWeight: 700, fontSize: 15, textDecoration: "none" }}
+                  >
+                    Book a Call
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </Link>
+                  <button onClick={close} style={{ padding: "10px 24px", borderRadius: 9999, border: "1px solid #E5E7EB", background: "transparent", color: "#535353", fontWeight: 600, fontSize: 14, cursor: "pointer" }}>
+                    Done for now
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* ---------- WIZARD ---------- */
+              <div>
+                {/* Header: title + step count */}
+                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 14, paddingRight: 28 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: "#8a6d05" }}>
+                    Get your AI team
+                  </span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "#9CA3AF", whiteSpace: "nowrap" }}>
+                    {step + 1} / {STEPS.length}
+                  </span>
+                </div>
 
-            <h2
-              id="exit-intent-title"
-              style={{
-                fontSize: "clamp(20px, 4vw, 26px)",
-                fontWeight: 800,
-                color: "#1A1A1A",
-                lineHeight: 1.2,
-                marginBottom: 12,
-              }}
-            >
-              Before you go...
-            </h2>
+                {/* Progress bar */}
+                <div style={{ height: 6, borderRadius: 3, backgroundColor: "#EEF0F2", overflow: "hidden", marginBottom: 22 }}>
+                  <div style={{ height: "100%", width: `${progress}%`, backgroundColor: YELLOW, borderRadius: 3, transition: "width 0.35s cubic-bezier(0.22,1,0.36,1)" }} />
+                </div>
 
-            <p
-              id="exit-intent-desc"
-              style={{
-                fontSize: "clamp(14px, 2vw, 16px)",
-                color: "#535353",
-                lineHeight: 1.7,
-                marginBottom: 24,
-              }}
-            >
-              Book a free 15-minute call. No commitment, no pitch. Just a conversation about your business and whether AI is the right fit.
-            </p>
+                <h2 id="exit-intent-title" style={{ fontSize: "clamp(19px, 3vw, 23px)", fontWeight: 800, color: "#1A1A1A", lineHeight: 1.25, marginBottom: current.subtitle ? 4 : 18 }}>
+                  {current.title}
+                </h2>
+                {current.subtitle && (
+                  <p style={{ fontSize: 14, color: "#6B7280", marginBottom: 18 }}>{current.subtitle}</p>
+                )}
 
-            {/* CTA buttons */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 10,
-              }}
-            >
-              <Link
-                href="/contact"
-                onClick={close}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                  padding: "clamp(12px, 2vw, 14px) 24px",
-                  borderRadius: 9999,
-                  backgroundColor: "#F3D840",
-                  color: "#1A1A1A",
-                  fontWeight: 700,
-                  fontSize: "clamp(14px, 1.5vw, 15px)",
-                  letterSpacing: "0.01em",
-                  textDecoration: "none",
-                  transition: "all 0.2s ease",
-                  boxShadow: "0 4px 15px rgba(243,216,64,0.3)",
-                }}
-              >
-                Book a 15-Minute Call
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
+                {current.type === "choice" ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {current.options.map((opt) => {
+                      const selected = answers[current.key] === opt;
+                      return (
+                        <button
+                          key={opt}
+                          onClick={() => chooseOption(current.key, opt)}
+                          style={{
+                            width: "100%",
+                            textAlign: "left",
+                            padding: "14px 16px",
+                            borderRadius: 12,
+                            border: `1.5px solid ${selected ? "#E5B417" : "#E5E7EB"}`,
+                            backgroundColor: selected ? "rgba(243,216,64,0.14)" : "#fff",
+                            color: "#1A1A1A",
+                            fontSize: 15,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            transition: "border-color 0.15s ease, background-color 0.15s ease",
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!selected) e.currentTarget.style.borderColor = "#D1D5DB";
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!selected) e.currentTarget.style.borderColor = "#E5E7EB";
+                          }}
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  /* Contact step */
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    <input style={inputStyle} placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} autoComplete="name" />
+                    <input style={inputStyle} placeholder="Company name (optional)" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} autoComplete="organization" />
+                    <input style={inputStyle} type="email" placeholder="Email address" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} autoComplete="email" />
+                    <input style={inputStyle} type="tel" placeholder="Phone number (optional)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} autoComplete="tel" />
+                    <textarea style={{ ...inputStyle, minHeight: 72, resize: "vertical" }} placeholder="Anything you want us to know? (optional)" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
 
-              <button
-                onClick={close}
-                style={{
-                  padding: "10px 24px",
-                  borderRadius: 9999,
-                  border: "1px solid #E5E7EB",
-                  backgroundColor: "transparent",
-                  color: "#535353",
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                }}
-              >
-                No thanks, I&apos;ll keep browsing
-              </button>
-            </div>
+                    <label style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13, color: "#535353", lineHeight: 1.5, cursor: "pointer", marginTop: 2 }}>
+                      <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} style={{ marginTop: 2, width: 16, height: 16, accentColor: "#E5B417", flexShrink: 0 }} />
+                      <span>
+                        I agree to Renewably contacting me about my enquiry. See our{" "}
+                        <Link href="/privacy" style={{ color: "#8a6d05", textDecoration: "underline" }}>
+                          privacy policy
+                        </Link>
+                        .
+                      </span>
+                    </label>
 
-            <p
-              style={{
-                fontSize: 12,
-                color: "#6B7280",
-                marginTop: 16,
-              }}
-            >
-              Free. No obligation. Takes 15 minutes.
-            </p>
+                    <button
+                      onClick={submit}
+                      disabled={submitting}
+                      style={{
+                        marginTop: 6,
+                        width: "100%",
+                        padding: "14px 24px",
+                        borderRadius: 9999,
+                        border: "none",
+                        backgroundColor: submitting ? "#E5E7EB" : YELLOW,
+                        color: submitting ? "#9CA3AF" : "#1A1A1A",
+                        fontWeight: 700,
+                        fontSize: 15,
+                        cursor: submitting ? "default" : "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
+                      }}
+                    >
+                      {submitting ? "Sending..." : "Book a Call"}
+                      {!submitting && (
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                )}
+
+                {error && (
+                  <p role="alert" style={{ marginTop: 14, fontSize: 13, color: "#DC2626", textAlign: "center" }}>
+                    {error}
+                  </p>
+                )}
+
+                {/* Footer: back + trust strip */}
+                <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #F1F1F1", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                  {step > 0 ? (
+                    <button
+                      onClick={() => {
+                        setError(null);
+                        setStep((s) => Math.max(0, s - 1));
+                      }}
+                      style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "transparent", border: "none", color: "#6B7280", fontSize: 13, fontWeight: 600, cursor: "pointer", padding: 0 }}
+                    >
+                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                      Back
+                    </button>
+                  ) : (
+                    <span />
+                  )}
+                  <span style={{ fontSize: 12, color: "#9CA3AF", textAlign: "right" }}>
+                    No obligation. You approve every hire.
+                  </span>
+                </div>
+              </div>
+            )}
           </m.div>
         </m.div>
       )}
