@@ -440,32 +440,32 @@ function PlatformTourSection() {
 function FeaturesSection() {
   const features = useMemo(() => [
     {
-      img: "/robots/feat-answer.png",
+      img: "/robots/waving-nobg.png",
       title: "Answer every customer. Immediately.",
       desc: "No more 'we'll call you back.' No more lost leads. Customer support agent answers on the hours you set, captures the rest. Books consultations. Answers questions. Escalates only what needs you.",
     },
     {
-      img: "/robots/feat-site.png",
+      img: "/robots/tablet-nobg.png",
       title: "Every site detail. On the job file.",
       desc: "Roof photos, bill details, access notes. Filed against the job, not lost in someone's phone. Your surveyor arrives already briefed.",
     },
     {
-      img: "/robots/feat-grant.png",
+      img: "/robots/laptop-nobg.png",
       title: "Handle every grant.",
       desc: "SEAI applications. Paperwork. Follow-ups. Agent fills every form, tracks every deadline, every requirement. Nothing sits forgotten. Nothing misses a deadline.",
     },
     {
-      img: "/robots/feat-coord.png",
+      img: "/robots/box-nobg.png",
       title: "Coordinate installers.",
       desc: "Schedule crews. Order materials. Confirm deliveries. Reschedule when weather hits. Agent runs the logistics so you don't have to.",
     },
     {
-      img: "/robots/feat-esb.png",
+      img: "/robots/phone-nobg.png",
       title: "Chase ESB Networks.",
       desc: "ESB Networks applications. Grid connection paperwork. Agent tracks every submission. Follows up on delays. Escalates only when stuck.",
     },
     {
-      img: "/robots/feat-flag.png",
+      img: "/robots/flexing-nobg.png",
       title: "Flag problems before they blow up.",
       desc: "Job taking too long? Customer hasn't heard anything in a week? Budget running over? Agent alerts you. Not after the fact. Before.",
     },
@@ -517,13 +517,13 @@ function FeaturesSection() {
                     into public/robots/ to give each card its own. */}
                 <div className="mb-5 -mt-1">
                   <Image
-                    src="/robot-2-nobg.png"
+                    src={feature.img}
                     alt=""
                     aria-hidden
-                    width={140}
-                    height={140}
-                    className="w-16 h-16 object-contain group-hover:scale-110 group-hover:-translate-y-0.5 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-                    style={{ filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.14))' }}
+                    width={160}
+                    height={160}
+                    className="w-20 h-20 object-contain group-hover:scale-110 group-hover:-translate-y-1 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+                    style={{ filter: 'drop-shadow(0 10px 14px rgba(0,0,0,0.16))' }}
                   />
                 </div>
                 <h3 className="text-lg font-bold leading-snug text-[#1A1A1A] mb-3 group-hover:text-[#374151] transition-colors duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
