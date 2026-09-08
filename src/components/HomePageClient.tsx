@@ -465,7 +465,7 @@ function FeaturesSection() {
       desc: "ESB Networks applications. Grid connection paperwork. Agent tracks every submission. Follows up on delays. Escalates only when stuck.",
     },
     {
-      img: "/robots/flexing-nobg.png",
+      img: "/robots/handsonhip-nobg.png",
       title: "Flag problems before they blow up.",
       desc: "Job taking too long? Customer hasn't heard anything in a week? Budget running over? Agent alerts you. Not after the fact. Before.",
     },
@@ -512,18 +512,17 @@ function FeaturesSection() {
               <div
                 className="hp-lift p-7 lg:p-8 rounded-2xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 cursor-pointer group h-full"
               >
-                {/* Robot stands on its own, no box, like the chat widget. Uses the one
-                    transparent robot for now; drop 6 transparent PNGs from the generator
-                    into public/robots/ to give each card its own. */}
-                <div className="mb-5 -mt-1">
+                {/* Robot stands free, no box. Fixed-height slot, bottom-aligned, so
+                    every card's title starts at the same line no matter the pose height. */}
+                <div className="h-16 flex items-end mb-4">
                   <Image
                     src={feature.img}
                     alt=""
                     aria-hidden
-                    width={160}
-                    height={160}
-                    className="w-20 h-20 object-contain group-hover:scale-110 group-hover:-translate-y-1 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-                    style={{ filter: 'drop-shadow(0 10px 14px rgba(0,0,0,0.16))' }}
+                    width={128}
+                    height={128}
+                    className="w-16 h-16 object-contain object-bottom group-hover:scale-105 group-hover:-translate-y-0.5 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+                    style={{ filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.15))' }}
                   />
                 </div>
                 <h3 className="text-lg font-bold leading-snug text-[#1A1A1A] mb-3 group-hover:text-[#374151] transition-colors duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
