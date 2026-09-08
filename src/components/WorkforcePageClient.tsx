@@ -73,10 +73,10 @@ const agents: Array<{ num: string; title: string; tagline: string; body: string;
   },
   {
     num: "05",
-    title: "Grant Tracker Agent",
-    tagline: "Tracks every SEAI application. Watches the deadlines. Flags the delays.",
-    body: "This agent keeps your SEAI grants moving. It tracks where each application is, what it is waiting on, and when it is due. It watches the deadlines so none slip, and it flags anything that stalls so you can step in.",
-    closing: "Nothing sits forgotten. You always know which grant is where. It tracks the application; you and the customer stay in control of the submission.",
+    title: "Grants Agent",
+    tagline: "Fills the SEAI paperwork. Tracks every application. Watches the deadlines.",
+    body: "This agent does the grant admin you hate. It fills the SEAI grant paperwork and the ESB Networks NC6 and NC7 forms, tracks where every application is and what it is waiting on, and watches the deadlines so none slip. It flags anything that stalls so you can step in.",
+    closing: "The forms are filled and the deadlines are covered. You review and submit; nothing goes to SEAI or ESB Networks without your say-so.",
   },
   {
     num: "06",
@@ -107,7 +107,7 @@ const scenarioSteps = [
   { agent: "Operations Agent", action: "picks it up and tracks it." },
   { agent: "Site Survey Agent", action: "books the survey into your diary." },
   { agent: "Proposal Agent", action: "drafts the proposal for your sign-off." },
-  { agent: "Grant Tracker Agent", action: "tracks the SEAI application." },
+  { agent: "Grants Agent", action: "fills the forms and tracks the application." },
   { agent: "Install Coordinator Agent", action: "schedules the install and the ESB paperwork." },
   { agent: "Follow-Up Agent", action: "chases anything that goes quiet." },
   { agent: "Aftercare Agent", action: "handles the handover and the review." },

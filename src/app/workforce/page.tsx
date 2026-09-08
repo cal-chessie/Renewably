@@ -27,14 +27,14 @@ export const metadata: Metadata = {
 };
 
 /* The honest agent roster surfaced in this page's structured data, name +
-   one-line description. The Grant Tracker tracks SEAI applications and
-   deadlines; it does not fill or submit forms. */
+   one-line description. The Grants Agent fills the SEAI paperwork and NC6/NC7 forms and
+   tracks the applications and deadlines; you approve and submit. */
 const workforceAgents = [
   { name: "Lead Response Agent", description: "Answers enquiries. Texts back missed calls. Books calls with you." },
   { name: "Operations Agent", description: "Your chief of staff. Tracks the pipeline. Sends a weekly brief." },
   { name: "Site Survey Agent", description: "Books the site survey. Preps it so nothing gets missed." },
   { name: "Proposal Agent", description: "Drafts the proposal. You sign off before anything goes out." },
-  { name: "Grant Tracker Agent", description: "Tracks SEAI applications and deadlines. You stay in control of the forms." },
+  { name: "Grants Agent", description: "Fills the SEAI paperwork and NC6/NC7 forms, tracks the applications and deadlines. You approve and submit." },
   { name: "Follow-Up Agent", description: "Chases quiet leads. Nudges stalled jobs back to life." },
   { name: "Install Coordinator Agent", description: "Schedules the install. Tracks ESB Networks grid connection paperwork." },
   { name: "Aftercare Agent", description: "Handles handover and aftercare. Asks for the review." },

@@ -20,7 +20,7 @@ const agents = [
   },
   {
     num: "02",
-    title: "Grant Tracker Agent",
+    title: "Grants Agent",
     desc: "Tracks every SEAI grant application and deadline. Flags what is due. Chases what is missing. Tells you the moment something needs signing. You submit, it makes sure nothing slips.",
     image: "/agents/agent-grants.jpg",
   },
@@ -302,7 +302,7 @@ export default function ServicesPageClient() {
             },
             {
               before: "You spend 10 hours a week on grant paperwork. You miss deadlines. You make mistakes.",
-              after: "Grant tracker stays on it. Every application tracked, every deadline flagged. You sign and submit, nothing slips.",
+              after: "Grants Agent fills the SEAI paperwork and NC6/NC7 forms, tracks every application and flags every deadline. You sign and submit, nothing slips.",
             },
             {
               before: "You have no idea where every job is. You chase your team. You find out about delays too late.",

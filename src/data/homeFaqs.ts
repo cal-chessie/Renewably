@@ -14,7 +14,7 @@ export const homeFaqs: HomeFaq[] = [
   },
   {
     q: "How does the AI workforce work?",
-    a: "Each AI agent owns one job. The Lead Response Agent answers enquiries and texts back missed calls, the Operations Agent tracks the pipeline and sends you a weekly brief, the Grant Tracker Agent stays on top of SEAI applications and deadlines, and the Install Coordinator Agent schedules installs and tracks ESB Networks grid connection paperwork. They work around the clock, plug into the tools you already use, and report to you through a single dashboard. You manage them like a real team.",
+    a: "Each AI agent owns one job. The Lead Response Agent answers enquiries and texts back missed calls, the Operations Agent tracks the pipeline and sends you a weekly brief, the Grants Agent fills the SEAI paperwork and tracks applications and deadlines, and the Install Coordinator Agent schedules installs and tracks ESB Networks grid connection paperwork. They work around the clock, plug into the tools you already use, and report to you through a single dashboard. You manage them like a real team.",
   },
   {
     q: "How much does it cost?",

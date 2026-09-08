@@ -29,7 +29,7 @@ const journey = [
   {
     phase: "The Build",
     year: "2024",
-    text: "We started building AI agents that could actually do the jobs. An agent that tracks SEAI grant applications and deadlines. An agent that responds to customer enquiries at midnight. An agent that tracks ESB Networks applications and follows up on delays. Not chatbots. Not automations. Actual digital employees.",
+    text: "We started building AI agents that could actually do the jobs. An agent that fills SEAI grant paperwork and tracks the deadlines. An agent that responds to customer enquiries at midnight. An agent that tracks ESB Networks applications and follows up on delays. Not chatbots. Not automations. Actual digital employees.",
   },
   {
     phase: "The Launch",
@@ -128,7 +128,7 @@ const agents: (string | { name: string; comingSoon?: boolean })[] = [
   "Operations Agent",
   "Site Survey Agent",
   "Proposal Agent",
-  "Grant Tracker Agent",
+  "Grants Agent",
   "Follow-Up Agent",
   "Install Coordinator Agent",
   "Aftercare Agent",

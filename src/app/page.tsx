@@ -11,7 +11,7 @@ export const metadata = {
   },
   openGraph: {
     title: 'Renewably: AI Workforce for Solar Installers in Ireland',
-    description: 'AI agents that run your solar pipeline from first enquiry to booked survey to handover: answering enquiries, booking surveys, tracking SEAI grants, chasing quiet follow-ups. Purpose-built for Irish installers doing 20+ jobs a month.',
+    description: 'AI agents that run your solar pipeline from first enquiry to booked survey to handover: answering enquiries, booking surveys, filling and tracking SEAI grants, chasing quiet follow-ups. Purpose-built for Irish installers doing 20+ jobs a month.',
     url: 'https://renewably.ie',
     siteName: 'Renewably',
     locale: 'en_IE',
@@ -21,7 +21,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Renewably: AI Workforce for Solar Installers in Ireland',
-    description: 'AI agents that run your solar pipeline from first enquiry to booked survey to handover: answering enquiries, booking surveys, tracking SEAI grants, chasing quiet follow-ups. Purpose-built for Irish installers doing 20+ jobs a month.',
+    description: 'AI agents that run your solar pipeline from first enquiry to booked survey to handover: answering enquiries, booking surveys, filling and tracking SEAI grants, chasing quiet follow-ups. Purpose-built for Irish installers doing 20+ jobs a month.',
     images: ['/og-image.png'],
   },
 }
@@ -35,7 +35,7 @@ function HomePageSchema() {
           "@context": "https://schema.org",
           "@type": "WebPage",
           name: "Renewably: AI Workforce for Solar Installers in Ireland",
-          description: "Renewably gives solar PV installers across Ireland a team of AI agents that run the pipeline from first enquiry to booked survey to handover: lead response, site survey booking, proposals, SEAI grant tracking, follow-ups, and install coordination.",
+          description: "Renewably gives solar PV installers across Ireland a team of AI agents that run the pipeline from first enquiry to booked survey to handover: lead response, site survey booking, proposals, SEAI grant paperwork, follow-ups, and install coordination.",
           url: "https://renewably.ie",
           mainEntity: {
             "@type": "Service",
@@ -44,7 +44,7 @@ function HomePageSchema() {
               "@type": "Organization",
               name: "Renewably",
             },
-            description: "An AI workforce for solar PV installers in Ireland that runs the pipeline from enquiry to booked survey to handover: lead response, site survey booking, proposals, SEAI grant tracking, follow-ups, and install coordination.",
+            description: "An AI workforce for solar PV installers in Ireland that runs the pipeline from enquiry to booked survey to handover: lead response, site survey booking, proposals, SEAI grant paperwork, follow-ups, and install coordination.",
             serviceType: "AI Workforce for Solar PV Installers",
             areaServed: {
               "@type": "Place",
