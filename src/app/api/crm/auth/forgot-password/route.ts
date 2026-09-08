@@ -94,10 +94,11 @@ export async function POST(request: NextRequest) {
     // Reset links MUST point at the stable production portal, never a
     // per-deployment URL. NEXT_PUBLIC_BASE_URL was resolving to an old Vercel
     // deployment, so reset links landed on a dead build and locked people out.
-    // Pin the redirect to the canonical domain; Supabase must also allowlist it
-    // (Auth > URL Configuration > Redirect URLs) or it falls back to Site URL.
+    // Pin to the CANONICAL host: renewably.ie 308-redirects to www, and that hop
+    // can drop the #access_token fragment, so target www directly. Supabase must
+    // also allowlist it (Auth > URL Configuration) or it falls back to Site URL.
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
-      redirectTo: 'https://renewably.ie/crm/reset-password',
+      redirectTo: 'https://www.renewably.ie/crm/reset-password',
     })
 
     if (error) {
