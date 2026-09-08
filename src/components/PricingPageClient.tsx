@@ -326,15 +326,16 @@ export default function PricingPageClient() {
           <style>{`
             .cta-team-bot {
               position: absolute;
-              bottom: 0;
-              width: clamp(130px, 14vw, 185px);
+              top: 50%;
+              transform: translateY(-50%);
+              width: clamp(96px, 10vw, 138px);
               height: auto;
               pointer-events: none;
               z-index: 1;
-              filter: drop-shadow(0 12px 18px rgba(0,0,0,0.18));
+              filter: drop-shadow(0 10px 16px rgba(0,0,0,0.16));
             }
-            .cta-team-bot-left { left: clamp(8px, 4vw, 72px); }
-            .cta-team-bot-right { right: clamp(8px, 4vw, 72px); }
+            .cta-team-bot-left { left: clamp(12px, 9vw, 150px); }
+            .cta-team-bot-right { right: clamp(12px, 9vw, 150px); }
             @media (max-width: 1023px) {
               .cta-team-bot { display: none; }
             }

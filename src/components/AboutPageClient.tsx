@@ -813,7 +813,7 @@ function ValuesSection() {
 function WorkforceSection() {
   return (
     <section
-      style={{ backgroundColor: "#fff", paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(48px, 10vw, 96px)' }}
+      style={{ backgroundColor: "#fff", paddingTop: 'clamp(48px, 10vw, 96px)', paddingBottom: 'clamp(24px, 5vw, 48px)' }}
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Badge */}
@@ -959,7 +959,7 @@ function FounderSection() {
     <section
       style={{
         backgroundColor: "#FFFDF5",
-        paddingTop: 'clamp(48px, 10vw, 96px)',
+        paddingTop: 'clamp(8px, 1.5vw, 20px)',
         paddingBottom: 'clamp(48px, 10vw, 96px)',
         overflow: "hidden",
       }}
@@ -978,72 +978,7 @@ function FounderSection() {
             />
           </div>
         </ScrollReveal>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr",
-            gap: 48,
-            alignItems: "center",
-          }}
-          className="lg:grid-cols-2"
-        >
-          {/* Photo */}
-          <ScrollReveal>
-            <div style={{ maxWidth: 400, margin: "0 auto" }}>
-              <div
-                style={{ borderRadius: 20, overflow: "hidden" }}
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    borderRadius: 20,
-                    overflow: "hidden",
-                    boxShadow: 'var(--elev-raised)',
-                  }}
-                >
-                  <Image
-                    src="/founder-photo.png"
-                    alt="Renewably founder"
-                    width={432}
-                    height={576}
-                    sizes="(max-width: 1024px) 100vw, 432px"
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                      display: "block",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      height: 120,
-                      background:
-                        "linear-gradient(to top, rgba(243,216,64,0.4), transparent)",
-                      pointerEvents: "none",
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Caption */}
-              <p
-                style={{
-                  textAlign: "center",
-                  marginTop: 16,
-                  fontSize: 13,
-                  color: "#6B7280",
-                  fontStyle: "italic",
-                }}
-              >
-                Based in Ireland. Working with Irish solar installers every day.
-              </p>
-            </div>
-          </ScrollReveal>
-
+        <div style={{ maxWidth: 760, margin: "0 auto" }}>
           {/* Copy */}
           <div>
             <ScrollReveal>
