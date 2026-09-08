@@ -20,7 +20,7 @@ type Step = ChoiceStep | ContactStep;
 const STEPS: Step[] = [
   {
     key: "pain",
-    title: "Which part of your business is eating you alive?",
+    title: "Which part of your business needs the most help?",
     type: "choice",
     icons: true,
     options: [
@@ -364,23 +364,16 @@ export default function ExitIntentPopup() {
                   You&apos;re in.
                 </h2>
                 <p style={{ fontSize: 15, color: "#535353", lineHeight: 1.7, maxWidth: 390, margin: "0 auto 24px" }}>
-                  Thanks{form.name.trim() ? `, ${form.name.trim().split(/\s+/)[0]}` : ""}. We&apos;ve got your details and we&apos;ll be in touch within 24 hours. Want to grab a slot now?
+                  Thanks{form.name.trim() ? `, ${form.name.trim().split(/\s+/)[0]}` : ""}. We&apos;ve got your details and we&apos;ll be in touch within 24 hours.
                 </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  <Link
-                    href="/contact"
-                    onClick={close}
-                    style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "13px 24px", borderRadius: 9999, backgroundColor: YELLOW, color: "#1A1A1A", fontWeight: 700, fontSize: 15, textDecoration: "none" }}
-                  >
-                    Book a Call
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </Link>
-                  <button onClick={close} style={{ padding: "10px 24px", borderRadius: 9999, border: "1px solid #E5E7EB", background: "transparent", color: "#535353", fontWeight: 600, fontSize: 14, cursor: "pointer" }}>
-                    Done for now
-                  </button>
-                </div>
+                <button
+                  onClick={close}
+                  style={{ width: "100%", padding: "13px 24px", borderRadius: 9999, border: "none", backgroundColor: YELLOW, color: "#1A1A1A", fontWeight: 700, fontSize: 15, cursor: "pointer", transition: "transform 0.15s ease, box-shadow 0.15s ease" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 8px 22px rgba(243,216,64,0.4)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
+                >
+                  Done
+                </button>
               </m.div>
             ) : (
               /* ---------- WIZARD ---------- */
