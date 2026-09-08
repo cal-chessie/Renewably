@@ -201,16 +201,7 @@ export default function ExitIntentPopup() {
     const parts = name.split(/\s+/);
     const firstName = parts[0];
     const lastName = parts.slice(1).join(" ") || parts[0];
-    const message = [
-      "Popup qualification:",
-      `- Biggest drain: ${answers.pain || "—"}`,
-      `- Installs/month: ${answers.volume || "—"}`,
-      `- Handled by now: ${answers.who || "—"}`,
-      `- Would hand off first: ${answers.handoff || "—"}`,
-      form.notes.trim() ? `- Notes: ${form.notes.trim()}` : null,
-    ]
-      .filter(Boolean)
-      .join("\n");
+    const message = form.notes.trim() || "New lead from the website qualification popup.";
 
     setSubmitting(true);
     try {
@@ -225,6 +216,13 @@ export default function ExitIntentPopup() {
           company: form.company.trim() || undefined,
           jobsPerMonth: answers.volume,
           message,
+          source: "Website popup",
+          qualification: {
+            "Needs the most help": answers.pain || "",
+            "Installs / month": answers.volume || "",
+            "Handled by now": answers.who || "",
+            "Hand off first": answers.handoff || "",
+          },
         }),
       });
       const data = await res.json().catch(() => ({}));

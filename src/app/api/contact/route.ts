@@ -26,6 +26,8 @@ interface ContactFormData {
   company?: string;
   jobsPerMonth?: string;
   message: string;
+  source?: string;
+  qualification?: Record<string, string>;
 }
 
 // ============================================================================
@@ -105,6 +107,17 @@ export async function POST(request: NextRequest) {
     }
 
     const fullName = `${firstName.trim()} ${lastName.trim()}`;
+
+    // Optional lead source + qualification answers (sent by the website popup).
+    const source = typeof body.source === "string" ? body.source.trim().slice(0, 60) : "";
+    const qualEntries: [string, string][] =
+      body.qualification && typeof body.qualification === "object"
+        ? Object.entries(body.qualification)
+            .filter(([k, v]) => k && typeof v === "string" && v.trim())
+            .slice(0, 8)
+            .map(([k, v]) => [String(k).slice(0, 60), String(v).trim().slice(0, 200)])
+        : [];
+    const qualText = qualEntries.map(([k, v]) => `${k}: ${v}`).join("\n");
 
     // ── 1. Save to Supabase ───────────────────────────────────────────────
     let savedContact = false;
@@ -189,7 +202,13 @@ export async function POST(request: NextRequest) {
         setup_fee: 0,
         stage: "new_lead",
         value: estimatedValue,
-        notes: `Website enquiry from ${fullName} — ${message.trim().slice(0, 300)}`,
+        notes: [
+          `${source || "Website"} enquiry from ${fullName}`,
+          qualText,
+          message.trim() ? `Message: ${message.trim().slice(0, 300)}` : "",
+        ]
+          .filter(Boolean)
+          .join("\n"),
       });
 
       if (dealError) {
@@ -215,34 +234,74 @@ export async function POST(request: NextRequest) {
     let emailSent = false;
 
     try {
-      const subject = `New Enquiry from ${fullName}`;
+      const subject = `New lead: ${fullName}${source ? ` (${source})` : ""}`;
+      const row = (label: string, value: string) =>
+        `<tr><td style="color:rgba(255,255,255,0.5);padding:8px 0;font-size:13px;width:32%;vertical-align:top;">${label}</td><td style="color:#fff;padding:8px 0;font-size:14px;">${value}</td></tr>`;
+      const qualBlock = qualEntries.length
+        ? `<tr><td style="padding:4px 28px 4px;">
+             <p style="margin:14px 0 10px;color:rgba(255,255,255,0.45);font-size:11px;text-transform:uppercase;letter-spacing:0.06em;">What they need</p>
+             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:rgba(243,216,64,0.08);border:1px solid rgba(243,216,64,0.18);border-radius:12px;">
+               <tr><td style="padding:8px 16px;">
+                 <table width="100%" style="border-collapse:collapse;">
+                   ${qualEntries
+                     .map(
+                       ([k, v]) =>
+                         `<tr><td style="color:rgba(255,255,255,0.55);padding:7px 0;font-size:13px;width:44%;vertical-align:top;">${escapeHtml(k)}</td><td style="color:#fff;padding:7px 0;font-size:14px;font-weight:600;">${escapeHtml(v)}</td></tr>`
+                     )
+                     .join("")}
+                 </table>
+               </td></tr>
+             </table>
+           </td></tr>`
+        : "";
       const htmlBody = `
-<!DOCTYPE html><html><head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;background:#080808;font-family:system-ui,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;padding:40px 20px;">
-    <tr>
-      <td style="background:#141414;border-radius:16px;padding:32px;border:1px solid rgba(255,255,255,0.05);">
-        <div style="text-align:center;margin-bottom:24px;">
-          <span style="font-size:22px;font-weight:800;color:#F3D840;">Renewably</span>
-        </div>
-        <h2 style="color:#fff;font-size:18px;margin:0 0 16px;">New Website Enquiry</h2>
-        <table style="width:100%;border-collapse:collapse;">
-          <tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Name</td><td style="color:#fff;padding:8px 0;font-size:14px;">${escapeHtml(fullName)}</td></tr>
-          <tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Email</td><td style="color:#60A5FA;padding:8px 0;font-size:14px;"><a href="mailto:${escapeHtml(email.trim())}" style="color:#60A5FA;">${escapeHtml(email.trim())}</a></td></tr>
-          ${body.phone?.trim() ? `<tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Phone</td><td style="color:#fff;padding:8px 0;font-size:14px;">${escapeHtml(body.phone.trim())}</td></tr>` : ""}
-          ${body.company?.trim() ? `<tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Company</td><td style="color:#fff;padding:8px 0;font-size:14px;">${escapeHtml(body.company.trim())}</td></tr>` : ""}
-          ${body.jobsPerMonth?.trim() ? `<tr><td style="color:rgba(255,255,255,0.50);padding:8px 0;font-size:13px;">Installs/month</td><td style="color:#fff;padding:8px 0;font-size:14px;">${escapeHtml(body.jobsPerMonth.trim())}</td></tr>` : ""}
-        </table>
-        <div style="margin-top:16px;padding:16px;background:rgba(255,255,255,0.03);border-radius:8px;">
-          <p style="color:rgba(255,255,255,0.50);font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin:0 0 8px;">Message</p>
-          <p style="color:rgba(255,255,255,0.85);font-size:14px;line-height:1.6;margin:0;">${escapeHtml(message.trim())}</p>
-        </div>
-      </td>
-    </tr>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#0A0A0A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0A0A0A;padding:32px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#141414;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);">
+        <tr><td style="background:#F3D840;padding:18px 28px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+            <td style="font-size:18px;font-weight:800;color:#0A0A0A;">Renewably</td>
+            <td align="right" style="font-size:11px;font-weight:700;color:#0A0A0A;opacity:0.65;text-transform:uppercase;letter-spacing:0.06em;">New lead</td>
+          </tr></table>
+        </td></tr>
+        <tr><td style="padding:26px 28px 6px;">
+          <h1 style="margin:0;color:#fff;font-size:22px;font-weight:800;">${escapeHtml(fullName)}</h1>
+          ${source ? `<p style="margin:6px 0 0;color:#F3D840;font-size:13px;font-weight:600;">via ${escapeHtml(source)}</p>` : ""}
+        </td></tr>
+        <tr><td style="padding:10px 28px 4px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+            ${row("Email", `<a href="mailto:${escapeHtml(email.trim())}" style="color:#F3D840;text-decoration:none;">${escapeHtml(email.trim())}</a>`)}
+            ${body.phone?.trim() ? row("Phone", `<a href="tel:${escapeHtml(body.phone.trim())}" style="color:#fff;text-decoration:none;">${escapeHtml(body.phone.trim())}</a>`) : ""}
+            ${body.company?.trim() ? row("Company", escapeHtml(body.company.trim())) : ""}
+          </table>
+        </td></tr>
+        ${qualBlock}
+        ${message.trim() ? `<tr><td style="padding:16px 28px 4px;">
+          <p style="margin:0 0 8px;color:rgba(255,255,255,0.45);font-size:11px;text-transform:uppercase;letter-spacing:0.06em;">Message</p>
+          <p style="margin:0;color:rgba(255,255,255,0.85);font-size:14px;line-height:1.6;">${escapeHtml(message.trim())}</p>
+        </td></tr>` : ""}
+        <tr><td style="padding:22px 28px 28px;">
+          <a href="mailto:${escapeHtml(email.trim())}" style="display:inline-block;background:#F3D840;color:#0A0A0A;font-weight:700;font-size:14px;text-decoration:none;padding:12px 26px;border-radius:9999px;">Reply to ${escapeHtml(firstName.trim())}</a>
+        </td></tr>
+      </table>
+      <p style="max-width:560px;margin:14px auto 0;color:rgba(255,255,255,0.25);font-size:11px;text-align:center;">Renewably lead notification &bull; renewably.ie</p>
+    </td></tr>
   </table>
 </body></html>`;
 
-      const textBody = `New Enquiry from ${fullName}\n\nEmail: ${email.trim()}\n${body.phone?.trim() ? `Phone: ${body.phone.trim()}\n` : ""}${body.company?.trim() ? `Company: ${body.company.trim()}\n` : ""}${body.jobsPerMonth?.trim() ? `Installs/month: ${body.jobsPerMonth.trim()}\n` : ""}\nMessage:\n${message.trim()}`;
+      const textBody = [
+        `New lead: ${fullName}`,
+        source ? `Via: ${source}` : "",
+        `Email: ${email.trim()}`,
+        body.phone?.trim() ? `Phone: ${body.phone.trim()}` : "",
+        body.company?.trim() ? `Company: ${body.company.trim()}` : "",
+        qualText ? `\nWhat they need:\n${qualText}` : "",
+        message.trim() ? `\nMessage:\n${message.trim()}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n");
 
       // sendEmail resolves on failure (returns { success:false }) instead of
       // throwing, so read the result — do not assume the send worked.
@@ -297,7 +356,7 @@ export async function POST(request: NextRequest) {
     </tr>
     <tr>
       <td style="text-align:center;padding:20px 0 0;color:rgba(255,255,255,0.25);font-size:11px;">
-        Renewably &mdash; Powering Ireland's Solar Future<br>
+        Renewably &bull; Powering Ireland's Solar Future<br>
         <a href="https://renewably.ie" style="color:#F3D840;text-decoration:none;">renewably.ie</a>
       </td>
     </tr>
