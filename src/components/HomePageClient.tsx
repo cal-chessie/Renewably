@@ -506,14 +506,25 @@ function FeaturesSection() {
         </ScrollReveal>
 
         {/* Feature grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8">
           {features.map((feature, i) => (
             <ScrollReveal key={feature.title} delay={i * 0.1}>
               <div
-                className="hp-lift p-5 lg:p-6 rounded-2xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 cursor-pointer group h-full"
+                className="hp-lift p-7 lg:p-8 rounded-2xl bg-white border border-[#F3D840]/15 hover:border-[#F3D840]/40 cursor-pointer group h-full"
               >
-                <div className="w-12 h-12 rounded-2xl overflow-hidden bg-[#F3D840] group-hover:scale-110 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)] mb-5">
-                  <Image src={feature.img} alt="" aria-hidden width={48} height={48} className="w-full h-full object-cover" />
+                {/* Robot stands on its own, no box, like the chat widget. Uses the one
+                    transparent robot for now; drop 6 transparent PNGs from the generator
+                    into public/robots/ to give each card its own. */}
+                <div className="mb-5 -mt-1">
+                  <Image
+                    src="/robot-2-nobg.png"
+                    alt=""
+                    aria-hidden
+                    width={140}
+                    height={140}
+                    className="w-16 h-16 object-contain group-hover:scale-110 group-hover:-translate-y-0.5 transition-transform duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+                    style={{ filter: 'drop-shadow(0 8px 12px rgba(0,0,0,0.14))' }}
+                  />
                 </div>
                 <h3 className="text-lg font-bold leading-snug text-[#1A1A1A] mb-3 group-hover:text-[#374151] transition-colors duration-[250ms] ease-[cubic-bezier(0.16,1,0.3,1)]">
                   {feature.title}
