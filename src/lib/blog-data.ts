@@ -127,12 +127,12 @@ Run it alongside your existing process to start. Same surveys, same quotes, just
       "How Solar Installers Are Automating SEAI Grant Applications (And Why So Many Get Rejected)",
     seoTitle: "Automate SEAI Grants, Stop Rejections",
     metaDescription:
-      "See how AI agents pre-fill SEAI grant forms, check every document before submission and track deadlines, so fewer applications come back rejected.",
+      "See how AI agents track every SEAI application, check the documents before you submit and watch every deadline, so fewer come back rejected.",
     date: "2026-04-03",
     category: "Grants",
     readTime: "8 min read",
     excerpt:
-      "One missing document. One wrong box. One expired BER cert. Rejected. Resubmit. Wait another six weeks. The customer calls you every three days. You have no answer. Here's how AI agents take the grant application off your desk: forms pre-filled from the job file, documents checked before submission, deadlines tracked, rejections handled.",
+      "One missing document. One wrong box. One expired BER cert. Rejected. Resubmit. Wait another six weeks. The customer calls you every three days. You have no answer. Here's how AI agents take grant admin off your desk: every application tracked against the job file, documents checked before you submit, deadlines watched, rejections flagged.",
     nextSlug: "solar-ops-dashboard-tracking",
     content: `You know what SEAI grant paperwork feels like.
 
@@ -160,21 +160,21 @@ Let's count what you lose when you do grants by hand.
 
 An AI agent that knows every SEAI scheme. Every form. Every deadline. Every requirement. Every document format. Every common rejection reason and how to avoid it.
 
-**Completes applications.** Customer answers five questions. Agent fills the rest. Property details pulled from the job file. System specifications pulled from the equipment list. Installer credentials pulled from your SEAI registration. All pre-filled. All verified against current SEAI requirements before submission.
+**Assembles the file.** Customer answers five questions. The agent gathers the rest into one place. Property details pulled from the job file. System specifications pulled from the equipment list. Installer credentials pulled from your SEAI registration. All in one place. All checked against current SEAI requirements before you submit.
 
 **Gathers documents.** Agent knows what's needed for each scheme. BER cert: required, must be less than ten years old. Supplier invoice: required, must show VAT. Technical datasheet: required, must include panel wattage and inverter capacity. Installation photos: required, must show panel layout and inverter location. Agent requests what's missing. Verifies format when uploaded. Flags expiry dates before they become a problem.
 
-**Tracks deadlines.** Agent knows the SEAI grant cycle. Submits applications ten days before the scheme deadline to avoid last-minute system crashes. Follows up on day one after submission. Escalates if no acknowledgement after ten days. Alerts you to any scheme changes or new requirements the moment SEAI publishes them.
+**Tracks deadlines.** Agent knows the SEAI grant cycle. Reminds you to submit ten days before the scheme deadline, so you avoid last-minute system crashes. Follows up on day one after you submit. Escalates if no acknowledgement after ten days. Alerts you to any scheme changes or new requirements the moment SEAI publishes them.
 
-**Resubmits rejections.** Agent reads the rejection reason. Identifies the specific issue. Fixes the problem. Queues the resubmission for your approval straight away. Not whenever someone next finds time for paperwork. The customer barely notices.
+**Turns rejections around.** Agent reads the rejection reason. Identifies the specific issue. Pinpoints the fix. Queues the resubmission for your approval straight away. Not whenever someone next finds time for paperwork. The customer barely notices.
 
 ## What Changes
 
-**Application time.** The application stops being an afternoon job. The agent pre-fills everything from your job data. You review. You approve. You submit. The hours you used to lose to forms go back into work that pays.
+**Application time.** The application stops being an afternoon job. The agent pulls everything together from your job data. You review. You approve. You submit. The hours you used to lose to forms go back into work that pays.
 
 **Approval rate.** The mistakes that cause rejections get caught before you click submit. Wrong document formats. Expired certificates. Missing fields. Everything is checked against current SEAI requirements first, so the application that goes in is the application that should go in.
 
-**Rejection turnaround.** When a rejection does happen, the agent reads the reason, fixes the issue, and queues the resubmission for your sign-off. No manual diagnosis. No waiting for someone to find time.
+**Rejection turnaround.** When a rejection does happen, the agent reads the reason, pinpoints the fix, and queues the resubmission for your sign-off. No manual diagnosis. No waiting for someone to find time.
 
 **Admin hours.** Your office manager stops living inside grant paperwork and gets their week back for work that actually generates revenue.
 
@@ -196,9 +196,9 @@ Ask any installer who does volume and the same rejection stories come up again a
 
 **Wrong document format.** The agent validates file types and sizes against SEAI requirements. PDF only. Maximum file size limits met. Multi-page documents handled correctly. Nothing gets rejected because the photo was a HEIC instead of a JPEG.
 
-**Missing installer details.** The agent pre-fills your SEAI registration number, company name, address, and insurance details from your profile. You don't type these fields. The agent does. They're always correct.
+**Missing installer details.** The agent keeps your SEAI registration number, company name, address, and insurance details on file, ready for every application. You're not digging them out each time. They're always correct.
 
-**Incomplete technical specification.** The agent pulls panel wattage, inverter capacity, and system size directly from your equipment database. No manual entry. No transcription errors. Every field populated.
+**Incomplete technical specification.** The agent pulls panel wattage, inverter capacity, and system size straight from your equipment database, ready to drop in. No transcription errors. Nothing left to guess.
 
 **Everything else.** The edge cases: incorrect property MPRN numbers, wrong application category, duplicate submissions. The agent catches most of these through cross-validation against the job file.
 
@@ -206,7 +206,7 @@ Ask any installer who does volume and the same rejection stories come up again a
 
 You don't change how you work. You keep installing. You keep invoicing. You keep quoting.
 
-The grants agent sits between you and SEAI. You answer five questions per customer. The agent does everything else. Completes the form. Gathers the documents. Tracks the deadline. Follows up on the result.
+The grants agent sits between you and SEAI. You answer five questions per customer. The agent does the legwork. Assembles the file. Gathers the documents. Tracks the deadline. Follows up on the result.
 
 One customer. A handful of questions. No paperwork. No chasing.
 
@@ -245,7 +245,7 @@ You have assessments. Some are done. Some are scheduled for next week. Some are 
 
 You have grants. Some are submitted. Some are approved. Some are rejected. Some are waiting on a BER cert renewal. Some were submitted to the wrong scheme. Some the customer hasn't signed yet.
 
-You have permits. Some are filed with ESB Networks. Some are approved. Some are stuck in review. Some you haven't started because you're still waiting on the grant. Some were submitted on the wrong form.
+You have grid connections. Some are filed with ESB Networks. Some are approved. Some are stuck in review. Some you haven't started because you're still waiting on the grant. Some were submitted on the wrong form.
 
 You have installs. Some are scheduled. Some are delayed because equipment didn't arrive. Some are waiting on weather. Some are complete but the customer hasn't signed off. Some are complete but the paperwork isn't done.
 
@@ -263,7 +263,7 @@ One dashboard. Every job. Every status. Every problem. One place.
 
 **Grant tracking.** Every application. Every document. Every deadline. Every approval. Every rejection. Every resubmission. The agent knows what stage every grant is in and shows it to you in one column of one dashboard.
 
-**Permit tracking.** Every ESB application. Every submission date. Every follow-up. Every approval. Every delay. You see at a glance which permits are progressing, which are stuck, and which haven't been started.
+**Grid connection tracking.** Every ESB application. Every submission date. Every follow-up. Every approval. Every delay. You see at a glance which applications are progressing, which are stuck, and which haven't been started.
 
 **Install tracking.** Every job in progress. Every crew assigned. Every piece of equipment ordered. Every delivery confirmed. Every completion signed off. You see the pipeline from assessment to install without opening five different spreadsheets.
 
@@ -271,13 +271,13 @@ One dashboard. Every job. Every status. Every problem. One place.
 
 ## What You See
 
-**Today view.** Jobs that need your attention right now. A grant rejection that needs resubmission. A permit that hasn't moved in two weeks. A customer who hasn't heard anything in five days and is probably about to call your competitor. Equipment that was supposed to arrive yesterday. These are the fires you put out first.
+**Today view.** Jobs that need your attention right now. A grant rejection that needs resubmission. An ESB Networks application that hasn't moved in two weeks. A customer who hasn't heard anything in five days and is probably about to call your competitor. Equipment that was supposed to arrive yesterday. These are the fires you put out first.
 
-**This week view.** Jobs scheduled for assessment. Grants approaching submission deadline. Permits that need follow-up with ESB Networks. Installs confirmed for this week with crew assignments. Revenue expected this week versus revenue received.
+**This week view.** Jobs scheduled for assessment. Grants approaching submission deadline. Grid connections that need follow-up with ESB Networks. Installs confirmed for this week with crew assignments. Revenue expected this week versus revenue received.
 
 **This month view.** Jobs in pipeline. Revenue forecast. Bottlenecks identified. Trends spotted. Are assessments taking longer than last month? Are grants getting rejected more often? Are installs finishing on schedule? The dashboard shows you the pattern.
 
-**Every job view.** Click any customer. See everything. When they first called. What they wanted. Assessment results and photos. Grant status and documents. Permit status and timeline. Install schedule and crew. Every document, every status, every communication, in one place.
+**Every job view.** Click any customer. See everything. When they first called. What they wanted. Assessment results and photos. Grant status and documents. Grid connection status and timeline. Install schedule and crew. Every document, every status, every communication, in one place.
 
 ## What You Stop Doing
 
@@ -285,9 +285,9 @@ One dashboard. Every job. Every status. Every problem. One place.
 
 **Stop asking customers for the same information twice.** The customer told your salesperson they have a flat roof. Your assessor asked again. Your project manager asked again. The grants agent asked again. Now it's in the dashboard once. Every agent sees it. Every agent uses it. The customer tells you once.
 
-**Stop losing paperwork.** Every document is attached to the job. BER cert. Grant approval. Permit confirmation. Installation photos. Sign-off forms. Every agent can find it. You can find it. The customer can find it when they ask for a copy.
+**Stop losing paperwork.** Every document is attached to the job. BER cert. Grant approval. Connection approval. Installation photos. Sign-off forms. Every agent can find it. You can find it. The customer can find it when they ask for a copy.
 
-**Stop guessing why jobs are delayed.** The dashboard shows you exactly why. Grant stuck at SEAI. Permit delayed at ESB Networks. Equipment backordered from supplier. Customer not responding to documents request. No mystery. No investigation. You see the blocker and you fix it.
+**Stop guessing why jobs are delayed.** The dashboard shows you exactly why. Grant stuck at SEAI. Grid connection delayed at ESB Networks. Equipment backordered from supplier. Customer not responding to documents request. No mystery. No investigation. You see the blocker and you fix it.
 
 **Stop forgetting to follow up.** The dashboard reminds you. The agent escalates. You see it. You act. Nothing falls through the cracks because the cracks don't exist.
 
@@ -301,7 +301,7 @@ The operations agent doesn't replace your team. It connects them. Every handoff 
 
 **Customer** accepts the quote. Dashboard updates. Grants agent starts the SEAI application. ESB agent begins the ESB process. Both run in parallel.
 
-**Grants agent** submits the application. Dashboard updates. Status changes to "Grant Pending." Everyone sees it. Nobody emails to ask.
+**Grants agent** tracks the SEAI application. Dashboard updates. Status changes to "Grant Pending." Everyone sees it. Nobody emails to ask.
 
 **ESB agent** gets approval. Dashboard updates. Logistics agent orders equipment. Delivery is tracked automatically.
 
@@ -319,7 +319,7 @@ The operations agent connects to what you already use. Email. Calendar. Forms. S
 
 Open the dashboard in the morning. See what needs you. Close it at night. Done.
 
-Most installers start with just the lead tracking and assessment pipeline. Once that's working, they add grants. Then permits. Then installs. Then paperwork. It grows with you.`,
+Most installers start with just the lead tracking and assessment pipeline. Once that's working, they add grants. Then grid connections. Then installs. Then paperwork. It grows with you.`,
   },
 
   /* ─────────────────────────────────────────────────────────
@@ -337,7 +337,7 @@ Most installers start with just the lead tracking and assessment pipeline. Once 
     readTime: "7 min read",
     excerpt:
       "How many customer messages do you get per day? Now count how many you answer within an hour. Within a day. Within a week. Now count how many leads you lost because someone else answered first. Repetitive questions, status chasing, booking admin: communication quietly eats your week. Here's how AI gets that time back.",
-    nextSlug: "esb-networks-ai-permit-tracking",
+    nextSlug: "esb-networks-grid-connection-tracking",
     content: `How many customer messages do you get per day?
 
 Email. Phone. Web form. Facebook. WhatsApp. Google reviews. Instagram DMs.
@@ -431,7 +431,7 @@ Try it for one week. Count how many messages the agent handles. Count how many l
      5: ESB Application Tracking
      ───────────────────────────────────────────────────────── */
   {
-    slug: "esb-networks-ai-permit-tracking",
+    slug: "esb-networks-grid-connection-tracking",
     title:
       "ESB Networks Applications Without the Chaos: AI Tracking That Works",
     seoTitle: "ESB Networks Applications, Tracked by AI",
@@ -441,7 +441,7 @@ Try it for one week. Count how many messages the agent handles. Count how many l
     category: "ESB Applications",
     readTime: "9 min read",
     excerpt:
-      "ESB Networks applications are the single biggest bottleneck in solar installation. Application submitted. No response for two weeks. You follow up. Nothing. You call. Hold music. The customer asks where their install is. You don't know. Here's how AI agents take the permit process off your desk: right form, complete documents, every submission tracked, nothing lost.",
+      "ESB Networks applications are the single biggest bottleneck in solar installation. Application submitted. No response for two weeks. You follow up. Nothing. You call. Hold music. The customer asks where their install is. You don't know. Here's how AI agents take the ESB Networks process off your desk: right form, complete documents, every submission tracked, nothing lost.",
     nextSlug: "ai-crew-equipment-logistics-solar",
     content: `ESB Networks applications are the single biggest bottleneck in solar installation.
 
@@ -509,13 +509,13 @@ An agent that knows every ESB application. Every form. Every requirement. Every 
 
 **After:** Dashboard shows every application. Current status. Submission date. Days since submission. Expected timeline. Current delays if any. Next action required. Everything in one place. No searching. No calling. No guessing.
 
-**Before:** You hate permits. Your project manager hates permits. Your customer hates waiting for permits. Everyone involved in the process is frustrated.
+**Before:** You hate ESB paperwork. Your project manager hates ESB paperwork. Your customer hates waiting for the grid connection. Everyone involved in the process is frustrated.
 
-**After:** You don't think about permits. The agent handles the entire process. You check the dashboard once per week. That's the total time you spend on permitting. Seconds, not hours.
+**After:** You don't think about grid connections. The agent handles the entire process. You check the dashboard once per week. That's the total time you spend on ESB Networks applications. Seconds, not hours.
 
 ## How to Start
 
-You don't learn ESB rules. You don't become a permitting expert. You don't memorise form numbers and submission channels.
+You don't learn ESB rules. You don't become a grid connection expert. You don't memorise form numbers and submission channels.
 
 The agent knows the rules. You answer five questions per customer. The agent does everything else. Completes the form. Gathers the documents. Submits to the right channel. Tracks the progress. Follows up. Handles rejections.
 
@@ -657,7 +657,7 @@ Your spreadsheet says five hundred thousand euros this quarter. You actually ban
 
 An agent that analyses every job. Every stage. Every delay. Every outcome. Every pattern. And tells you what will actually happen.
 
-**Analyses historical data.** The agent knows your actual close rate over the last twelve months. Not what your salesperson says it is. What it actually is. Knows your average time in each pipeline stage. Knows your most common delays: grant rejections, permit delays, customer cancellations, weather postponements. Knows your biggest risks because it's seen them happen before.
+**Analyses historical data.** The agent knows your actual close rate over the last twelve months. Not what your salesperson says it is. What it actually is. Knows your average time in each pipeline stage. Knows your most common delays: grant rejections, grid connection delays, customer cancellations, weather postponements. Knows your biggest risks because it's seen them happen before.
 
 **Tracks current jobs individually.** The agent doesn't treat your pipeline as a bucket of money. It tracks every job independently. Where each job is right now. How long it's been in that stage. What's blocking it. Who's responsible. What the historical success rate is for jobs in this exact position.
 

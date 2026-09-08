@@ -28,7 +28,7 @@ import {
 } from '@/lib/crm-schemas'
 
 // ═══════════════════════════════════════════════════════════════
-// escapeHtml — Stored XSS prevention
+// escapeHtml - Stored XSS prevention
 // ═══════════════════════════════════════════════════════════════
 describe('escapeHtml', () => {
   it('escapes < and > to prevent tag injection', () => {
@@ -239,7 +239,7 @@ describe('clampPagination', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════
-// isValidDealStage — All valid stages
+// isValidDealStage - All valid stages
 // ═══════════════════════════════════════════════════════════════
 describe('isValidDealStage', () => {
   const validStages = [
@@ -267,7 +267,7 @@ describe('isValidDealStage', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════
-// isValidDealProduct — All valid products
+// isValidDealProduct - All valid products
 // ═══════════════════════════════════════════════════════════════
 describe('isValidDealProduct', () => {
   it.each(['solarpilot', 'ai_workforce', 'both'])('accepts product: %s', (product) => {
@@ -288,7 +288,7 @@ describe('isValidDealProduct', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════
-// isValidInvoiceStatus — All valid statuses
+// isValidInvoiceStatus - All valid statuses
 // ═══════════════════════════════════════════════════════════════
 describe('isValidInvoiceStatus', () => {
   it.each(['draft', 'sent', 'paid', 'overdue', 'cancelled', 'partial'])(
@@ -307,7 +307,7 @@ describe('isValidInvoiceStatus', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════
-// isValidMeetingType — All valid types
+// isValidMeetingType - All valid types
 // ═══════════════════════════════════════════════════════════════
 describe('isValidMeetingType', () => {
   it.each(['call', 'video', 'in_person', 'demo', 'other'])(
@@ -325,7 +325,7 @@ describe('isValidMeetingType', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════
-// sanitizeSearchQuery — Injection prevention
+// sanitizeSearchQuery - Injection prevention
 // ═══════════════════════════════════════════════════════════════
 describe('sanitizeSearchQuery', () => {
   it('strips angle brackets', () => {
@@ -373,7 +373,7 @@ describe('sanitizeSearchQuery', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════
-// sanitizeSortField — Allowlist enforcement
+// sanitizeSortField - Allowlist enforcement
 // ═══════════════════════════════════════════════════════════════
 describe('sanitizeSortField', () => {
   const allowedFields = ['name', 'createdAt', 'mrr', 'stage', 'value']
@@ -401,7 +401,7 @@ describe('sanitizeSortField', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════
-// validPositiveNumber — Edge cases
+// validPositiveNumber - Edge cases
 // ═══════════════════════════════════════════════════════════════
 describe('validPositiveNumber', () => {
   it('returns the number for positive values', () => {
@@ -436,7 +436,7 @@ describe('validPositiveNumber', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════
-// validString — Min/max length enforcement
+// validString - Min/max length enforcement
 // ═══════════════════════════════════════════════════════════════
 describe('validString', () => {
   it('returns the string when within bounds', () => {
@@ -471,7 +471,7 @@ describe('validString', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════
-// createCompanySchema — Zod validation
+// createCompanySchema - Zod validation
 // ═══════════════════════════════════════════════════════════════
 describe('createCompanySchema', () => {
   it('accepts a valid company with all fields', () => {
@@ -546,7 +546,7 @@ describe('createCompanySchema', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════
-// createDealSchema — Zod validation
+// createDealSchema - Zod validation
 // ═══════════════════════════════════════════════════════════════
 describe('createDealSchema', () => {
   it('accepts a valid deal with all fields', () => {
@@ -634,7 +634,7 @@ describe('createDealSchema', () => {
 
   // Note: Zod v4 has a known issue with z.record(z.unknown()) parsing plain objects.
   // The qualifiedAnswers field works at runtime via the API but Zod's parse() throws
-  // internally. This is a Zod v4 regression — the null case works correctly.
+  // internally. This is a Zod v4 regression - the null case works correctly.
   it.skip('accepts qualifiedAnswers as an object (skipped: Zod v4 z.record regression)', () => {
     const result = createDealSchema.parse({
       companyId: 'c1', product: 'ai_workforce', stage: 'demo_done',
@@ -653,7 +653,7 @@ describe('createDealSchema', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════
-// createContactSchema — Zod validation
+// createContactSchema - Zod validation
 // ═══════════════════════════════════════════════════════════════
 describe('createContactSchema', () => {
   it('accepts a valid contact with all fields', () => {
@@ -735,7 +735,7 @@ describe('createContactSchema', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════
-// updateDealSchema — Partial updates
+// updateDealSchema - Partial updates
 // ═══════════════════════════════════════════════════════════════
 describe('updateDealSchema', () => {
   it('accepts partial update with only stage', () => {

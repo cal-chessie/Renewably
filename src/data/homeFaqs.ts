@@ -10,11 +10,11 @@ export interface HomeFaq {
 export const homeFaqs: HomeFaq[] = [
   {
     q: "What does Renewably do?",
-    a: "Renewably deploys 8 specialised AI agents that automate every part of a solar PV installation business in Ireland. Our AI handles SEAI grant applications, ESB Networks application tracking, customer support, logistics coordination, quality assurance, operations management, and reporting, so you can focus on installing panels instead of drowning in admin.",
+    a: "Renewably gives Irish solar installers an AI workforce that runs the day-to-day admin of a solar PV business, so you can focus on installing panels instead of drowning in admin. The agents answer enquiries and text back missed calls, book and prep site surveys, draft proposals for you to sign off, track SEAI grant applications and deadlines, chase quiet leads, and schedule installs while tracking ESB Networks grid connection paperwork. Your CRM stays yours; Renewably runs the front desk on top of it.",
   },
   {
     q: "How does the AI workforce work?",
-    a: "Each AI agent specialises in a specific area of your solar business. The CEO Agent orchestrates the team, the Operations Agent coordinates installs, the Grants Agent handles SEAI applications, and so on. They work 24/7, integrate with your existing tools, and report directly to you through a single dashboard. You manage them like a real team.",
+    a: "Each AI agent owns one job. The Lead Response Agent answers enquiries and texts back missed calls, the Operations Agent tracks the pipeline and sends you a weekly brief, the Grant Tracker Agent stays on top of SEAI applications and deadlines, and the Install Coordinator Agent schedules installs and tracks ESB Networks grid connection paperwork. They work around the clock, plug into the tools you already use, and report to you through a single dashboard. You manage them like a real team.",
   },
   {
     q: "How much does it cost?",
@@ -22,7 +22,7 @@ export const homeFaqs: HomeFaq[] = [
   },
   {
     q: "What makes Renewably different from other AI tools?",
-    a: "Renewably is purpose-built for Irish solar PV installers, not a generic chatbot or CRM plugin. Every agent knows SEAI schemes, ESB Networks processes, Irish building regulations, and the local solar market. You get 8 specialised AI employees working as a coordinated team, not a single general-purpose tool.",
+    a: "Renewably is purpose-built for Irish solar PV installers, not a generic chatbot or CRM plugin. Every agent knows SEAI schemes, ESB Networks processes, Irish building regulations, and the local solar market. You get a coordinated AI workforce built for how Irish solar installers actually work, not a single general-purpose tool.",
   },
   {
     q: "Is my data secure?",

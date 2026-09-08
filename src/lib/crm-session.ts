@@ -1,5 +1,5 @@
 // ============================================================================
-// CRM Session — Reads Supabase session from cookies
+// CRM Session - Reads Supabase session from cookies
 // ============================================================================
 
 import { cookies } from 'next/headers'

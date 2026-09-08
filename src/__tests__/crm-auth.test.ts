@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Mock crm-session — requireAuth now delegates to getCurrentUser
+// Mock crm-session - requireAuth now delegates to getCurrentUser
 // vi.mock is hoisted, so we use vi.hoisted() to create the mock reference
 const { mockGetCurrentUser } = vi.hoisted(() => ({
   mockGetCurrentUser: vi.fn(),

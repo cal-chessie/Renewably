@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   experimental: {
-    // optimizeCss disabled — causes framer-motion "reducedMotion is not defined" runtime error
+    // optimizeCss disabled - causes framer-motion "reducedMotion is not defined" runtime error
     // with Turbopack dev mode. Re-enable for production build only.
     // optimizeCss: true,
     optimizePackageImports: [
@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
       '@dnd-kit/core',
       '@dnd-kit/sortable',
       '@dnd-kit/utilities',
-      // NOTE: framer-motion removed — Turbopack tree-shakes too aggressively,
+      // NOTE: framer-motion removed - Turbopack tree-shakes too aggressively,
       // causing "reducedMotion is not defined" ReferenceError at runtime
     ],
   },
@@ -40,11 +40,12 @@ const nextConfig: NextConfig = {
       // /workforce supersedes /services; consolidate onto one page with a 301
       // so the old URL and its inbound equity fold into /workforce.
       { source: "/services", destination: "/workforce", permanent: true },
+      { source: "/blog/esb-networks-ai-permit-tracking", destination: "/blog/esb-networks-grid-connection-tracking", permanent: true },
     ];
   },
   async headers() {
     return [
-      // Static assets — aggressive cache in production (content-hashed filenames),
+      // Static assets - aggressive cache in production (content-hashed filenames),
       // no-cache in dev so browser always gets fresh Turbopack chunks
       {
         source: '/_next/static/:path*',
@@ -57,7 +58,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // Turbopack dev chunks — must never be cached (hot-reloading breaks otherwise)
+      // Turbopack dev chunks - must never be cached (hot-reloading breaks otherwise)
       {
         source: '/_next/dev/:path*',
         headers: [
@@ -69,7 +70,7 @@ const nextConfig: NextConfig = {
           { key: 'Expires', value: '0' },
         ],
       },
-      // Next.js image optimization — long cache in production, short in dev
+      // Next.js image optimization - long cache in production, short in dev
       {
         source: '/_next/image/:path*',
         headers: [
@@ -128,7 +129,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Strict-Transport-Security",
-            value: "max-age=31536000; includeSubDomains", // 1 year — enable for production
+            value: "max-age=31536000; includeSubDomains", // 1 year - enable for production
           },
         ],
       },

@@ -1,5 +1,5 @@
 // ============================================================================
-// RENEWABLY.IE — STRIPE BILLING HELPERS
+// RENEWABLY.IE - STRIPE BILLING HELPERS
 // ============================================================================
 // Singleton Stripe instance + helper functions for checkout, customer
 // management, subscription handling, and webhook verification.

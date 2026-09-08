@@ -1,5 +1,5 @@
 // ============================================================================
-// SolarPilot CRM — Input Validation, Escaping & Shared Security Utilities
+// SolarPilot CRM - Input Validation, Escaping & Shared Security Utilities
 // ============================================================================
 
 // ─── HTML Escape (prevents stored XSS) ───
@@ -16,7 +16,7 @@ export function escapeHtml(str: string): string {
 // ─── String Validation Helpers ───
 
 export function isValidEmail(email: string): boolean {
-  // RFC 5322 simplified — disallows dangerous characters
+  // RFC 5322 simplified - disallows dangerous characters
   return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(email)
 }
 
@@ -212,7 +212,7 @@ export async function checkRateLimitRedis(
 
     return { allowed: true, retryAfterMs: 0 }
   } catch {
-    // Redis unavailable — fall back to in-memory
+    // Redis unavailable - fall back to in-memory
     return checkApiRateLimit(key, options)
   }
 }

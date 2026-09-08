@@ -1,5 +1,5 @@
 # ============================================================================
-# Renewably CRM — Docker Compose (Production)
+# Renewably CRM - Docker Compose (Production)
 # Usage: docker compose -f docker-compose.production.yml up -d
 # ============================================================================
 

@@ -14,50 +14,50 @@ import HowItStartsSection from "@/components/shared/HowItStartsSection";
 const agents = [
   {
     num: "01",
-    title: "Customer Support Agent",
-    desc: "Answers every customer. Immediately. 24/7. Books consultations. Answers questions. Escalates only what needs you. No lost leads. No unanswered emails.",
+    title: "Lead Response Agent",
+    desc: "Answers every enquiry. Immediately. 24/7. Texts back missed calls. Books the consultation. Escalates only what needs you. No lost leads. No email left sitting.",
     image: "/agents/agent-support.jpg",
   },
   {
     num: "02",
-    title: "Grants Agent",
-    desc: "Handles every grant from start to finish. SEAI applications. Paperwork. Follow-ups. Resubmissions. Knows every form, every deadline, every requirement. Nothing sits forgotten. Nothing misses a deadline.",
+    title: "Grant Tracker Agent",
+    desc: "Tracks every SEAI grant application and deadline. Flags what is due. Chases what is missing. Tells you the moment something needs signing. You submit, it makes sure nothing slips.",
     image: "/agents/agent-grants.jpg",
   },
   {
     num: "03",
     title: "Operations Agent",
-    desc: "Manages every install from quote to completion. Tracks timelines. Coordinates crews. Flags delays. Reports daily. You know where every job is without chasing anyone.",
+    desc: "Your chief of staff. Tracks the whole pipeline. Flags delays before they cost you. Sends a weekly brief. You know where every job stands without chasing anyone.",
     image: "/agents/agent-operations.jpg",
   },
   {
     num: "04",
-    title: "Logistics Agent",
-    desc: "Orders equipment. Schedules crews. Manages inventory. Confirms deliveries. Reschedules when weather hits. Runs the back end so you don\u2019t have to.",
+    title: "Site Survey Agent",
+    desc: "Books the site survey. Preps the details the surveyor needs. Confirms the appointment. Reschedules when the weather turns. You arrive ready, nothing forgotten.",
     image: "/agents/agent-logistics.jpg",
   },
   {
     num: "05",
-    title: "ESB Agent",
-    desc: "Handles ESB Networks applications. Tracks grid connection paperwork. Follows up on delays. Alerts you only when something needs your attention.",
+    title: "Install Coordinator Agent",
+    desc: "Schedules the install and the crew. Tracks the ESB Networks grid connection paperwork. Follows up on delays. Alerts you only when something needs your attention.",
     image: "/agents/agent-permitting.jpg",
   },
   {
     num: "06",
-    title: "QA Agent",
-    desc: "Reviews every job before handover. Checks paperwork. Verifies photos. Confirms sign-offs. Catches mistakes before the customer does.",
+    title: "Proposal Agent",
+    desc: "Drafts the proposal from the survey and the numbers. Lays it out clean. Hands it to you to check and sign off. The customer gets it the same day, not next week.",
     image: "/agents/agent-qa.jpg",
   },
   {
     num: "07",
-    title: "Reporting Agent",
-    desc: "Shows you exactly what\u2019s happening across every job. Weekly summaries. Bottlenecks identified. Money tracked. No more guessing.",
+    title: "Follow-Up Agent",
+    desc: "Chases every quiet lead. Nudges the stalled jobs. Follows up until you get a yes or a no. No deal goes cold because nobody called back.",
     image: "/agents/agent-reporting.jpg",
   },
   {
     num: "08",
-    title: "CEO Agent",
-    desc: "Sets strategy. Assigns work. Manages the team. Reports to you weekly. Spots problems before you do.",
+    title: "Aftercare Agent",
+    desc: "Handles the handover. Checks the customer is happy. Follows up on aftercare. Asks for the review at the right moment. The job does not end at switch-on.",
     image: "/agents/agent-ceo.jpg",
   },
 ];
@@ -302,7 +302,7 @@ export default function ServicesPageClient() {
             },
             {
               before: "You spend 10 hours a week on grant paperwork. You miss deadlines. You make mistakes.",
-              after: "Grants agent handles it. Every application tracked, chased and resubmitted. You check a summary.",
+              after: "Grant tracker stays on it. Every application tracked, every deadline flagged. You sign and submit, nothing slips.",
             },
             {
               before: "You have no idea where every job is. You chase your team. You find out about delays too late.",
@@ -310,7 +310,7 @@ export default function ServicesPageClient() {
             },
             {
               before: "Equipment orders get missed. Crews show up without materials. Jobs get delayed by a week.",
-              after: "Logistics agent orders everything. Confirms deliveries. Alerts you only when something goes wrong.",
+              after: "Install coordinator lines it up. Crews scheduled, the grid connection tracked, delays flagged before they cost you a week.",
             },
             {
               before: "You lose money on admin. You lose sleep on coordination. You lose customers on follow-up.",

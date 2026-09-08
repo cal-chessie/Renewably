@@ -4,7 +4,7 @@ import { breadcrumb, howTo } from "@/lib/seo-schema";
 
 const pageTitle = "About: AI Workforce for Solar Installers in Ireland";
 const pageDescription =
-  "Renewably builds the AI workforce for Irish solar installers. Eight agents across grants, ESB applications, support, logistics, QA and reporting.";
+  "Renewably builds the AI workforce for Irish solar installers. Agents answer leads, book site surveys, draft proposals and track SEAI grants and ESB Networks paperwork.";
 
 export const metadata: Metadata = {
   title: pageTitle,
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "About Renewably: The AI Workforce for Irish Solar Installers",
     description:
-      "We built the team you can't find. Eight AI agents, with a Marketing agent next on the roadmap. Built for Irish solar companies doing 20+ jobs a month.",
+      "We built the team you can't find. AI agents that answer leads, book site surveys, draft proposals and track your SEAI grants. Built for Irish solar companies doing 20+ jobs a month.",
     url: "https://renewably.ie/about",
     siteName: "Renewably",
     locale: "en_IE",

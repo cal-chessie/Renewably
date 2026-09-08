@@ -1,5 +1,5 @@
 /**
- * Renewably CRM — Integration Test Suite
+ * Renewably CRM - Integration Test Suite
  *
  * Tests the "Happy Path" for core CRM operations:
  * 1. Can we successfully add a company?
@@ -92,9 +92,9 @@ import {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// 1. COMPANY CRUD — Happy Path
+// 1. COMPANY CRUD - Happy Path
 // ═══════════════════════════════════════════════════════════════════
-describe('Company CRUD — Happy Path', () => {
+describe('Company CRUD - Happy Path', () => {
   it('should create a valid company with all fields', () => {
     const input = {
       name: 'SunPower Ireland Ltd',
@@ -147,9 +147,9 @@ describe('Company CRUD — Happy Path', () => {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// 2. CONTACT CRUD — Happy Path
+// 2. CONTACT CRUD - Happy Path
 // ═══════════════════════════════════════════════════════════════════
-describe('Contact CRUD — Happy Path', () => {
+describe('Contact CRUD - Happy Path', () => {
   it('should create a valid contact with all fields', () => {
     const input = {
       companyId: '550e8400-e29b-41d4-a716-446655440000',
@@ -198,9 +198,9 @@ describe('Contact CRUD — Happy Path', () => {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// 3. DEAL CRUD — Happy Path
+// 3. DEAL CRUD - Happy Path
 // ═══════════════════════════════════════════════════════════════════
-describe('Deal CRUD — Happy Path', () => {
+describe('Deal CRUD - Happy Path', () => {
   it('should create a valid deal for SolarPilot', () => {
     const input = {
       companyId: '550e8400-e29b-41d4-a716-446655440000',
@@ -261,9 +261,9 @@ describe('Deal CRUD — Happy Path', () => {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// 4. DEAL ACTIVITY — Happy Path
+// 4. DEAL ACTIVITY - Happy Path
 // ═══════════════════════════════════════════════════════════════════
-describe('Deal Activity — Happy Path', () => {
+describe('Deal Activity - Happy Path', () => {
   const validActivityTypes = ['call', 'email', 'demo', 'proposal', 'note', 'meeting', 'task']
 
   it('should create activities for all valid types', () => {
@@ -293,9 +293,9 @@ describe('Deal Activity — Happy Path', () => {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// 5. VALIDATION UTILITIES — Happy Path
+// 5. VALIDATION UTILITIES - Happy Path
 // ═══════════════════════════════════════════════════════════════════
-describe('Validation Utilities — Happy Path', () => {
+describe('Validation Utilities - Happy Path', () => {
   describe('sanitizeSearchQuery', () => {
     it('removes dangerous characters', () => {
       const result = sanitizeSearchQuery('<script>alert(1)</script>')
@@ -368,9 +368,9 @@ describe('Validation Utilities — Happy Path', () => {
 
 
 // ═══════════════════════════════════════════════════════════════════
-// 6. RATE LIMITING — Happy Path
+// 6. RATE LIMITING - Happy Path
 // ═══════════════════════════════════════════════════════════════════
-describe('Rate Limiting — Happy Path', () => {
+describe('Rate Limiting - Happy Path', () => {
   it('allows requests under the limit', () => {
     const result = checkApiRateLimit('test:key:1', { maxAttempts: 5, windowMs: 60_000 })
     expect(result.allowed).toBe(true)
@@ -393,7 +393,7 @@ describe('Rate Limiting — Happy Path', () => {
 // ═══════════════════════════════════════════════════════════════════
 // 7. END-TO-END FLOW SIMULATION
 // ═══════════════════════════════════════════════════════════════════
-describe('End-to-End Flow — Company → Contact → Deal → Activity', () => {
+describe('End-to-End Flow - Company → Contact → Deal → Activity', () => {
   it('simulates the full CRM sales pipeline flow', () => {
     // Step 1: Create a company
     const company = createCompanySchema.parse({

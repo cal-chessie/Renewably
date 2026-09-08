@@ -7,7 +7,7 @@ function getConfig() {
   }
 }
 
-/** Lazy singleton — only creates the client when first accessed at runtime */
+/** Lazy singleton - only creates the client when first accessed at runtime */
 let _supabase: SupabaseClient | null = null
 export const supabase: SupabaseClient = new Proxy({} as SupabaseClient, {
   get(_target, prop) {

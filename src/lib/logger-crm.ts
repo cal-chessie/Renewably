@@ -1,5 +1,5 @@
 // ============================================================================
-// SolarPilot CRM — Shared API Route Helpers (Rate Limit + Validation)
+// SolarPilot CRM - Shared API Route Helpers (Rate Limit + Validation)
 // ============================================================================
 
 import type { NextRequest } from 'next/server'

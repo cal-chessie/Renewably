@@ -1,5 +1,5 @@
 // ============================================================================
-// Postmark Email Client — connected to Supabase for logging
+// Postmark Email Client - connected to Supabase for logging
 // ============================================================================
 
 import postmark from 'postmark'
@@ -61,7 +61,7 @@ export function buildStageChangeEmail(payload: TemplatePayload): {
 } {
   const { companyName, contactName, stageName, productName, dealValue, mrr, customMessage } = payload
 
-  const subject = `Update from Renewably — ${companyName}`
+  const subject = `Update from Renewably - ${companyName}`
 
   const htmlBody = `
 <!DOCTYPE html>
@@ -78,7 +78,7 @@ export function buildStageChangeEmail(payload: TemplatePayload): {
           Hi ${contactName},
         </p>
         <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin:0 0 20px;">
-          Great news — your ${productName} journey with <strong style="color:#F3D840;">${companyName}</strong> has progressed to <strong style="color:#10B981;">${stageName}</strong>.
+          Great news - your ${productName} journey with <strong style="color:#F3D840;">${companyName}</strong> has progressed to <strong style="color:#10B981;">${stageName}</strong>.
         </p>
         ${dealValue ? `<p style="color:rgba(255,255,255,0.60);font-size:14px;line-height:1.6;margin:0 0 8px;">Deal value: <strong style="color:#F3D840;">${dealValue}</strong>${mrr ? ` (${mrr}/mo)` : ''}</p>` : ''}
         ${customMessage ? `<p style="color:rgba(255,255,255,0.70);font-size:14px;line-height:1.6;margin:16px 0;padding:16px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid #F3D840;">${customMessage}</p>` : ''}
@@ -103,7 +103,7 @@ export function buildStageChangeEmail(payload: TemplatePayload): {
   const textBody = `
 Hi ${contactName},
 
-Great news — your ${productName} journey with ${companyName} has progressed to ${stageName}.
+Great news - your ${productName} journey with ${companyName} has progressed to ${stageName}.
 ${dealValue ? `\nDeal value: ${dealValue}${mrr ? ` (${mrr}/mo)` : ''}` : ''}
 ${customMessage ? `\n${customMessage}` : ''}
 
@@ -113,7 +113,7 @@ Best regards,
 The Renewably Team
 
 --
-Renewably — Powering Ireland's Solar Future
+Renewably - Powering Ireland's Solar Future
 renewably.ie
 `
 
@@ -175,7 +175,7 @@ Best regards,
 The Renewably Team
 
 --
-Renewably — Powering Ireland's Solar Future
+Renewably - Powering Ireland's Solar Future
 renewably.ie
 `
 
@@ -244,7 +244,7 @@ Looking forward to working together,
 The Renewably Team
 
 --
-Renewably — Powering Ireland's Solar Future
+Renewably - Powering Ireland's Solar Future
 renewably.ie
 `
 
@@ -366,7 +366,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
       logger.error('Postmark send failed', { error: msg, to: toArray, tag: options.tag })
     }
   } else {
-    logger.warn('Postmark not configured — logging email only', { to: toArray, subject: options.subject })
+    logger.warn('Postmark not configured - logging email only', { to: toArray, subject: options.subject })
   }
 
   // Always log to Supabase

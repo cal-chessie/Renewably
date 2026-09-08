@@ -74,20 +74,20 @@ bun dev
 
 ### Marketing Site (`/`)
 
-- **Cinematic homepage** — Hero with animated counters, AI agent showcase (8 workforce cards), FAQ accordion, pricing preview, and multiple conversion CTAs
-- **AI chat widget** — Floating chat bubble powered by the Z-AI SDK. Monitors conversations for buying signals (solar installation intent, budget, timeline). Automatically creates Contact and Deal records when intent is detected, and sends an email alert to the team
-- **10-step onboarding wizard** — Collects company details, service territory, financials, tech stack, compliance, and account credentials. Progress persists in Supabase so visitors can resume across sessions
-- **Blog** — 6 articles rendered via react-markdown, with SEO-optimised metadata and Open Graph images
-- **GDPR compliance** — Cookie consent banner, privacy policy, terms of service, dynamic `robots.txt` and `sitemap.xml`
+- **Cinematic homepage** - Hero with animated counters, AI agent showcase (8 workforce cards), FAQ accordion, pricing preview, and multiple conversion CTAs
+- **AI chat widget** - Floating chat bubble powered by the Z-AI SDK. Monitors conversations for buying signals (solar installation intent, budget, timeline). Automatically creates Contact and Deal records when intent is detected, and sends an email alert to the team
+- **10-step onboarding wizard** - Collects company details, service territory, financials, tech stack, compliance, and account credentials. Progress persists in Supabase so visitors can resume across sessions
+- **Blog** - 6 articles rendered via react-markdown, with SEO-optimised metadata and Open Graph images
+- **GDPR compliance** - Cookie consent banner, privacy policy, terms of service, dynamic `robots.txt` and `sitemap.xml`
 
 ### CRM Dashboard (`/crm`)
 
-- **Pipeline Kanban** — 9-stage drag-and-drop board (new_lead &rarr; contacted &rarr; discovery_call &rarr; demo_booked &rarr; demo_done &rarr; proposal_sent &rarr; negotiation &rarr; closed_won / closed_lost). Stage changes trigger Postmark email notifications and activity logging
-- **AI assistant** — Context-aware Claude integration that pulls real-time CRM data (contacts, deals, tasks, company info) into prompts. Supports 8 action types: email drafting, call scripts, deal insights, objection handling, follow-up suggestions, meeting prep, proposal summaries, and general CRM Q&A
-- **Full sales cycle** — Companies, contacts, deals, proposals (with PDF generation and templates), invoices (with PDF, Stripe payment links, and credit notes), and billing (Stripe checkout, customer portal, webhook handling)
-- **Operations** — Google Calendar sync (OAuth2, bidirectional), meeting management (schedule, complete, cancel, push to calendar), task management (priorities, due dates, drag reorder), and workflow automation (custom triggers and execution tracking)
-- **Analytics** — Dashboard KPIs, revenue charts, pipeline funnel, activity feed, website performance metrics, and exportable reports (CSV/JSON)
-- **Installer management** — Health scores, performance tracking, bulk operations, and CSV export
+- **Pipeline Kanban** - 9-stage drag-and-drop board (new_lead &rarr; contacted &rarr; discovery_call &rarr; demo_booked &rarr; demo_done &rarr; proposal_sent &rarr; negotiation &rarr; closed_won / closed_lost). Stage changes trigger Postmark email notifications and activity logging
+- **AI assistant** - Context-aware Claude integration that pulls real-time CRM data (contacts, deals, tasks, company info) into prompts. Supports 8 action types: email drafting, call scripts, deal insights, objection handling, follow-up suggestions, meeting prep, proposal summaries, and general CRM Q&A
+- **Full sales cycle** - Companies, contacts, deals, proposals (with PDF generation and templates), invoices (with PDF, Stripe payment links, and credit notes), and billing (Stripe checkout, customer portal, webhook handling)
+- **Operations** - Google Calendar sync (OAuth2, bidirectional), meeting management (schedule, complete, cancel, push to calendar), task management (priorities, due dates, drag reorder), and workflow automation (custom triggers and execution tracking)
+- **Analytics** - Dashboard KPIs, revenue charts, pipeline funnel, activity feed, website performance metrics, and exportable reports (CSV/JSON)
+- **Installer management** - Health scores, performance tracking, bulk operations, and CSV export
 
 <br />
 
@@ -119,7 +119,7 @@ This repo handles the top of the funnel &mdash; attracting visitors, capturing l
                     │       Next.js 16 (standalone)        │
                     │                                      │
                     │   ┌──────────────────────────────┐   │
-                    │   │  proxy.ts — auth middleware   │   │
+                    │   │  proxy.ts - auth middleware   │   │
                     │   │  JWT validation via Supabase │   │
                     │   │  Rate limit: 10 req/min/IP   │   │
                     │   └──────────────┬───────────────┘   │
@@ -547,20 +547,20 @@ Delivery webhooks (`POST /api/crm/email/webhook`) log every delivery, bounce, an
 ```
 renewably/
 ├── .env.example                  # Environment variable template (11 vars)
-├── .github/workflows/ci-cd.yml   # GitHub Actions — lint, test, type-check, build, deploy
+├── .github/workflows/ci-cd.yml   # GitHub Actions - lint, test, type-check, build, deploy
 ├── Dockerfile                    # Multi-stage build (Node 20 Alpine)
 ├── docker-compose.production.yml # Production: app + redis + caddy
 ├── Caddyfile.production          # HTTPS reverse proxy config
 ├── next.config.ts                # CSP, security headers, standalone output
 ├── tailwind.config.ts            # CSS variables, shadcn/ui theme
-├── vitest.config.ts              # Vitest — node env, v8 coverage
+├── vitest.config.ts              # Vitest - node env, v8 coverage
 │
 ├── supabase/
 │   └── config.toml               # Supabase local config
 │
 ├── src/
 │   ├── proxy.ts                  # Auth middleware (JWT, rate limiting, route guards)
-│   │                             # NOTE: Do NOT create src/middleware.ts — conflicts with proxy.ts
+│   │                             # NOTE: Do NOT create src/middleware.ts - conflicts with proxy.ts
 │   │
 │   ├── app/                      # Next.js App Router
 │   │   ├── (marketing pages)     # /, /about, /blog, /contact, /pricing, /services, etc.
@@ -600,7 +600,7 @@ renewably/
 │   │   ├── crm-auth.ts           # requireAuth(), CSRF validation
 │   │   ├── crm-route-helpers.ts  # Error responses, helpers
 │   │   ├── crm-schemas.ts        # Zod validation schemas
-│   │   ├── claude.ts             # Claude AI — 8 actions + streaming
+│   │   ├── claude.ts             # Claude AI - 8 actions + streaming
 │   │   ├── claude-context.ts     # Real-time CRM context injection
 │   │   ├── stripe.ts             # Checkout, portal, webhooks
 │   │   ├── postmark.ts           # 4 email templates + delivery logging

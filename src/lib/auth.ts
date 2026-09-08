@@ -1,5 +1,5 @@
 // ============================================================================
-// RENEWABLY.IE — AUTHENTICATION LIBRARY
+// RENEWABLY.IE - AUTHENTICATION LIBRARY
 // ============================================================================
 // PBKDF2 password hashing (upgrade from legacy SHA-256).
 // Legacy SHA-256 hashes are verified with fallback and auto-upgraded on login.
@@ -100,7 +100,7 @@ export async function clearRateLimit(ip: string): Promise<void> {
 
 // ─── Password Hashing ───
 
-// PBKDF2 parameters — 100k iterations with SHA-256
+// PBKDF2 parameters - 100k iterations with SHA-256
 const PBKDF2_ITERATIONS = 100_000
 const PBKDF2_KEY_LENGTH = 64
 const PBKDF2_PREFIX = 'pbkdf2:'

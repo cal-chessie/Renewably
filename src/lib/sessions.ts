@@ -1,5 +1,5 @@
 // ============================================================================
-// RENEWABLY.IE — SESSION MANAGEMENT (Redis-backed, in-memory fallback)
+// RENEWABLY.IE - SESSION MANAGEMENT (Redis-backed, in-memory fallback)
 // ============================================================================
 // Sessions are stored as Redis hashes with key prefix `crm:session:{token}`.
 // Falls back to an in-memory Map when Redis is unavailable.
@@ -48,7 +48,7 @@ async function isRedisReady(): Promise<boolean> {
     return true
   } catch {
     redisAvailable = false
-    console.warn('[sessions] Redis unavailable — using in-memory session store')
+    console.warn('[sessions] Redis unavailable - using in-memory session store')
     return false
   }
 }

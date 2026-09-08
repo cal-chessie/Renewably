@@ -33,14 +33,14 @@ const INITIAL_BOTTLENECKS: Bottleneck[] = [
 ];
 
 const INITIAL_AGENT_PERF: AgentPerf[] = [
-  { name: "CEO Agent", metric: "Strategy reviews", value: "4/4 completed", status: "excellent" },
+  { name: "Lead Response Agent", metric: "Strategy reviews", value: "4/4 completed", status: "excellent" },
   { name: "Operations Agent", metric: "Jobs coordinated", value: "47.00 jobs", status: "excellent" },
   { name: "Customer Support", metric: "Response time", value: "2.40 min avg", status: "excellent" },
   { name: "Grants Agent", metric: "Applications", value: "12.00 active / 92.00% approval", status: "good" },
   { name: "Logistics Agent", metric: "On-time delivery", value: "94.00%", status: "good" },
   { name: "ESB agent", metric: "NC6 applications tracked", value: "9.00 active / 3.00 delayed", status: "warning" },
-  { name: "QA Agent", metric: "Quality score", value: "98.50%", status: "excellent" },
-  { name: "Reporting Agent", metric: "Reports generated", value: "Weekly summary sent", status: "excellent" },
+  { name: "Aftercare Agent", metric: "Quality score", value: "98.50%", status: "excellent" },
+  { name: "Follow-Up Agent", metric: "Reports generated", value: "Weekly summary sent", status: "excellent" },
 ];
 
 const INITIAL_TIMELINE: TimelineEvent[] = [

@@ -8,7 +8,7 @@ const geist = Geist({
 });
 
 export const metadata = {
-  title: 'SolarPilot Onboarding — Renewably',
+  title: 'SolarPilot Onboarding - Renewably',
   robots: { index: false, follow: false },
 };
 

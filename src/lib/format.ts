@@ -1,5 +1,5 @@
 // ============================================================================
-// RENEWABLY CRM — SHARED FORMATTING UTILITIES
+// RENEWABLY CRM - SHARED FORMATTING UTILITIES
 // ============================================================================
 
 import { useState, useEffect } from 'react'
@@ -36,13 +36,13 @@ export function timeAgo(date: string | Date): string {
 
 /**
  * Hook that returns a stable relative-time string.
- * Starts with '—' on the server to avoid hydration mismatches,
+ * Starts with '-' on the server to avoid hydration mismatches,
  * then resolves to the real value after mount.
  */
 export function useTimeAgo(date: string | Date | null | undefined): string {
-  const [text, setText] = useState('—')
+  const [text, setText] = useState('-')
   useEffect(() => {
-    setText(date ? timeAgo(date) : '—')
+    setText(date ? timeAgo(date) : '-')
   }, [date])
   return text
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// RENEWABLY CRM — Next.js 16 Proxy (Auth Guard + Rate Limiting + Logging)
+// RENEWABLY CRM - Next.js 16 Proxy (Auth Guard + Rate Limiting + Logging)
 // ============================================================================
 // In Next.js 16+, `proxy.ts` replaces `middleware.ts`. This file acts as
 // the central authentication gate for all CRM routes.
@@ -7,22 +7,22 @@
 // Authentication flow:
 //   1. Read the `sb-access-token` cookie from the request.
 //   2. Create a Supabase client with the anon key + user's access token.
-//   3. Call getUser() — this validates the JWT against Supabase Auth.
+//   3. Call getUser() - this validates the JWT against Supabase Auth.
 //   4. If valid → allow the request through.
 //   5. If invalid or missing:
 //      - API routes (/api/crm/*): return 401 JSON.
 //      - Page routes (/crm/*): redirect to /crm/login.
 //
 // Exempt routes (no auth required):
-//   - /api/crm/auth/*        — login, register, token refresh
-//   - /api/crm/billing/webhook — Stripe webhook (signature-verified)
-//   - /api/crm/email/webhook   — Postmark webhook (signature-verified)
-//   - /api/contact              — public contact form
-//   - /api/chat-widget          — public AI chat widget
-//   - /api/ai-agent             — public AI agent
-//   - /crm/login                — login page itself
-//   - Static assets             — _next/*, favicon, images, etc.
-//   - Marketing pages           — /, /about, /services, /pricing, etc.
+//   - /api/crm/auth/*        - login, register, token refresh
+//   - /api/crm/billing/webhook - Stripe webhook (signature-verified)
+//   - /api/crm/email/webhook   - Postmark webhook (signature-verified)
+//   - /api/contact              - public contact form
+//   - /api/chat-widget          - public AI chat widget
+//   - /api/ai-agent             - public AI agent
+//   - /crm/login                - login page itself
+//   - Static assets             - _next/*, favicon, images, etc.
+//   - Marketing pages           - /, /about, /services, /pricing, etc.
 // ============================================================================
 
 import { NextResponse } from 'next/server'
@@ -30,7 +30,7 @@ import type { NextRequest } from 'next/server'
 
 // ── Configuration ──────────────────────────────────────────────────────────
 
-// Lazy env var reads — avoids build-time failure when vars are missing
+// Lazy env var reads - avoids build-time failure when vars are missing
 function getSupabaseConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -87,7 +87,7 @@ const PUBLIC_CRM_PREFIXES: string[] = [
   '/crm/login',
 ]
 
-/** Static asset prefixes — always public. */
+/** Static asset prefixes - always public. */
 const STATIC_PREFIXES: string[] = [
   '/_next/',
   '/favicon',
@@ -98,7 +98,7 @@ const STATIC_PREFIXES: string[] = [
   '/og-image',
 ]
 
-/** Marketing site pages — always public (exact match). */
+/** Marketing site pages - always public (exact match). */
 const PUBLIC_EXACT_PATHS: string[] = [
   '/', '/about', '/services', '/pricing', '/blog', '/contact',
   '/privacy', '/terms', '/workforce', '/not-found',
@@ -269,7 +269,7 @@ async function handleAuth(
     return NextResponse.redirect(loginUrl)
   }
 
-  // ── 7. Token is valid — pass through with metadata ───────────────────
+  // ── 7. Token is valid - pass through with metadata ───────────────────
   const response = NextResponse.next()
   response.headers.set('x-authenticated-user', user.id)
   response.headers.set('X-Response-Time', `${Date.now() - startTime}ms`)

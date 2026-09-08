@@ -1,14 +1,14 @@
 // ============================================================================
-// RENEWABLY.IE — CLAUDE (ANTHROPIC) AI INTEGRATION
+// RENEWABLY.IE - CLAUDE (ANTHROPIC) AI INTEGRATION
 // ============================================================================
 // Production-ready Claude API wrapper for the SolarPilot CRM.
 // Provides structured AI capabilities: email drafting, call scripts,
 // deal insights, contact summaries, proposal generation, and freeform chat.
 //
 // Configuration:
-//   ANTHROPIC_API_KEY  — Required. Your Anthropic API key.
-//   CLAUDE_MODEL       — Optional. Default: "claude-sonnet-4-20250514"
-//   CLAUDE_MAX_TOKENS  — Optional. Default: 4096
+//   ANTHROPIC_API_KEY  - Required. Your Anthropic API key.
+//   CLAUDE_MODEL       - Optional. Default: "claude-sonnet-4-20250514"
+//   CLAUDE_MAX_TOKENS  - Optional. Default: 4096
 // ============================================================================
 
 import Anthropic from '@anthropic-ai/sdk';
@@ -168,7 +168,7 @@ export async function validateApiKey(apiKey?: string): Promise<{ valid: boolean;
     const client = new Anthropic({ apiKey: key });
     const model = getModel();
 
-    // Lightweight test — just get a short response
+    // Lightweight test - just get a short response
     const response = await client.messages.create({
       model,
       max_tokens: 10,
@@ -186,7 +186,7 @@ export async function validateApiKey(apiKey?: string): Promise<{ valid: boolean;
       return { valid: false, error: 'Invalid API key' };
     }
     if (message.includes('rate') || message.includes('429')) {
-      return { valid: false, error: 'Rate limited — try again shortly' };
+      return { valid: false, error: 'Rate limited - try again shortly' };
     }
     return { valid: false, error: message };
   }
@@ -197,13 +197,13 @@ export async function validateApiKey(apiKey?: string): Promise<{ valid: boolean;
 // ============================================================================
 
 function buildSystemPrompt(action: ClaudeAction, context?: CrmContext): string {
-  const base = `You are Renewably AI, the intelligent CRM assistant for Renewably — an AI-as-a-Service platform built specifically for Irish solar PV installers. You help the sales team be more productive by providing intelligent, actionable assistance.
+  const base = `You are Renewably AI, the intelligent CRM assistant for Renewably - an AI-as-a-Service platform built specifically for Irish solar PV installers. You help the sales team be more productive by providing intelligent, actionable assistance.
 
 ## Brand & Tone
-- Warm, professional, concise — match Irish business culture
+- Warm, professional, concise - match Irish business culture
 - Use EUR (€) for currency, "solar PV" not "solar panels"
 - British/Irish English spelling throughout (organisation, colour, etc.)
-- Never robotic — be genuinely helpful and specific
+- Never robotic - be genuinely helpful and specific
 - Reference actual data from the CRM when provided
 
 ## Core Capabilities
@@ -217,16 +217,16 @@ function buildSystemPrompt(action: ClaudeAction, context?: CrmContext): string {
     chat: `${base}
 
 ## General Chat
-Answer CRM-related questions helpfully. If asked about something outside the CRM, politely redirect. Keep responses concise — salespeople are busy.`,
+Answer CRM-related questions helpfully. If asked about something outside the CRM, politely redirect. Keep responses concise - salespeople are busy.`,
 
     draft_email: `${base}
 
 ## Email Drafting
 You are drafting a professional email for an Irish solar PV installer. Follow these rules:
-- Write the COMPLETE email — subject line, greeting, body, sign-off
+- Write the COMPLETE email - subject line, greeting, body, sign-off
 - Tone: warm but professional, appropriate for Irish business
 - Include specific CRM data (names, deal values, dates) when provided
-- Keep it concise — aim for 3-5 short paragraphs max
+- Keep it concise - aim for 3-5 short paragraphs max
 - End with a clear call-to-action
 - Use "Kind regards," followed by the Renewably team sign-off`,
 
@@ -234,46 +234,46 @@ You are drafting a professional email for an Irish solar PV installer. Follow th
 
 ## Call Script Generation
 Generate a concise call script for an Irish solar PV installer. Include:
-1. **Opening** — friendly greeting, state who's calling
-2. **Key Talking Points** — 3-5 points based on the deal/contact context
-3. **Value Proposition** — tailored to the specific prospect
-4. **Common Objections & Responses** — 2-3 objections with suggested responses
-5. **Next Steps** — clear ask (meeting, follow-up, proposal review)
-6. **Closing** — professional sign-off
+1. **Opening** - friendly greeting, state who's calling
+2. **Key Talking Points** - 3-5 points based on the deal/contact context
+3. **Value Proposition** - tailored to the specific prospect
+4. **Common Objections & Responses** - 2-3 objections with suggested responses
+5. **Next Steps** - clear ask (meeting, follow-up, proposal review)
+6. **Closing** - professional sign-off
 
-Keep the script scannable — use bullet points and bold headers. The script should be readable in under 2 minutes.`,
+Keep the script scannable - use bullet points and bold headers. The script should be readable in under 2 minutes.`,
 
     summarize_contact: `${base}
 
 ## Contact Summary
 Provide a comprehensive but concise summary of the contact's relationship with Renewably. Include:
-1. **Profile Overview** — who they are, their company, role
-2. **Engagement History** — key interactions and their outcomes
-3. **Open Opportunities** — active deals, their values and stages
-4. **Risk Assessment** — any concerns or blockers
-5. **Recommended Next Actions** — 2-3 specific, prioritised actions`,
+1. **Profile Overview** - who they are, their company, role
+2. **Engagement History** - key interactions and their outcomes
+3. **Open Opportunities** - active deals, their values and stages
+4. **Risk Assessment** - any concerns or blockers
+5. **Recommended Next Actions** - 2-3 specific, prioritised actions`,
 
     deal_insights: `${base}
 
 ## Deal Intelligence
 Analyse the deal and provide actionable intelligence:
-1. **Deal Health Score** — assess win probability based on stage, age, engagement
-2. **Risk Factors** — identify anything that could derail the deal
-3. **Competitive Positioning** — suggest how to strengthen the proposal
-4. **Pricing Guidance** — recommend pricing strategies based on deal context
-5. **Next Steps** — specific actions to move the deal forward
-6. **Timeline Assessment** — is the close date realistic?`,
+1. **Deal Health Score** - assess win probability based on stage, age, engagement
+2. **Risk Factors** - identify anything that could derail the deal
+3. **Competitive Positioning** - suggest how to strengthen the proposal
+4. **Pricing Guidance** - recommend pricing strategies based on deal context
+5. **Next Steps** - specific actions to move the deal forward
+6. **Timeline Assessment** - is the close date realistic?`,
 
     generate_proposal: `${base}
 
 ## Proposal Content Generation
 Generate professional proposal content for an Irish solar PV installation. Include:
-1. **Executive Summary** — why this solution, tailored to the prospect
-2. **Proposed Solution** — system size, equipment, key benefits
-3. **Financial Summary** — costs, SEAI grant eligibility, ROI estimate
-4. **Implementation Timeline** — realistic milestones
-5. **Why Renewably** — key differentiators
-6. **Terms & Conditions Summary** — key points
+1. **Executive Summary** - why this solution, tailored to the prospect
+2. **Proposed Solution** - system size, equipment, key benefits
+3. **Financial Summary** - costs, SEAI grant eligibility, ROI estimate
+4. **Implementation Timeline** - realistic milestones
+5. **Why Renewably** - key differentiators
+6. **Terms & Conditions Summary** - key points
 
 Use specific data from the CRM when available. Format with clear headers and bullet points.`,
 
@@ -281,10 +281,10 @@ Use specific data from the CRM when available. Format with clear headers and bul
 
 ## Next Best Actions
 Analyse the current CRM state and recommend the most impactful next actions. Prioritise by:
-1. **Urgency** — time-sensitive opportunities first
-2. **Impact** — highest value deals get priority
-3. **Effort** — quick wins before complex tasks
-4. **Sequence** — logical order of execution
+1. **Urgency** - time-sensitive opportunities first
+2. **Impact** - highest value deals get priority
+3. **Effort** - quick wins before complex tasks
+4. **Sequence** - logical order of execution
 
 Provide 3-5 specific, actionable recommendations. Each should include WHO should do it, WHAT to do, and WHY it matters.`,
 
@@ -292,11 +292,11 @@ Provide 3-5 specific, actionable recommendations. Each should include WHO should
 
 ## Objection Handling
 Generate tailored objection responses for an Irish solar PV installer. Cover:
-1. **Price objections** — "It's too expensive"
-2. **Timeline concerns** — "We're not ready yet"
-3. **Competitor comparisons** — "Another company quoted less"
-4. **ROI scepticism** — "I'm not sure it's worth it"
-5. **Authority blockers** — "I need to discuss with my partner/board"
+1. **Price objections** - "It's too expensive"
+2. **Timeline concerns** - "We're not ready yet"
+3. **Competitor comparisons** - "Another company quoted less"
+4. **ROI scepticism** - "I'm not sure it's worth it"
+5. **Authority blockers** - "I need to discuss with my partner/board"
 
 For each objection, provide:
 - The objection in the customer's words
@@ -325,7 +325,7 @@ For each objection, provide:
         prompt += `\n- Recent Activity: ${c.recentActivities.map(a => `${a.type}: ${a.subject} (${a.createdAt})`).join('; ')}`;
       }
       if (c.openDeals?.length) {
-        prompt += `\n- Open Deals: ${c.openDeals.map(d => `"${d.title}" — €${d.value.toLocaleString()} at ${d.probability}% (${d.stageName})`).join('; ')}`;
+        prompt += `\n- Open Deals: ${c.openDeals.map(d => `"${d.title}" - €${d.value.toLocaleString()} at ${d.probability}% (${d.stageName})`).join('; ')}`;
       }
     }
 
@@ -407,7 +407,7 @@ export async function claudeChat(
       crmContext = await dbFetch(request.context);
     } catch (err) {
       console.warn('[Claude] Failed to fetch CRM context:', err instanceof Error ? err.message : err);
-      // Continue without context — don't block the AI response
+      // Continue without context - don't block the AI response
     }
   }
 

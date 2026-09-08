@@ -2,7 +2,7 @@
   "name": "renewably",
   "version": "1.0.0",
   "private": true,
-  "description": "AI workforce platform for solar installers in Ireland — CRM, grant automation, and operations management",
+  "description": "AI workforce platform for solar installers in Ireland - CRM, grant automation, and operations management",
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",

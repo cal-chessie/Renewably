@@ -29,7 +29,7 @@ const journey = [
   {
     phase: "The Build",
     year: "2024",
-    text: "We started building AI agents that could actually do the jobs. An agent that fills out SEAI grant applications correctly. An agent that responds to customer enquiries at midnight. An agent that tracks ESB Networks applications and follows up on delays. Not chatbots. Not automations. Actual digital employees.",
+    text: "We started building AI agents that could actually do the jobs. An agent that tracks SEAI grant applications and deadlines. An agent that responds to customer enquiries at midnight. An agent that tracks ESB Networks applications and follows up on delays. Not chatbots. Not automations. Actual digital employees.",
   },
   {
     phase: "The Launch",
@@ -39,7 +39,7 @@ const journey = [
   {
     phase: "The Scale",
     year: "2025",
-    text: "Today we build AI workforces for Irish solar companies doing 20+ jobs a month. Eight specialised agents live, with a Marketing agent on the roadmap. One unified dashboard. Full management and reporting. The goal has not changed: installers installing more panels, serving more customers, and getting home before dark.",
+    text: "Today we build AI workforces for Irish solar companies doing 20+ jobs a month. The full team is live, from first enquiry to aftercare. One unified dashboard. Full management and reporting. The goal has not changed: installers installing more panels, serving more customers, and getting home before dark.",
   },
 ];
 
@@ -124,15 +124,14 @@ const values = [
 ];
 
 const agents: (string | { name: string; comingSoon?: boolean })[] = [
-  "CEO Agent",
+  "Lead Response Agent",
   "Operations Agent",
-  "Customer Support Agent",
-  "Grants Agent",
-  "Logistics Agent",
-  "ESB Agent",
-  "QA Agent",
-  "Reporting Agent",
-  { name: "Marketing Agent", comingSoon: true },
+  "Site Survey Agent",
+  "Proposal Agent",
+  "Grant Tracker Agent",
+  "Follow-Up Agent",
+  "Install Coordinator Agent",
+  "Aftercare Agent",
 ];
 
 /* ============================================================
@@ -856,7 +855,7 @@ function WorkforceSection() {
               maxWidth: 500,
             }}
           >
-            Eight agents live. One more coming.
+            The full team, from first enquiry to aftercare.
           </h2>
         </ScrollReveal>
 

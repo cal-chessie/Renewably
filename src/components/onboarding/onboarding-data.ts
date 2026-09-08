@@ -1,4 +1,4 @@
-// onboarding-data.ts — Static data constants for SolarPilot Onboarding
+// onboarding-data.ts - Static data constants for SolarPilot Onboarding
 
 export const COUNTIES = [
   'Carlow', 'Cavan', 'Clare', 'Cork', 'Donegal', 'Dublin', 'Galway', 'Kerry',

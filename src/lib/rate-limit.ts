@@ -1,5 +1,5 @@
 // ============================================================================
-// RENEWABLY.IE — GENERIC RATE LIMITER (Redis + in-memory fallback)
+// RENEWABLY.IE - GENERIC RATE LIMITER (Redis + in-memory fallback)
 // ============================================================================
 // Used by public API routes (contact form, chat) to prevent abuse.
 // ============================================================================

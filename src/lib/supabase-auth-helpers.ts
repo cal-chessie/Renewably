@@ -1,5 +1,5 @@
 // ============================================================================
-// Supabase Auth Helpers — Centralised client factory & cookie utilities
+// Supabase Auth Helpers - Centralised client factory & cookie utilities
 // ============================================================================
 // Eliminates duplicate createClient() calls across auth routes.
 // Every route that needs user-scoped or service-scoped Supabase access
@@ -56,7 +56,7 @@ async function createClient() {
 
 /**
  * Create a Supabase client scoped to a specific user's access token.
- * This client obeys RLS policies — use for operations that should be
+ * This client obeys RLS policies - use for operations that should be
  * restricted to the authenticated user's data.
  */
 export async function createUserClient(accessToken: string): Promise<SupabaseClient> {
@@ -72,7 +72,7 @@ export async function createUserClient(accessToken: string): Promise<SupabaseCli
 
 /**
  * Create a Supabase client with the service role key.
- * This bypasses RLS — use ONLY for server-side admin operations.
+ * This bypasses RLS - use ONLY for server-side admin operations.
  */
 export async function createAdminClient(): Promise<SupabaseClient> {
   const sbCreateClient = await createClient()

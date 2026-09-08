@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Renewably Blog: Solar is Changing. Stay Ahead.",
     description:
-      "Practical guides on AI operations, SEAI grants, ESB permitting, and more. Written for Irish solar installers.",
+      "Practical guides on AI operations, SEAI grants, ESB Networks grid connection, and more. Written for Irish solar installers.",
     url: "https://renewably.ie/blog",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Renewably Blog" }],
     type: "website",

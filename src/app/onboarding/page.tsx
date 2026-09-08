@@ -279,7 +279,7 @@ export default function OnboardingPage() {
           }
         }
       })
-      .catch(() => { /* Silent fail — start fresh */ })
+      .catch(() => { /* Silent fail - start fresh */ })
       .finally(() => {
         setRestoring(false);
         setMounted(true);
@@ -321,7 +321,7 @@ export default function OnboardingPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          // Contact (no password — onboarding no longer creates a login)
+          // Contact (no password - onboarding no longer creates a login)
           email: formData.email || '',
           // Company
           company_name: formData.company_name || '',

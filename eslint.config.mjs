@@ -13,7 +13,7 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     // ESLint during `next build`). Pure style/formatting rules that would flood
     // the log without changing behaviour stay off.
 
-    // Correctness — catch real bugs (warn, not error, to avoid churn):
+    // Correctness - catch real bugs (warn, not error, to avoid churn):
     "react-hooks/exhaustive-deps": "warn",        // stale-closure bugs in hooks
     "@next/next/no-html-link-for-pages": "warn",  // internal nav should use next/link
     "@next/next/no-img-element": "warn",          // prefer next/image for optimisation
@@ -21,7 +21,7 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "no-fallthrough": "warn",                     // accidental switch fallthrough
     "prefer-const": "warn",                       // let that is never reassigned
 
-    // Style / noise — intentionally off:
+    // Style / noise - intentionally off:
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-non-null-assertion": "off",

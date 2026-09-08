@@ -1,5 +1,5 @@
 // ============================================================================
-// RENEWABLY.IE — CRM CONTEXT FETCHER FOR CLAUDE
+// RENEWABLY.IE - CRM CONTEXT FETCHER FOR CLAUDE
 // ============================================================================
 // Fetches relevant CRM data from Supabase to provide Claude with
 // real-time context about contacts, deals, tasks, and companies.
@@ -19,7 +19,7 @@ function parseJsonField<T>(field: unknown): T | null {
 
 /**
  * Fetch CRM context data based on the provided context IDs.
- * Returns partial data even if some fetches fail — graceful degradation.
+ * Returns partial data even if some fetches fail - graceful degradation.
  */
 export async function fetchCrmContext(
   context: ClaudeRequest['context']

@@ -1,5 +1,5 @@
 # ============================================================================
-# Renewably CRM — CI/CD Pipeline
+# Renewably CRM - CI/CD Pipeline
 # ============================================================================
 # Triggers on push to main and pull requests.
 # Jobs: lint → typecheck → test → build → deploy (main only)

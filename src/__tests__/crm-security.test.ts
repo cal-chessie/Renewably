@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 // ═══════════════════════════════════════════════════════════════════
-// Mock modules BEFORE imports — but for unit tests of the actual functions,
+// Mock modules BEFORE imports - but for unit tests of the actual functions,
 // we import the REAL parseCookie, getSessionCookie, etc. and only mock the db.
 // ═══════════════════════════════════════════════════════════════════
 vi.mock('@/lib/auth', () => ({
@@ -74,7 +74,7 @@ describe('getLogoutCookie', () => {
 })
 
 // ═══════════════════════════════════════════════════════════════════
-// PASSWORD HASHING — mock is fine for unit tests
+// PASSWORD HASHING - mock is fine for unit tests
 // ═════════════════════════════════════════════════════════════════
 describe('hashPassword', () => {
   it('calls bcrypt hash function', async () => {
@@ -163,7 +163,7 @@ describe('logger', () => {
 })
 
 // ═════════════════════════════════════════════════════════════════
-// INPUT SANITIZATION — Verify escaping function behavior
+// INPUT SANITIZATION - Verify escaping function behavior
 // ═══════════════════════════════════════════════════════════════════
 describe('HTML escaping', () => {
   it('should escape all dangerous HTML characters', () => {

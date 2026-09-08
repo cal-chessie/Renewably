@@ -1,5 +1,5 @@
 // ============================================================================
-// RENEWABLY.IE — Input Sanitization Utilities
+// RENEWABLY.IE - Input Sanitization Utilities
 // ============================================================================
 // Deep sanitizes objects before database persistence to prevent stored XSS,
 // remove dangerous HTML/script content, and strip unexpected types.
@@ -20,7 +20,7 @@ export function sanitizeObject<T = Record<string, unknown>>(input: unknown): T {
 
   // If it's a plain object, sanitize each key/value
   if (typeof input === 'object' && !Array.isArray(input)) {
-    // Handle Date instances — keep as-is (Prisma handles these)
+    // Handle Date instances - keep as-is (Prisma handles these)
     if (input instanceof Date) {
       return input as unknown as T
     }

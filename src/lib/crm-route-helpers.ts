@@ -1,5 +1,5 @@
 // ============================================================================
-// Renewably CRM — Shared API Route Helpers (CSRF + Rate Limit + Validation)
+// Renewably CRM - Shared API Route Helpers (CSRF + Rate Limit + Validation)
 // ============================================================================
 
 import type { NextRequest } from 'next/server'
@@ -99,7 +99,7 @@ export function validateCsrfOrigin(request: NextRequest): boolean {
   // header. This needs no configuration and is correct on every domain:
   // production, custom domains, and every Vercel preview/branch deployment.
   // A cross-site attacker's request carries THEIR origin but arrives at OUR
-  // host — mismatch, blocked. A legitimate same-origin request matches.
+  // host - mismatch, blocked. A legitimate same-origin request matches.
   const host = request.headers.get('host')
   const proto = request.headers.get('x-forwarded-proto') || 'https'
   if (host) {
@@ -107,7 +107,7 @@ export function validateCsrfOrigin(request: NextRequest): boolean {
   }
   // ─────────────────────────────────────────────────────────────────────────
 
-  if (allowedOrigins.size === 0) return true // no config — don't block
+  if (allowedOrigins.size === 0) return true // no config - don't block
 
   // Check Origin header (sent on cross-origin and preflighted requests)
   const origin = request.headers.get('origin')
@@ -140,7 +140,7 @@ export function validateCsrfOrigin(request: NextRequest): boolean {
  */
 export function csrfErrorResponse(): NextResponse {
   return NextResponse.json(
-    { error: 'CSRF validation failed — missing or invalid origin header' },
+    { error: 'CSRF validation failed - missing or invalid origin header' },
     { status: 403 },
   )
 }

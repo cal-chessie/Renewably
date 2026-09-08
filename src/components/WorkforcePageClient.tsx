@@ -33,13 +33,10 @@ function DashboardSkeleton() {
     </div>
   );
 }
-const MiniDesktop = dynamic(() => import("@/components/MiniDesktop"), { ssr: false, loading: () => <DashboardSkeleton /> });
 const OperationsDashboard = dynamic(() => import("@/components/OperationsDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
 const SupportDashboard = dynamic(() => import("@/components/SupportDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
 const GrantsDashboard = dynamic(() => import("@/components/GrantsDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
 const LogisticsDashboard = dynamic(() => import("@/components/LogisticsDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
-const PermittingDashboard = dynamic(() => import("@/components/PermittingDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
-const QADashboard = dynamic(() => import("@/components/QADashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
 const ReportingDashboard = dynamic(() => import("@/components/ReportingDashboard"), { ssr: false, loading: () => <DashboardSkeleton /> });
 
 /* ============================================================
@@ -48,83 +45,83 @@ const ReportingDashboard = dynamic(() => import("@/components/ReportingDashboard
 const agents: Array<{ num: string; title: string; tagline: string; body: string; closing: string }> = [
   {
     num: "01",
-    title: "CEO Agent",
-    tagline: "Sets strategy. Assigns work. Manages the team. Reports to you weekly.",
-    body: "The CEO agent oversees everything. It sets weekly priorities based on your goals. It assigns tasks to the right agents. It monitors performance across the workforce. It spots problems before you do: a grant stuck for two weeks, an ESB application that hasn't moved, a customer who hasn't heard anything.",
-    closing: "Every Monday, you get a summary. What happened last week. What's planned for this week. Where attention is needed. You review. You approve. You override if you want.",
+    title: "Lead Response Agent",
+    tagline: "Answers every enquiry. Books the call. Texts back missed calls.",
+    body: "This is your front desk. It answers emails, web forms and chat the moment they land, and it texts back the calls you miss while you are up on a roof. It handles the usual questions on pricing, grants and timelines, and it books consultations straight into your calendar.",
+    closing: "You only see the ones that need you. The rest are handled before you check your phone.",
   },
   {
     num: "02",
     title: "Operations Agent",
-    tagline: "Runs the day to day. Coordinates installs. Manages timelines.",
-    body: "The operations agent is your project manager. It tracks every job from quote to completion. It knows where each install is: assessment done, grant submitted, ESB application approved, equipment ordered, crew scheduled, installation complete, paperwork signed.",
-    closing: "When a job stalls, the ops agent knows. When a timeline slips, the ops agent alerts you. When a customer asks 'where is my install?', the ops agent has the answer.",
+    tagline: "Runs the pipeline. Briefs you weekly. Spots the stalls.",
+    body: "This is your chief of staff. It tracks every job from enquiry to handover, and it knows where each one sits: survey booked, proposal sent, grant tracked, install scheduled, paperwork signed. When a job stops moving, it tells you.",
+    closing: "Every week you get one brief. What moved, what stalled, what needs you. You approve, you override, you stay in charge.",
   },
   {
     num: "03",
-    title: "Customer Support Agent",
-    tagline: "Answers every message. Books every consult. Never sleeps.",
-    body: "The support agent is your front desk. It answers emails, web forms and chat messages on the hours you set, whether that's business hours or around the clock. It answers questions about pricing, grants, timelines, and technical specifications. It books consultations directly into your calendar. It follows up with customers who haven't responded.",
-    closing: "Only what needs you gets to you. Everything else: handled.",
+    title: "Site Survey Agent",
+    tagline: "Books the survey. Preps the details. Confirms the visit.",
+    body: "Once a lead is warm, this agent finds your next free working day, skips the weekends, and books the site survey into your diary. It sends the customer the details and the confirmation, and it reschedules when something changes.",
+    closing: "No back and forth on times. The survey is booked before the lead goes cold.",
   },
   {
     num: "04",
-    title: "Grants Agent",
-    tagline: "Knows every SEAI scheme. Fills every form. Chases every application.",
-    body: "The grants agent is your SEAI expert. It knows every grant scheme: Solar PV, Battery Storage, Heat Pumps. It knows every form, every requirement, every deadline. It completes applications. It gathers supporting documents. It tracks submission status. It follows up on delays. It resubmits rejections within 24 hours.",
-    closing: "Nothing sits forgotten. Nothing misses a deadline.",
+    title: "Proposal Agent",
+    tagline: "Drafts the proposal. Prices the job. Ready for your sign-off.",
+    body: "After the survey, this agent drafts the proposal from the numbers: system size, output, the SEAI grant, the savings. It lays it out the way you present it. You read it, change what you want, and send it.",
+    closing: "The draft is on your desk, not on your to-do list. You approve every one before it goes out.",
   },
   {
     num: "05",
-    title: "Logistics Agent",
-    tagline: "Orders equipment. Schedules crews. Manages inventory.",
-    body: "The logistics agent runs your supply chain. It tracks inventory levels: panels, inverters, rails, brackets. It places orders before you run out. It schedules crews based on job requirements and availability. It confirms deliveries. It reschedules when weather hits or customers cancel.",
-    closing: "No more crews showing up without materials. No more jobs delayed because equipment arrived late.",
+    title: "Grant Tracker Agent",
+    tagline: "Tracks every SEAI application. Watches the deadlines. Flags the delays.",
+    body: "This agent keeps your SEAI grants moving. It tracks where each application is, what it is waiting on, and when it is due. It watches the deadlines so none slip, and it flags anything that stalls so you can step in.",
+    closing: "Nothing sits forgotten. You always know which grant is where. It tracks the application; you and the customer stay in control of the submission.",
   },
   {
     num: "06",
-    title: "ESB Agent",
-    tagline: "Handles ESB. Tracks submissions. Follows up on delays.",
-    body: "The ESB agent is your ESB Networks specialist. It knows every application type: NC6 for domestic, NC7 for commercial. It knows every form, every attachment, every submission method. It completes applications. It submits to the correct portal or email address. It tracks every submission. It follows up on day 5, day 10, day 15. It alerts you only when intervention is needed.",
-    closing: "Follow-ups on day 5, day 10, day 15. Nothing sits in a queue unwatched.",
+    title: "Follow-Up Agent",
+    tagline: "Chases the quiet leads. Re-warms the cold ones. Never forgets.",
+    body: "Leads go quiet. Jobs stall. This agent chases the ones that have gone silent, re-warms the ones that cooled off, and nudges the customer who has not replied. It knows how long since the last contact and what the next step is.",
+    closing: "The follow-up you meant to do at 10pm is already done. Nothing falls through.",
   },
   {
     num: "07",
-    title: "QA Agent",
-    tagline: "Reviews every job before handover. Checks paperwork. Catches mistakes.",
-    body: "The QA agent is your final check. Before any job is marked complete, the QA agent reviews everything. Paperwork signed? Photos uploaded? ESB application approved? Grants paid? Customer satisfied?",
-    closing: "If something is missing, the QA agent flags it. If something is wrong, the QA agent catches it. Your customer never sees a mistake.",
+    title: "Install Coordinator Agent",
+    tagline: "Schedules the install. Lines up the ESB Networks paperwork. Confirms the crew.",
+    body: "This agent runs the install. It finds the next free working day with enough notice for materials, schedules the crew, and tracks the ESB Networks grid connection paperwork so the job is ready to energise. It confirms the details with the customer.",
+    closing: "No crew turning up without materials. No install held up by paperwork nobody chased.",
   },
   {
     num: "08",
-    title: "Reporting Agent",
-    tagline: "Shows you exactly what's happening. Weekly summaries. Bottlenecks identified.",
-    body: "The reporting agent is your dashboard. It tracks every metric that matters. Jobs in progress. Jobs completed. Revenue forecast. Bottlenecks identified. Agent performance. Cost tracking.",
-    closing: "Every week, you get a summary. No guesswork. No spreadsheets. Just the truth about your business.",
+    title: "Aftercare Agent",
+    tagline: "Handles the handover. Follows up after. Asks for the review.",
+    body: "The job is not done when the panels are on the roof. This agent handles the handover pack, checks in after the install, and asks the happy customer for a review at the right moment.",
+    closing: "Your customer feels looked after. Your reputation looks after itself.",
   },
 ];
 
 /* How It Works Together - scenario steps */
 const scenarioSteps = [
-  { agent: "Support Agent", action: "answers instantly. Books a consultation." },
-  { agent: "CEO Agent", action: "assigns the lead to operations." },
-  { agent: "Operations Agent", action: "schedules a site assessment." },
-  { agent: "Grants Agent", action: "prepares the SEAI application." },
-  { agent: "ESB Agent", action: "prepares the ESB application." },
-  { agent: "Logistics Agent", action: "checks inventory. Orders equipment." },
-  { agent: "QA Agent", action: "reviews every step." },
-  { agent: "Reporting Agent", action: "tracks everything." },
+  { agent: "Lead Response Agent", action: "answers instantly. Books the call." },
+  { agent: "Operations Agent", action: "picks it up and tracks it." },
+  { agent: "Site Survey Agent", action: "books the survey into your diary." },
+  { agent: "Proposal Agent", action: "drafts the proposal for your sign-off." },
+  { agent: "Grant Tracker Agent", action: "tracks the SEAI application." },
+  { agent: "Install Coordinator Agent", action: "schedules the install and the ESB paperwork." },
+  { agent: "Follow-Up Agent", action: "chases anything that goes quiet." },
+  { agent: "Aftercare Agent", action: "handles the handover and the review." },
 ];
 
 /* Lookup map: agent.num → dashboard component */
 const dashboardMap: Record<string, React.ComponentType> = {
-  "01": MiniDesktop,
+  "01": SupportDashboard,
   "02": OperationsDashboard,
-  "03": SupportDashboard,
-  "04": GrantsDashboard,
-  "05": LogisticsDashboard,
-  "06": PermittingDashboard,
-  "07": QADashboard,
+  "03": OperationsDashboard,
+  "04": ReportingDashboard,
+  "05": GrantsDashboard,
+  "06": SupportDashboard,
+  "07": LogisticsDashboard,
   "08": ReportingDashboard,
 };
 
@@ -402,32 +399,6 @@ export default function WorkforcePageClient() {
             {agents.map((agent, i) => (
               <AgentCard key={agent.num} agent={agent} index={i} />
             ))}
-
-          {/* ===== MARKETING AGENT - Coming Soon ===== */}
-          <ScrollReveal>
-            <div className="hp-lift hp-card-dark" style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', maxWidth: 640, margin: '0 auto', opacity: 0.5, filter: 'grayscale(0.5)' }}>
-              <div style={{ background: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%)', borderRadius: 16, padding: 'clamp(24px, 5vw, 48px)', textAlign: 'center', minHeight: 300, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 9999, background: 'rgba(243,216,64,0.15)', border: '1px solid rgba(243,216,64,0.3)', marginBottom: 16 }}>
-                  <span style={{ color: '#F3D840', fontSize: 'clamp(10px, 1.3vw, 13px)', fontWeight: 600, letterSpacing: '0.04em' }}>
-                    COMING SOON
-                  </span>
-                </div>
-                <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, color: '#F3D840', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 12 }}>
-                  Marketing Agent
-                </h2>
-                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(16px, 2vw, 20px)', fontWeight: 700, marginBottom: 20, lineHeight: 1.7 }}>
-                  Runs campaigns. Generates leads. Writes copy. Manages socials.
-                </p>
-                <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.7, maxWidth: 480 }}>
-                  Next to join your workforce. Fills your pipeline while you sleep. Runs Google Ads, Meta campaigns, SEO content, email sequences, and social media, all optimised for Irish solar customers.
-                </p>
-                <div style={{ marginTop: 20, display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 20px', borderRadius: 9999, background: 'rgba(243,216,64,0.1)', border: '1px solid rgba(243,216,64,0.25)', color: '#F3D840', fontSize: 'clamp(12px, 1.3vw, 14px)', fontWeight: 600 }}>
-                  <span className="hp-pulse" style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#F3D840' }} />
-                  In development
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
           </div>
         </div>
       </section>

@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import WorkforcePageClient from "@/components/WorkforcePageClient";
 import { serviceList, breadcrumb } from "@/lib/seo-schema";
 
-const ogTitle = "Meet Your AI Workforce: 8 Agents for Irish Solar Installers";
+const ogTitle = "Meet Your AI Workforce for Irish Solar Installers";
 const ogDescription =
-  "Eight AI agents that run your solar back office, with your approval. Grants, ESB applications, logistics and customer support.";
+  "An AI workforce for your solar business, working with your approval. Lead response, site surveys, proposals, SEAI grant tracking and follow-up.";
 
 export const metadata: Metadata = {
-  title: "AI Workforce: 8 AI Employees for Solar Installers in Ireland",
-  description: "Your AI workforce for Irish solar. Start with two agents, scale to eight: CEO, Operations, Support, Grants, Logistics, ESB, QA and Reporting.",
+  title: "AI Workforce for Solar Installers in Ireland",
+  description: "Your AI workforce for Irish solar installers. From lead response and site surveys to proposals, SEAI grant tracking, install coordination and aftercare.",
   alternates: { canonical: "https://renewably.ie/workforce" },
   openGraph: {
     title: ogTitle,
@@ -26,18 +26,18 @@ export const metadata: Metadata = {
   },
 };
 
-/* The 8 agents that run on this page, name + short description drawn from the
-   on-page agent copy (title + tagline). The Marketing agent is Coming Soon and
-   is deliberately excluded. */
+/* The honest agent roster surfaced in this page's structured data, name +
+   one-line description. The Grant Tracker tracks SEAI applications and
+   deadlines; it does not fill or submit forms. */
 const workforceAgents = [
-  { name: "CEO Agent", description: "Sets strategy. Assigns work. Manages the team. Reports to you weekly." },
-  { name: "Operations Agent", description: "Runs the day to day. Coordinates installs. Manages timelines." },
-  { name: "Customer Support Agent", description: "Answers every message. Books every consult. Never sleeps." },
-  { name: "Grants Agent", description: "Knows every SEAI scheme. Fills every form. Chases every application." },
-  { name: "Logistics Agent", description: "Orders equipment. Schedules crews. Manages inventory." },
-  { name: "ESB Agent", description: "Handles ESB. Tracks submissions. Follows up on delays." },
-  { name: "QA Agent", description: "Reviews every job before handover. Checks paperwork. Catches mistakes." },
-  { name: "Reporting Agent", description: "Shows you exactly what's happening. Weekly summaries. Bottlenecks identified." },
+  { name: "Lead Response Agent", description: "Answers enquiries. Texts back missed calls. Books calls with you." },
+  { name: "Operations Agent", description: "Your chief of staff. Tracks the pipeline. Sends a weekly brief." },
+  { name: "Site Survey Agent", description: "Books the site survey. Preps it so nothing gets missed." },
+  { name: "Proposal Agent", description: "Drafts the proposal. You sign off before anything goes out." },
+  { name: "Grant Tracker Agent", description: "Tracks SEAI applications and deadlines. You stay in control of the forms." },
+  { name: "Follow-Up Agent", description: "Chases quiet leads. Nudges stalled jobs back to life." },
+  { name: "Install Coordinator Agent", description: "Schedules the install. Tracks ESB Networks grid connection paperwork." },
+  { name: "Aftercare Agent", description: "Handles handover and aftercare. Asks for the review." },
 ];
 
 export default function WorkforcePage() {

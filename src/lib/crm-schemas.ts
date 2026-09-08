@@ -440,9 +440,9 @@ export const dealActivitySchema = z.object({
   notes: z.string().max(5000).optional().default(''),
 })
 
-// Onboarding submit — all 10 steps combined
+// Onboarding submit - all 10 steps combined
 export const onboardingSubmitSchema = z.object({
-  // Step 1: Contact (lead capture — no account is created here, so no password)
+  // Step 1: Contact (lead capture - no account is created here, so no password)
   email: z.string().email('Valid email is required'),
   // Step 2: Company
   company_name: z.string().min(1, 'Company name is required'),
