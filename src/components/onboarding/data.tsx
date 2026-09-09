@@ -26,7 +26,7 @@ export const DOCS = [
   { id: "msa", name: "Master Service Agreement", desc: "Legal terms of your subscription", pages: 12 },
   { id: "nda", name: "Non-Disclosure Agreement", desc: "Protects confidential information", pages: 4 },
   { id: "dpa", name: "Data Processing Agreement", desc: "GDPR compliance for client data", pages: 8 },
-  { id: "tos", name: "Terms of Service", desc: "Acceptable use of SolarPilot", pages: 6 }
+  { id: "tos", name: "Terms of Service", desc: "Acceptable use of Relay", pages: 6 }
 ];
 
 export const STEPS = [

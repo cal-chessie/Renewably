@@ -570,7 +570,7 @@ function CompanyCard({ company, index, onEdit, onDelete }: {
         {/* Onboarding Progress */}
         {hasOnboarding && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingTop: 12, borderTop: `1px solid ${BORDER}` }}>
-            <ProgressBar value={company.onboarding.solarpilotProgress} label="SolarPilot" color={YELLOW} />
+            <ProgressBar value={company.onboarding.solarpilotProgress} label="Relay" color={YELLOW} />
             {company.onboarding.aiWorkforceProgress > 0 && (
               <ProgressBar value={company.onboarding.aiWorkforceProgress} label="AI Workforce" color="#A78BFA" />
             )}

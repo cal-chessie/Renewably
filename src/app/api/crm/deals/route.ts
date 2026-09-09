@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
     // ─── Postmark: Internal notification for new deal ─────────────────────
     if (isPostmarkConfigured()) {
       const productLabels: Record<string, string> = {
-        solarpilot: 'SolarPilot', ai_workforce: 'AI Workforce', both: 'SolarPilot + AI Workforce',
+        solarpilot: 'Relay', ai_workforce: 'AI Workforce', both: 'Relay + AI Workforce',
       }
       sendInternalNotification({
         to: 'cal@renewably.ie',

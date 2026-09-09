@@ -174,7 +174,7 @@ export function BookDemo({ onBack, onDone }: { onBack: () => void; onDone: (d?: 
             Book a demo
           </div>
           <h1 style={{ fontSize: 36, fontWeight: 600, letterSpacing: '-0.03em', margin: '0 0 10px', lineHeight: 1.05 }}>
-            See SolarPilot in action.
+            See Relay in action.
           </h1>
           <p style={{ fontSize: 14, color: 'var(--ink-3)', margin: 0, maxWidth: 460, lineHeight: 1.5 }}>
             30 minutes with a Solutions Engineer. We&apos;ll walk through your pipeline, grant flow, and PPA earnings, tailored to your business.

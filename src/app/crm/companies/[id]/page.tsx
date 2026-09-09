@@ -681,7 +681,7 @@ function AddDealDialog({ open, onOpenChange, companyId }: {
           <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: DS.TEXT2, marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.05 }}>Product</label>
           <div style={{ display: 'flex', gap: 8 }}>
             {[
-              { key: 'solarpilot', label: 'SolarPilot', color: DS.YELLOW },
+              { key: 'solarpilot', label: 'Relay', color: DS.YELLOW },
               { key: 'ai_workforce', label: 'AI Workforce', color: DS.PURPLE },
               { key: 'both', label: 'Both', color: DS.GREEN },
             ].map((opt) => {
@@ -925,7 +925,7 @@ function LogNoteDialog({ open, onOpenChange, companyId, deals, defaultType, cont
               <option value="">None</option>
               {deals.map((d: any) => {
                 const sCfg = stageCfg[d.stage] || stageCfg.new_lead
-                return <option key={d.id} value={d.id}>{d.product === 'ai_workforce' ? 'AI Workforce' : d.product === 'both' ? 'Both' : 'SolarPilot'} — {sCfg.label}{d.mrr ? ` (€${d.mrr}/mo)` : ''}</option>
+                return <option key={d.id} value={d.id}>{d.product === 'ai_workforce' ? 'AI Workforce' : d.product === 'both' ? 'Both' : 'Relay'} — {sCfg.label}{d.mrr ? ` (€${d.mrr}/mo)` : ''}</option>
               })}
             </select>
           </div>
@@ -1047,7 +1047,7 @@ function ContactRow({ contact, index, onLogCall, onSendEmail }: { contact: Recor
 // ============================================================================
 function DealRow({ deal, index }: { deal: Record<string, any>; index: number }) {
   const stage = stageCfg[deal.stage] || stageCfg.new_lead
-  const productLabel = deal.product === 'both' ? 'SolarPilot + AI Workforce' : deal.product === 'ai_workforce' ? 'AI Workforce' : 'SolarPilot'
+  const productLabel = deal.product === 'both' ? 'Relay + AI Workforce' : deal.product === 'ai_workforce' ? 'AI Workforce' : 'Relay'
   const productColor = deal.product === 'both' ? DS.GREEN : deal.product === 'ai_workforce' ? DS.PURPLE : DS.YELLOW
   const isWon = deal.stage === 'closed_won'
   return (
@@ -1644,7 +1644,7 @@ export default function CompanyDetailPage() {
               <Section title="Onboarding Progress" icon={Sparkles} accent={DS.PURPLE}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                   {[
-                    { key: 'sp', label: 'SolarPilot', Icon: Sun, progress: company.onboarding.solarpilotProgress, steps: company.onboarding.solarpilotSteps, color: DS.YELLOW },
+                    { key: 'sp', label: 'Relay', Icon: Sun, progress: company.onboarding.solarpilotProgress, steps: company.onboarding.solarpilotSteps, color: DS.YELLOW },
                     { key: 'ai', label: 'AI Workforce', Icon: Bot, progress: company.onboarding.aiWorkforceProgress, steps: company.onboarding.aiWorkforceSteps, color: DS.PURPLE },
                   ].map((item) => {
                     const pct = item.progress || 0

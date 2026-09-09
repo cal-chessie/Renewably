@@ -352,7 +352,7 @@ function SidebarNav({ collapsed, onNavigate }: {
           </div>
           <div>
             <div style={{ color: '#FFF', fontWeight: 700, fontSize: 17, lineHeight: 1.2, letterSpacing: -0.2 }}>Renewably</div>
-            <div style={{ color: 'rgba(255,255,255,0.55)', fontSize: 11, fontWeight: 500, letterSpacing: 0.3, textTransform: 'uppercase' }}>SolarPilot CRM</div>
+            <div style={{ color: 'rgba(255,255,255,0.55)', fontSize: 11, fontWeight: 500, letterSpacing: 0.3, textTransform: 'uppercase' }}>Relay CRM</div>
           </div>
         </div>
       </div>

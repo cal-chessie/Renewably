@@ -13,7 +13,7 @@ export function Landing({ onStart, onDemo }: { onStart: () => void; onDemo: () =
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 }}>
             <SunMark size={40} />
             <div>
-              <div style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.02em' }}>SolarPilot</div>
+              <div style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.02em' }}>Relay</div>
               <div className="mono" style={{ fontSize: 9.5, color: 'var(--ink-4)', letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: 1, whiteSpace: 'nowrap' }}>
                 by Renewably · Ireland
               </div>
@@ -128,7 +128,7 @@ function HeroArt() {
       border: '1px solid oklch(0.70 0.17 95 / 0.4)',
       overflow: 'hidden',
     }}>
-      <img src="/onboarding/robot-laptop.jpg" alt="SolarPilot AI Co-Pilot" style={{
+      <img src="/onboarding/robot-laptop.jpg" alt="Relay AI Co-Pilot" style={{
         position: 'absolute', inset: 0,
         width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'right center',
       }} />

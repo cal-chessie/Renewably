@@ -111,7 +111,7 @@ export function StepLegal({ onNext, onBack, initialData }: StepLegalProps) {
             </div>
             <div style={{ padding: 20, overflowY: 'auto', fontSize: 11.5, color: 'var(--ink-3)', lineHeight: 1.7 }}>
               <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)', marginBottom: 10 }}>1. Definitions</div>
-              <p style={{ margin: '0 0 12px' }}>In this Agreement, &quot;Service&quot; means the SolarPilot platform provided by Renewably Ltd to the Customer under the terms hereof...</p>
+              <p style={{ margin: '0 0 12px' }}>In this Agreement, &quot;Service&quot; means the Relay platform provided by Renewably Ltd to the Customer under the terms hereof...</p>
               <div className="img-placeholder" style={{ height: 60, marginBottom: 12 }}>DOCUMENT BODY &middot; PLACEHOLDER</div>
               <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)', marginBottom: 10 }}>2. Term and termination</div>
               <p style={{ margin: '0 0 12px' }}>This Agreement shall commence on the Effective Date and continue until terminated in accordance with clause 8...</p>

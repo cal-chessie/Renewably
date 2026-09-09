@@ -1,5 +1,5 @@
 // ============================================================================
-// SolarPilot CRM - Input Validation, Escaping & Shared Security Utilities
+// Relay CRM - Input Validation, Escaping & Shared Security Utilities
 // ============================================================================
 
 // ─── HTML Escape (prevents stored XSS) ───

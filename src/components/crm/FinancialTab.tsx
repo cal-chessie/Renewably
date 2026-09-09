@@ -177,13 +177,13 @@ export function FinancialTab() {
     if (fin?.clientRevenue?.length) return fin.clientRevenue
     return [
       { name: 'SunPower Ireland', mrr: 1200, setupFee: 3500, ltv: 17900, product: 'Both', status: 'active' },
-      { name: 'EcoSolar Solutions', mrr: 950, setupFee: 2800, ltv: 14200, product: 'SolarPilot', status: 'active' },
+      { name: 'EcoSolar Solutions', mrr: 950, setupFee: 2800, ltv: 14200, product: 'Relay', status: 'active' },
       { name: 'GreenBeam Energy', mrr: 1100, setupFee: 3200, ltv: 16400, product: 'AI Workforce', status: 'active' },
       { name: 'Photon Group', mrr: 850, setupFee: 2500, ltv: 12700, product: 'Both', status: 'active' },
-      { name: 'Solaris Installers', mrr: 780, setupFee: 2200, ltv: 11580, product: 'SolarPilot', status: 'active' },
+      { name: 'Solaris Installers', mrr: 780, setupFee: 2200, ltv: 11580, product: 'Relay', status: 'active' },
       { name: 'BrightFuture Solar', mrr: 680, setupFee: 2000, ltv: 10120, product: 'AI Workforce', status: 'active' },
-      { name: 'Clare Solar Co', mrr: 560, setupFee: 1800, ltv: 8520, product: 'SolarPilot', status: 'prospect' },
-      { name: 'Midlands PV', mrr: 0, setupFee: 0, ltv: 0, product: 'SolarPilot', status: 'churned' },
+      { name: 'Clare Solar Co', mrr: 560, setupFee: 1800, ltv: 8520, product: 'Relay', status: 'prospect' },
+      { name: 'Midlands PV', mrr: 0, setupFee: 0, ltv: 0, product: 'Relay', status: 'churned' },
     ]
   }, [fin])
 
@@ -258,7 +258,7 @@ export function FinancialTab() {
     const { active, payload, label } = props
     if (!active || !payload || !payload.length) return null
     const getName = (dk?: string) => {
-      if (dk === 'solarpilot') return 'SolarPilot'
+      if (dk === 'solarpilot') return 'Relay'
       if (dk === 'aiWorkforce') return 'AI Workforce'
       if (dk === 'actual') return 'Actual'
       if (dk === 'projected') return 'Projected'
@@ -488,7 +488,7 @@ export function FinancialTab() {
             ? (((latest?.aiWorkforce || 0) - (prev?.aiWorkforce || 0)) / Math.max(prev?.aiWorkforce || 1, 1) * 100).toFixed(1) : '0.0'
           const avgMonthly = Math.round(grandTotal / revenueBreakdown.length)
           const pieData = [
-            { name: 'SolarPilot', value: spTotal, color: YELLOW, amount: spTotal },
+            { name: 'Relay', value: spTotal, color: YELLOW, amount: spTotal },
             { name: 'AI Workforce', value: aiTotal, color: '#A78BFA', amount: aiTotal },
           ]
           const stackedData = revenueBreakdown.map(r => ({
@@ -526,7 +526,7 @@ export function FinancialTab() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                       <span style={{ width: 8, height: 8, borderRadius: 2, background: YELLOW, boxShadow: '0 0 5px rgba(243,216,64,0.25)', display: 'block' }} />
-                      <span style={{ fontSize: 10, color: TEXT_TERTIARY, fontWeight: 500 }}>SolarPilot</span>
+                      <span style={{ fontSize: 10, color: TEXT_TERTIARY, fontWeight: 500 }}>Relay</span>
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                       <span style={{ width: 8, height: 8, borderRadius: 2, background: '#A78BFA', boxShadow: '0 0 5px rgba(167,139,250,0.25)', display: 'block' }} />
@@ -631,7 +631,7 @@ export function FinancialTab() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1 }}>
                       {[
                         { label: 'This Month', value: formatCurrency(totalLatest), sub: `${momPositive ? '+' : ''}${momGrowth}% MoM`, accent: momPositive ? GREEN : RED, icon: momPositive ? ArrowUpRight : ArrowDownRight },
-                        { label: 'SolarPilot', value: formatCurrency(latest?.solarpilot || 0), sub: `${spPct}% share · ${spGrowth}% MoM`, accent: YELLOW, icon: Zap },
+                        { label: 'Relay', value: formatCurrency(latest?.solarpilot || 0), sub: `${spPct}% share · ${spGrowth}% MoM`, accent: YELLOW, icon: Zap },
                         { label: 'AI Workforce', value: formatCurrency(latest?.aiWorkforce || 0), sub: `${100 - spPct}% share · ${aiGrowth}% MoM`, accent: '#A78BFA', icon: Activity },
                         { label: 'Avg / Month', value: formatCurrency(avgMonthly), sub: `${revenueBreakdown.length}-mo window`, accent: '#60A5FA', icon: TrendingUp },
                       ].map((s, i) => (

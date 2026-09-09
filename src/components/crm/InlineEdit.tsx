@@ -616,7 +616,7 @@ export function ProductCycler({ product, onSave }: ProductCyclerProps) {
   const productOrder = ['solarpilot', 'ai_workforce', 'both']
 
   const PRODUCTS: Record<string, { label: string; color: string }> = {
-    solarpilot: { label: 'SolarPilot', color: '#F3D840' },
+    solarpilot: { label: 'Relay', color: '#F3D840' },
     ai_workforce: { label: 'AI Workforce', color: '#A78BFA' },
     both: { label: 'Both', color: '#22C55E' },
   }

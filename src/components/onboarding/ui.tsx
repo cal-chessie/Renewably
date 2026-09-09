@@ -33,7 +33,7 @@ export function Wordmark({ small }: { small?: boolean }) {
       </div>
       <div>
         <div style={{ fontSize: small ? 14 : 16, fontWeight: 600, letterSpacing: '-0.02em' }}>
-          SolarPilot
+          Relay
         </div>
         {!small && (
           <div className="mono" style={{ fontSize: 9, color: 'var(--ink-4)', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 1 }}>

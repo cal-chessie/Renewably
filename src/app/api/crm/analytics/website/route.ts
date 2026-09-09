@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
     const trafficSources = Object.entries(productMap)
       .map(([product, count]) => {
         const productLabels: Record<string, string> = {
-          solarpilot: 'SolarPilot',
+          solarpilot: 'Relay',
           ai_workforce: 'AI Workforce',
           both: 'Both Products',
         }

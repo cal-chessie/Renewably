@@ -156,7 +156,7 @@ export async function GET(request: NextRequest) {
     const byProduct: Record<string, { count: number; value: number; mrr: number }> = {}
     for (const d of closedWonData) {
       if (!d.product) continue
-      const key = d.product === 'ai_workforce' ? 'AI Workforce' : d.product === 'both' ? 'Both' : 'SolarPilot'
+      const key = d.product === 'ai_workforce' ? 'AI Workforce' : d.product === 'both' ? 'Both' : 'Relay'
       if (!byProduct[key]) byProduct[key] = { count: 0, value: 0, mrr: 0 }
       byProduct[key].count++
       byProduct[key].value += d.value ?? 0
@@ -175,7 +175,7 @@ export async function GET(request: NextRequest) {
         const totalMRR = deals.reduce((s, d) => s + (d.mrr || 0), 0)
         const totalValue = deals.reduce((s, d) => s + (d.value || 0), 0)
         const products = [...new Set(deals.map(d => d.product).filter(Boolean))]
-        const productLabel = products.includes('both') ? 'Both' : products.includes('ai_workforce') ? 'AI Workforce' : 'SolarPilot'
+        const productLabel = products.includes('both') ? 'Both' : products.includes('ai_workforce') ? 'AI Workforce' : 'Relay'
         const ltv = totalMRR > 0 ? totalMRR * 15 : 0
         return {
           name: c.name,

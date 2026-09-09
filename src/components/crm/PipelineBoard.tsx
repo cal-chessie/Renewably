@@ -111,7 +111,7 @@ const STAGE_PROBABILITIES: Record<string, number> = {
 // PRODUCT CONFIGURATION
 // ═══════════════════════════════════════════════════════════════════
 const PRODUCTS: Record<string, { label: string; color: string; icon: typeof SunMedium }> = {
-  solarpilot: { label: 'SolarPilot', color: '#F3D840', icon: SunMedium },
+  solarpilot: { label: 'Relay', color: '#F3D840', icon: SunMedium },
   ai_workforce: { label: 'AI Workforce', color: '#A78BFA', icon: Bot },
   both: { label: 'Both', color: '#22C55E', icon: Sparkles },
 }
@@ -1113,7 +1113,7 @@ function DealDetailPanel({ dealId, onClose }: { dealId: string | null; onClose: 
                       await updateMutation.mutateAsync({ product: String(v) })
                     }}
                     options={[
-                      { value: 'solarpilot', label: 'SolarPilot' },
+                      { value: 'solarpilot', label: 'Relay' },
                       { value: 'ai_workforce', label: 'AI Workforce' },
                       { value: 'both', label: 'Both' },
                     ]}
@@ -2881,7 +2881,7 @@ export function PipelineBoard() {
           <div className="flex items-center gap-2">
             {[
               { key: 'all', label: 'All Products' },
-              { key: 'solarpilot', label: 'SolarPilot' },
+              { key: 'solarpilot', label: 'Relay' },
               { key: 'ai_workforce', label: 'AI Workforce' },
               { key: 'both', label: 'Both' },
             ].map((filter) => {

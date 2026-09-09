@@ -107,7 +107,7 @@ export async function PATCH(
               to: dm.email,
               companyName: company.name,
               contactName: dm.name,
-              productName: deal.product || 'SolarPilot',
+              productName: deal.product || 'Relay',
               stageName,
               dealId: id,
               companyId: company.id,

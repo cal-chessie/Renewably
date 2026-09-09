@@ -441,7 +441,7 @@ function AISuggestions({ proposal }: { proposal: Proposal }) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        prompt: `You are a solar industry expert CRM assistant for SolarPilot. Analyse this proposal and suggest improvements. Proposal: "${proposal.title}" for ${proposal.contact?.firstName || ''} ${proposal.contact?.lastName || ''} at ${proposal.company?.name || 'N/A'}. Total: €${proposal.totalAmount}. Status: ${proposal.status}. Line items: ${(proposal.lineItems || []).map(i => i.name).join(', ')}. Provide 3-4 actionable suggestions about pricing, follow-up timing, items, or negotiation. Be concise.`,
+        prompt: `You are a solar industry expert CRM assistant for Relay. Analyse this proposal and suggest improvements. Proposal: "${proposal.title}" for ${proposal.contact?.firstName || ''} ${proposal.contact?.lastName || ''} at ${proposal.company?.name || 'N/A'}. Total: €${proposal.totalAmount}. Status: ${proposal.status}. Line items: ${(proposal.lineItems || []).map(i => i.name).join(', ')}. Provide 3-4 actionable suggestions about pricing, follow-up timing, items, or negotiation. Be concise.`,
         context: 'solar_proposal_analysis',
       }),
     })

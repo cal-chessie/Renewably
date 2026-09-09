@@ -1,7 +1,7 @@
 // ============================================================================
 // RENEWABLY.IE - CLAUDE (ANTHROPIC) AI INTEGRATION
 // ============================================================================
-// Production-ready Claude API wrapper for the SolarPilot CRM.
+// Production-ready Claude API wrapper for the Relay CRM.
 // Provides structured AI capabilities: email drafting, call scripts,
 // deal insights, contact summaries, proposal generation, and freeform chat.
 //

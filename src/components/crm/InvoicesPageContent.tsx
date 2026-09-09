@@ -420,7 +420,7 @@ function AIPaymentFollowUp({ invoice }: { invoice: Invoice }) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        prompt: `You are a solar industry CRM assistant for SolarPilot. Generate a polite but firm payment follow-up email for an overdue invoice. Invoice: ${invoice.invoiceNumber}, Amount: €${invoice.totalAmount}, Due: ${formatDate(invoice.dueDate)}, ${days} days overdue. Contact: ${contactName} at ${invoice.company?.name || 'N/A'}. Write a professional follow-up email with subject line. Be concise.`,
+        prompt: `You are a solar industry CRM assistant for Relay. Generate a polite but firm payment follow-up email for an overdue invoice. Invoice: ${invoice.invoiceNumber}, Amount: €${invoice.totalAmount}, Due: ${formatDate(invoice.dueDate)}, ${days} days overdue. Contact: ${contactName} at ${invoice.company?.name || 'N/A'}. Write a professional follow-up email with subject line. Be concise.`,
         context: 'invoice_follow_up',
       }),
     })

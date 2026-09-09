@@ -25,7 +25,7 @@ export function StepWelcome({ onNext, onBack, initialData }: StepWelcomeProps) {
 
   return (
     <div className="fade-up">
-      <SectionHead eyebrow="08 · Training" title="What you'll get" desc="A preview of what SolarPilot gives you. Your goals are saved so the team can tailor your setup." />
+      <SectionHead eyebrow="08 · Training" title="What you'll get" desc="A preview of what Relay gives you. Your goals are saved so the team can tailor your setup." />
 
       <div className="ob-resources" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 18 }}>
         {resources.map(r => {
