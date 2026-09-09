@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { clampPagination, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
 import { createProposalTemplateSchema, formatZodError } from '@/lib/crm-schemas'

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { crmFetch } from '@/lib/crm-fetch'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Plus,
@@ -260,21 +261,15 @@ function InvoiceForm({
       }
 
       if (isEditing) {
-        const res = await fetch(`/api/crm/invoices/${invoice.id}`, {
+        return crmFetch<any>(`/api/crm/invoices/${invoice.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         })
-        if (!res.ok) { const data = await res.json(); throw new Error(data.error || 'Failed to update') }
-        return res.json()
       } else {
-        const res = await fetch('/api/crm/invoices', {
+        return crmFetch<any>('/api/crm/invoices', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         })
-        if (!res.ok) { const data = await res.json(); throw new Error(data.error || 'Failed to create') }
-        return res.json()
       }
     },
     onSuccess: () => {
@@ -440,9 +435,8 @@ function PaymentForm({
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch(`/api/crm/invoices/${invoiceId}/payments`, {
+      return crmFetch<any>(`/api/crm/invoices/${invoiceId}/payments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: parseFloat(form.amount),
           method: form.method,
@@ -450,8 +444,6 @@ function PaymentForm({
           notes: form.notes || null,
         }),
       })
-      if (!res.ok) { const data = await res.json(); throw new Error(data.error || 'Failed to add payment') }
-      return res.json()
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] })
@@ -655,7 +647,7 @@ function InvoiceDetail({
 
   const { data: detailData } = useQuery({
     queryKey: ['invoice', invoice.id],
-    queryFn: () => fetch(`/api/crm/invoices/${invoice.id}`).then(r => r.json()),
+    queryFn: () => crmFetch<any>(`/api/crm/invoices/${invoice.id}`),
     refetchInterval: 5000,
   })
 
@@ -664,19 +656,19 @@ function InvoiceDetail({
   const remainingAmount = detailData?.remainingAmount || fullInvoice.totalAmount
 
   const sendMutation = useMutation({
-    mutationFn: () => fetch(`/api/crm/invoices/${invoice.id}/send`, { method: 'POST' }).then(r => r.json()),
+    mutationFn: () => crmFetch<any>(`/api/crm/invoices/${invoice.id}/send`, { method: 'POST' }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['invoices'] }); queryClient.invalidateQueries({ queryKey: ['invoice', invoice.id] }); toast.success('Invoice sent!') },
     onError: () => toast.error('Failed to send'),
   })
 
   const markPaidMutation = useMutation({
-    mutationFn: () => fetch(`/api/crm/invoices/${invoice.id}/mark-paid`, { method: 'POST' }).then(r => r.json()),
+    mutationFn: () => crmFetch<any>(`/api/crm/invoices/${invoice.id}/mark-paid`, { method: 'POST' }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['invoices'] }); queryClient.invalidateQueries({ queryKey: ['invoice', invoice.id] }); toast.success('Invoice marked as paid!') },
     onError: () => toast.error('Failed to mark as paid'),
   })
 
   const deleteMutation = useMutation({
-    mutationFn: () => fetch(`/api/crm/invoices/${invoice.id}`, { method: 'DELETE' }).then(r => r.json()),
+    mutationFn: () => crmFetch<any>(`/api/crm/invoices/${invoice.id}`, { method: 'DELETE' }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['invoices'] }); toast.success('Invoice deleted'); onClose() },
     onError: () => toast.error('Failed to delete'),
   })
@@ -873,34 +865,34 @@ export default function InvoicesPage() {
       if (search) params.set('search', search)
       if (statusFilter && statusFilter !== 'all') params.set('status', statusFilter)
       params.set('limit', '100')
-      return fetch(`/api/crm/invoices?${params}`).then(r => r.json())
+      return crmFetch<any>(`/api/crm/invoices?${params}`)
     },
     refetchInterval: 10000,
   })
 
   const { data: contactsData } = useQuery({
     queryKey: ['contacts-mini'],
-    queryFn: () => fetch('/api/crm/contacts?limit=100').then(r => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/contacts?limit=100'),
   })
 
   const { data: companiesData } = useQuery({
     queryKey: ['companies-mini'],
-    queryFn: () => fetch('/api/crm/companies?limit=100').then(r => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/companies?limit=100'),
   })
 
   const { data: dealsData } = useQuery({
     queryKey: ['deals-mini'],
-    queryFn: () => fetch('/api/crm/deals?limit=100').then(r => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/deals?limit=100'),
   })
 
   const { data: proposalsData } = useQuery({
     queryKey: ['proposals-invoices'],
-    queryFn: () => fetch('/api/crm/proposals?limit=100').then(r => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/proposals?limit=100'),
   })
 
   const { data: detailData } = useQuery({
     queryKey: ['invoice', selectedInvoice?.id],
-    queryFn: () => fetch(`/api/crm/invoices/${selectedInvoice!.id}`).then(r => r.json()),
+    queryFn: () => crmFetch<any>(`/api/crm/invoices/${selectedInvoice!.id}`),
     enabled: !!selectedInvoice && detailOpen,
   })
 

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { crmFetch } from '@/lib/crm-fetch'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Plus,
@@ -389,27 +390,15 @@ function ProposalForm({
       }
 
       if (isEditing) {
-        const res = await fetch(`/api/crm/proposals/${proposal.id}`, {
+        return crmFetch<any>(`/api/crm/proposals/${proposal.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         })
-        if (!res.ok) {
-          const data = await res.json()
-          throw new Error(data.error || 'Failed to update')
-        }
-        return res.json()
       } else {
-        const res = await fetch('/api/crm/proposals', {
+        return crmFetch<any>('/api/crm/proposals', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         })
-        if (!res.ok) {
-          const data = await res.json()
-          throw new Error(data.error || 'Failed to create')
-        }
-        return res.json()
       }
     },
     onSuccess: () => {
@@ -439,29 +428,22 @@ function ProposalForm({
       let proposalId = proposal?.id
 
       if (isEditing) {
-        const res = await fetch(`/api/crm/proposals/${proposal.id}`, {
+        await crmFetch<any>(`/api/crm/proposals/${proposal.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         })
-        if (!res.ok) throw new Error('Failed to save')
       } else {
-        const res = await fetch('/api/crm/proposals', {
+        const data = await crmFetch<any>('/api/crm/proposals', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         })
-        if (!res.ok) throw new Error('Failed to create')
-        const data = await res.json()
         proposalId = data.proposal.id
       }
 
       // Send
-      const sendRes = await fetch(`/api/crm/proposals/${proposalId}/send`, {
+      return crmFetch<any>(`/api/crm/proposals/${proposalId}/send`, {
         method: 'POST',
       })
-      if (!sendRes.ok) throw new Error('Failed to send')
-      return sendRes.json()
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['proposals'] })
@@ -731,7 +713,7 @@ function ProposalDetail({
   const [templateName, setTemplateName] = useState('')
 
   const sendMutation = useMutation({
-    mutationFn: () => fetch(`/api/crm/proposals/${proposal.id}/send`, { method: 'POST' }).then((r) => r.json()),
+    mutationFn: () => crmFetch<any>(`/api/crm/proposals/${proposal.id}/send`, { method: 'POST' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['proposals'] })
       queryClient.invalidateQueries({ queryKey: ['proposal', proposal.id] })
@@ -742,11 +724,10 @@ function ProposalDetail({
 
   const statusMutation = useMutation({
     mutationFn: (status: string) =>
-      fetch(`/api/crm/proposals/${proposal.id}/status`, {
+      crmFetch<any>(`/api/crm/proposals/${proposal.id}/status`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
-      }).then((r) => r.json()),
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['proposals'] })
       queryClient.invalidateQueries({ queryKey: ['proposal', proposal.id] })
@@ -756,7 +737,7 @@ function ProposalDetail({
   })
 
   const deleteMutation = useMutation({
-    mutationFn: () => fetch(`/api/crm/proposals/${proposal.id}`, { method: 'DELETE' }).then((r) => r.json()),
+    mutationFn: () => crmFetch<any>(`/api/crm/proposals/${proposal.id}`, { method: 'DELETE' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['proposals'] })
       toast.success('Proposal deleted')
@@ -767,15 +748,14 @@ function ProposalDetail({
 
   const saveTemplateMutation = useMutation({
     mutationFn: () =>
-      fetch('/api/crm/proposals/templates', {
+      crmFetch<any>('/api/crm/proposals/templates', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: templateName,
           description: `Template from ${proposal.title}`,
           lineItems: proposal.lineItems?.map(({ id: _id, ...rest }) => rest) || [],
         }),
-      }).then((r) => r.json()),
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['templates'] })
       toast.success('Template saved!')
@@ -1065,35 +1045,35 @@ export default function ProposalsPage() {
       if (search) params.set('search', search)
       if (statusFilter && statusFilter !== 'all') params.set('status', statusFilter)
       params.set('limit', '100')
-      return fetch(`/api/crm/proposals?${params}`).then((r) => r.json())
+      return crmFetch<any>(`/api/crm/proposals?${params}`)
     },
     refetchInterval: 10000,
   })
 
   const { data: contactsData } = useQuery({
     queryKey: ['contacts-mini'],
-    queryFn: () => fetch('/api/crm/contacts?limit=100').then((r) => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/contacts?limit=100'),
   })
 
   const { data: dealsData } = useQuery({
     queryKey: ['deals-mini'],
-    queryFn: () => fetch('/api/crm/deals?limit=100').then((r) => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/deals?limit=100'),
   })
 
   const { data: companiesData } = useQuery({
     queryKey: ['companies-mini'],
-    queryFn: () => fetch('/api/crm/companies?limit=100').then((r) => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/companies?limit=100'),
   })
 
   const { data: templatesData } = useQuery({
     queryKey: ['templates'],
-    queryFn: () => fetch('/api/crm/proposals/templates').then((r) => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/proposals/templates'),
   })
 
   // Fetch full detail when selecting a proposal
   const { data: proposalDetail, isLoading: detailLoading } = useQuery({
     queryKey: ['proposal', selectedProposal?.id],
-    queryFn: () => fetch(`/api/crm/proposals/${selectedProposal!.id}`).then((r) => r.json()),
+    queryFn: () => crmFetch<any>(`/api/crm/proposals/${selectedProposal!.id}`),
     enabled: !!selectedProposal && detailOpen,
   })
 

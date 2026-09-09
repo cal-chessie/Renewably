@@ -145,6 +145,50 @@ function FinancialShimmer() {
   )
 }
 // ============================================================================
+// HONEST EMPTY / ERROR STATES (no mock-as-real)
+// ============================================================================
+function CenteredState({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      gap: 12, padding: '80px 28px', textAlign: 'center', minHeight: 320,
+    }}>
+      {children}
+    </div>
+  )
+}
+
+function FinancialEmptyState() {
+  return (
+    <CenteredState>
+      <div style={{ width: 56, height: 56, borderRadius: 14, background: 'rgba(16,185,129,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Euro size={26} style={{ color: GREEN }} />
+      </div>
+      <p style={{ fontSize: 16, fontWeight: 600, color: TEXT_PRIMARY, margin: 0 }}>No revenue recorded yet</p>
+      <p style={{ fontSize: 13, color: TEXT_SECONDARY, margin: 0, maxWidth: 360, lineHeight: 1.5 }}>
+        Close your first deal to see revenue, MRR movement and client breakdowns here.
+      </p>
+    </CenteredState>
+  )
+}
+
+function FinancialErrorState({ onRetry }: { onRetry: () => void }) {
+  return (
+    <CenteredState>
+      <AlertTriangle size={30} style={{ color: YELLOW }} />
+      <p style={{ fontSize: 16, fontWeight: 600, color: TEXT_PRIMARY, margin: 0 }}>Couldn&apos;t load financial data</p>
+      <p style={{ fontSize: 13, color: TEXT_SECONDARY, margin: 0 }}>Something went wrong loading revenue. Try again.</p>
+      <button
+        onClick={onRetry}
+        style={{ marginTop: 6, padding: '8px 20px', borderRadius: 8, border: 'none', background: YELLOW, color: DARK, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+      >
+        Retry
+      </button>
+    </CenteredState>
+  )
+}
+
+// ============================================================================
 // FINANCIAL TAB
 // ============================================================================
 export function FinancialTab() {
@@ -153,74 +197,46 @@ export function FinancialTab() {
   const [hoveredInvKpi, setHoveredInvKpi] = useState<number | null>(null)
   const [animValues, setAnimValues] = useState<number[]>([0, 0, 0, 0, 0, 0])
 
-  // ── API fetch ──
-  const { data: fin, isLoading } = useQuery({
+  // ── API fetch (throws on !res.ok so an API error surfaces, never fake data) ──
+  const { data: fin, isLoading, isError, refetch } = useQuery({
     queryKey: ['financial'],
-    queryFn: () => fetch('/api/crm/financial').then(r => r.json()),
+    queryFn: async () => {
+      const res = await fetch('/api/crm/financial')
+      if (!res.ok) {
+        let msg = `Request failed (${res.status})`
+        try { const body = await res.json(); if (body?.error) msg = body.error } catch { /* empty body */ }
+        throw new Error(msg)
+      }
+      return res.json()
+    },
     refetchInterval: 60000,
   })
 
-  // ── Derive data from API or fallback to mocks ──
-  const revenueBreakdown = useMemo(() => {
-    if (fin?.revenueBreakdown?.length) return fin.revenueBreakdown
-    return [
-      { month: 'Aug', solarpilot: 4200, aiWorkforce: 3100 },
-      { month: 'Sep', solarpilot: 4800, aiWorkforce: 3400 },
-      { month: 'Oct', solarpilot: 5100, aiWorkforce: 3800 },
-      { month: 'Nov', solarpilot: 5500, aiWorkforce: 4200 },
-      { month: 'Dec', solarpilot: 5900, aiWorkforce: 4500 },
-      { month: 'Jan', solarpilot: 6200, aiWorkforce: 4800 },
-    ]
-  }, [fin])
+  // ── Derive data from the API only — neutral zeros when empty, never fabricated ──
+  const revenueBreakdown = useMemo(() => fin?.revenueBreakdown ?? [], [fin])
+  const clientRevenue = useMemo(() => fin?.clientRevenue ?? [], [fin])
+  const mrrMovement = useMemo(
+    () => fin?.mrrMovement ?? { newMRR: 0, churnedMRR: 0, expansionMRR: 0, netNewMRR: 0 },
+    [fin],
+  )
+  const forecast = useMemo(() => fin?.forecast ?? [], [fin])
+  const invoices = useMemo(
+    () => fin?.invoices ?? { totalInvoiced: 0, totalPaid: 0, outstanding: 0, overdueAmount: 0, paidThisMonth: 0, sentThisMonth: 0, draftCount: 0 },
+    [fin],
+  )
 
-  const clientRevenue = useMemo(() => {
-    if (fin?.clientRevenue?.length) return fin.clientRevenue
-    return [
-      { name: 'SunPower Ireland', mrr: 1200, setupFee: 3500, ltv: 17900, product: 'Both', status: 'active' },
-      { name: 'EcoSolar Solutions', mrr: 950, setupFee: 2800, ltv: 14200, product: 'Relay', status: 'active' },
-      { name: 'GreenBeam Energy', mrr: 1100, setupFee: 3200, ltv: 16400, product: 'AI Workforce', status: 'active' },
-      { name: 'Photon Group', mrr: 850, setupFee: 2500, ltv: 12700, product: 'Both', status: 'active' },
-      { name: 'Solaris Installers', mrr: 780, setupFee: 2200, ltv: 11580, product: 'Relay', status: 'active' },
-      { name: 'BrightFuture Solar', mrr: 680, setupFee: 2000, ltv: 10120, product: 'AI Workforce', status: 'active' },
-      { name: 'Clare Solar Co', mrr: 560, setupFee: 1800, ltv: 8520, product: 'Relay', status: 'prospect' },
-      { name: 'Midlands PV', mrr: 0, setupFee: 0, ltv: 0, product: 'Relay', status: 'churned' },
-    ]
-  }, [fin])
-
-  const mrrMovement = useMemo(() => {
-    if (fin?.mrrMovement) return fin.mrrMovement
-    return { newMRR: 2400, churnedMRR: -560, expansionMRR: 850, netNewMRR: 2690 }
-  }, [fin])
-
-  const forecast = useMemo(() => {
-    if (fin?.forecast?.length) return fin.forecast
-    return [
-      { month: 'Jan', actual: 11000 },
-      { month: 'Feb', actual: 11400 },
-      { month: 'Mar', projected: 12200 },
-      { month: 'Apr', projected: 13100 },
-      { month: 'May', projected: 14000 },
-      { month: 'Jun', projected: 15200 },
-    ]
-  }, [fin])
-
-  const invoices = useMemo(() => {
-    if (fin?.invoices) return fin.invoices
-    return { totalInvoiced: 142000, totalPaid: 118500, outstanding: 23500, overdueAmount: 4200, paidThisMonth: 12800, sentThisMonth: 12, draftCount: 3 }
-  }, [fin])
-
-  const totalARR = fin?.kpis?.arr ?? 132000
-  const totalMRR = fin?.kpis?.mrr ?? Math.round(totalARR / 12)
-  const avgRevClient = fin?.kpis?.avgRevPerClient ?? Math.round(totalMRR / 7)
-  const totalSetupCollected = fin?.kpis?.setupFeesCollected ?? 18000
-  const revGrowth = fin?.kpis?.revGrowth ?? 18.4
-  const winRate = fin?.kpis?.winRate ?? 67
+  const totalARR = fin?.kpis?.arr ?? 0
+  const totalMRR = fin?.kpis?.mrr ?? 0
+  const avgRevClient = fin?.kpis?.avgRevPerClient ?? 0
+  const totalSetupCollected = fin?.kpis?.setupFeesCollected ?? 0
+  const revGrowth = fin?.kpis?.revGrowth ?? 0
+  const winRate = fin?.kpis?.winRate ?? 0
 
   const kpis = [
     { label: 'Total Revenue (ARR)', value: formatCurrency(totalARR), delta: `+${revGrowth}% YoY`, positive: true, icon: DollarSign, accent: GREEN },
     { label: 'Net Revenue MRR', value: formatCurrency(totalMRR), delta: `+${formatCurrency(Math.abs(mrrMovement.netNewMRR))} net new`, positive: mrrMovement.netNewMRR >= 0, icon: Euro, accent: YELLOW },
     { label: 'Avg Revenue / Client', value: formatCurrency(avgRevClient), delta: `${clientRevenue.filter(c => c.status === 'active').length} active clients`, positive: true, icon: Users, accent: '#A78BFA' },
-    { label: 'Setup Fees Collected', value: formatCurrency(totalSetupCollected), delta: `${formatCurrency(fin?.kpis?.setupThisQuarter ?? 8200)} this Q`, positive: true, icon: Zap, accent: '#FB923C' },
+    { label: 'Setup Fees Collected', value: formatCurrency(totalSetupCollected), delta: `${formatCurrency(fin?.kpis?.setupThisQuarter ?? 0)} this Q`, positive: true, icon: Zap, accent: '#FB923C' },
     { label: 'Revenue Growth', value: `${revGrowth}%`, delta: 'quarter over quarter', positive: revGrowth >= 0, icon: TrendingUp, accent: '#60A5FA' },
   ]
 
@@ -291,6 +307,17 @@ export function FinancialTab() {
 
   // ── Loading state ──
   if (isLoading && !fin) return <FinancialShimmer />
+
+  // ── Honest error state (only when there's no real data to show) ──
+  if (isError && !fin) return <FinancialErrorState onRetry={() => refetch()} />
+
+  // ── Honest empty state (no fabricated revenue when nothing is recorded) ──
+  const hasRevenue =
+    totalARR > 0 || totalMRR > 0 || totalSetupCollected > 0 ||
+    clientRevenue.length > 0 ||
+    revenueBreakdown.some((r: { solarpilot?: number; aiWorkforce?: number }) => (r.solarpilot ?? 0) + (r.aiWorkforce ?? 0) > 0) ||
+    invoices.totalInvoiced > 0
+  if (!hasRevenue) return <FinancialEmptyState />
 
   return (
     <div style={{ position: 'relative', overflow: 'hidden' }}>

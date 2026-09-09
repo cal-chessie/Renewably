@@ -43,15 +43,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Google Calendar not connected' }, { status: 400 })
     }
 
-    const isMock = !process.env.GOOGLE_CLIENT_ID
-
-    if (isMock) {
-      const mockEventId = `gcal_${meetingId}_${Date.now()}`
-      return NextResponse.json({
-        success: true,
-        googleEventId: mockEventId,
-        message: 'Meeting pushed to Google Calendar (demo mode)',
-      })
+    // Google OAuth not configured — cannot push a real event; report honestly
+    // rather than returning a fabricated googleEventId.
+    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+      return NextResponse.json(
+        { error: 'Google Calendar is not configured' },
+        { status: 501 },
+      )
     }
 
     let accessToken = connection.access_token

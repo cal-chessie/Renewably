@@ -56,8 +56,16 @@ export async function GET(request: NextRequest) {
 
     const total = count ?? 0
 
+    // Normalise so readers get a consistent shape regardless of whether a row was
+    // written with the canonical `body` or the legacy `content` column.
+    const normalized = (notes ?? []).map((n) => {
+      const row = n as Record<string, unknown>
+      const text = (row.body ?? row.content ?? '') as string
+      return { ...row, body: text, content: text, createdAt: row.created_at }
+    })
+
     return NextResponse.json({
-      notes: notes ?? [],
+      notes: normalized,
       pagination: { page, limit, total, pages: Math.ceil(total / limit) },
     })
   } catch (error) {
@@ -90,10 +98,16 @@ export async function POST(request: NextRequest) {
 
     const supabase = createServiceClient()
 
+    // Canonical field is `body`; accept legacy `content` as an alias.
+    const text = (body.body ?? body.content ?? '').trim()
+    const author = (body.author ?? '').trim() || user.name || user.email || null
+
     const { data: note, error } = await supabase
       .from('notes')
       .insert({
-        content: body.content,
+        body: text,
+        content: text, // back-compat: existing readers still read note.content
+        author,
         contact_id: body.contactId || null,
         deal_id: body.dealId || null,
         company_id: body.companyId || null,

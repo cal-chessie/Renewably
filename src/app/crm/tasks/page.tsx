@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { crmFetch } from '@/lib/crm-fetch'
 import { motion, AnimatePresence } from 'framer-motion'
 import { format } from 'date-fns'
 import {
@@ -390,15 +391,11 @@ function TaskDetailDrawer({
   const [activityDescription, setActivityDescription] = useState('')
 
   const updateMutation = useMutation({
-    mutationFn: async (data: Record<string, unknown>) => {
-      const res = await fetch('/api/crm/tasks', {
+    mutationFn: (data: Record<string, unknown>) =>
+      crmFetch<any>('/api/crm/tasks', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ taskId: task?.id, ...data }),
-      })
-      if (!res.ok) throw new Error('Failed to update task')
-      return res.json()
-    },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] })
       toast.success('Task updated')
@@ -407,20 +404,16 @@ function TaskDetailDrawer({
   })
 
   const addNoteMutation = useMutation({
-    mutationFn: async (content: string) => {
-      const res = await fetch('/api/crm/notes', {
+    mutationFn: (content: string) =>
+      crmFetch<any>('/api/crm/notes', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content,
           taskId: task?.id,
           contactId: task?.contactId || undefined,
           dealId: task?.dealId || undefined,
         }),
-      })
-      if (!res.ok) throw new Error('Failed to add note')
-      return res.json()
-    },
+      }),
     onSuccess: () => {
       setNoteText('')
       toast.success('Note added')
@@ -437,10 +430,9 @@ function TaskDetailDrawer({
       type: string
       subject: string
       description: string
-    }) => {
-      const res = await fetch('/api/crm/activities', {
+    }) =>
+      crmFetch<any>('/api/crm/activities', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type,
           subject,
@@ -448,10 +440,7 @@ function TaskDetailDrawer({
           contactId: task?.contactId || undefined,
           dealId: task?.dealId || undefined,
         }),
-      })
-      if (!res.ok) throw new Error('Failed to log activity')
-      return res.json()
-    },
+      }),
     onSuccess: () => {
       setActivityDialogOpen(false)
       setActivitySubject('')
@@ -834,13 +823,13 @@ export default function TasksPage() {
       const params = new URLSearchParams({ limit: '100' })
       if (priorityFilter) params.set('priority', priorityFilter)
       if (statusFilter) params.set('status', statusFilter)
-      return fetch(`/api/crm/tasks?${params.toString()}`).then((r) => r.json())
+      return crmFetch<any>(`/api/crm/tasks?${params.toString()}`)
     },
   })
 
   const { data: contactsData } = useQuery({
     queryKey: ['contacts', 'select'],
-    queryFn: () => fetch('/api/crm/contacts?limit=100').then((r) => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/contacts?limit=100'),
   })
 
   const contacts: ContactOption[] = (contactsData?.contacts || []).map(
@@ -861,15 +850,11 @@ export default function TasksPage() {
     }: {
       taskId: string
       [key: string]: unknown
-    }) => {
-      const res = await fetch('/api/crm/tasks', {
+    }) =>
+      crmFetch<any>('/api/crm/tasks', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ taskId, ...data }),
-      })
-      if (!res.ok) throw new Error('Failed to update task')
-      return res.json()
-    },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] })
     },
@@ -878,8 +863,7 @@ export default function TasksPage() {
 
   const deleteTaskMutation = useMutation({
     mutationFn: async (taskId: string) => {
-      const res = await fetch(`/api/crm/tasks/${taskId}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('Failed to delete task')
+      await crmFetch<any>(`/api/crm/tasks/${taskId}`, { method: 'DELETE' })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] })
@@ -889,18 +873,11 @@ export default function TasksPage() {
   })
 
   const createMutation = useMutation({
-    mutationFn: async (task: Record<string, string>) => {
-      const res = await fetch('/api/crm/tasks', {
+    mutationFn: (task: Record<string, string>) =>
+      crmFetch<any>('/api/crm/tasks', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(task),
-      })
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || 'Failed to create task')
-      }
-      return res.json()
-    },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] })
       setDialogOpen(false)

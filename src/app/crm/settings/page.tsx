@@ -10,7 +10,7 @@ import {
   Zap, Camera, Eye, EyeOff, AlertTriangle,
   Download, Wifi, LogOut, Fingerprint, Activity,
   ExternalLink, Users, CreditCard, X, Plus, Crown,
-  FileText, Mail, Building2, Save, Sparkles, Shield,
+  FileText, Mail, Building2, Save, Shield,
 } from 'lucide-react'
 
 // ═══════════════════════════════════════════════════════════════════
@@ -610,11 +610,9 @@ function AppearanceSection() {
         </div>
       </div>
 
-      {/* Animations toggle */}
-      <div style={{ paddingTop: 20 }}>
-        <ToggleRow icon={Sparkles} label="Animations" description="Smooth transitions and micro-interactions"
-          checked={true} onChange={() => {}} color={DS.PINK} />
-      </div>
+      {/* Animations toggle removed: there was no reduced-motion system for it to control,
+          so it was a dead control. Re-add only when it actually gates motion (e.g. a
+          root-level framer-motion MotionConfig reducedMotion setting). */}
     </SectionCard>
   )
 }
@@ -622,55 +620,102 @@ function AppearanceSection() {
 // ═══════════════════════════════════════════════════════════════════
 // INTEGRATIONS SECTION
 // ═══════════════════════════════════════════════════════════════════
+type IntegrationStatus = {
+  id: string
+  name: string
+  description: string
+  colour: string
+  status: 'connected' | 'configured' | 'partial' | 'disconnected'
+  details: string
+  configured: boolean
+}
+
+function integrationStatusMeta(status: string): { label: string; color: string } {
+  switch (status) {
+    case 'connected': return { label: 'Live', color: DS.GREEN }
+    case 'configured': return { label: 'Configured', color: DS.BLUE }
+    case 'partial': return { label: 'Partial', color: DS.ORANGE }
+    default: return { label: 'Not connected', color: DS.TEXT_TERTIARY }
+  }
+}
+
 function IntegrationsSection() {
-  const integrations = [
-    { name: 'Google Workspace', desc: 'Calendar, email, docs sync', connected: true, color: '#34A853', letter: 'G' },
-    { name: 'Stripe', desc: 'Payment processing & billing', connected: false, color: '#635BFF', letter: 'S' },
-    { name: 'Claude', desc: 'AI assistant for deal insights', connected: false, color: '#D97757', letter: 'C' },
-    { name: 'Postmark', desc: 'Transactional email delivery', connected: true, color: '#F45E52', letter: 'P' },
-    { name: 'Telegram', desc: 'Instant deal alerts & chat', connected: false, color: '#2AABEE', letter: 'T' },
-    { name: 'WhatsApp', desc: 'Client messaging via WhatsApp', connected: false, color: '#25D366', letter: 'W' },
-    { name: 'Twilio', desc: 'SMS, voice & phone verification', connected: false, color: '#F22F46', letter: 'Tw' },
-    { name: 'Supabase', desc: 'Database & backend services', connected: true, color: '#3FCF8E', letter: 'Su' },
-    { name: 'PandaDoc', desc: 'Document generation & e-sign', connected: false, color: '#48BB78', letter: 'PD' },
-  ]
+  // Real connection state comes from /api/crm/integrations (env-var + DB derived).
+  // No hardcoded connected:true and no "coming soon" button masquerading as a control.
+  const [integrations, setIntegrations] = useState<IntegrationStatus[] | null>(null)
+  const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading')
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const res = await fetch('/api/crm/integrations')
+        if (!res.ok) throw new Error(`Request failed (${res.status})`)
+        const data = await res.json()
+        if (cancelled) return
+        setIntegrations(Array.isArray(data.integrations) ? data.integrations : [])
+        setLoadState('ready')
+      } catch {
+        if (!cancelled) setLoadState('error')
+      }
+    })()
+    return () => { cancelled = true }
+  }, [])
+
+  const connectedCount = integrations?.filter((i) => i.status === 'connected').length ?? 0
+  const badge = loadState === 'ready' ? `${connectedCount} connected` : undefined
 
   return (
-    <SectionCard title="Integrations" icon={Globe} accentColor={DS.GREEN} badge={`${integrations.filter(i => i.connected).length} connected`}>
-      <div className="pt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        {integrations.map((integ) => (
-          <motion.div key={integ.name} whileHover={{ y: -1, borderColor: `${integ.color}25` }}
-            style={{ padding: '14px 16px', borderRadius: 12, display: 'flex', alignItems: 'center', gap: 12,
-              background: `linear-gradient(135deg, ${integ.color}06, transparent)`, border: `1px solid ${DS.BORDER}`,
-              cursor: 'pointer', transition: 'border-color 0.2s ease' }}>
-            <div style={{ width: 40, height: 40, borderRadius: 11, flexShrink: 0,
-              background: `${integ.color}12`, border: `1px solid ${integ.color}20`,
-              fontWeight: 800, fontSize: 14, color: integ.color,
-              display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {integ.letter}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p style={{ fontSize: 13, fontWeight: 600, color: DS.TEXT_PRIMARY, marginBottom: 1 }}>{integ.name}</p>
-              <p style={{ fontSize: 11, color: DS.TEXT_TERTIARY, lineHeight: 1.4 }}>{integ.desc}</p>
-            </div>
-            {integ.connected ? (
-              <span className="flex items-center gap-1 shrink-0 px-2.5 py-1 rounded-lg"
-                style={{ fontSize: 10, fontWeight: 700, color: DS.GREEN, textTransform: 'uppercase', letterSpacing: '0.04em',
-                  background: 'rgba(16,185,129,0.08)', border: `1px solid rgba(16,185,129,0.18)` }}>
-                <Check size={10} /> Live
-              </span>
-            ) : (
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                onClick={() => toast.info(`${integ.name} setup coming soon`)}
-                style={{ padding: '6px 12px', borderRadius: 7, border: `1px solid ${integ.color}25`,
-                  background: `${integ.color}0D`, color: integ.color,
-                  fontSize: 11, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-                Connect
-              </motion.button>
-            )}
-          </motion.div>
-        ))}
-      </div>
+    <SectionCard title="Integrations" icon={Globe} accentColor={DS.GREEN} badge={badge}>
+      {loadState === 'loading' && (
+        <div className="pt-3" style={{ display: 'flex', alignItems: 'center', gap: 8, color: DS.TEXT_TERTIARY, fontSize: 13, padding: '20px 0' }}>
+          <RefreshCw size={14} style={{ animation: 'spin 1s linear infinite' }} /> Loading integration status…
+        </div>
+      )}
+
+      {loadState === 'error' && (
+        <div className="pt-3" style={{ display: 'flex', alignItems: 'center', gap: 8, color: DS.RED, fontSize: 13, padding: '20px 0' }}>
+          <AlertTriangle size={14} /> Couldn&apos;t load integration status.
+        </div>
+      )}
+
+      {loadState === 'ready' && integrations && integrations.length === 0 && (
+        <div className="pt-3" style={{ color: DS.TEXT_TERTIARY, fontSize: 13, padding: '20px 0' }}>
+          No integrations available.
+        </div>
+      )}
+
+      {loadState === 'ready' && integrations && integrations.length > 0 && (
+        <div className="pt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          {integrations.map((integ) => {
+            const meta = integrationStatusMeta(integ.status)
+            const isConnected = integ.status === 'connected'
+            return (
+              <motion.div key={integ.id} whileHover={{ y: -1, borderColor: `${integ.colour}25` }}
+                style={{ padding: '14px 16px', borderRadius: 12, display: 'flex', alignItems: 'center', gap: 12,
+                  background: `linear-gradient(135deg, ${integ.colour}06, transparent)`, border: `1px solid ${DS.BORDER}`,
+                  transition: 'border-color 0.2s ease' }}>
+                <div style={{ width: 40, height: 40, borderRadius: 11, flexShrink: 0,
+                  background: `${integ.colour}12`, border: `1px solid ${integ.colour}20`,
+                  fontWeight: 800, fontSize: 14, color: integ.colour,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {integ.name.charAt(0)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p style={{ fontSize: 13, fontWeight: 600, color: DS.TEXT_PRIMARY, marginBottom: 1 }}>{integ.name}</p>
+                  <p style={{ fontSize: 11, color: DS.TEXT_TERTIARY, lineHeight: 1.4 }}>{integ.details || integ.description}</p>
+                </div>
+                <span className="flex items-center gap-1 shrink-0 px-2.5 py-1 rounded-lg"
+                  style={{ fontSize: 10, fontWeight: 700, color: meta.color, textTransform: 'uppercase', letterSpacing: '0.04em',
+                    whiteSpace: 'nowrap',
+                    background: `${meta.color}14`, border: `1px solid ${meta.color}2E` }}>
+                  {isConnected && <Check size={10} />} {meta.label}
+                </span>
+              </motion.div>
+            )
+          })}
+        </div>
+      )}
     </SectionCard>
   )
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { crmFetch } from '@/lib/crm-fetch'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Calendar as CalendarLucide,
@@ -1132,7 +1133,7 @@ export default function MeetingsPage() {
 
   const { data: meetingsData, isLoading } = useQuery({
     queryKey: ['meetings', startDate, endDate],
-    queryFn: () => fetch(`/api/crm/meetings?startDate=${startDate}&endDate=${endDate}&limit=200`).then((r) => r.json()),
+    queryFn: () => crmFetch<any>(`/api/crm/meetings?startDate=${startDate}&endDate=${endDate}&limit=200`),
   })
 
   const meetings: Meeting[] = meetingsData?.meetings || []
@@ -1140,7 +1141,7 @@ export default function MeetingsPage() {
   // Fetch all meetings for list view
   const { data: allMeetingsData } = useQuery({
     queryKey: ['meetings-all'],
-    queryFn: () => fetch('/api/crm/meetings?limit=500').then((r) => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/meetings?limit=500'),
   })
 
   const allMeetings: Meeting[] = allMeetingsData?.meetings || []
@@ -1156,12 +1157,12 @@ export default function MeetingsPage() {
   // Fetch contacts and deals for form
   const { data: contactsData } = useQuery({
     queryKey: ['contacts-list'],
-    queryFn: () => fetch('/api/crm/contacts?limit=200').then((r) => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/contacts?limit=200'),
   })
 
   const { data: dealsData } = useQuery({
     queryKey: ['deals-list'],
-    queryFn: () => fetch('/api/crm/deals?limit=200').then((r) => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/deals?limit=200'),
   })
 
   const contacts: Contact[] = contactsData?.contacts || []
@@ -1170,7 +1171,7 @@ export default function MeetingsPage() {
   // Google Calendar connection
   const { data: googleStatus, refetch: refetchGoogleStatus } = useQuery({
     queryKey: ['google-calendar-status'],
-    queryFn: () => fetch('/api/crm/calendar/google/status').then((r) => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/calendar/google/status'),
   })
 
   const googleConnected = googleStatus?.connected || false
@@ -1180,7 +1181,7 @@ export default function MeetingsPage() {
   // Google Calendar events
   const { data: googleEventsData, refetch: refetchGoogleEvents } = useQuery({
     queryKey: ['google-calendar-events'],
-    queryFn: () => fetch('/api/crm/calendar/google/events').then((r) => r.json()),
+    queryFn: () => crmFetch<any>('/api/crm/calendar/google/events'),
     enabled: googleConnected,
   })
 
@@ -1189,18 +1190,22 @@ export default function MeetingsPage() {
   // Mutations
   const createMutation = useMutation({
     mutationFn: async (data: Record<string, unknown>) => {
-      const res = await fetch('/api/crm/meetings', {
+      const res = await crmFetch<any>('/api/crm/meetings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-      }).then((r) => r.json())
-      // Push to Google Calendar if requested
+      })
+      // Push to Google Calendar if requested. A push failure must not mask a
+      // successful meeting creation, so it stays best-effort here (Google
+      // honesty is owned by the settings/calendar parcel).
       if (res.meeting?.id && data.syncToGoogle) {
-        await fetch('/api/crm/calendar/google/push-event', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ meetingId: res.meeting.id }),
-        })
+        try {
+          await crmFetch<any>('/api/crm/calendar/google/push-event', {
+            method: 'POST',
+            body: JSON.stringify({ meetingId: res.meeting.id }),
+          })
+        } catch {
+          // non-fatal: the meeting was created; the Google push is best-effort
+        }
       }
       return res
     },
@@ -1215,11 +1220,10 @@ export default function MeetingsPage() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
-      fetch(`/api/crm/meetings/${id}`, {
+      crmFetch<any>(`/api/crm/meetings/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-      }).then((r) => r.json()),
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['meetings'] })
       queryClient.invalidateQueries({ queryKey: ['meetings-all'] })
@@ -1232,7 +1236,7 @@ export default function MeetingsPage() {
 
   const completeMutation = useMutation({
     mutationFn: (id: string) =>
-      fetch(`/api/crm/meetings/${id}/complete`, { method: 'POST' }).then((r) => r.json()),
+      crmFetch<any>(`/api/crm/meetings/${id}/complete`, { method: 'POST' }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['meetings'] })
       queryClient.invalidateQueries({ queryKey: ['meetings-all'] })
@@ -1244,7 +1248,7 @@ export default function MeetingsPage() {
 
   const cancelMutation = useMutation({
     mutationFn: (id: string) =>
-      fetch(`/api/crm/meetings/${id}/cancel`, { method: 'POST' }).then((r) => r.json()),
+      crmFetch<any>(`/api/crm/meetings/${id}/cancel`, { method: 'POST' }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['meetings'] })
       queryClient.invalidateQueries({ queryKey: ['meetings-all'] })
@@ -1256,7 +1260,7 @@ export default function MeetingsPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) =>
-      fetch(`/api/crm/meetings/${id}`, { method: 'DELETE' }).then((r) => r.json()),
+      crmFetch<any>(`/api/crm/meetings/${id}`, { method: 'DELETE' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['meetings'] })
       queryClient.invalidateQueries({ queryKey: ['meetings-all'] })
@@ -1268,15 +1272,21 @@ export default function MeetingsPage() {
 
   // Google Calendar connect mutation
   const connectGoogleMutation = useMutation({
-    mutationFn: () => fetch('/api/crm/calendar/google/auth-url').then((r) => r.json()),
+    mutationFn: () => crmFetch<any>('/api/crm/calendar/google/auth-url'),
     onSuccess: (data) => {
-      window.location.href = data.url
+      // Honest handling: only navigate when the API returned a real consent URL.
+      // When Google isn't configured the route returns { configured: false } and no url.
+      if (data?.url) {
+        window.location.href = data.url
+      } else {
+        toast.error(data?.error || 'Google Calendar is not configured')
+      }
     },
     onError: () => toast.error('Failed to initiate Google Calendar connection'),
   })
 
   const disconnectGoogleMutation = useMutation({
-    mutationFn: () => fetch('/api/crm/calendar/google/disconnect', { method: 'POST' }).then((r) => r.json()),
+    mutationFn: () => crmFetch<any>('/api/crm/calendar/google/disconnect', { method: 'POST' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['google-calendar-status'] })
       queryClient.invalidateQueries({ queryKey: ['google-calendar-events'] })
@@ -1286,7 +1296,7 @@ export default function MeetingsPage() {
   })
 
   const syncGoogleMutation = useMutation({
-    mutationFn: () => fetch('/api/crm/calendar/google/sync', { method: 'POST' }).then((r) => r.json()),
+    mutationFn: () => crmFetch<any>('/api/crm/calendar/google/sync', { method: 'POST' }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['google-calendar-status'] })
       queryClient.invalidateQueries({ queryKey: ['google-calendar-events'] })

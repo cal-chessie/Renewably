@@ -8,6 +8,12 @@ export async function GET(request: NextRequest) {
     const user = await requireAuth(request)
     if (!user) return unauthorized()
 
+    // Google OAuth not configured — the surface must show "Calendar not connected",
+    // never a connected state backed by fabricated credentials.
+    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+      return NextResponse.json({ connected: false, configured: false })
+    }
+
     const supabase = createServiceClient()
     const { data: connection } = await supabase
       .from('google_calendar_connections')

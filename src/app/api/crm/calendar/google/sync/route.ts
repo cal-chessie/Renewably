@@ -10,13 +10,7 @@ async function refreshAccessToken(connection: { refresh_token: string; user_id: 
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET
 
   if (!clientId || !clientSecret) {
-    const newToken = `mock_access_token_refreshed_${Date.now()}`
-    await supabase.from('google_calendar_connections').update({
-      access_token: newToken,
-      expires_at: new Date(Date.now() + 3600 * 1000).toISOString(),
-      last_synced_at: new Date().toISOString(),
-    }).eq('user_id', connection.user_id)
-    return newToken
+    throw new Error('Google Calendar is not configured')
   }
 
   const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
@@ -67,6 +61,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Google Calendar not connected' }, { status: 400 })
     }
 
+    // Not configured — cannot sync; return an honest empty result, never fabricated events.
+    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+      return NextResponse.json({ events: [], syncedAt: new Date().toISOString(), total: 0 })
+    }
+
     let accessToken = connection.access_token
     if (new Date() > new Date(connection.expires_at)) {
       accessToken = await refreshAccessToken(connection)
@@ -74,9 +73,20 @@ export async function POST(request: NextRequest) {
 
     const calendarId = connection.calendar_id || 'primary'
 
-    const isMock = !process.env.GOOGLE_CLIENT_ID
-    const now = new Date()
-    let events: Array<{
+    const timeMin = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+    const timeMax = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
+
+    const calResponse = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?timeMin=${encodeURIComponent(timeMin)}&timeMax=${encodeURIComponent(timeMax)}&singleEvents=true&orderBy=startTime&maxResults=250`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    )
+
+    if (!calResponse.ok) {
+      return NextResponse.json({ error: 'Failed to fetch Google Calendar events' }, { status: 500 })
+    }
+
+    const calData = await calResponse.json()
+    const events: Array<{
       id: string
       summary: string
       description?: string
@@ -85,76 +95,7 @@ export async function POST(request: NextRequest) {
       location?: string
       htmlLink?: string
       status: string
-    }> = []
-
-    if (isMock) {
-      events = [
-        {
-          id: 'mock-gcal-1',
-          summary: 'Team Standup',
-          description: 'Daily standup with the team',
-          start: { dateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 0).toISOString() },
-          end: { dateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 30).toISOString() },
-          location: 'Zoom',
-          htmlLink: 'https://calendar.google.com',
-          status: 'confirmed',
-        },
-        {
-          id: 'mock-gcal-2',
-          summary: 'Client Lunch Meeting',
-          description: 'Lunch with potential partner',
-          start: { dateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 12, 0).toISOString() },
-          end: { dateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 13, 30).toISOString() },
-          location: 'The Green Room, Dublin',
-          htmlLink: 'https://calendar.google.com',
-          status: 'confirmed',
-        },
-        {
-          id: 'mock-gcal-3',
-          summary: 'Quarterly Planning',
-          description: 'Q3 planning session',
-          start: { dateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 14, 0).toISOString() },
-          end: { dateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 16, 0).toISOString() },
-          location: 'Conference Room A',
-          htmlLink: 'https://calendar.google.com',
-          status: 'confirmed',
-        },
-        {
-          id: 'mock-gcal-4',
-          summary: 'Industry Webinar: Solar Trends 2026',
-          description: 'Online webinar about upcoming solar industry trends',
-          start: { dateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5, 10, 0).toISOString() },
-          end: { dateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5, 11, 30).toISOString() },
-          htmlLink: 'https://calendar.google.com',
-          status: 'confirmed',
-        },
-        {
-          id: 'mock-gcal-5',
-          summary: 'Board Meeting',
-          description: 'Monthly board meeting',
-          start: { dateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7, 15, 0).toISOString() },
-          end: { dateTime: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7, 17, 0).toISOString() },
-          location: 'Board Room',
-          htmlLink: 'https://calendar.google.com',
-          status: 'confirmed',
-        },
-      ]
-    } else {
-      const timeMin = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
-      const timeMax = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
-
-      const calResponse = await fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?timeMin=${encodeURIComponent(timeMin)}&timeMax=${encodeURIComponent(timeMax)}&singleEvents=true&orderBy=startTime&maxResults=250`,
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      )
-
-      if (!calResponse.ok) {
-        return NextResponse.json({ error: 'Failed to fetch Google Calendar events' }, { status: 500 })
-      }
-
-      const calData = await calResponse.json()
-      events = calData.items || []
-    }
+    }> = calData.items || []
 
     const formattedEvents = events.map((event) => ({
       id: event.id,

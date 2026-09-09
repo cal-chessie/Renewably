@@ -40,11 +40,8 @@ export async function GET(request: NextRequest) {
     let calendarId: string | null = null
 
     if (!clientId || !clientSecret) {
-      accessToken = `mock_access_token_${Date.now()}`
-      refreshToken = `mock_refresh_token_${Date.now()}`
-      expiresIn = 3600
-      calendarEmail = 'user@gmail.com'
-      calendarId = 'primary'
+      // Google OAuth is not configured — do not save fabricated tokens; report honestly.
+      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/crm/meetings?error=not_configured`)
     } else {
       const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',

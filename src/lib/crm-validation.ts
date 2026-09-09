@@ -59,7 +59,10 @@ const DEAL_STAGES = new Set([
   'demo_done', 'proposal_sent', 'negotiation', 'closed_won', 'closed_lost',
 ])
 
-const DEAL_PRODUCTS = new Set(['solarpilot', 'ai_workforce', 'both'])
+// 'relay' is the canonical product. 'ai_workforce'/'both' stay valid. 'solarpilot'
+// is a legacy alias retained so existing DB rows still validate; the stored value
+// is not renamed.
+const DEAL_PRODUCTS = new Set(['relay', 'ai_workforce', 'both', 'solarpilot'])
 
 const LEAD_STATUSES = new Set(['new', 'contacted', 'qualified', 'unqualified', 'nurture', 'lost'])
 

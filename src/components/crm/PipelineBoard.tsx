@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { ClientOnly } from '@/lib/utils'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { crmFetch } from '@/lib/crm-fetch'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   DndContext, closestCorners, KeyboardSensor, PointerSensor,
@@ -796,21 +797,14 @@ function DealDetailPanel({ dealId, onClose }: { dealId: string | null; onClose: 
 
   const { data, isLoading } = useQuery({
     queryKey: ['deal-detail', dealId],
-    queryFn: () => fetch(`/api/crm/deals/${dealId}`).then((r) => r.json()),
+    queryFn: () => crmFetch<any>(`/api/crm/deals/${dealId}`),
     enabled: !!dealId,
   })
   const deal: DealDetail | null = data?.deal || null
 
   const updateMutation = useMutation({
-    mutationFn: async (body: Record<string, unknown>) => {
-      const res = await fetch(`/api/crm/deals/${dealId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-      if (!res.ok) throw new Error('Failed to update')
-      return res.json()
-    },
+    mutationFn: (body: Record<string, unknown>) =>
+      crmFetch<any>(`/api/crm/deals/${dealId}`, { method: 'PATCH', body: JSON.stringify(body) }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['pipeline'] })
       qc.invalidateQueries({ queryKey: ['deal-detail', dealId] })
@@ -820,11 +814,8 @@ function DealDetailPanel({ dealId, onClose }: { dealId: string | null; onClose: 
   })
 
   const deleteMutation = useMutation({
-    mutationFn: async () => {
-      const r = await fetch(`/api/crm/deals/${dealId}`, { method: 'DELETE' })
-      if (!r.ok) throw new Error('Failed')
-      return r.json()
-    },
+    mutationFn: () =>
+      crmFetch<any>(`/api/crm/deals/${dealId}`, { method: 'DELETE' }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['pipeline'] })
       onClose()
@@ -839,13 +830,10 @@ function DealDetailPanel({ dealId, onClose }: { dealId: string | null; onClose: 
       const idx = ALL_STAGE_KEYS.indexOf(deal.stage as typeof ALL_STAGE_KEYS[number])
       if (idx < 0 || idx >= ALL_STAGE_KEYS.length - 1) return
       const nextStage = ALL_STAGE_KEYS[idx + 1]
-      const r = await fetch('/api/crm/pipeline', {
+      return crmFetch<any>('/api/crm/pipeline', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dealId: deal.id, stage: nextStage }),
       })
-      if (!r.ok) throw new Error('Failed')
-      return r.json()
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['pipeline'] })
@@ -858,15 +846,11 @@ function DealDetailPanel({ dealId, onClose }: { dealId: string | null; onClose: 
   const [logForm, setLogForm] = useState({ type: 'note', title: '', content: '' })
   const [showLogForm, setShowLogForm] = useState(false)
   const logMutation = useMutation({
-    mutationFn: async () => {
-      const r = await fetch(`/api/crm/deals/${dealId}/activities`, {
+    mutationFn: () =>
+      crmFetch<any>(`/api/crm/deals/${dealId}/activities`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(logForm),
-      })
-      if (!r.ok) throw new Error('Failed')
-      return r.json()
-    },
+      }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['pipeline'] })
       qc.invalidateQueries({ queryKey: ['deal-detail', dealId] })
@@ -2020,9 +2004,9 @@ function NewDealDialog({
   const { data: companiesData } = useQuery({
     queryKey: ['companies-select', companySearch],
     queryFn: () =>
-      fetch(
+      crmFetch<any>(
         `/api/crm/companies?limit=50${companySearch ? `&search=${encodeURIComponent(companySearch)}` : ''}`
-      ).then((r) => r.json()),
+      ),
     enabled: open,
   })
   const companies = companiesData?.companies || []
@@ -2032,9 +2016,8 @@ function NewDealDialog({
       if (!form.companyId) throw new Error('Select a company')
       const mrr = parseFloat(form.mrr) || 0
       const setup = parseFloat(form.setupFee) || 0
-      const r = await fetch('/api/crm/deals', {
+      return crmFetch<any>('/api/crm/deals', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
           mrr: mrr || null,
@@ -2042,11 +2025,6 @@ function NewDealDialog({
           value: mrr || setup ? setup + mrr * 6 : null,
         }),
       })
-      if (!r.ok) {
-        const d = await r.json()
-        throw new Error(d.error || 'Failed')
-      }
-      return r.json()
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['pipeline'] })
@@ -2575,7 +2553,7 @@ export function PipelineBoard() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['pipeline', includeWon],
     queryFn: () =>
-      fetch(`/api/crm/pipeline?includeClosed=${includeWon}`).then((r) => r.json()),
+      crmFetch<any>(`/api/crm/pipeline?includeClosed=${includeWon}`),
   })
 
   const stages: PipelineStage[] = data?.stages || []
@@ -2613,15 +2591,11 @@ export function PipelineBoard() {
   )
 
   const moveMutation = useMutation({
-    mutationFn: async ({ dealId, stage }: { dealId: string; stage: string }) => {
-      const r = await fetch('/api/crm/pipeline', {
+    mutationFn: ({ dealId, stage }: { dealId: string; stage: string }) =>
+      crmFetch<any>('/api/crm/pipeline', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dealId, stage }),
-      })
-      if (!r.ok) throw new Error('Failed to move deal')
-      return r.json()
-    },
+      }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['pipeline'] })
       toast.success('Deal moved')
@@ -2679,15 +2653,11 @@ export function PipelineBoard() {
 
   // ── Inline update deal fields from card ──────────────────────
   const cardUpdateMutation = useMutation({
-    mutationFn: async ({ dealId, body }: { dealId: string; body: Record<string, unknown> }) => {
-      const r = await fetch(`/api/crm/deals/${dealId}`, {
+    mutationFn: ({ dealId, body }: { dealId: string; body: Record<string, unknown> }) =>
+      crmFetch<any>(`/api/crm/deals/${dealId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
-      })
-      if (!r.ok) throw new Error('Failed to update')
-      return r.json()
-    },
+      }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['pipeline'] })
       toast.success('Updated')

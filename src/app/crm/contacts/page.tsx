@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { crmFetch } from '@/lib/crm-fetch'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, Plus, ChevronLeft, ChevronRight, Filter,
@@ -32,52 +33,46 @@ import { toast } from 'sonner'
 import { format } from 'date-fns'
 
 // ──────────────────────────── Types ────────────────────────────
+// The list route (GET /api/crm/contacts) returns raw rows (snake_case) with the
+// company embedded. The DB has a SINGLE `name` column - no first/last name.
 interface ContactRow {
   id: string
-  firstName: string
-  lastName: string
+  name: string
   email: string | null
   phone: string | null
-  jobTitle: string | null
-  linkedin: string | null
-  source: string
-  status: string
-  address: string | null
-  city: string | null
-  country: string | null
-  avatar: string | null
-  lastContactAt: string | null
-  createdAt: string
+  role: string | null
+  is_decision_maker: boolean | null
+  created_at: string
   company: { id: string; name: string } | null
-  tags: { tag: { id: string; name: string; color: string } }[]
-  _count?: { deals: number }
 }
 
-interface ContactDetail extends ContactRow {
-  description: string | null
-  deals: Array<{
+// The detail route (GET /api/crm/contacts/[id]) camelCases the row and attaches
+// the company. Related collections are not populated by that route yet, so they
+// are optional and render as honest empty states until wired.
+interface ContactDetail {
+  id: string
+  name: string
+  email: string | null
+  phone: string | null
+  mobile: string | null
+  role: string | null
+  greetingName: string | null
+  numberType: string | null
+  isDecisionMaker: boolean | null
+  notes: string | null
+  createdAt: string
+  company: { id: string; name: string } | null
+  deals?: Array<{
     id: string; title: string; value: number; probability: number; closeDate: string | null
     stage: { id: string; name: string; color: string }
-    assignee: { id: string; name: string; avatar: string | null } | null
   }>
-  activities: Array<{
-    id: string; type: string; subject: string; description: string | null
-    duration: number | null; status: string | null; createdAt: string
-    user: { id: string; name: string; avatar: string | null } | null
-    deal: { id: string; title: string } | null
+  activities?: Array<{
+    id: string; type: string; subject: string; description: string | null; createdAt: string
   }>
-  tasks: Array<{
+  tasks?: Array<{
     id: string; title: string; priority: string; status: string; dueDate: string | null
-    assignee: { id: string; name: string; avatar: string | null } | null
-    deal: { id: string; title: string } | null
   }>
-  notes: Array<{
-    id: string; content: string; createdAt: string
-    user: { id: string; name: string; avatar: string | null } | null
-  }>
-  proposals: Array<{
-    id: string; title: string; totalAmount: number; status: string
-  }> | null
+  proposals?: Array<{ id: string; title: string; totalAmount: number; status: string }>
 }
 
 interface CompanyRow {
@@ -100,23 +95,13 @@ function formatCurrency(value: number) {
   return new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)
 }
 
-const statusOptions = [
-  { value: '', label: 'All Statuses' },
-  { value: 'lead', label: 'Lead' },
-  { value: 'prospect', label: 'Prospect' },
-  { value: 'customer', label: 'Customer' },
-  { value: 'churned', label: 'Churned' },
-  { value: 'inactive', label: 'Inactive' },
-]
-
-const sourceOptions = [
-  { value: '', label: 'All Sources' },
-  { value: 'website', label: 'Website' },
-  { value: 'referral', label: 'Referral' },
-  { value: 'linkedin', label: 'LinkedIn' },
-  { value: 'cold', label: 'Cold Outreach' },
-  { value: 'event', label: 'Event' },
-]
+/** Derive up to two initials from a single name column, null-safe. */
+function initials(name: string | null | undefined): string {
+  const parts = (name ?? '').trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return '?'
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
 
 const meetingTypes = [
   { value: 'call', label: 'Call', placeholder: 'Phone number or link' },
@@ -136,11 +121,8 @@ function AddNoteDialog({ contactId, open, onOpenChange }: { contactId: string; o
   const queryClient = useQueryClient()
   const [content, setContent] = useState('')
   const mutation = useMutation({
-    mutationFn: async (body: { content: string; contactId: string }) => {
-      const res = await fetch('/api/crm/notes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-      if (!res.ok) throw new Error('Failed to add note')
-      return res.json()
-    },
+    mutationFn: (body: { content: string; contactId: string }) =>
+      crmFetch<any>('/api/crm/notes', { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['contact-detail'] }); setContent(''); onOpenChange(false); toast.success('Note added') },
     onError: (e: Error) => toast.error(e.message),
   })
@@ -160,17 +142,14 @@ function AddNoteDialog({ contactId, open, onOpenChange }: { contactId: string; o
 }
 
 // ──────────────────────────── Log Call Dialog ────────────────────────────
-function LogCallDialog({ contact, contactEmail, open, onOpenChange }: { contact: { firstName: string; lastName: string; id: string }; contactEmail: string | null; open: boolean; onOpenChange: (v: boolean) => void }) {
+function LogCallDialog({ contact, contactEmail, open, onOpenChange }: { contact: { name: string; id: string }; contactEmail: string | null; open: boolean; onOpenChange: (v: boolean) => void }) {
   const queryClient = useQueryClient()
   const [outcome, setOutcome] = useState('connected')
   const [notes, setNotes] = useState('')
   const [duration, setDuration] = useState('5')
   const mutation = useMutation({
-    mutationFn: async (body: Record<string, string | number>) => {
-      const res = await fetch('/api/crm/call', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-      if (!res.ok) throw new Error('Failed to log call')
-      return res.json()
-    },
+    mutationFn: (body: Record<string, string | number>) =>
+      crmFetch<any>('/api/crm/call', { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['contact-detail'] }); queryClient.invalidateQueries({ queryKey: ['contacts'] }); setNotes(''); setDuration('5'); setOutcome('connected'); onOpenChange(false); toast.success('Call logged') },
     onError: (e: Error) => toast.error(e.message),
   })
@@ -179,7 +158,7 @@ function LogCallDialog({ contact, contactEmail, open, onOpenChange }: { contact:
       <DialogContent className="sm:max-w-md">
         <DialogHeader><DialogTitle>Log Call</DialogTitle></DialogHeader>
         <div className="grid gap-4 py-2">
-          <div style={{ color: '#A0A0A0' }} className="text-sm">Contact: <span style={{ color: '#FFFFFF' }} className="font-medium">{contact.firstName} {contact.lastName}</span></div>
+          <div style={{ color: '#A0A0A0' }} className="text-sm">Contact: <span style={{ color: '#FFFFFF' }} className="font-medium">{contact.name}</span></div>
           <div className="space-y-2">
             <Label>Outcome</Label>
             <Select value={outcome} onValueChange={setOutcome}>
@@ -207,7 +186,7 @@ function LogCallDialog({ contact, contactEmail, open, onOpenChange }: { contact:
 }
 
 // ──────────────────────────── Send Email Dialog ────────────────────────────
-function SendEmailDialog({ contact, contactEmail, open, onOpenChange }: { contact: { firstName: string; lastName: string; id: string }; contactEmail: string | null; open: boolean; onOpenChange: (v: boolean) => void }) {
+function SendEmailDialog({ contact, contactEmail, open, onOpenChange }: { contact: { name: string; id: string }; contactEmail: string | null; open: boolean; onOpenChange: (v: boolean) => void }) {
   const queryClient = useQueryClient()
   const [subject, setSubject] = useState('')
   const [body, setBody] = useState('')
@@ -217,11 +196,8 @@ function SendEmailDialog({ contact, contactEmail, open, onOpenChange }: { contac
     onOpenChange(v)
   }, [contactEmail, onOpenChange])
   const mutation = useMutation({
-    mutationFn: async (data: { to: string; subject: string; body: string; contactId: string }) => {
-      const res = await fetch('/api/crm/email', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
-      if (!res.ok) throw new Error('Failed to send email')
-      return res.json()
-    },
+    mutationFn: (data: { to: string; subject: string; body: string; contactId: string }) =>
+      crmFetch<any>('/api/crm/email', { method: 'POST', body: JSON.stringify(data) }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['contact-detail'] }); queryClient.invalidateQueries({ queryKey: ['contacts'] }); setSubject(''); setBody(''); onOpenChange(false); toast.success('Email sent') },
     onError: (e: Error) => toast.error(e.message),
   })
@@ -252,7 +228,7 @@ function SendEmailDialog({ contact, contactEmail, open, onOpenChange }: { contac
 }
 
 // ──────────────────────────── Create Task Dialog ────────────────────────────
-function CreateTaskDialog({ contact, dealOptions, open, onOpenChange }: { contact: { firstName: string; lastName: string; id: string }; dealOptions: Array<{ id: string; title: string }>; open: boolean; onOpenChange: (v: boolean) => void }) {
+function CreateTaskDialog({ contact, dealOptions, open, onOpenChange }: { contact: { name: string; id: string }; dealOptions: Array<{ id: string; title: string }>; open: boolean; onOpenChange: (v: boolean) => void }) {
   const queryClient = useQueryClient()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -260,11 +236,8 @@ function CreateTaskDialog({ contact, dealOptions, open, onOpenChange }: { contac
   const [dueDate, setDueDate] = useState('')
   const [dealId, setDealId] = useState('')
   const mutation = useMutation({
-    mutationFn: async (body: Record<string, string>) => {
-      const res = await fetch('/api/crm/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-      if (!res.ok) throw new Error('Failed to create task')
-      return res.json()
-    },
+    mutationFn: (body: Record<string, string>) =>
+      crmFetch<any>('/api/crm/tasks', { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['contact-detail'] }); resetForm(); onOpenChange(false); toast.success('Task created') },
     onError: (e: Error) => toast.error(e.message),
   })
@@ -322,7 +295,7 @@ function CreateTaskDialog({ contact, dealOptions, open, onOpenChange }: { contac
 }
 
 // ──────────────────────────── Book Meeting Dialog ────────────────────────────
-function BookMeetingDialog({ contact, dealOptions, open, onOpenChange }: { contact: { firstName: string; lastName: string; id: string }; dealOptions: Array<{ id: string; title: string }>; open: boolean; onOpenChange: (v: boolean) => void }) {
+function BookMeetingDialog({ contact, dealOptions, open, onOpenChange }: { contact: { name: string; id: string }; dealOptions: Array<{ id: string; title: string }>; open: boolean; onOpenChange: (v: boolean) => void }) {
   const queryClient = useQueryClient()
   const [title, setTitle] = useState('')
   const [date, setDate] = useState('')
@@ -333,15 +306,12 @@ function BookMeetingDialog({ contact, dealOptions, open, onOpenChange }: { conta
   const [createFollowUp, setCreateFollowUp] = useState(false)
   const [dealId, setDealId] = useState('')
   const mutation = useMutation({
-    mutationFn: async (body: Record<string, unknown>) => {
-      const res = await fetch('/api/crm/meetings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-      if (!res.ok) throw new Error('Failed to create meeting')
-      return res.json()
-    },
+    mutationFn: (body: Record<string, unknown>) =>
+      crmFetch<any>('/api/crm/meetings', { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['contact-detail'] }); resetForm(); onOpenChange(false); toast.success('Meeting booked') },
     onError: (e: Error) => toast.error(e.message),
   })
-  const defaultTitle = `Meeting with ${contact.firstName} ${contact.lastName}`
+  const defaultTitle = `Meeting with ${contact.name}`
   const resetForm = () => { setTitle(defaultTitle); setDate(''); setTime(''); setType('call'); setLocation(''); setDuration('30'); setCreateFollowUp(false); setDealId('') }
   const handleOpenChange = (v: boolean) => { if (v) resetForm(); onOpenChange(v) }
   const typePlaceholder = meetingTypes.find(t => t.value === type)?.placeholder || 'Location'
@@ -428,14 +398,14 @@ function BookMeetingDialog({ contact, dealOptions, open, onOpenChange }: { conta
 // ──────────────────────────── Create Proposal Dialog ────────────────────────────
 interface LineItem { name: string; quantity: number; unitPrice: number; total: number }
 
-function CreateProposalDialog({ contact, dealOptions, open, onOpenChange }: { contact: { firstName: string; lastName: string; id: string }; dealOptions: Array<{ id: string; title: string }>; open: boolean; onOpenChange: (v: boolean) => void }) {
+function CreateProposalDialog({ contact, dealOptions, open, onOpenChange }: { contact: { name: string; id: string }; dealOptions: Array<{ id: string; title: string }>; open: boolean; onOpenChange: (v: boolean) => void }) {
   const queryClient = useQueryClient()
   const [title, setTitle] = useState('')
   const [dealId, setDealId] = useState('')
   const [lineItems, setLineItems] = useState<LineItem[]>([{ name: '', quantity: 1, unitPrice: 0, total: 0 }])
   const [templateId, setTemplateId] = useState('')
-  const { data: templatesData } = useQuery({ queryKey: ['proposal-templates'], queryFn: () => fetch('/api/crm/proposals/templates').then(r => r.json()), enabled: open })
-  const defaultTitle = `Proposal for ${contact.firstName} ${contact.lastName}`
+  const { data: templatesData } = useQuery({ queryKey: ['proposal-templates'], queryFn: () => crmFetch<any>('/api/crm/proposals/templates'), enabled: open })
+  const defaultTitle = `Proposal for ${contact.name}`
   const resetForm = () => { setTitle(defaultTitle); setDealId(''); setLineItems([{ name: '', quantity: 1, unitPrice: 0, total: 0 }]); setTemplateId('') }
 
   const updateLineItem = (index: number, field: keyof LineItem, value: string | number) => {
@@ -450,11 +420,8 @@ function CreateProposalDialog({ contact, dealOptions, open, onOpenChange }: { co
   const removeLineItem = (index: number) => setLineItems(prev => prev.length > 1 ? prev.filter((_, i) => i !== index) : prev)
 
   const mutation = useMutation({
-    mutationFn: async (body: Record<string, unknown>) => {
-      const res = await fetch('/api/crm/proposals', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-      if (!res.ok) throw new Error('Failed to create proposal')
-      return res.json()
-    },
+    mutationFn: (body: Record<string, unknown>) =>
+      crmFetch<any>('/api/crm/proposals', { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['contact-detail'] }); resetForm(); onOpenChange(false); toast.success('Proposal created') },
     onError: (e: Error) => toast.error(e.message),
   })
@@ -543,7 +510,7 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
 
   const { data, isLoading } = useQuery({
     queryKey: ['contact-detail', contactId],
-    queryFn: () => fetch(`/api/crm/contacts/${contactId}`).then(r => r.json()),
+    queryFn: () => crmFetch<any>(`/api/crm/contacts/${contactId}`),
     enabled: !!contactId,
   })
 
@@ -561,7 +528,7 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
 
   if (!contact) return null
 
-  const dealOptions = contact.deals.map(d => ({ id: d.id, title: d.title }))
+  const dealOptions = (contact.deals ?? []).map(d => ({ id: d.id, title: d.title }))
 
   const quickActions = [
     { key: 'meeting', icon: Calendar, label: 'Book Meeting' },
@@ -588,19 +555,20 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
           </div>
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 rounded-full bg-[#F3D840]/20 flex items-center justify-center shrink-0">
-              <span className="text-[#374151] text-sm font-bold">{contact.firstName[0]}{contact.lastName[0]}</span>
+              <span className="text-[#374151] text-sm font-bold">{initials(contact.name)}</span>
             </div>
             <div className="min-w-0 flex-1">
-              <h2 style={{ color: '#FFFFFF' }} className="text-lg font-bold truncate">{contact.firstName} {contact.lastName}</h2>
+              <h2 style={{ color: '#FFFFFF' }} className="text-lg font-bold truncate">{contact.name}</h2>
               <div className="flex items-center gap-2 flex-wrap mt-1">
-                {contact.jobTitle && <span style={{ color: '#A0A0A0' }} className="text-xs">{contact.jobTitle}</span>}
+                {contact.role && <span style={{ color: '#A0A0A0' }} className="text-xs">{contact.role}</span>}
                 {contact.company && <span style={{ color: '#666666' }} className="text-xs">at {contact.company.name}</span>}
               </div>
             </div>
-            <div className="flex flex-col items-end gap-1">
-              <StatusBadge status={contact.status} />
-              <Badge variant="secondary" className="text-[10px] capitalize">{contact.source}</Badge>
-            </div>
+            {contact.isDecisionMaker && (
+              <div className="flex flex-col items-end gap-1">
+                <Badge variant="secondary" className="text-[10px]">Decision maker</Badge>
+              </div>
+            )}
           </div>
         </div>
 
@@ -632,21 +600,12 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
                 </Button>
               </div>
             )}
-            {contact.linkedin && (
+            {contact.mobile && (
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#2D1B4E' }}><Linkedin className="h-4 w-4 text-purple-400" /></div>
+                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#1A3D2A' }}><Phone className="h-4 w-4 text-green-400" /></div>
                 <div className="flex-1 min-w-0">
-                  <p style={{ color: '#FFFFFF' }} className="text-sm truncate">{contact.linkedin}</p>
-                  <p style={{ color: '#666666' }} className="text-[10px]">LinkedIn</p>
-                </div>
-              </div>
-            )}
-            {(contact.city || contact.address) && (
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#3D2A1A' }}><MapPin className="h-4 w-4 text-orange-400" /></div>
-                <div className="flex-1 min-w-0">
-                  <p style={{ color: '#FFFFFF' }} className="text-sm truncate">{[contact.address, contact.city, contact.country].filter(Boolean).join(', ')}</p>
-                  <p style={{ color: '#666666' }} className="text-[10px]">Address</p>
+                  <p style={{ color: '#FFFFFF' }} className="text-sm truncate">{contact.mobile}</p>
+                  <p style={{ color: '#666666' }} className="text-[10px]">Mobile{contact.numberType ? ` · ${contact.numberType}` : ''}</p>
                 </div>
               </div>
             )}
@@ -666,7 +625,7 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
           </div>
 
           {/* Related Deals */}
-          {contact.deals.length > 0 && (
+          {contact.deals && contact.deals.length > 0 && (
             <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
               <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Related Deals ({contact.deals.length})</h3>
               <div className="space-y-2">
@@ -687,7 +646,7 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
           )}
 
           {/* Upcoming Tasks */}
-          {contact.tasks.length > 0 && (
+          {contact.tasks && contact.tasks.length > 0 && (
             <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
               <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Tasks ({contact.tasks.length})</h3>
               <div className="space-y-2">
@@ -706,7 +665,7 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
           )}
 
           {/* Recent Activities */}
-          {contact.activities.length > 0 && (
+          {contact.activities && contact.activities.length > 0 && (
             <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
               <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Recent Activities</h3>
               <div className="space-y-3">
@@ -724,20 +683,12 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
             </div>
           )}
 
-          {/* Notes */}
-          {contact.notes.length > 0 && (
+          {/* Notes (the contact's own notes column) */}
+          {contact.notes && contact.notes.trim().length > 0 && (
             <div className="p-5" style={{ borderBottom: '1px solid #2A2A2A' }}>
-              <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Notes ({contact.notes.length})</h3>
-              <div className="space-y-2">
-                {contact.notes.slice(0, 5).map(note => (
-                  <div key={note.id} className="p-2.5 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
-                    <p style={{ color: '#A0A0A0' }} className="text-sm whitespace-pre-wrap">{note.content}</p>
-                    <div className="flex items-center justify-between mt-1.5">
-                      {note.user && <span style={{ color: '#666666' }} className="text-[10px]">{note.user.name}</span>}
-                      <span style={{ color: '#666666' }} className="text-[10px]">{format(new Date(note.createdAt), 'MMM d, yyyy')}</span>
-                    </div>
-                  </div>
-                ))}
+              <h3 className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: '#666666' }}>Notes</h3>
+              <div className="p-2.5 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
+                <p style={{ color: '#A0A0A0' }} className="text-sm whitespace-pre-wrap">{contact.notes}</p>
               </div>
             </div>
           )}
@@ -776,35 +727,55 @@ function ContactDetailPanel({ contactId, onClose }: { contactId: string; onClose
 }
 
 // ──────────────────────────── Create Contact Dialog ────────────────────────────
+// A contact requires a company (contacts.company_id is NOT NULL). We post the
+// canonical body {companyId, name} plus any non-blank email/phone/role - blank
+// fields are omitted, never sent as ''.
 function CreateContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   const queryClient = useQueryClient()
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', jobTitle: '', source: 'website', status: 'lead' })
+  const emptyForm = { name: '', companyId: '', email: '', phone: '', role: '' }
+  const [form, setForm] = useState(emptyForm)
+
+  const { data: companiesData } = useQuery({
+    queryKey: ['companies-for-contact'],
+    queryFn: () => crmFetch<any>('/api/crm/companies?limit=100'),
+    enabled: open,
+  })
+  const companies: Array<{ id: string; name: string }> = companiesData?.companies ?? []
+
   const mutation = useMutation({
-    mutationFn: async (contact: Record<string, string>) => {
-      const res = await fetch('/api/crm/contacts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(contact) })
-      if (!res.ok) { const data = await res.json(); throw new Error(data.error || 'Failed') }
-      return res.json()
-    },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['contacts'] }); setForm({ firstName: '', lastName: '', email: '', phone: '', jobTitle: '', source: 'website', status: 'lead' }); onOpenChange(false); toast.success('Contact created') },
+    mutationFn: (contact: Record<string, unknown>) =>
+      crmFetch<any>('/api/crm/contacts', { method: 'POST', body: JSON.stringify(contact) }),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['contacts'] }); setForm(emptyForm); onOpenChange(false); toast.success('Contact created') },
     onError: (e: Error) => toast.error(e.message),
   })
+
+  const handleCreate = () => {
+    if (!form.name.trim()) { toast.error('Name is required'); return }
+    if (!form.companyId) { toast.error('Company is required'); return }
+    const body: Record<string, unknown> = { companyId: form.companyId, name: form.name.trim() }
+    if (form.email.trim()) body.email = form.email.trim()
+    if (form.phone.trim()) body.phone = form.phone.trim()
+    if (form.role.trim()) body.role = form.role.trim()
+    mutation.mutate(body)
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader><DialogTitle>New Contact</DialogTitle></DialogHeader>
         <div className="grid gap-4 py-2">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2"><Label>First Name *</Label><Input value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} /></div>
-            <div className="space-y-2"><Label>Last Name *</Label><Input value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} /></div>
+          <div className="space-y-2"><Label>Name *</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
+          <div className="space-y-2">
+            <Label>Company *</Label>
+            <Select value={form.companyId || undefined} onValueChange={v => setForm({ ...form, companyId: v })}>
+              <SelectTrigger><SelectValue placeholder={companies.length ? 'Select a company' : 'No companies yet'} /></SelectTrigger>
+              <SelectContent>{companies.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
+            </Select>
           </div>
           <div className="space-y-2"><Label>Email</Label><Input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} /></div>
           <div className="space-y-2"><Label>Phone</Label><Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} /></div>
-          <div className="space-y-2"><Label>Job Title</Label><Input value={form.jobTitle} onChange={e => setForm({ ...form, jobTitle: e.target.value })} /></div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2"><Label>Source</Label><Select value={form.source} onValueChange={v => setForm({ ...form, source: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{sourceOptions.filter(s => s.value).map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent></Select></div>
-            <div className="space-y-2"><Label>Status</Label><Select value={form.status} onValueChange={v => setForm({ ...form, status: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{statusOptions.filter(s => s.value).map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent></Select></div>
-          </div>
-          <Button onClick={() => { if (!form.firstName || !form.lastName) { toast.error('First name and last name are required'); return } mutation.mutate(form) }} disabled={mutation.isPending} className="w-full bg-[#374151] hover:bg-[#1F2937] text-white">
+          <div className="space-y-2"><Label>Role</Label><Input value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} /></div>
+          <Button onClick={handleCreate} disabled={mutation.isPending} className="w-full bg-[#374151] hover:bg-[#1F2937] text-white">
             {mutation.isPending ? 'Creating...' : 'Create Contact'}
           </Button>
         </div>
@@ -818,11 +789,8 @@ function CreateCompanyDialog({ open, onOpenChange }: { open: boolean; onOpenChan
   const queryClient = useQueryClient()
   const [form, setForm] = useState({ name: '', website: '', industry: '', city: '', country: '', phone: '', description: '' })
   const mutation = useMutation({
-    mutationFn: async (company: Record<string, string>) => {
-      const res = await fetch('/api/crm/companies', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(company) })
-      if (!res.ok) { const data = await res.json(); throw new Error(data.error || 'Failed') }
-      return res.json()
-    },
+    mutationFn: (company: Record<string, string>) =>
+      crmFetch<any>('/api/crm/companies', { method: 'POST', body: JSON.stringify(company) }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['companies'] }); setForm({ name: '', website: '', industry: '', city: '', country: '', phone: '', description: '' }); onOpenChange(false); toast.success('Company created') },
     onError: (e: Error) => toast.error(e.message),
   })
@@ -854,19 +822,20 @@ function CreateCompanyDialog({ open, onOpenChange }: { open: boolean; onOpenChan
 // ──────────────────────────── Contacts View ────────────────────────────
 function ContactsView({ onContactClick, companyFilter }: { onContactClick: (id: string) => void; companyFilter: string | null }) {
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [sourceFilter, setSourceFilter] = useState('')
   const [page, setPage] = useState(1)
   const [createOpen, setCreateOpen] = useState(false)
 
-  const queryUrl = `/api/crm/contacts?search=${encodeURIComponent(search)}&status=${statusFilter}&source=${sourceFilter}&page=${page}&limit=15`
-
+  // Only search + companyId are honoured by the list route; no status/source
+  // filters here because the DB contacts model has no such canonical fields.
   const { data, isLoading } = useQuery({
-    queryKey: ['contacts', search, statusFilter, sourceFilter, page],
+    queryKey: ['contacts', search, companyFilter, page],
     queryFn: () => {
-      const url = new URL(queryUrl, window.location.origin)
+      const url = new URL('/api/crm/contacts', window.location.origin)
+      url.searchParams.set('search', search)
+      url.searchParams.set('page', String(page))
+      url.searchParams.set('limit', '15')
       if (companyFilter) url.searchParams.set('companyId', companyFilter)
-      return fetch(url.toString()).then(r => r.json())
+      return crmFetch<any>(url.toString())
     },
   })
 
@@ -878,14 +847,6 @@ function ContactsView({ onContactClick, companyFilter }: { onContactClick: (id: 
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input placeholder="Search contacts..." value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-10" />
         </div>
-        <Select value={statusFilter || '__all__'} onValueChange={v => { setStatusFilter(v === '__all__' ? '' : v); setPage(1) }}>
-          <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="All Statuses" /></SelectTrigger>
-          <SelectContent>{statusOptions.map(o => <SelectItem key={o.value || '__all__'} value={o.value || '__all__'}>{o.label}</SelectItem>)}</SelectContent>
-        </Select>
-        <Select value={sourceFilter || '__all__'} onValueChange={v => { setSourceFilter(v === '__all__' ? '' : v); setPage(1) }}>
-          <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="All Sources" /></SelectTrigger>
-          <SelectContent>{sourceOptions.map(o => <SelectItem key={o.value || '__all__'} value={o.value || '__all__'}>{o.label}</SelectItem>)}</SelectContent>
-        </Select>
         <CreateContactDialog open={createOpen} onOpenChange={setCreateOpen} />
         <Button className="bg-[#374151] hover:bg-[#1F2937] text-white font-medium" onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />New Contact
@@ -909,9 +870,9 @@ function ContactsView({ onContactClick, companyFilter }: { onContactClick: (id: 
                 <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3">Name</th>
                 <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden md:table-cell">Email</th>
                 <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden lg:table-cell">Company</th>
-                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3">Status</th>
-                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden lg:table-cell">Source</th>
-                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden xl:table-cell">Last Contact</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3">Role</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden lg:table-cell">Decision Maker</th>
+                <th style={{ color: '#A0A0A0', backgroundColor: '#141414' }} className="text-left text-xs font-semibold uppercase tracking-wider px-6 py-3 hidden xl:table-cell">Added</th>
               </tr>
             </thead>
             <tbody>
@@ -932,20 +893,19 @@ function ContactsView({ onContactClick, companyFilter }: { onContactClick: (id: 
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="h-9 w-9 rounded-full bg-[#F3D840]/20 flex items-center justify-center shrink-0">
-                          <span className="text-[#374151] text-xs font-bold">{contact.firstName[0]}{contact.lastName[0]}</span>
+                          <span className="text-[#374151] text-xs font-bold">{initials(contact.name)}</span>
                         </div>
                         <div>
-                          <p style={{ color: '#FFFFFF' }} className="text-sm font-medium">{contact.firstName} {contact.lastName}</p>
-                          {contact.jobTitle && <p style={{ color: '#666666' }} className="text-xs">{contact.jobTitle}</p>}
+                          <p style={{ color: '#FFFFFF' }} className="text-sm font-medium">{contact.name}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 hidden md:table-cell"><span style={{ color: '#A0A0A0' }} className="text-sm">{contact.email || '—'}</span></td>
                     <td className="px-6 py-4 hidden lg:table-cell"><span style={{ color: '#A0A0A0' }} className="text-sm">{contact.company?.name || '—'}</span></td>
-                    <td className="px-6 py-4"><StatusBadge status={contact.status} /></td>
-                    <td className="px-6 py-4 hidden lg:table-cell"><Badge variant="secondary" className="capitalize text-xs">{contact.source}</Badge></td>
+                    <td className="px-6 py-4"><span style={{ color: '#A0A0A0' }} className="text-sm">{contact.role || '—'}</span></td>
+                    <td className="px-6 py-4 hidden lg:table-cell"><span style={{ color: '#A0A0A0' }} className="text-sm">{contact.is_decision_maker ? 'Yes' : '—'}</span></td>
                     <td className="px-6 py-4 hidden xl:table-cell">
-                      <span style={{ color: '#666666' }} className="text-sm">{contact.lastContactAt ? format(new Date(contact.lastContactAt), 'MMM d, yyyy') : 'Never'}</span>
+                      <span style={{ color: '#666666' }} className="text-sm">{contact.created_at ? format(new Date(contact.created_at), 'MMM d, yyyy') : '—'}</span>
                     </td>
                   </tr>
                 ))
@@ -978,7 +938,7 @@ function CompaniesView({ onCompanyClick }: { onCompanyClick: (id: string) => voi
 
   const { data, isLoading } = useQuery({
     queryKey: ['companies', search, page],
-    queryFn: () => fetch(`/api/crm/companies?search=${encodeURIComponent(search)}&page=${page}&limit=20`).then(r => r.json()),
+    queryFn: () => crmFetch<any>(`/api/crm/companies?search=${encodeURIComponent(search)}&page=${page}&limit=20`),
   })
 
   return (

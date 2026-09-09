@@ -1,22 +1,31 @@
 import { z } from 'zod'
 
+// Treat a client-sent null or '' as "not provided" so optional validators
+// (.email()/.url()/.regex()/number) and their defaults are not tripped by a blank
+// value. Coalesces null/'' -> undefined, then defers to the inner schema (which
+// applies its own .optional()/.default()). Fixes the create/edit bug where a
+// name-only company, a recurring-only deal, or a name+email contact failed
+// because the form posted null or '' for the fields it left blank.
+const blankToUndefined = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess((v) => (v === null || v === '' ? undefined : v), schema)
+
 // Common validators
 const email = z.string().email('Invalid email address').max(300).transform(v => v.toLowerCase().trim())
-const optionalEmail = z.union([email, z.literal('')]).optional().default('')
-const phone = z.string().regex(/^[\d\s\-+()]{6,30}$/, 'Invalid phone number').optional().default('')
-const notes = z.string().max(5000, 'Notes too long').optional().default('')
+const optionalEmail = blankToUndefined(z.union([email, z.literal('')]).optional().default(''))
+const phone = blankToUndefined(z.string().regex(/^[\d\s\-+()]{6,30}$/, 'Invalid phone number').optional().default(''))
+const notes = blankToUndefined(z.string().max(5000, 'Notes too long').optional().default(''))
 const currency = z.number().min(0, 'Amount must be non-negative').max(99999999)
 
 // Company
 export const createCompanySchema = z.object({
   name: z.string().min(1, 'Company name is required').max(300),
-  counties: z.string().max(500).optional().default(''),
-  teamSize: z.number().int().min(1).max(10000).optional().default(1),
-  installsPerYear: z.number().int().min(0).max(100000).optional().default(0),
-  status: z.enum(['prospect', 'active', 'inactive', 'churned']).optional().default('prospect'),
-  seaiReg: z.string().max(100).optional().default(''),
-  logoUrl: z.string().url('Invalid logo URL').max(1000).optional().default('').or(z.literal('')),
-  website: z.string().max(500).optional().default(''),
+  counties: blankToUndefined(z.string().max(500).optional().default('')),
+  teamSize: blankToUndefined(z.number().int().min(1).max(10000).optional().default(1)),
+  installsPerYear: blankToUndefined(z.number().int().min(0).max(100000).optional().default(0)),
+  status: blankToUndefined(z.enum(['prospect', 'active', 'inactive', 'churned']).optional().default('prospect')),
+  seaiReg: blankToUndefined(z.string().max(100).optional().default('')),
+  logoUrl: blankToUndefined(z.string().url('Invalid logo URL').max(1000).optional().default('')),
+  website: blankToUndefined(z.string().max(500).optional().default('')),
   notes: notes,
 })
 
@@ -26,55 +35,61 @@ export const updateCompanySchema = createCompanySchema.partial()
 export const createContactSchema = z.object({
   companyId: z.string().min(1, 'Company ID is required'),
   name: z.string().min(1, 'Name is required').max(400),
-  email: z.string().email('Invalid email address').max(300).optional().default(''),
-  phone: z.string().regex(/^[\d\s\-+()]{6,30}$/, 'Invalid phone number').optional().default(''),
-  role: z.string().max(200).optional().default(''),
-  isDecisionMaker: z.boolean().optional().default(false),
+  email: blankToUndefined(z.string().email('Invalid email address').max(300).optional().default('')),
+  phone: phone,
+  role: blankToUndefined(z.string().max(200).optional().default('')),
+  isDecisionMaker: blankToUndefined(z.boolean().optional().default(false)),
   notes: notes,
 })
 
+// Contact update - canonical columns only (matches CONTACT_FIELD_MAP in
+// /api/crm/contacts/[id]/route.ts). The DB has a SINGLE `name` column; there is
+// no firstName/lastName/source/status/city/address/linkedin drift here.
+// All fields optional: `undefined` leaves a column untouched, `null` clears a
+// nullable column. Booleans are real booleans, never string-coerced.
 export const updateContactSchema = z.object({
-  firstName: z.string().min(1).max(200).optional(),
-  lastName: z.string().min(1).max(200).optional(),
-  email: z.union([email, z.literal('')]).optional(),
-  phone: z.string().max(30).optional(),
-  jobTitle: z.string().max(200).optional(),
-  linkedin: z.string().max(500).optional(),
-  source: z.enum(['website', 'referral', 'linkedin', 'google', 'cold_call', 'event', 'demo', 'other']).optional(),
-  status: z.enum(['active', 'inactive', 'prospect', 'churned', 'lead']).optional(),
-  address: z.string().max(500).optional(),
-  city: z.string().max(200).optional(),
-  country: z.string().max(200).optional(),
-  description: z.string().max(5000).optional(),
-  companyId: z.string().nullable().optional(),
-  lastContactAt: z.string().optional(),
+  name: z.string().min(1, 'Name is required').max(400).optional(),
+  greetingName: z.string().max(200).nullish(),
+  email: z.union([email, z.literal('')]).nullish(),
+  phone: z.string().max(30).nullish(),
+  mobile: z.string().max(30).nullish(),
+  numberType: z.string().max(50).nullish(),
+  doNotEmail: z.boolean().optional(),
+  role: z.string().max(200).nullish(),
+  jobTitle: z.string().max(200).nullish(),
+  isDecisionMaker: z.boolean().optional(),
+  companyId: z.string().min(1).nullable().optional(),
+  notes: z.string().max(5000).nullish(),
 }).partial()
 
 // Deal
 export const createDealSchema = z.object({
   companyId: z.string().min(1, 'Company ID is required'),
-  product: z.enum(['solarpilot', 'ai_workforce', 'both']),
-  mrr: currency.optional().default(0),
-  setupFee: currency.optional().default(0),
+  // 'relay' is the canonical product. 'ai_workforce'/'both' stay valid; 'solarpilot'
+  // is a legacy alias kept so existing rows/clients still validate. The stored value
+  // is never renamed here - whatever is submitted is written through as-is.
+  product: z.enum(['relay', 'ai_workforce', 'both', 'solarpilot']),
+  mrr: blankToUndefined(currency.optional().default(0)),
+  setupFee: blankToUndefined(currency.optional().default(0)),
   stage: z.enum(['new_lead', 'contacted', 'discovery_call', 'demo_booked', 'demo_done', 'proposal_sent', 'negotiation', 'closed_won', 'closed_lost']),
   qualifiedAnswers: z.record(z.string(), z.unknown()).nullable().optional().default(null),
-  demoOutcome: z.enum(['positive', 'neutral', 'negative', '']).optional().default(''),
-  closeReason: z.string().max(500).optional().default(''),
+  demoOutcome: blankToUndefined(z.enum(['positive', 'neutral', 'negative', '']).optional().default('')),
+  closeReason: blankToUndefined(z.string().max(500).optional().default('')),
   assignedToId: z.string().nullable().optional().default(null),
-  value: currency.optional(),
+  value: blankToUndefined(currency.optional()),
   notes: notes,
 })
 
 export const updateDealSchema = z.object({
   stage: z.enum(['new_lead', 'contacted', 'discovery_call', 'demo_booked', 'demo_done', 'proposal_sent', 'negotiation', 'closed_won', 'closed_lost']).optional(),
-  mrr: currency.optional(),
-  setupFee: currency.optional(),
+  mrr: blankToUndefined(currency.optional()),
+  setupFee: blankToUndefined(currency.optional()),
   notes: notes.optional(),
   assignedToId: z.string().optional(),
   qualifiedAnswers: z.record(z.string(), z.unknown()).optional(),
-  demoOutcome: z.enum(['positive', 'neutral', 'negative', '']).optional(),
-  closeReason: z.string().max(500).optional(),
-  value: currency.optional(),
+  demoOutcome: blankToUndefined(z.enum(['positive', 'neutral', 'negative', '']).optional()),
+  closeReason: blankToUndefined(z.string().max(500).optional()),
+  value: blankToUndefined(currency.optional()),
 })
 
 // Lead
@@ -105,12 +120,21 @@ export const updateTaskSchema = createTaskSchema.partial().extend({
 })
 
 // Note
-export const createNoteSchema = z.object({
-  content: z.string().min(1, 'Note content is required').max(5000),
-  companyId: z.string().optional(),
-  contactId: z.string().optional(),
-  dealId: z.string().optional(),
-})
+// Canonical model is `body` + `author` (see relay baseline). `content` is accepted
+// as a legacy alias on input (mapped to body) so older callers keep working.
+export const createNoteSchema = z
+  .object({
+    body: z.string().max(5000).optional(),
+    content: z.string().max(5000).optional(),
+    author: z.string().max(300).optional(),
+    companyId: z.string().optional(),
+    contactId: z.string().optional(),
+    dealId: z.string().optional(),
+  })
+  .refine((v) => Boolean((v.body ?? v.content ?? '').trim()), {
+    message: 'Note body is required',
+    path: ['body'],
+  })
 
 // Activity
 export const createActivitySchema = z.object({

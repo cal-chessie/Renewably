@@ -5,7 +5,8 @@ import { logger } from '@/lib/logger'
 /**
  * GET /api/crm/calendar/google/auth-url
  * Returns the Google OAuth consent screen URL for the authenticated user.
- * If GOOGLE_CLIENT_ID is not set, returns a mock URL for demo mode.
+ * If GOOGLE_CLIENT_ID is not set, reports that the integration is not configured
+ * rather than returning a fake consent URL that would fake a connection.
  */
 export async function GET(request: NextRequest) {
   try {
@@ -16,8 +17,10 @@ export async function GET(request: NextRequest) {
     const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/crm/calendar/google/callback`
 
     if (!clientId) {
-      const mockUrl = `${redirectUri}?code=mock_code_${Date.now()}&state=${Buffer.from(JSON.stringify({ userId: user.id })).toString('base64')}`
-      return NextResponse.json({ url: mockUrl, mock: true })
+      return NextResponse.json(
+        { error: 'Google Calendar is not configured', configured: false },
+        { status: 501 },
+      )
     }
 
     const scopes = [

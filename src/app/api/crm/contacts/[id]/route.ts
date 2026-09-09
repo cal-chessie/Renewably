@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
+import { updateContactSchema, formatZodError } from '@/lib/crm-schemas'
 import { checkApiRateLimit, getClientIp, isValidUuid } from '@/lib/crm-validation'
 import { logger } from '@/lib/logger'
 
@@ -17,21 +19,28 @@ function keysToCamel(row: Record<string, unknown>): Record<string, unknown> {
 }
 
 /**
- * Map camelCase body fields to snake_case columns for the contacts table.
- * Fields that don't exist in the DB (linkedin, country, description) are excluded.
+ * Map camelCase body fields to the real snake_case contacts columns
+ * (see supabase/migrations/20260909_relay_baseline.sql). Only canonical
+ * columns are writable; drift fields (source, status, city, address, linkedin,
+ * country, description, firstName/lastName) are intentionally absent.
  */
 const CONTACT_FIELD_MAP: Record<string, string> = {
   name: 'name',
+  greetingName: 'greeting_name',
   email: 'email',
   phone: 'phone',
+  mobile: 'mobile',
+  numberType: 'number_type',
+  doNotEmail: 'do_not_email',
+  role: 'role',
   jobTitle: 'job_title',
-  source: 'source',
-  status: 'status',
-  address: 'address',
-  city: 'city',
+  isDecisionMaker: 'is_decision_maker',
   companyId: 'company_id',
   notes: 'notes',
 }
+
+/** Boolean columns must be written as real booleans, not String()-coerced. */
+const BOOLEAN_CONTACT_COLUMNS = new Set(['do_not_email', 'is_decision_maker'])
 
 // GET: Single contact
 export async function GET(
@@ -74,6 +83,27 @@ export async function GET(
       }
     }
 
+    // Notes written against this contact (notes table) — surfaced on the Notes tab.
+    // `result.notes` stays the contact's free-text notes column; the note entries
+    // live under `noteEntries` so both the Overview text and the Notes list work.
+    const { data: noteRows } = await supabase
+      .from('notes')
+      .select('*')
+      .eq('contact_id', id)
+      .order('created_at', { ascending: false })
+
+    result.noteEntries = (noteRows ?? []).map((n) => {
+      const row = n as Record<string, unknown>
+      const text = (row.body ?? row.content ?? '') as string
+      return {
+        id: row.id,
+        body: text,
+        content: text,
+        author: row.author ?? null,
+        createdAt: row.created_at,
+      }
+    })
+
     // Tags not yet available — return empty array (junction tables may not exist)
     result.tags = []
 
@@ -103,21 +133,31 @@ export async function PUT(
       return NextResponse.json({ error: 'Invalid ID format' }, { status: 400 })
     }
 
-    const body = await request.json()
+    let body: z.infer<typeof updateContactSchema>
+    try {
+      body = updateContactSchema.parse(await request.json())
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return NextResponse.json({ error: 'Validation failed', details: formatZodError(error) }, { status: 400 })
+      }
+      throw error
+    }
+
     const supabase = createServiceClient()
 
-    // Build snake_case update payload, only including fields present in the body
-    // Fields not in CONTACT_FIELD_MAP (linkedin, country, description) are silently skipped
+    // Build the snake_case update payload from canonical fields present in the body.
+    // undefined -> skip (leave column untouched); null -> clear a nullable column;
+    // booleans stay booleans; company_id never receives an empty string.
     const updateData: Record<string, unknown> = {}
     for (const [camelKey, snakeKey] of Object.entries(CONTACT_FIELD_MAP)) {
       const value = (body as Record<string, unknown>)[camelKey]
-      if (value !== undefined) {
-        if (camelKey === 'companyId') {
-          // companyId can be null (unset) or a string
-          updateData[snakeKey] = value || null
-        } else {
-          updateData[snakeKey] = String(value)
-        }
+      if (value === undefined) continue
+      if (BOOLEAN_CONTACT_COLUMNS.has(snakeKey)) {
+        updateData[snakeKey] = Boolean(value)
+      } else if (snakeKey === 'company_id') {
+        updateData[snakeKey] = value || null
+      } else {
+        updateData[snakeKey] = value === null ? null : String(value)
       }
     }
 

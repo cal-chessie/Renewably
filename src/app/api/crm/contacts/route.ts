@@ -46,10 +46,31 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch contacts' }, { status: 500 })
     }
 
+    const rows = contacts ?? []
+
+    // Attach the company via a separate query (same idiom as contacts/[id]),
+    // so the list never depends on a PostgREST FK relationship being present.
+    const companyIds = Array.from(new Set(rows.map(r => r.company_id).filter(Boolean)))
+    const companyById: Record<string, { id: string; name: string }> = {}
+    if (companyIds.length > 0) {
+      const { data: companies } = await supabase
+        .from('companies')
+        .select('id, name')
+        .in('id', companyIds)
+      for (const c of companies ?? []) {
+        companyById[c.id as string] = { id: c.id as string, name: c.name as string }
+      }
+    }
+
+    const enriched = rows.map(r => ({
+      ...r,
+      company: r.company_id ? companyById[r.company_id] ?? null : null,
+    }))
+
     const total = count ?? 0
 
     return NextResponse.json({
-      contacts: contacts ?? [],
+      contacts: enriched,
       pagination: {
         page,
         limit,

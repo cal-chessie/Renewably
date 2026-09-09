@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { crmFetch } from '@/lib/crm-fetch'
 import {
   Search, Plus, Building2, MapPin, Users, Zap, Euro, Globe,
   Shield, Clock, X, Contact, AlertTriangle, Edit2, Trash2, Download,
@@ -236,13 +237,8 @@ function AddCompanyDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
   }, [open])
 
   const mutation = useMutation({
-    mutationFn: async (data: Record<string, string | number | null>) => {
-      const res = await fetch('/api/crm/companies', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-      })
-      if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Failed to create company') }
-      return res.json()
-    },
+    mutationFn: (data: Record<string, string | number | null>) =>
+      crmFetch<any>('/api/crm/companies', { method: 'POST', body: JSON.stringify(data) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companies'] })
       toast.success('Company created successfully')
@@ -306,13 +302,8 @@ function EditCompanyDialog({ open, onOpenChange, company }: {
   }, [company])
 
   const mutation = useMutation({
-    mutationFn: async (data: Record<string, string | number | null>) => {
-      const res = await fetch(`/api/crm/companies/${company?.id}`, {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-      })
-      if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Failed to update company') }
-      return res.json()
-    },
+    mutationFn: (data: Record<string, string | number | null>) =>
+      crmFetch<any>(`/api/crm/companies/${company?.id}`, { method: 'PUT', body: JSON.stringify(data) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companies'] })
       queryClient.invalidateQueries({ queryKey: ['company', company?.id] })
@@ -354,11 +345,8 @@ function DeleteConfirmDialog({ open, onClose, company }: {
 }) {
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(`/api/crm/companies/${company?.id}`, { method: 'DELETE' })
-      if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Failed to delete company') }
-      return res.json()
-    },
+    mutationFn: () =>
+      crmFetch<any>(`/api/crm/companies/${company?.id}`, { method: 'DELETE' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['companies'] })
       toast.success('Company deleted successfully')
@@ -676,8 +664,7 @@ export default function CompaniesPage() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['companies', debouncedSearch, statusFilter, sortBy, sortOrder, page],
     queryFn: () =>
-      fetch(`/api/crm/companies?search=${encodeURIComponent(debouncedSearch)}&status=${statusFilter}&sort=${sortBy}&order=${sortOrder}&limit=${LIMIT}&page=${page}`)
-        .then((r) => r.json()),
+      crmFetch<any>(`/api/crm/companies?search=${encodeURIComponent(debouncedSearch)}&status=${statusFilter}&sort=${sortBy}&order=${sortOrder}&limit=${LIMIT}&page=${page}`),
   })
 
   const companies = data?.companies || []

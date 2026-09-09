@@ -715,11 +715,12 @@ describe('createContactSchema', () => {
     expect(result.email).toBe('John@SunPower.IE')
   })
 
-  it('rejects empty string for email (must omit or pass valid email)', () => {
-    // createContactSchema email field does NOT allow empty strings (uses z.string().email())
-    expect(() =>
-      createContactSchema.parse({ companyId: 'comp-1', name: 'John', email: '' })
-    ).toThrow()
+  it('accepts empty string for email (coalesced to blank, not rejected)', () => {
+    // The create dialog sends '' for a blank optional field. blankToUndefined
+    // coalesces '' -> undefined so the .email() validator is not tripped; the
+    // field then resolves to its '' default. (This is the P0 create-bug fix.)
+    const result = createContactSchema.parse({ companyId: 'comp-1', name: 'John', email: '' })
+    expect(result.email).toBe('')
   })
 
   it('defaults email to empty string when omitted', () => {
@@ -777,10 +778,11 @@ describe('updateDealSchema', () => {
     expect((result.qualifiedAnswers as Record<string, string>).budget).toBe('5000')
   })
 
-  it('accepts empty object (notes defaults to empty string)', () => {
-    // notes has .optional().default(''), so Zod applies the default
+  it('accepts empty object (partial update overwrites nothing)', () => {
+    // updateDealSchema is a partial: an absent field stays undefined so a blank
+    // update never wipes an existing value (notes is NOT forced to '').
     const result = updateDealSchema.parse({})
-    expect(result.notes).toBe('')
+    expect(result.notes).toBeUndefined()
     expect(result.stage).toBeUndefined()
   })
 

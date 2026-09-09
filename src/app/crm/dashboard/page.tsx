@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { useCRM } from '@/components/crm/CRMProvider'
+import { crmFetch, ApiError } from '@/lib/crm-fetch'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Building2,
@@ -959,12 +960,14 @@ export default function DashboardPage() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['crm-dashboard'],
     queryFn: async () => {
-      const res = await fetch('/api/crm/dashboard')
-      if (res.status === 401) {
-        router.push('/crm/login')
-        throw new Error('Unauthorized')
+      try {
+        return await crmFetch<any>('/api/crm/dashboard')
+      } catch (err) {
+        if (err instanceof ApiError && err.status === 401) {
+          router.push('/crm/login')
+        }
+        throw err
       }
-      return res.json()
     },
     enabled: !authLoading,
     refetchInterval: 60000,
