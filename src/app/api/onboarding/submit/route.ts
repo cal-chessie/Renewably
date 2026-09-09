@@ -110,6 +110,10 @@ export async function POST(request: NextRequest) {
     const companyName = data.company_name?.trim() || data.demo_company?.trim() || ''
     const phone = data.phone?.trim() || data.demo_phone?.trim() || ''
     const counties = Array.isArray(data.counties) ? data.counties.filter(Boolean) : []
+    // Every lead needs a company so the deal ALWAYS lands as a pipeline card.
+    // No-company onboarding leads previously failed the deal insert (company_id
+    // is required) and never reached the pipeline. Fall back to the person.
+    const companyForCrm = companyName || contactName || normalizedEmail
 
     // ── Build a concise lead summary for the deal / notification ──────────
     const summaryLines = [
@@ -134,11 +138,11 @@ export async function POST(request: NextRequest) {
       const supabase = createServiceClient()
 
       // Reuse an existing company by name, else create one as a prospect.
-      if (companyName) {
+      if (companyForCrm) {
         const { data: existingCompany } = await supabase
           .from('companies')
           .select('id')
-          .ilike('name', sanitizeSearchQuery(companyName))
+          .ilike('name', sanitizeSearchQuery(companyForCrm))
           .limit(1)
           .single()
 
@@ -148,7 +152,7 @@ export async function POST(request: NextRequest) {
           const { data: newCompany } = await supabase
             .from('companies')
             .insert({
-              name: companyName,
+              name: companyForCrm,
               status: 'prospect',
               counties: counties.join(', '),
               seai_reg: data.vat?.trim() || '',
