@@ -5,7 +5,9 @@
 // real-time context about contacts, deals, tasks, and companies.
 // ============================================================================
 
-import { supabase } from '@/lib/supabase';
+// Server-only CRM context builder: use the service-role client so reads still
+// work under the authenticated-only RLS lockdown (the anon client is denied).
+import { supabaseAdmin as supabase } from '@/lib/supabase';
 import type { CrmContext, ClaudeRequest } from '@/lib/claude';
 
 /** Helper: safely parse a JSON field that might be a string or already an object */

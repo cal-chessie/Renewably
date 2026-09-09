@@ -1,4 +1,6 @@
-import { supabase } from '@/lib/supabase'
+// Server-only route: use the service-role client so companies/contacts reads and
+// writes work under the authenticated-only RLS lockdown (anon is denied).
+import { supabaseAdmin as supabase } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { validString, isValidEmail, isValidUuid, checkApiRateLimit, getClientIp } from '@/lib/crm-validation'
