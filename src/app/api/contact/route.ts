@@ -126,12 +126,16 @@ export async function POST(request: NextRequest) {
     try {
       const supabase = createServiceClient();
 
-      // Check if a company with this name already exists
-      if (body.company?.trim()) {
+      // Every lead gets a company so it ALWAYS lands as a pipeline deal. A lead
+      // with no company name (common from the popup) previously failed the deal
+      // insert (deals.company_id is required) and silently never reached the
+      // pipeline. Fall back to the person's name so nothing is dropped.
+      const companyName = body.company?.trim() || fullName;
+      {
         const { data: existingCompany } = await supabase
           .from("companies")
           .select("id")
-          .ilike("name", sanitizeSearchQuery(body.company.trim()))
+          .ilike("name", sanitizeSearchQuery(companyName))
           .limit(1)
           .single();
 
@@ -142,13 +146,13 @@ export async function POST(request: NextRequest) {
           const { data: newCompany } = await supabase
             .from("companies")
             .insert({
-              name: body.company.trim(),
+              name: companyName,
               status: "prospect",
               counties: "",
               seai_reg: "",
               team_size: 1,
               installs_per_year: 0,
-              notes: `Created from website contact form by ${fullName}`,
+              notes: `Created from website ${source || "contact form"} by ${fullName}`,
             })
             .select("id")
             .single();
