@@ -39,9 +39,11 @@ interface RawContact {
   id: string
   company_id: string | null
   name: string
+  greeting_name: string | null
   email: string | null
   phone: string | null
   role: string | null
+  do_not_email: boolean | null
   is_decision_maker: boolean | null
 }
 
@@ -67,7 +69,14 @@ interface RawActivity {
 interface RawDeal {
   id: string
   company_id: string | null
+  contact_id: string | null
   product: string | null
+  segment: string | null
+  fit_score: number | null
+  channel: string | null
+  angle: string | null
+  work_first: boolean | null
+  source: string | null
   mrr: number | null
   setup_fee: number | null
   stage: string
@@ -87,9 +96,11 @@ function mapContact(c: RawContact) {
     id: c.id,
     companyId: c.company_id,
     name: c.name,
+    greetingName: c.greeting_name,
     email: c.email,
     phone: c.phone,
     role: c.role,
+    doNotEmail: c.do_not_email,
     isDecisionMaker: c.is_decision_maker,
   }
 }
@@ -127,7 +138,14 @@ function enrichDeal(raw: RawDeal) {
   return {
     id: raw.id,
     companyId: raw.company_id,
+    contactId: raw.contact_id,
     product: raw.product,
+    segment: raw.segment,
+    fitScore: raw.fit_score,
+    channel: raw.channel,
+    angle: raw.angle,
+    workFirst: raw.work_first,
+    source: raw.source,
     mrr: raw.mrr,
     setupFee: raw.setup_fee,
     stage: raw.stage,
@@ -157,15 +175,20 @@ function enrichDeal(raw: RawDeal) {
 /* ------------------------------------------------------------------ */
 /*  Shared Supabase select string for deal enrichment                 */
 /* ------------------------------------------------------------------ */
+// NOTE: `deals -> companies -> contacts` and `deals -> deal_activities` are real
+// FK relationships and embed correctly. `profiles` is NOT a table here and has no
+// FK from `deal_activities.user_id`, so embedding it 500s the entire query (and
+// with it the /crm/today queue). The activity author name is therefore omitted;
+// `mapActivity` degrades `user` to null when no `profiles` row is present.
 const DEAL_ENRICH_SELECT = `
-  id, company_id, product, mrr, setup_fee, stage, value, notes, updated_at, created_at,
+  id, company_id, contact_id, product, segment, fit_score, channel, angle,
+  work_first, source, mrr, setup_fee, stage, value, notes, updated_at, created_at,
   companies!company_id (
     id, name, counties, status,
-    contacts!company_id (id, company_id, name, email, phone, role, is_decision_maker)
+    contacts!company_id (id, company_id, name, greeting_name, email, phone, role, do_not_email, is_decision_maker)
   ),
   deal_activities!deal_id (
-    id, deal_id, user_id, type, title, content, created_at,
-    profiles!user_id (id, name)
+    id, deal_id, user_id, type, title, content, created_at
   )
 `
 
@@ -228,9 +251,13 @@ export async function GET(request: NextRequest) {
 
     // Company-name search must be applied client-side because it targets the
     // joined companies table (PostgREST can't filter on nested relations).
+    // `deals -> companies` is a to-one embed (single company_id FK), so
+    // `companies` arrives as an object, not an array — read `.name` directly.
     const filteredDeals = search
       ? (rawDeals || []).filter(d =>
-          (d.companies as any[])[0]?.name?.toLowerCase().includes(search.toLowerCase()),
+          ((d.companies as unknown as RawCompany | null)?.name || '')
+            .toLowerCase()
+            .includes(search.toLowerCase()),
         )
       : rawDeals || []
 

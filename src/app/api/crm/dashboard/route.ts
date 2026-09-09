@@ -76,7 +76,6 @@ export async function GET(request: NextRequest) {
       closedWonDealsRes,
       openDealsRes,
       allDealsRes,
-      onboardingRes,
       activitiesRes,
       upcomingTasksRaw,
       emailLogsRes,
@@ -98,13 +97,13 @@ export async function GET(request: NextRequest) {
         .in('stage', [...ACTIVE_STAGES]),
       // All deals for funnel grouping by stage + product counts
       supabase.from('deals').select('stage, value, product'),
-      // Onboarding stats
-      supabase.from('onboarding').select('solarpilot_progress, ai_workforce_progress'),
-      // Recent activities with joined company & user names
+      // Recent activities with joined company name (real FK). User names are NOT
+      // embedded: `profiles` has no FK from `deal_activities.user_id`, so it is
+      // resolved by a separate lookup below and stitched in code.
       supabase
         .from('deal_activities')
         .select(
-          'id, type, title, content, created_at, deal:deals(company:companies(name)), user:profiles!user_id(id, name)',
+          'id, type, title, content, created_at, user_id, deal:deals(company:companies(name))',
         )
         .order('created_at', { ascending: false })
         .limit(12),
@@ -244,38 +243,36 @@ export async function GET(request: NextRequest) {
 
     // ===== RECENT ACTIVITY =====
     const activities = activitiesRes.data ?? []
+    // Resolve user names separately — deal_activities.user_id has no profiles FK/embed.
+    const activityUserIds = [
+      ...new Set(activities.map((a) => (a as any).user_id).filter(Boolean) as string[]),
+    ]
+    const activityUserMap: Record<string, string> = {}
+    if (activityUserIds.length > 0) {
+      const { data: users } = await supabase
+        .from('profiles')
+        .select('id, name')
+        .in('id', activityUserIds)
+      for (const u of users || []) activityUserMap[u.id] = u.name
+    }
     const recentActivity = activities.map((a) => {
       const dealRow = a.deal as unknown as Array<{ company: { name: string } }> | null
-      const userRow = a.user as Array<{ id: string; name: string }> | null
+      const userId = (a as any).user_id as string | null
       return {
         id: a.id,
         type: a.type,
         title: a.title,
         content: a.content,
         companyName: dealRow?.[0]?.company?.name ?? 'Unknown',
-        userName: userRow?.[0]?.name ?? 'Unknown',
+        userName: (userId ? activityUserMap[userId] : undefined) ?? 'Unknown',
         createdAt: a.created_at,
       }
     })
 
     // ===== ONBOARDING =====
-    const onboardingData = onboardingRes.data ?? []
-    const totalOnboarding = onboardingData.length
-    const completedOnboarding = onboardingData.filter(
-      (o) => o.solarpilot_progress === 100,
-    ).length
-    const inProgressOnboarding = onboardingData.filter(
-      (o) => o.solarpilot_progress > 0 && o.solarpilot_progress < 100,
-    ).length
-    const avgProgress =
-      totalOnboarding > 0
-        ? Math.round(
-            onboardingData.reduce(
-              (sum, o) => sum + (o.solarpilot_progress ?? 0),
-              0,
-            ) / totalOnboarding,
-          )
-        : 0
+    // There is no `onboarding` table in the canonical schema, so onboarding
+    // progress is not tracked. Report honest null (not a fabricated 0/0/0/0%)
+    // so the dashboard can show "not tracked yet" instead of a fake all-clear.
 
     // ===== COMPANY LIST (paginated) =====
     const { searchParams } = new URL(request.url)
@@ -287,7 +284,7 @@ export async function GET(request: NextRequest) {
       supabase
         .from('companies')
         .select(
-          'id, name, status, counties, created_at, contacts(id, name, role, is_decision_maker), deals(stage, value, mrr, product, created_at), onboarding(solarpilot_progress, ai_workforce_progress)',
+          'id, name, status, counties, created_at, contacts(id, name, role, is_decision_maker), deals(stage, value, mrr, product, created_at)',
         )
         .order('created_at', { ascending: false })
         .range(companyFrom, companyFrom + companyLimit - 1),
@@ -310,9 +307,6 @@ export async function GET(request: NextRequest) {
         role: string
         is_decision_maker: boolean
       }>) ?? []
-      const onboardingRow = (
-        Array.isArray(c.onboarding) ? c.onboarding[0] : c.onboarding
-      ) as { solarpilot_progress: number; ai_workforce_progress: number } | null
 
       const decisionMaker =
         contacts.find((ct) => ct.is_decision_maker)?.name ??
@@ -352,12 +346,8 @@ export async function GET(request: NextRequest) {
           tag: `${t.type} — ${dealRow?.[0]?.company?.name ?? 'Unknown'}`,
         }
       }),
-      onboarding: {
-        total: totalOnboarding,
-        completed: completedOnboarding,
-        inProgress: inProgressOnboarding,
-        avgProgress,
-      },
+      // Onboarding is not tracked (no such table) — honest null, not fake zeros.
+      onboarding: null,
     })
   } catch (error) {
     logger.error('Dashboard error', {

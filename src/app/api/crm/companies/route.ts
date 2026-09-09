@@ -99,7 +99,6 @@ export async function GET(request: NextRequest) {
     let dealCounts: Record<string, number> = {}
     let mrrByCompany: Record<string, number> = {}
     let decisionMakers: Record<string, string | null> = {}
-    let onboardingMap: Record<string, { solarpilotProgress: number; aiWorkforceProgress: number }> = {}
 
     if (companyIds.length > 0) {
       const [
@@ -107,13 +106,11 @@ export async function GET(request: NextRequest) {
         dealsRes,
         closedWonRes,
         dmRes,
-        onboardingRes,
       ] = await Promise.all([
         supabase.from('contacts').select('company_id').in('company_id', companyIds),
         supabase.from('deals').select('company_id, stage, mrr').in('company_id', companyIds),
         supabase.from('deals').select('company_id, mrr').eq('stage', 'closed_won').in('company_id', companyIds),
         supabase.from('contacts').select('company_id, name').eq('is_decision_maker', true).in('company_id', companyIds),
-        supabase.from('onboarding').select('company_id, solarpilot_progress, ai_workforce_progress').in('company_id', companyIds),
       ])
 
       // Contact counts
@@ -146,15 +143,6 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      // Onboarding progress
-      if (onboardingRes.data) {
-        for (const ob of onboardingRes.data) {
-          onboardingMap[ob.company_id] = {
-            solarpilotProgress: ob.solarpilot_progress ?? 0,
-            aiWorkforceProgress: ob.ai_workforce_progress ?? 0,
-          }
-        }
-      }
     }
 
     // ── Merge and transform to camelCase ──
@@ -166,7 +154,9 @@ export async function GET(request: NextRequest) {
       }
       row.mrr = mrrByCompany[company.id] || 0
       row.decisionMaker = decisionMakers[company.id] || null
-      row.onboarding = onboardingMap[company.id] || { solarpilotProgress: 0, aiWorkforceProgress: 0 }
+      // No onboarding table exists in the canonical schema — return honest null
+      // (progress not tracked) rather than a fabricated 0% that reads as real.
+      row.onboarding = null
       return row
     })
 
@@ -238,35 +228,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to create company' }, { status: 500 })
     }
 
-    // Create onboarding record
-    const { error: onboardingError } = await supabase
-      .from('onboarding')
-      .insert({
-        company_id: company.id,
-        solarpilot_progress: 0,
-        ai_workforce_progress: 0,
-        solarpilot_steps: JSON.stringify([
-          { step: 'Account setup', done: false },
-          { step: 'System configuration', done: false },
-          { step: 'Team training', done: false },
-          { step: 'Go live', done: false },
-        ]),
-        ai_workforce_steps: JSON.stringify([
-          { step: 'Requirements gathering', done: false },
-          { step: 'AI model configuration', done: false },
-          { step: 'Integration setup', done: false },
-          { step: 'Testing & launch', done: false },
-        ]),
-      })
-
-    if (onboardingError) {
-      logger.error('Supabase create onboarding failed', { error: onboardingError.message })
-      // Non-fatal: company was created, log the error
-    }
-
+    // No onboarding table exists in the canonical schema, so there is nothing to
+    // seed here. A new company simply has no onboarding progress yet.
     const result = keysToCamel(company as Record<string, unknown>)
     result._count = { contacts: 0, deals: 0 }
-    result.onboarding = { solarpilotProgress: 0, aiWorkforceProgress: 0 }
+    result.onboarding = null
 
     // ─── Postmark: Internal notification for new company ──────────────────────
     if (isPostmarkConfigured()) {

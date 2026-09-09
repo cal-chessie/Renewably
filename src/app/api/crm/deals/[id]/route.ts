@@ -85,24 +85,54 @@ export async function PATCH(
       return NextResponse.json({ error: 'Deal not found' }, { status: 404 })
     }
 
+    // Won -> client: a closed_won deal turns its company into a client.
+    // Stamp companies.client_since = now(), but ONLY while it is still null:
+    // the FIRST win is what makes a prospect a client; a later win must not
+    // reset the date. This is a plain table update keyed on company_id, with
+    // no PostgREST embed. It is a secondary effect (the deal transition above
+    // is already persisted), so a failure here is logged, never silent, and
+    // does not fail the request.
+    if (body.stage === 'closed_won' && deal.company_id) {
+      const { error: clientSinceError } = await supabase
+        .from('companies')
+        .update({ client_since: new Date().toISOString() })
+        .eq('id', deal.company_id)
+        .is('client_since', null)
+      if (clientSinceError) {
+        logger.warn('Won->client: failed to set companies.client_since (non-fatal)', {
+          error: clientSinceError.message,
+          companyId: deal.company_id,
+          dealId: id,
+        })
+      }
+    }
+
     // ─── Postmark: Stage change email ────────────────────────────────────────
     if (body.stage !== undefined && isPostmarkConfigured()) {
       const stageName = STAGE_NAMES[body.stage] || body.stage
 
-      // Fetch company + decision maker for the email
-      createServiceClient()
+      // Fetch company + decision maker for the email.
+      // `deals -> companies` is a real FK and embeds. Contacts, however, have NO
+      // FK to `deals` (contacts.company_id references companies, not deals), so
+      // `contacts!company_id` off `deals` is an invalid embed — look them up
+      // separately by company_id and stitch the decision maker in code.
+      const emailClient = createServiceClient()
+      emailClient
         .from('deals')
         .select(`
           company_id,
-          companies!company_id(id, name),
-          contacts!company_id(id, name, email, is_decision_maker, do_not_email)
+          companies!company_id(id, name)
         `)
         .eq('id', id)
         .single()
         .then(async ({ data: enriched }) => {
           if (!enriched?.companies) return
           const company = enriched.companies as any
-          const contacts = (enriched.contacts || []) as any[]
+          const { data: contactsData } = await emailClient
+            .from('contacts')
+            .select('id, name, email, is_decision_maker, do_not_email')
+            .eq('company_id', (enriched as any).company_id)
+          const contacts = (contactsData || []) as any[]
           const dm = contacts.find(c => c.is_decision_maker) || contacts[0]
           if (!dm?.email) return
           if (dm.do_not_email) return // respect do_not_email: never auto-email these contacts
@@ -165,7 +195,11 @@ export async function GET(
 
     const supabase = createServiceClient()
 
-    // Fetch deal with company, contacts, activities in parallel
+    // Fetch deal (with company + nested contacts, both real FKs) and activities
+    // in parallel. `profiles` is not a table here and has no FK from
+    // `deals.assigned_to_id` or `deal_activities.user_id`, so those embeds are
+    // dropped; owner/author names are resolved by a separate lookup and stitched
+    // in code (degrading to null when no profiles row exists).
     const [dealRes, activitiesRes] = await Promise.all([
       supabase
         .from('deals')
@@ -173,17 +207,13 @@ export async function GET(
           *,
           companies!company_id(id, name, counties, status, website, logo_url,
             contacts(id, name, email, phone, role, is_decision_maker)
-          ),
-          profiles!assigned_to_id(id, name, avatar)
+          )
         `)
         .eq('id', id)
         .single(),
       supabase
         .from('deal_activities')
-        .select(`
-          id, type, title, content, created_at,
-          profiles!user_id(id, name, avatar)
-        `)
+        .select('id, type, title, content, created_at, user_id')
         .eq('deal_id', id)
         .order('created_at', { ascending: false })
         .limit(10),
@@ -194,13 +224,35 @@ export async function GET(
     }
 
     const deal = dealRes.data
-    const activities = (activitiesRes.data || []).map(a => ({
+    const rawActivities = activitiesRes.data || []
+
+    // Resolve user/owner names separately — no profiles FK/embed available.
+    const userIds = [
+      ...new Set(
+        [
+          deal.assigned_to_id as string | null,
+          ...rawActivities.map((a: any) => a.user_id as string | null),
+        ].filter(Boolean) as string[]
+      ),
+    ]
+    const userMap: Record<string, { id: string; name: string; avatar: string | null }> = {}
+    if (userIds.length > 0) {
+      const { data: users } = await supabase
+        .from('profiles')
+        .select('id, name, avatar')
+        .in('id', userIds)
+      for (const u of users || []) {
+        userMap[u.id] = { id: u.id, name: u.name, avatar: (u as any).avatar ?? null }
+      }
+    }
+
+    const activities = rawActivities.map((a: any) => ({
       id: a.id,
       type: a.type,
       title: a.title,
       content: a.content,
       createdAt: a.created_at,
-      user: a.profiles ? { id: (a.profiles as any).id, name: (a.profiles as any).name, avatar: (a.profiles as any).avatar } : null,
+      user: a.user_id ? userMap[a.user_id] ?? null : null,
     }))
 
     const company = deal.companies ? {
@@ -216,7 +268,7 @@ export async function GET(
       })),
     } : null
 
-    const assignedTo = deal.profiles ? { id: deal.profiles.id, name: deal.profiles.name, avatar: deal.profiles.avatar } : null
+    const assignedTo = deal.assigned_to_id ? userMap[deal.assigned_to_id as string] ?? null : null
 
     return NextResponse.json({
       deal: {

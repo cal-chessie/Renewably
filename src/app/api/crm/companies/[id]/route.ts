@@ -59,11 +59,12 @@ export async function GET(
       return NextResponse.json({ error: 'Company not found' }, { status: 404 })
     }
 
-    // Fetch contacts, deals, onboarding in parallel
-    const [contactsRes, dealsRes, onboardingRes] = await Promise.all([
+    // Fetch contacts and deals in parallel. There is no `onboarding` table in the
+    // canonical schema, so onboarding progress is reported as honest null below
+    // rather than queried from a table that does not exist.
+    const [contactsRes, dealsRes] = await Promise.all([
       supabase.from('contacts').select('*').eq('company_id', id).order('created_at', { ascending: false }),
       supabase.from('deals').select('*').eq('company_id', id).order('created_at', { ascending: false }),
-      supabase.from('onboarding').select('*').eq('company_id', id).single(),
     ])
 
     // Fetch deal activities (last 5 per deal) and assigned users for each deal
@@ -119,24 +120,10 @@ export async function GET(
     // Build contacts array
     const contacts = (contactsRes.data || []).map(c => keysToCamel(c as Record<string, unknown>))
 
-    // Build onboarding
-    const onboarding = onboardingRes.data
-      ? keysToCamel(onboardingRes.data as Record<string, unknown>)
-      : null
-
-    // Determine onboarding status
-    let onboardingStatus: string | null = null
-    if (onboarding) {
-      const sp = (onboarding.solarpilotProgress as number) ?? 0
-      const ai = (onboarding.aiWorkforceProgress as number) ?? 0
-      if (sp === 100 && ai === 100) {
-        onboardingStatus = 'completed'
-      } else if (sp > 0 || ai > 0) {
-        onboardingStatus = 'in_progress'
-      } else {
-        onboardingStatus = 'not_started'
-      }
-    }
+    // Onboarding is not tracked in the canonical schema — report honest null
+    // (no progress) rather than fabricating a not_started/0% state.
+    const onboarding = null
+    const onboardingStatus: string | null = null
 
     const result = keysToCamel(company as Record<string, unknown>)
     result.contacts = contacts
@@ -217,11 +204,11 @@ export async function PUT(
       return NextResponse.json({ error: 'Company not found' }, { status: 404 })
     }
 
-    // Fetch counts and onboarding for response
-    const [contactsRes, dealsRes, onboardingRes] = await Promise.all([
+    // Fetch counts for response. No `onboarding` table exists in the canonical
+    // schema, so onboarding progress is reported as honest null.
+    const [contactsRes, dealsRes] = await Promise.all([
       supabase.from('contacts').select('id', { count: 'exact', head: true }).eq('company_id', id),
       supabase.from('deals').select('id', { count: 'exact', head: true }).eq('company_id', id),
-      supabase.from('onboarding').select('*').eq('company_id', id).single(),
     ])
 
     const result = keysToCamel(company as Record<string, unknown>)
@@ -229,9 +216,7 @@ export async function PUT(
       contacts: contactsRes.count ?? 0,
       deals: dealsRes.count ?? 0,
     }
-    result.onboarding = onboardingRes.data
-      ? keysToCamel(onboardingRes.data as Record<string, unknown>)
-      : null
+    result.onboarding = null
 
     return NextResponse.json({ company: result })
   } catch (error) {

@@ -38,6 +38,8 @@ export async function POST(
       return NextResponse.json({ error: 'Lead not found' }, { status: 404 })
     }
 
+    // `profiles` has no FK from `deal_activities.user_id` (and no table here), so
+    // it cannot be embedded. Insert, then resolve the author name separately.
     const { data: activity, error } = await supabase
       .from('deal_activities')
       .insert({
@@ -47,7 +49,7 @@ export async function POST(
         title,
         content: content || null,
       })
-      .select('id, type, title, content, created_at, user:profiles!user_id(id, name)')
+      .select('id, type, title, content, created_at, user_id')
       .single()
 
     if (error) {
@@ -55,7 +57,18 @@ export async function POST(
       return NextResponse.json({ error: 'Failed to create activity' }, { status: 400 })
     }
 
-    return NextResponse.json({ activity }, { status: 201 })
+    let activityUser: { id: string; name: string } | null = null
+    if (activity.user_id) {
+      const { data: users } = await supabase
+        .from('profiles')
+        .select('id, name')
+        .eq('id', activity.user_id)
+        .limit(1)
+      const u = users?.[0]
+      if (u) activityUser = { id: u.id, name: u.name }
+    }
+
+    return NextResponse.json({ activity: { ...activity, user: activityUser } }, { status: 201 })
   } catch (error) {
     logger.error('Activity create error', { error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

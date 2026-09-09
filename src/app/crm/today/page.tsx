@@ -106,6 +106,7 @@ interface RawDeal {
   hook: string | null
   next_touch: string | null
   outcome: string | null
+  updated_at: string | null
 }
 
 // The merged, render-ready lead.
@@ -126,6 +127,7 @@ interface Lead {
   doNotEmail: boolean
   stage: string
   isInbound: boolean
+  nextTouch: string | null
 }
 
 type FilterKey = 'all' | 'inbound' | 'open' | 'done'
@@ -138,8 +140,6 @@ const telHref = (p: string | null): string => {
   return 'tel:' + first.replace(/[^0-9+]/g, '')
 }
 const firstWord = (s: string | null | undefined): string => (s || '').trim().split(/\s+/)[0] || ''
-const dneFromChannel = (channel: string | null): boolean =>
-  /do not email|phone only|email bounces|call only/i.test(channel || '')
 
 function greetingForTime(): string {
   const h = new Date().getHours()
@@ -151,6 +151,26 @@ function greetingForTime(): string {
 // A real follow-up date (YYYY-MM-DD) `days` from now, for deals.next_touch.
 const isoDatePlus = (days: number): string =>
   new Date(Date.now() + days * 86_400_000).toISOString().slice(0, 10)
+
+// Today's date (YYYY-MM-DD) in Europe/Dublin, the yardstick for "due today".
+// en-CA formats as ISO 'YYYY-MM-DD', so a plain string compare against a
+// next_touch DATE is correct: nextTouch <= dublinToday means due or overdue.
+const dublinTodayISO = (): string =>
+  new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Dublin', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).format(new Date())
+
+// The Europe/Dublin calendar date (YYYY-MM-DD) of an ISO timestamp. Used to tell
+// whether a deal was actually worked *today* regardless of the viewer's timezone
+// or which device logged the outcome. Returns null for a missing/invalid stamp.
+const dublinDateOf = (iso: string | null | undefined): string | null => {
+  if (!iso) return null
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return null
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Dublin', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).format(d)
+}
 
 // ============================================================================
 // MERGE pipeline (name/phone) + deals (canonical fields) → Lead[]
@@ -174,6 +194,8 @@ function buildLeads(pipeline: any, dealsResp: any): Lead[] {
     const source = pd.source ?? enrich?.source ?? null
     const channel = pd.channel ?? enrich?.channel ?? null
     const contactId = pd.contactId ?? pd.contact_id ?? enrich?.contact_id ?? null
+    // next_touch only ever arrives on the raw deal row (a DATE 'YYYY-MM-DD').
+    const nextTouch = enrich?.next_touch ?? null
 
     const contacts = pd.company?.contacts || []
     const contact =
@@ -182,7 +204,9 @@ function buildLeads(pipeline: any, dealsResp: any): Lead[] {
       contacts[0] ||
       null
 
-    const doNotEmail = contact?.doNotEmail === true || dneFromChannel(channel)
+    // DNE is the real do_not_email column on the contact — never inferred from
+    // free-text channel notes (which lied when the column disagreed).
+    const doNotEmail = contact?.doNotEmail === true
 
     const isInbound = pd.stage === 'inbound' || (!!source && source !== LIST_SOURCE)
 
@@ -203,6 +227,7 @@ function buildLeads(pipeline: any, dealsResp: any): Lead[] {
       doNotEmail,
       stage: pd.stage,
       isInbound,
+      nextTouch,
     }
   })
 }
@@ -410,18 +435,56 @@ export default function TodayCockpitPage() {
     [pipelineQuery.data, dealsQuery.data],
   )
 
+  const dublinToday = useMemo(() => dublinTodayISO(), [])
+
+  // "Worked today" from the server: any deal that already carries an outcome and
+  // whose updated_at lands on today (Europe/Dublin). The deals are already
+  // fetched for the queue, so a lead logged on another device shows as done here
+  // even before this browser's local marker exists.
+  const serverDone = useMemo(() => {
+    const map: Record<string, string> = {}
+    const rawDeals: RawDeal[] = Array.isArray(dealsQuery.data?.deals) ? dealsQuery.data.deals : []
+    for (const d of rawDeals) {
+      const outcome = (d.outcome || '').trim()
+      if (outcome && dublinDateOf(d.updated_at) === dublinToday) {
+        map[d.id] = outcome
+      }
+    }
+    return map
+  }, [dealsQuery.data, dublinToday])
+
+  // Merge: the local per-day marker layered over the server-derived set, so a
+  // just-logged lead reflects instantly and a device switch never loses the work.
+  const effectiveDone = useMemo(() => ({ ...serverDone, ...done }), [serverDone, done])
+
   const inbound = useMemo(() => leads.filter((l) => l.isInbound), [leads])
+
+  // Due today: open (not closed) outbound deals whose scheduled next_touch has
+  // arrived (on or before today, Europe/Dublin). Surfaced ABOVE the work-first
+  // queue so a booked follow-up never quietly goes cold.
+  const dueToday = useMemo(
+    () => leads.filter(
+      (l) => !l.isInbound
+        && l.stage !== 'closed_won' && l.stage !== 'closed_lost'
+        && !!l.nextTouch && l.nextTouch <= dublinToday,
+    ),
+    [leads, dublinToday],
+  )
+  const dueTodayIds = useMemo(() => new Set(dueToday.map((l) => l.id)), [dueToday])
+
   const callQueue = useMemo(
-    () => leads.filter((l) => !l.isInbound && (l.workFirst || l.stage === 'new_lead')),
-    [leads],
+    () => leads.filter(
+      (l) => !l.isInbound && !dueTodayIds.has(l.id) && (l.workFirst || l.stage === 'new_lead'),
+    ),
+    [leads, dueTodayIds],
   )
 
   // Auto-select the first lead for the desktop pane (does not open the sheet).
   useEffect(() => {
     if (selectedId) return
-    const first = inbound[0] || callQueue[0]
+    const first = inbound[0] || dueToday[0] || callQueue[0]
     if (first) setSelectedId(first.id)
-  }, [selectedId, inbound, callQueue])
+  }, [selectedId, inbound, dueToday, callQueue])
 
   const selected = useMemo(
     () => leads.find((l) => l.id === selectedId) || null,
@@ -434,21 +497,26 @@ export default function TodayCockpitPage() {
   }, [])
 
   // ── Stats ─────────────────────────────────────────────────────────────────
-  const toCall = callQueue.filter((l) => !done[l.id]).length
-  const newInbound = inbound.filter((l) => !done[l.id]).length
-  const doneCount = Object.keys(done).length
+  const toCall = callQueue.filter((l) => !effectiveDone[l.id]).length
+  const newInbound = inbound.filter((l) => !effectiveDone[l.id]).length
+  const doneCount = leads.filter((l) => effectiveDone[l.id]).length
 
   // ── Visible sections per filter ─────────────────────────────────────────────
   const visibleInbound = filter === 'all' || filter === 'inbound'
-    ? (filter === 'inbound' ? inbound : inbound.filter((l) => !done[l.id]).concat(inbound.filter((l) => done[l.id])))
+    ? (filter === 'inbound' ? inbound : inbound.filter((l) => !effectiveDone[l.id]).concat(inbound.filter((l) => effectiveDone[l.id])))
     : []
+  const visibleDue = filter === 'all'
+    ? dueToday
+    : filter === 'open'
+      ? dueToday.filter((l) => !effectiveDone[l.id])
+      : []
   const visibleCalls = filter === 'all'
     ? callQueue
     : filter === 'open'
-      ? callQueue.filter((l) => !done[l.id])
+      ? callQueue.filter((l) => !effectiveDone[l.id])
       : []
   const visibleDone = filter === 'done'
-    ? leads.filter((l) => done[l.id])
+    ? leads.filter((l) => effectiveDone[l.id])
     : []
 
   // ── Rail / chip config ──────────────────────────────────────────────────────
@@ -460,7 +528,7 @@ export default function TodayCockpitPage() {
   ]
 
   const hasAnyLead = leads.length > 0
-  const nothingVisible = visibleInbound.length === 0 && visibleCalls.length === 0 && visibleDone.length === 0
+  const nothingVisible = visibleInbound.length === 0 && visibleDue.length === 0 && visibleCalls.length === 0 && visibleDone.length === 0
 
   // ── Pre-mount / loading / error shells ──────────────────────────────────────
   if (!mounted) {
@@ -574,7 +642,15 @@ export default function TodayCockpitPage() {
                 <>
                   <SectionHead>New inbound · reply fast</SectionHead>
                   {visibleInbound.map((l) => (
-                    <LeadCard key={l.id} lead={l} selected={l.id === selectedId} done={done[l.id]} onOpen={() => openLead(l.id)} />
+                    <LeadCard key={l.id} lead={l} selected={l.id === selectedId} done={effectiveDone[l.id]} onOpen={() => openLead(l.id)} />
+                  ))}
+                </>
+              )}
+              {visibleDue.length > 0 && (
+                <>
+                  <SectionHead>{`Due today · follow up ${dueToday.length}`}</SectionHead>
+                  {visibleDue.map((l) => (
+                    <LeadCard key={l.id} lead={l} selected={l.id === selectedId} done={effectiveDone[l.id]} onOpen={() => openLead(l.id)} />
                   ))}
                 </>
               )}
@@ -582,7 +658,7 @@ export default function TodayCockpitPage() {
                 <>
                   <SectionHead>{`Call queue · work-first ${callQueue.length}`}</SectionHead>
                   {visibleCalls.map((l) => (
-                    <LeadCard key={l.id} lead={l} selected={l.id === selectedId} done={done[l.id]} onOpen={() => openLead(l.id)} />
+                    <LeadCard key={l.id} lead={l} selected={l.id === selectedId} done={effectiveDone[l.id]} onOpen={() => openLead(l.id)} />
                   ))}
                 </>
               )}
@@ -590,7 +666,7 @@ export default function TodayCockpitPage() {
                 <>
                   <SectionHead>Logged today</SectionHead>
                   {visibleDone.map((l) => (
-                    <LeadCard key={l.id} lead={l} selected={l.id === selectedId} done={done[l.id]} onOpen={() => openLead(l.id)} />
+                    <LeadCard key={l.id} lead={l} selected={l.id === selectedId} done={effectiveDone[l.id]} onOpen={() => openLead(l.id)} />
                   ))}
                 </>
               )}
@@ -601,7 +677,7 @@ export default function TodayCockpitPage() {
         {/* ── Desktop persistent detail pane ── */}
         <div className="rc-detail-pane rc-scroll" style={{ background: BG }}>
           {selected ? (
-            <LeadDetail key={selected.id} lead={selected} inSheet={false} done={done[selected.id]} onLogged={markDone} onClose={() => setSheetOpen(false)} />
+            <LeadDetail key={selected.id} lead={selected} inSheet={false} done={effectiveDone[selected.id]} onLogged={markDone} onClose={() => setSheetOpen(false)} />
           ) : (
             <div style={{ margin: 'auto', textAlign: 'center', color: FAINT, padding: 40 }}>
               <ListChecks size={26} style={{ color: LINE2, marginBottom: 10 }} />
@@ -614,7 +690,7 @@ export default function TodayCockpitPage() {
       {/* ── Mobile bottom sheet ── */}
       <div className={`rc-scrim${sheetOpen ? ' on' : ''}`} onClick={() => setSheetOpen(false)} />
       <div className={`rc-sheet${sheetOpen && selected ? ' on' : ''}`} role="dialog" aria-modal="true">
-        {selected && <LeadDetail key={selected.id} lead={selected} inSheet done={done[selected.id]} onLogged={markDone} onClose={() => setSheetOpen(false)} />}
+        {selected && <LeadDetail key={selected.id} lead={selected} inSheet done={effectiveDone[selected.id]} onLogged={markDone} onClose={() => setSheetOpen(false)} />}
       </div>
     </div>
   )

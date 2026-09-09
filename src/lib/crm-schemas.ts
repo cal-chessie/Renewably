@@ -151,8 +151,13 @@ export const createActivitySchema = z.object({
 })
 
 // Invoice
+// A cockpit-created invoice can be anchored by contact, company, or deal (or be
+// seeded from a proposal), so all three links are optional here; the route
+// enforces that at least one anchor is present.
 export const createInvoiceSchema = z.object({
-  contactId: z.string().min(1, 'Contact ID is required'),
+  contactId: z.string().optional(),
+  companyId: z.string().optional(),
+  dealId: z.string().optional(),
   proposalId: z.string().optional(),
   dueDate: z.string().datetime({ offset: true }).optional(),
   taxRate: z.number().min(0).max(100).optional().default(0),

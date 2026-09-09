@@ -1,4 +1,3 @@
-import { z } from 'zod'
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
@@ -126,22 +125,22 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const supabase = createServiceClient()
 
-    // Validate with Zod — allow contactId/companyId/dealId to come from proposal
-    const relaxedInvoiceSchema = createInvoiceSchema.extend({
-      contactId: z.string().optional(),
-      companyId: z.string().optional(),
-      dealId: z.string().optional(),
-    }).refine(d => d.contactId || d.proposalId || d.companyId || d.dealId, {
-      message: 'At least one of contactId, proposalId, companyId, or dealId is required',
-    })
+    // contactId/companyId/dealId are all optional on the schema (a cockpit
+    // invoice may link by any of them, or inherit them from a proposal); require
+    // at least one anchor so an invoice is never orphaned.
+    const invoiceSchema = createInvoiceSchema.refine(
+      d => d.contactId || d.proposalId || d.companyId || d.dealId,
+      { message: 'At least one of contactId, proposalId, companyId, or dealId is required' },
+    )
 
-    const result = relaxedInvoiceSchema.safeParse(body)
+    const result = invoiceSchema.safeParse(body)
     if (!result.success) {
       return NextResponse.json({ error: 'Validation failed', details: result.error.flatten() }, { status: 400 })
     }
     const { proposalId, contactId, companyId, dealId, taxRate, dueDate, notes, lineItems } = result.data
 
-    // Compute amounts (no tax_rate column — only store tax_amount)
+    // Compute amounts — tax_rate is a real column on the baseline invoices table,
+    // so persist both the rate and the derived tax_amount.
     const subtotal = lineItems.reduce((sum: number, item: { quantity: number; unitPrice: number }) => sum + (item.quantity * item.unitPrice), 0)
     const taxAmount = subtotal * ((taxRate || 0) / 100)
     const totalAmount = subtotal + taxAmount
@@ -178,7 +177,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Insert invoice (no tax_rate column, no sent_at column)
+    // Insert invoice — persist the deal/company links and the tax_rate so a
+    // cockpit-created invoice stays tied to its deal and keeps its tax basis.
     const { data: invoice, error: insertError } = await supabase
       .from('invoices')
       .insert({
@@ -189,6 +189,7 @@ export async function POST(request: NextRequest) {
         deal_id: finalDealId,
         status: 'draft',
         subtotal_amount: subtotal,
+        tax_rate: taxRate || 0,
         tax_amount: taxAmount,
         total_amount: totalAmount,
         due_date: dueDate ? new Date(dueDate).toISOString() : null,

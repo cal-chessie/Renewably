@@ -289,8 +289,11 @@ describe('createInvoiceSchema', () => {
     expect(result.lineItems).toHaveLength(1)
   })
 
-  it('requires contactId', () => {
-    expect(() => createInvoiceSchema.parse({})).toThrow()
+  it('allows omitting contactId (cockpit invoices link via the deal/company)', () => {
+    // contactId is optional now: a cockpit invoice is created from a deal and
+    // links via dealId/companyId, with the recipient resolved server-side.
+    const result = createInvoiceSchema.parse({})
+    expect(result.contactId).toBeUndefined()
   })
 
   it('rejects tax rate above 100', () => {

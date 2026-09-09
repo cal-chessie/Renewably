@@ -739,10 +739,10 @@ function OnboardingTasksCard({
   onboarding,
   upcomingTasks,
 }: {
-  onboarding: { total: number; completed: number; inProgress: number; avgProgress: number }
+  onboarding: { total: number; completed: number; inProgress: number; avgProgress: number } | null
   upcomingTasks: Array<{ title: string; dueDate: string; priority: string; tag: string }>
 }) {
-  const { total = 0, completed = 0, inProgress = 0, avgProgress = 0 } = onboarding
+  const { total = 0, completed = 0, inProgress = 0, avgProgress = 0 } = onboarding ?? {}
   const progressPercent = Math.round(avgProgress)
 
   return (
@@ -760,6 +760,12 @@ function OnboardingTasksCard({
           </div>
         </div>
 
+        {onboarding === null ? (
+          <p style={{ fontSize: 12, color: TEXT_TERTIARY, margin: 0 }}>
+            Onboarding isn&apos;t tracked yet.
+          </p>
+        ) : (
+        <>
         {/* Circular progress */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 16 }}>
           <div style={{ position: 'relative', width: 72, height: 72, flexShrink: 0 }}>
@@ -832,6 +838,8 @@ function OnboardingTasksCard({
             transition: 'width 0.8s ease',
           }} />
         </div>
+        </>
+        )}
       </div>
 
       {/* Divider */}
@@ -1028,7 +1036,7 @@ export default function DashboardPage() {
     companies = [],
     recentActivity = [],
     upcomingTasks = [],
-    onboarding = {},
+    onboarding = null,
   } = data
 
   const {

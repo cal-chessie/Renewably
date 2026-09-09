@@ -179,27 +179,35 @@ async function captureChatLead(
     const contactName = `Chat Visitor${visitorId ? `-${visitorId.slice(0, 8)}` : `-${Date.now().toString(36)}`}`;
     const visitorTag = visitorId ? `[visitor:${visitorId}]` : null;
 
-    // Find or create the default "Chat Leads" company
+    // Find or create the holding "Website Chat Leads" company BY NAME.
+    // companies.id is a UUID PK (gen_random_uuid); writing a string like
+    // 'chat-leads-default' into it raises Postgres 22P02, which the catch below
+    // swallowed - so every inbound chat lead was silently lost. Look the bucket
+    // up by name and let the DB mint the uuid on first create.
+    const CHAT_LEADS_COMPANY_NAME = 'Website Chat Leads'
+
     const { data: chatCompany } = await supabase
       .from('companies')
       .select('id')
-      .eq('id', 'chat-leads-default')
-      .single()
+      .eq('name', CHAT_LEADS_COMPANY_NAME)
+      .limit(1)
+      .maybeSingle()
 
     let companyId = chatCompany?.id
 
     if (!companyId) {
-      const { data: newCompany } = await supabase
+      const { data: newCompany, error: companyError } = await supabase
         .from('companies')
         .insert({
-          id: 'chat-leads-default',
-          name: 'Chat Widget Leads',
-          counties: '',
+          name: CHAT_LEADS_COMPANY_NAME,
           status: 'active',
           notes: 'Auto-created bucket for leads captured via the public chat widget.',
         })
         .select('id')
         .single()
+      if (companyError) {
+        logger.warn('Chat Lead: Could not create chat leads company', { error: companyError.message })
+      }
       companyId = newCompany?.id
     }
 
@@ -260,6 +268,7 @@ async function captureChatLead(
         company_id: companyId,
         product: 'ai_workforce',
         stage: 'new_lead',
+        source: 'chat',
         notes: `Lead captured from chat widget on ${pageContext || "unknown"}.\n\nMessage: "${message.slice(0, 300)}"`,
         value: 15000,
         mrr: 1000,

@@ -38,14 +38,12 @@ export async function GET(
 
     const supabase = createServiceClient()
 
+    // `profiles` is not a table here and has no FK from `deal_activities.user_id`,
+    // so it cannot be embedded (that would 500 the query). Select the rows, then
+    // resolve author names via a separate lookup and stitch them in code.
     const { data: activities, error } = await supabase
       .from('deal_activities')
-      .select(
-        `
-        id, deal_id, user_id, type, title, content, created_at,
-        profiles!user_id(id, name, avatar)
-      `
-      )
+      .select('id, deal_id, user_id, type, title, content, created_at')
       .eq('deal_id', dealId)
       .order('created_at', { ascending: false })
 
@@ -61,22 +59,30 @@ export async function GET(
       )
     }
 
-    // Convert snake_case to camelCase for the response
-    const camelActivities = (activities || []).map(a => {
-      const profiles = a.profiles as unknown as { id: string; name: string; avatar: string } | null
-      return {
-        id: a.id,
-        dealId: a.deal_id,
-        userId: a.user_id,
-        type: a.type,
-        title: a.title,
-        content: a.content,
-        createdAt: a.created_at,
-        user: profiles
-          ? { id: profiles.id, name: profiles.name, avatar: profiles.avatar }
-          : null,
+    const rows = activities || []
+    const userIds = [...new Set(rows.map(a => a.user_id).filter(Boolean) as string[])]
+    const userMap: Record<string, { id: string; name: string; avatar: string | null }> = {}
+    if (userIds.length > 0) {
+      const { data: users } = await supabase
+        .from('profiles')
+        .select('id, name, avatar')
+        .in('id', userIds)
+      for (const u of users || []) {
+        userMap[u.id] = { id: u.id, name: u.name, avatar: (u as any).avatar ?? null }
       }
-    })
+    }
+
+    // Convert snake_case to camelCase for the response
+    const camelActivities = rows.map(a => ({
+      id: a.id,
+      dealId: a.deal_id,
+      userId: a.user_id,
+      type: a.type,
+      title: a.title,
+      content: a.content,
+      createdAt: a.created_at,
+      user: a.user_id ? userMap[a.user_id] ?? null : null,
+    }))
 
     return NextResponse.json({ activities: camelActivities })
   } catch (error) {
@@ -136,7 +142,9 @@ export async function POST(
 
     const supabase = createServiceClient()
 
-    // Insert the activity — user_id comes from the authenticated user's profile
+    // Insert the activity — user_id comes from the authenticated user's profile.
+    // `profiles` has no FK from `deal_activities.user_id` (and no table here), so
+    // it cannot be embedded; resolve the author name via a separate lookup.
     const { data: activity, error } = await supabase
       .from('deal_activities')
       .insert({
@@ -146,12 +154,7 @@ export async function POST(
         title,
         content: content || '',
       })
-      .select(
-        `
-        id, deal_id, user_id, type, title, content, created_at,
-        profiles!user_id(id, name, avatar)
-      `
-      )
+      .select('id, deal_id, user_id, type, title, content, created_at')
       .single()
 
     if (error) {
@@ -168,8 +171,19 @@ export async function POST(
       )
     }
 
+    // Resolve the author name separately (no profiles embed). Degrades to null.
+    let activityUser: { id: string; name: string; avatar: string | null } | null = null
+    if (activity.user_id) {
+      const { data: users } = await supabase
+        .from('profiles')
+        .select('id, name, avatar')
+        .eq('id', activity.user_id)
+        .limit(1)
+      const u = users?.[0]
+      if (u) activityUser = { id: u.id, name: u.name, avatar: (u as any).avatar ?? null }
+    }
+
     // Convert to camelCase
-    const profiles = activity.profiles as unknown as { id: string; name: string; avatar: string } | null
     const camelActivity = {
       id: activity.id,
       dealId: activity.deal_id,
@@ -178,13 +192,7 @@ export async function POST(
       title: activity.title,
       content: activity.content,
       createdAt: activity.created_at,
-      user: profiles
-        ? {
-            id: profiles.id,
-            name: profiles.name,
-            avatar: profiles.avatar,
-          }
-        : null,
+      user: activityUser,
     }
 
     return NextResponse.json({ activity: camelActivity }, { status: 201 })

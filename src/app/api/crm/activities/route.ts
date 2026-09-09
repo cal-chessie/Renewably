@@ -36,9 +36,12 @@ export async function GET(request: NextRequest) {
     const from = (page - 1) * limit
     const to = page * limit - 1
 
+    // `profiles` has no FK from `deal_activities.user_id` (and no table here), so
+    // it cannot be embedded — that would 500 the query. Select the rows, then
+    // resolve user names via a separate lookup and stitch them in code.
     let query = supabase
       .from('deal_activities')
-      .select('*, user:profiles!user_id(id, name)', { count: 'exact' })
+      .select('*', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(from, to)
 
@@ -56,10 +59,25 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch activities' }, { status: 500 })
     }
 
+    const rows = activities ?? []
+    const userIds = [...new Set(rows.map((a: any) => a.user_id).filter(Boolean) as string[])]
+    const userMap: Record<string, { id: string; name: string }> = {}
+    if (userIds.length > 0) {
+      const { data: users } = await supabase
+        .from('profiles')
+        .select('id, name')
+        .in('id', userIds)
+      for (const u of users || []) userMap[u.id] = { id: u.id, name: u.name }
+    }
+    const withUsers = rows.map((a: any) => ({
+      ...a,
+      user: a.user_id ? userMap[a.user_id] ?? null : null,
+    }))
+
     const total = count ?? 0
 
     return NextResponse.json({
-      activities: activities ?? [],
+      activities: withUsers,
       pagination: { page, limit, total, pages: Math.ceil(total / limit) },
     })
   } catch (error) {

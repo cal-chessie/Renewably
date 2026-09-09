@@ -84,29 +84,43 @@ export async function GET(request: NextRequest) {
     } else if (type === 'activity') {
       filename = `activity-report-${new Date().toISOString().split('T')[0]}.csv`
 
+      // `deal:deals(company:companies)` is a real FK chain and embeds. `profiles`
+      // has no FK from `deal_activities.user_id`, so user names are resolved by a
+      // separate lookup and stitched in code instead of embedded.
       const { data: activities } = await supabase
         .from('deal_activities')
-        .select('id, type, title, content, created_at, user:profiles!user_id(id, name), deal:deals(company:companies(name))')
+        .select('id, type, title, content, created_at, user_id, deal:deals(company:companies(name))')
         .gte('created_at', start)
         .lte('created_at', end)
         .order('created_at', { ascending: false })
         .limit(10000)
 
+      const activityRows = activities ?? []
+      const userIds = [...new Set(activityRows.map((a: any) => a.user_id).filter(Boolean) as string[])]
+      const userMap: Record<string, string> = {}
+      if (userIds.length > 0) {
+        const { data: users } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .in('id', userIds)
+        for (const u of users || []) userMap[u.id] = u.name
+      }
+
       csvContent = ['Type', 'Title', 'User', 'Company', 'Date'].map(escapeCSV).join(',') + '\n'
 
-      for (const a of (activities ?? [])) {
-        const userRow = a.user as Array<{ name: string }> | null
+      for (const a of activityRows) {
+        const userId = (a as any).user_id as string | null
         const dealRow = a.deal as unknown as Array<{ company: { name: string } }> | null
         csvContent += [
           a.type,
           a.title,
-          userRow?.[0]?.name || '',
+          (userId ? userMap[userId] : undefined) || '',
           dealRow?.[0]?.company?.name || '',
           a.created_at?.split('T')[0] || '',
         ].map(escapeCSV).join(',') + '\n'
       }
 
-      csvContent += `\n\nTotal Activities,${(activities ?? []).length}\n`
+      csvContent += `\n\nTotal Activities,${activityRows.length}\n`
 
     } else if (type === 'pipeline') {
       filename = `pipeline-report-${new Date().toISOString().split('T')[0]}.csv`
