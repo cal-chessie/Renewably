@@ -61,10 +61,14 @@ export async function PATCH(
     if (body.qualifiedAnswers !== undefined) updateData.qualified_answers = body.qualifiedAnswers || null
     if (body.demoOutcome !== undefined) updateData.demo_outcome = body.demoOutcome || null
     if (body.closeReason !== undefined) updateData.close_reason = body.closeReason || null
-    // Cockpit lead-actions: log-outcome + book-demo persistence.
-    if (body.outcome !== undefined) updateData.outcome = body.outcome || null
+    // next_touch (date) is the only real column here. `outcome` and `demoAt`
+    // are NOT columns on deals; they are recorded as deal_activities after the
+    // update (see below). Booking a demo also sets the follow-up date.
     if (body.nextTouch !== undefined) updateData.next_touch = body.nextTouch || null
-    if (body.demoAt !== undefined) updateData.demo_at = body.demoAt ? new Date(body.demoAt).toISOString() : null
+    if (body.demoAt) {
+      const d = new Date(body.demoAt)
+      if (!isNaN(d.getTime())) updateData.next_touch = d.toISOString().slice(0, 10)
+    }
 
     const { data: deal, error } = await supabase
       .from('deals')
@@ -85,22 +89,31 @@ export async function PATCH(
       return NextResponse.json({ error: 'Deal not found' }, { status: 404 })
     }
 
-    // Won -> client: a closed_won deal turns its company into a client.
-    // Stamp companies.client_since = now(), but ONLY while it is still null:
-    // the FIRST win is what makes a prospect a client; a later win must not
-    // reset the date. This is a plain table update keyed on company_id, with
-    // no PostgREST embed. It is a secondary effect (the deal transition above
-    // is already persisted), so a failure here is logged, never silent, and
-    // does not fail the request.
+    // Cockpit actions recorded as activities. deal_activities has real columns
+    // (deals has no `outcome`/`demo_at`). Secondary effects: logged on failure,
+    // never fail the request.
+    const activityRows: Array<Record<string, unknown>> = []
+    if (body.outcome) {
+      activityRows.push({ deal_id: id, user_id: user.id, type: 'call_outcome', title: 'Call outcome logged', content: body.outcome, created_at: new Date().toISOString() })
+    }
+    if (body.demoAt) {
+      activityRows.push({ deal_id: id, user_id: user.id, type: 'demo_booked', title: 'Demo booked', content: `Demo booked for ${body.demoAt}`, created_at: new Date().toISOString() })
+    }
+    if (activityRows.length > 0) {
+      const { error: actErr } = await supabase.from('deal_activities').insert(activityRows)
+      if (actErr) logger.warn('Deal activity log failed (non-fatal)', { error: actErr.message, dealId: id })
+    }
+
+    // Won -> client: mark the company a client via the real `status` column
+    // (companies has no client_since). Secondary effect, logged on failure.
     if (body.stage === 'closed_won' && deal.company_id) {
-      const { error: clientSinceError } = await supabase
+      const { error: statusErr } = await supabase
         .from('companies')
-        .update({ client_since: new Date().toISOString() })
+        .update({ status: 'client' })
         .eq('id', deal.company_id)
-        .is('client_since', null)
-      if (clientSinceError) {
-        logger.warn('Won->client: failed to set companies.client_since (non-fatal)', {
-          error: clientSinceError.message,
+      if (statusErr) {
+        logger.warn('Won->client: failed to set companies.status=client (non-fatal)', {
+          error: statusErr.message,
           companyId: deal.company_id,
           dealId: id,
         })

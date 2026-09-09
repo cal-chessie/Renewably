@@ -33,26 +33,26 @@ import {
 } from 'lucide-react'
 
 // ============================================================================
-// RELAY DARK PALETTE (from the approved cockpit mock)
+// PALETTE — matches the main CRM dashboard (src/lib/crm-theme.ts / PipelineBoard
+// DS): dark-only, hardcoded tokens, brand yellow. So the mobile cockpit reads as
+// the same app as the desktop dashboard, not a separate skin.
 // ============================================================================
-const BG = '#0E0D09'
-const APP = '#141209'
-const SURFACE = '#1B1810'
-const SURFACE2 = '#231F15'
-const LINE = '#2E2A1E'
-const LINE2 = '#3C3626'
-const TEXT = '#F5F1E6'
-const MUTED = '#A9A28D'
-const FAINT = '#7C7563'
+const BG = '#080808'
+const APP = '#0C0C0C'
+const SURFACE = '#141414'
+const SURFACE2 = '#1A1A1A'
+const LINE = 'rgba(255,255,255,0.06)'
+const LINE2 = 'rgba(255,255,255,0.10)'
+const TEXT = '#FFFFFF'
+const MUTED = 'rgba(255,255,255,0.55)'
+const FAINT = 'rgba(255,255,255,0.32)'
 const ACCENT = '#F3D840'
-const ACCENT_INK = '#0A0A0A'
-const CALL = '#38D39F'
+const ACCENT_INK = '#080808'
+const CALL = '#10B981'
 const CALL_INK = '#04160F'
 const DNE = '#F87171'
-const INBOUND = '#5EC8E0'
-const WON = '#38D39F'
-
-const LIST_SOURCE = 'relay-list-v4' // imported prospecting list marker
+const INBOUND = '#60A5FA'
+const WON = '#10B981'
 
 // ============================================================================
 // TYPES (loose — API payloads mirror the existing CRM pages' `<any>` usage)
@@ -208,7 +208,9 @@ function buildLeads(pipeline: any, dealsResp: any): Lead[] {
     // free-text channel notes (which lied when the column disagreed).
     const doNotEmail = contact?.doNotEmail === true
 
-    const isInbound = pd.stage === 'inbound' || (!!source && source !== LIST_SOURCE)
+    // Inbound = not part of an outbound work-first list. The 52 carry a
+    // list_cohort (workFirst true); website enquiries have none (workFirst false).
+    const isInbound = !workFirst
 
     return {
       id: pd.id,
@@ -236,7 +238,7 @@ function buildLeads(pipeline: any, dealsResp: any): Lead[] {
 // SHARED CSS (media queries + transitions — inline styles can't express these)
 // ============================================================================
 const COCKPIT_CSS = `
-.rc-root{min-height:100%;background:${BG};color:${TEXT};font-size:15px;line-height:1.5;}
+.rc-root{min-height:100%;background:radial-gradient(ellipse at 50% 0%, ${APP} 0%, ${BG} 70%);color:${TEXT};font-size:15px;line-height:1.5;}
 .rc-layout{display:grid;grid-template-columns:1fr;gap:0;}
 .rc-rail{display:none;}
 .rc-chips{display:flex;gap:6px;padding:12px 14px 4px;overflow-x:auto;}

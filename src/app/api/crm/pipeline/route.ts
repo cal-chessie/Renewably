@@ -52,6 +52,10 @@ interface RawCompany {
   name: string
   counties: string[] | null
   status: string | null
+  segment: string | null
+  product_fit: string | null
+  priority: string | null
+  lead_source: string | null
   contacts: RawContact[]
 }
 
@@ -71,12 +75,11 @@ interface RawDeal {
   company_id: string | null
   contact_id: string | null
   product: string | null
-  segment: string | null
-  fit_score: number | null
   channel: string | null
   angle: string | null
-  work_first: boolean | null
-  source: string | null
+  next_action: string | null
+  list_cohort: string | null
+  next_touch: string | null
   mrr: number | null
   setup_fee: number | null
   stage: string
@@ -140,12 +143,20 @@ function enrichDeal(raw: RawDeal) {
     companyId: raw.company_id,
     contactId: raw.contact_id,
     product: raw.product,
-    segment: raw.segment,
-    fitScore: raw.fit_score,
     channel: raw.channel,
     angle: raw.angle,
-    workFirst: raw.work_first,
-    source: raw.source,
+    nextAction: raw.next_action,
+    listCohort: raw.list_cohort,
+    nextTouch: raw.next_touch,
+    // "work first" simply means this opportunity belongs to an outbound list
+    workFirst: !!raw.list_cohort,
+    // The researched fields live on the COMPANY. Surface them at the deal level
+    // too so existing consumers (desktop board) keep working.
+    segment: raw.companies?.segment ?? null,
+    productFit: raw.companies?.product_fit ?? null,
+    priority: raw.companies?.priority ?? null,
+    source: raw.companies?.lead_source ?? null,
+    fitScore: null,
     mrr: raw.mrr,
     setupFee: raw.setup_fee,
     stage: raw.stage,
@@ -159,6 +170,10 @@ function enrichDeal(raw: RawDeal) {
           name: raw.companies.name,
           counties: raw.companies.counties,
           status: raw.companies.status,
+          segment: raw.companies.segment,
+          productFit: raw.companies.product_fit,
+          priority: raw.companies.priority,
+          leadSource: raw.companies.lead_source,
           contacts: allContacts.map(mapContact),
         }
       : null,
@@ -181,10 +196,10 @@ function enrichDeal(raw: RawDeal) {
 // with it the /crm/today queue). The activity author name is therefore omitted;
 // `mapActivity` degrades `user` to null when no `profiles` row is present.
 const DEAL_ENRICH_SELECT = `
-  id, company_id, contact_id, product, segment, fit_score, channel, angle,
-  work_first, source, mrr, setup_fee, stage, value, notes, updated_at, created_at,
+  id, company_id, contact_id, product, channel, angle, next_action, list_cohort,
+  next_touch, mrr, setup_fee, stage, value, notes, updated_at, created_at,
   companies!company_id (
-    id, name, counties, status,
+    id, name, counties, status, segment, product_fit, priority, lead_source,
     contacts!company_id (id, company_id, name, greeting_name, email, phone, role, do_not_email, is_decision_maker)
   ),
   deal_activities!deal_id (
