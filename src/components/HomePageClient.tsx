@@ -250,7 +250,7 @@ function ProblemSection() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(20px, 3vw, 24px)', marginBottom: 'clamp(40px, 6vw, 48px)' }}>
           <ScrollReveal delay={0.1}>
             <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 'clamp(16px, 2vw, 20px)', lineHeight: 1.7 }}>
-              You have work. Lots of it. More bills in your inbox than you can price. More site surveys than you can drive to. More homeowners waiting on a call back about the grant.
+              You have work. Lots of it. More leads going cold in your inbox than you can chase. More site surveys than you can drive to. More homeowners waiting on a call back about the grant.
             </p>
           </ScrollReveal>
 

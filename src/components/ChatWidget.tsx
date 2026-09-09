@@ -165,6 +165,21 @@ export default function ChatWidget() {
     }
   }, [open]);
 
+  /* ─── Lock the page behind the panel on mobile ─── */
+  // On phones the panel is a near-full-screen sheet; without this the page
+  // scrolls behind it and typing shifts the layout. Desktop keeps its corner
+  // panel and normal page scroll.
+  useEffect(() => {
+    if (!open) return;
+    if (typeof window === "undefined") return;
+    if (!window.matchMedia("(max-width: 640px)").matches) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   /* ─── Add welcome message on first open ─── */
   useEffect(() => {
     if (open && !hasInteracted && messages.length === 0) {
@@ -885,7 +900,7 @@ export default function ChatWidget() {
                       border: "none",
                       background: "transparent",
                       padding: "10px 14px",
-                      fontSize: 13.5,
+                      fontSize: 16, /* >=16px stops iOS Safari auto-zooming on focus */
                       color: DARK,
                       resize: "none",
                       fontFamily: "inherit",
