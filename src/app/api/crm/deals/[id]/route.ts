@@ -61,6 +61,10 @@ export async function PATCH(
     if (body.qualifiedAnswers !== undefined) updateData.qualified_answers = body.qualifiedAnswers || null
     if (body.demoOutcome !== undefined) updateData.demo_outcome = body.demoOutcome || null
     if (body.closeReason !== undefined) updateData.close_reason = body.closeReason || null
+    // Cockpit lead-actions: log-outcome + book-demo persistence.
+    if (body.outcome !== undefined) updateData.outcome = body.outcome || null
+    if (body.nextTouch !== undefined) updateData.next_touch = body.nextTouch || null
+    if (body.demoAt !== undefined) updateData.demo_at = body.demoAt ? new Date(body.demoAt).toISOString() : null
 
     const { data: deal, error } = await supabase
       .from('deals')
@@ -91,7 +95,7 @@ export async function PATCH(
         .select(`
           company_id,
           companies!company_id(id, name),
-          contacts!company_id(id, name, email, is_decision_maker)
+          contacts!company_id(id, name, email, is_decision_maker, do_not_email)
         `)
         .eq('id', id)
         .single()
@@ -101,6 +105,7 @@ export async function PATCH(
           const contacts = (enriched.contacts || []) as any[]
           const dm = contacts.find(c => c.is_decision_maker) || contacts[0]
           if (!dm?.email) return
+          if (dm.do_not_email) return // respect do_not_email: never auto-email these contacts
 
           try {
             await sendStageChangeEmail({

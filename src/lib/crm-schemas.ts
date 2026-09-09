@@ -90,6 +90,10 @@ export const updateDealSchema = z.object({
   demoOutcome: blankToUndefined(z.enum(['positive', 'neutral', 'negative', '']).optional()),
   closeReason: blankToUndefined(z.string().max(500).optional()),
   value: blankToUndefined(currency.optional()),
+  // Cockpit lead-actions: canonical deal-card fields. `null` clears the column.
+  outcome: z.string().max(500).nullish(),
+  nextTouch: z.string().max(40).nullable().optional(),   // date 'YYYY-MM-DD' (next_touch)
+  demoAt: z.string().max(60).nullable().optional(),       // ISO datetime (demo_at)
 })
 
 // Lead
