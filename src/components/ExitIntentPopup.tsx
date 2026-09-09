@@ -196,6 +196,7 @@ export default function ExitIntentPopup() {
     const name = form.name.trim();
     if (!name) return setError("Please add your name.");
     if (!isEmail(form.email)) return setError("Please add a valid email address.");
+    if (form.phone.replace(/\D/g, "").length < 7) return setError("Please add a phone number so we can reach you.");
     if (!consent) return setError("Please tick the box so we can get in touch.");
 
     const parts = name.split(/\s+/);
@@ -480,7 +481,7 @@ export default function ExitIntentPopup() {
                         <input style={inputStyle} placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} onFocus={focusOn} onBlur={focusOff} autoComplete="name" />
                         <input style={inputStyle} placeholder="Company name (optional)" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} onFocus={focusOn} onBlur={focusOff} autoComplete="organization" />
                         <input style={inputStyle} type="email" placeholder="Email address" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} onFocus={focusOn} onBlur={focusOff} autoComplete="email" />
-                        <input style={inputStyle} type="tel" placeholder="Phone number (optional)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} onFocus={focusOn} onBlur={focusOff} autoComplete="tel" />
+                        <input style={inputStyle} type="tel" placeholder="Phone number" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} onFocus={focusOn} onBlur={focusOff} autoComplete="tel" />
                         <textarea style={{ ...inputStyle, minHeight: 72, resize: "vertical" }} placeholder="Anything you want us to know? (optional)" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} onFocus={focusOn} onBlur={focusOff} />
 
                         <label style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13, color: "#535353", lineHeight: 1.5, cursor: "pointer", marginTop: 2 }}>
