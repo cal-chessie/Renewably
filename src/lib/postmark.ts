@@ -251,6 +251,86 @@ renewably.ie
   return { subject, htmlBody, textBody }
 }
 
+interface InvoiceEmailPayload {
+  companyName: string
+  contactName: string
+  invoiceNumber: string
+  amount: string
+  dueDate?: string
+  customMessage?: string
+}
+
+export function buildInvoiceEmail(payload: InvoiceEmailPayload): {
+  subject: string
+  htmlBody: string
+  textBody: string
+} {
+  const { companyName, contactName, invoiceNumber, amount, dueDate, customMessage } = payload
+
+  const subject = `Invoice ${invoiceNumber} from Renewably`
+
+  const htmlBody = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#080808;font-family:system-ui,-apple-system,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;padding:40px 20px;">
+    <tr>
+      <td style="background:#141414;border-radius:16px;padding:32px;border:1px solid rgba(255,255,255,0.05);">
+        <div style="text-align:center;margin-bottom:24px;">
+          <span style="font-size:22px;font-weight:800;color:#F3D840;letter-spacing:-0.02em;">Renewably</span>
+        </div>
+        <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin:0 0 20px;">
+          Hi ${contactName},
+        </p>
+        <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin:0 0 20px;">
+          Please find invoice <strong style="color:#F3D840;">${invoiceNumber}</strong> for <strong style="color:#F3D840;">${companyName}</strong> below.
+        </p>
+        <div style="background:rgba(243,216,64,0.06);border:1px solid rgba(243,216,64,0.15);border-radius:12px;padding:20px;margin:0 0 20px;text-align:center;">
+          <span style="color:rgba(255,255,255,0.50);font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Amount Due</span><br>
+          <span style="font-size:28px;font-weight:800;color:#F3D840;">${amount}</span>
+          ${dueDate ? `<br><span style="color:rgba(255,255,255,0.50);font-size:12px;">Due ${dueDate}</span>` : ''}
+        </div>
+        ${customMessage ? `<p style="color:rgba(255,255,255,0.70);font-size:14px;line-height:1.6;margin:0 0 20px;">${customMessage}</p>` : ''}
+        <p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin:0 0 20px;">
+          If you have any questions about this invoice, please reply to this email or reach us at <a href="mailto:cal@renewably.ie" style="color:#F3D840;">cal@renewably.ie</a>.
+        </p>
+        <p style="color:rgba(255,255,255,0.50);font-size:13px;margin:24px 0 0;">
+          Thank you,<br>The Renewably Team
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:center;padding:20px 0 0;color:rgba(255,255,255,0.25);font-size:11px;">
+        Renewably &mdash; Powering Ireland's Solar Future<br>
+        <a href="https://renewably.ie" style="color:#F3D840;text-decoration:none;">renewably.ie</a>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+
+  const textBody = `
+Hi ${contactName},
+
+Please find invoice ${invoiceNumber} for ${companyName}.
+
+Amount Due: ${amount}${dueDate ? `\nDue: ${dueDate}` : ''}
+${customMessage ? `\n${customMessage}` : ''}
+
+If you have any questions about this invoice, please reply to this email or reach us at cal@renewably.ie.
+
+Thank you,
+The Renewably Team
+
+--
+Renewably - Powering Ireland's Solar Future
+renewably.ie
+`
+
+  return { subject, htmlBody, textBody }
+}
+
 export function buildInternalNotification(payload: {
   title: string
   message: string

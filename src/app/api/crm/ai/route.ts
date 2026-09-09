@@ -1,171 +1,54 @@
+// ============================================================================
+// RENEWABLY.IE - CRM AI ASSISTANT (Claude-backed, SSE streaming)
+// ============================================================================
+// POST /api/crm/ai
+//
+// The authenticated CRM AI assistant. Grounded in the product canon
+// (.agents/product-marketing.md via src/lib/claude.ts) and given read-only CRM
+// context via src/lib/claude-context.ts. Runs on the shared Claude wrapper
+// (src/lib/claude.ts), gated on ANTHROPIC_API_KEY.
+//
+// Guardrail: the assistant DRAFTS and ANSWERS only. It never sends an email,
+// creates a deal, or takes any action on the user's behalf - it returns text.
+// ============================================================================
+
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
 import { requireAuth, unauthorized } from '@/lib/crm-auth'
 import { checkApiRateLimit, getClientIp, isValidUuid } from '@/lib/crm-validation'
-import ZAI from 'z-ai-web-dev-sdk'
+import { claudeStream, isConfigured, type ClaudeAction, type ClaudeMessage } from '@/lib/claude'
+import { fetchCrmContext } from '@/lib/claude-context'
 import { logger } from '@/lib/logger'
 
-// ============================================================================
-// ACTION-SPECIFIC SYSTEM PROMPTS
-// ============================================================================
+const VALID_ACTIONS: ClaudeAction[] = [
+  'chat',
+  'draft_email',
+  'call_script',
+  'summarize_contact',
+  'deal_insights',
+  'generate_proposal',
+  'next_actions',
+  'objection_handling',
+]
 
-const ACTION_PROMPTS: Record<string, string> = {
-  draft_email: `
-## Mode: Email Drafting
-Write the COMPLETE email with subject line, greeting, body, and sign-off.
-- Tone: warm but professional, appropriate for Irish business
-- Include specific CRM data (names, deal values, dates) when provided
-- Keep it concise — 3-5 short paragraphs max
-- End with a clear call-to-action
-- Close with "Kind regards,\nThe Renewably Team"`,
-
-  call_script: `
-## Mode: Call Script
-Generate a concise call script:
-1. **Opening** — friendly greeting, state who's calling
-2. **Key Talking Points** — 3-5 points based on deal/contact context
-3. **Value Proposition** — tailored to the specific prospect
-4. **Common Objections & Responses** — 2-3 objections with responses
-5. **Next Steps** — clear ask (meeting, follow-up, proposal review)
-Keep it scannable — use bullet points and bold headers. Readable in under 2 minutes.`,
-
-  summarize_contact: `
-## Mode: Contact Summary
-Provide a comprehensive but concise summary:
-1. **Profile Overview** — who they are, company, role
-2. **Engagement History** — key interactions and outcomes
-3. **Open Opportunities** — active deals, values and stages
-4. **Risk Assessment** — concerns or blockers
-5. **Recommended Next Actions** — 2-3 specific, prioritised actions`,
-
-  deal_insights: `
-## Mode: Deal Intelligence
-Analyse the deal and provide actionable intelligence:
-1. **Deal Health Score** — assess win probability based on stage, age, engagement
-2. **Risk Factors** — anything that could derail the deal
-3. **Competitive Positioning** — how to strengthen the proposal
-4. **Pricing Guidance** — recommend pricing strategies
-5. **Next Steps** — specific actions to move the deal forward
-6. **Timeline Assessment** — is the close date realistic?`,
-
-  generate_proposal: `
-## Mode: Proposal Content
-Generate professional proposal content:
-1. **Executive Summary** — why this solution, tailored to the prospect
-2. **Proposed Solution** — system size, equipment, key benefits
-3. **Financial Summary** — costs, SEAI grant eligibility, ROI estimate
-4. **Implementation Timeline** — realistic milestones
-5. **Why Renewably** — key differentiators
-6. **Terms & Conditions Summary** — key points
-Use specific CRM data when available. Format with clear headers and bullet points.`,
-
-  next_actions: `
-## Mode: Next Best Actions
-Recommend the most impactful next actions, prioritised by:
-1. **Urgency** — time-sensitive opportunities first
-2. **Impact** — highest value deals get priority
-3. **Effort** — quick wins before complex tasks
-4. **Sequence** — logical order of execution
-Provide 3-5 specific recommendations. Each should include WHO should do it, WHAT to do, and WHY it matters.`,
-
-  objection_handling: `
-## Mode: Objection Handling
-Generate tailored objection responses:
-1. **Price** — "It's too expensive"
-2. **Timeline** — "We're not ready yet"
-3. **Competitors** — "Another company quoted less"
-4. **ROI** — "I'm not sure it's worth it"
-5. **Authority** — "I need to discuss with my partner/board"
-For each: customer's words, empathetic acknowledgement, data-backed response, bridging question.`,
+// Build a single-event SSE stream (used for honest not-configured / error replies).
+function sseReply(reply: string): Response {
+  const encoder = new TextEncoder()
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ reply })}\n\n`))
+      controller.enqueue(encoder.encode('data: [DONE]\n\n'))
+      controller.close()
+    },
+  })
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache, no-transform',
+      'Connection': 'keep-alive',
+      'X-Accel-Buffering': 'no',
+    },
+  })
 }
-
-// ============================================================================
-// SYSTEM PROMPT BUILDER
-// ============================================================================
-
-function buildSystemPrompt(
-  contextData?: Record<string, unknown>,
-  action?: string
-): string {
-  let prompt = `You are Renewably AI, an intelligent CRM assistant for Renewably — a renewable energy platform built specifically for Irish solar PV installers. You help the sales and marketing team be more productive.
-
-## Brand & Tone
-- Warm, professional, concise — match Irish business culture
-- Use EUR (\u20AC) for currency, "solar PV" not "solar panels"
-- British/Irish English spelling (organisation, colour, summarise)
-- Never robotic — be genuinely helpful and specific
-- Reference actual CRM data when provided
-
-## Core Capabilities
-- Draft professional emails to clients and prospects
-- Generate call scripts with talking points and objection handling
-- Summarise contact histories and deal pipelines
-- Provide deal progression recommendations
-- Generate proposal content and next-best-action suggestions
-- Handle common sales objections with data-backed responses
-
-## Formatting
-- Keep responses concise and actionable — salespeople are busy
-- Use clear structure: bullet points, numbered lists, short paragraphs
-- Bold key terms and values
-- When drafting emails, write the complete email ready to send
-- When suggesting actions, prioritise by urgency and impact`
-
-  if (action && ACTION_PROMPTS[action]) {
-    prompt += ACTION_PROMPTS[action]
-  }
-
-  if (contextData) {
-    prompt += '\n\n--- Current CRM Context ---\n'
-
-    if (contextData.contact) {
-      const c = contextData.contact as Record<string, unknown>
-      prompt += `\n**Contact:** ${c.name || 'Unknown'}
-- Email: ${c.email || 'Not provided'}
-- Phone: ${c.phone || 'Not provided'}
-- Role: ${c.role || 'Not provided'}
-- Company: ${c.companyName || 'Not provided'}
-- Decision Maker: ${c.isDecisionMaker ? 'Yes' : 'No'}`
-      if (Array.isArray(c.recentDeals) && c.recentDeals.length) {
-        prompt += `\n- Recent Deals: ${c.recentDeals.map((d: Record<string, unknown>) =>
-          `"${d.title}" \u2014 \u20AC${Number(d.value || 0).toLocaleString()} (${d.stage})`
-        ).join('; ')}`
-      }
-    }
-
-    if (contextData.deal) {
-      const d = contextData.deal as Record<string, unknown>
-      prompt += `\n**Deal:** ${d.title || 'Unknown'}
-- Stage: ${d.stage || 'Unknown'}
-- Value: \u20AC${Number(d.value || 0).toLocaleString()}
-- MRR: \u20AC${Number(d.mrr || 0).toLocaleString()}
-- Product: ${d.product || 'Not specified'}
-- Company: ${d.companyName || 'Not specified'}
-- Created: ${d.createdAt || 'Unknown'}`
-      if (Array.isArray(d.recentActivities) && d.recentActivities.length) {
-        prompt += `\n- Recent Activity: ${d.recentActivities.map((a: Record<string, unknown>) =>
-          `${a.type}: ${a.title}`
-        ).join('; ')}`
-      }
-    }
-
-    if (contextData.task) {
-      const t = contextData.task as Record<string, unknown>
-      prompt += `\n**Task:** ${t.title}
-- Type: ${t.type}
-- Status: ${t.status || 'Not set'}
-- Description: ${t.content || 'None'}`
-    }
-
-    prompt += '\n--- End Context ---'
-  }
-
-  return prompt
-}
-
-// ============================================================================
-// POST — SSE streaming AI chat
-// ============================================================================
 
 export async function POST(request: NextRequest) {
   try {
@@ -194,6 +77,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 })
     }
 
+    // Validate the optional CRM context IDs before touching the database.
     if (context) {
       if (context.contactId && !isValidUuid(context.contactId))
         return NextResponse.json({ error: 'Invalid contactId format' }, { status: 400 })
@@ -201,130 +85,48 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Invalid dealId format' }, { status: 400 })
       if (context.taskId && !isValidUuid(context.taskId))
         return NextResponse.json({ error: 'Invalid taskId format' }, { status: 400 })
+      if (context.companyId && !isValidUuid(context.companyId))
+        return NextResponse.json({ error: 'Invalid companyId format' }, { status: 400 })
     }
 
-    // Fetch CRM context from Supabase
-    const contextData: Record<string, unknown> = {}
-
-    if (context) {
-      const supabase = createServiceClient()
-      const promises: Promise<void>[] = []
-
-      if (context.contactId) {
-        promises.push((async () => {
-          try {
-            const { data: contact } = await supabase
-              .from('contacts')
-              .select('id, name, email, phone, role, is_decision_maker, company_id, company:companies(id, name)')
-              .eq('id', context.contactId)
-              .single()
-            if (contact) {
-              const contactRecord = contact as Record<string, unknown>
-              const companyId = contactRecord.company_id as string | null
-              const companyRow = contact.company as Array<{ id: string; name: string }> | null
-              const { data: deals } = await supabase
-                .from('deals')
-                .select('id, stage, value, mrr, product, company:companies(name)')
-                .eq('company_id', companyId)
-                .order('created_at', { ascending: false })
-                .limit(5)
-
-              contextData.contact = {
-                name: contact.name,
-                email: contact.email,
-                phone: contact.phone,
-                role: contact.role,
-                isDecisionMaker: contact.is_decision_maker,
-                companyName: companyRow?.[0]?.name || null,
-                recentDeals: (deals ?? []).map((d: Record<string, unknown>) => {
-                  const companyArr = d.company as Array<{ name: string }> | null
-                  return { ...d, companyName: companyArr?.[0]?.name || null }
-                }),
-              }
-            }
-          } catch {}
-        })())
-      }
-
-      if (context.dealId) {
-        promises.push((async () => {
-          try {
-            const { data: deal } = await supabase
-              .from('deals')
-              .select('id, stage, value, mrr, product, setup_fee, created_at, company:companies(id, name)')
-              .eq('id', context.dealId)
-              .single()
-            if (deal) {
-              const companyRow = deal.company as Array<{ id: string; name: string }> | null
-              const { data: activities } = await supabase
-                .from('deal_activities')
-                .select('id, type, title, content, created_at')
-                .eq('deal_id', deal.id)
-                .order('created_at', { ascending: false })
-                .limit(10)
-
-              contextData.deal = {
-                stage: deal.stage,
-                value: deal.value,
-                mrr: deal.mrr,
-                product: deal.product,
-                companyName: companyRow?.[0]?.name || null,
-                createdAt: deal.created_at,
-                recentActivities: activities ?? [],
-              }
-            }
-          } catch {}
-        })())
-      }
-
-      if (context.taskId) {
-        promises.push((async () => {
-          try {
-            const { data: task } = await supabase
-              .from('deal_activities')
-              .select('id, type, title, content, created_at, deal:deals(company:companies(name))')
-              .eq('id', context.taskId)
-              .single()
-            if (task) {
-              const dealRow = task.deal as unknown as Array<{ company: { name: string } }> | null
-              contextData.task = {
-                title: task.title,
-                type: task.type,
-                content: task.content,
-                createdAt: task.created_at,
-                companyName: dealRow?.[0]?.company?.name || null,
-              }
-            }
-          } catch {}
-        })())
-      }
-
-      await Promise.all(promises)
+    // ENV GATE: no Anthropic key means no assistant. Answer honestly, never fake.
+    if (!isConfigured()) {
+      return sseReply(
+        'The AI assistant is not configured. Add an ANTHROPIC_API_KEY to enable it.'
+      )
     }
 
-    // Build system prompt
-    const systemPrompt = buildSystemPrompt(
-      Object.keys(contextData).length > 0 ? contextData : undefined,
-      action
-    )
+    // Only forward a recognised action; anything else falls back to general chat.
+    const resolvedAction: ClaudeAction | undefined =
+      typeof action === 'string' && VALID_ACTIONS.includes(action as ClaudeAction)
+        ? (action as ClaudeAction)
+        : undefined
 
-    // Build messages array with conversation history
-    const messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }> = [
-      { role: 'system', content: systemPrompt },
-    ]
+    // Sanitise conversation history to user/assistant text turns; the wrapper
+    // normalises ordering for the Anthropic API.
+    const history: ClaudeMessage[] = Array.isArray(conversationHistory)
+      ? conversationHistory
+          .slice(-10)
+          .filter(
+            (m: unknown): m is ClaudeMessage =>
+              !!m &&
+              typeof (m as ClaudeMessage).content === 'string' &&
+              ((m as ClaudeMessage).role === 'user' || (m as ClaudeMessage).role === 'assistant')
+          )
+      : []
 
-    if (Array.isArray(conversationHistory)) {
-      const recent = conversationHistory.slice(-10)
-      for (const msg of recent) {
-        if (msg.role === 'user' || msg.role === 'assistant') {
-          messages.push({ role: msg.role, content: msg.content })
+    // Only pass through the context IDs the fetcher understands.
+    const ctx = context
+      ? {
+          contactId: context.contactId,
+          dealId: context.dealId,
+          taskId: context.taskId,
+          companyId: context.companyId,
         }
-      }
-    }
+      : undefined
 
-    messages.push({ role: 'user', content: message })
-
-    // Create SSE stream
+    // Stream Claude's answer as SSE. claudeStream builds the canon-grounded
+    // system prompt and pulls read-only CRM context via fetchCrmContext.
     const stream = new ReadableStream({
       async start(controller) {
         const encoder = new TextEncoder()
@@ -333,75 +135,45 @@ export async function POST(request: NextRequest) {
           controller.enqueue(encoder.encode(`data: ${payload}\n\n`))
         }
 
+        let streamedAny = false
         try {
-          const zai = await ZAI.create()
+          const generator = claudeStream(
+            {
+              message,
+              action: resolvedAction,
+              context: ctx,
+              conversationHistory: history,
+            },
+            fetchCrmContext
+          )
 
-          // Attempt real streaming
-          let usedStreaming = false
-          try {
-            const zaiStream = await zai.chat.completions.create({
-              messages,
-              stream: true,
-            })
-
-            // ZAI returns a ReadableStream with numeric-keyed chunks (raw SSE bytes)
-            if (zaiStream && Symbol.asyncIterator in Object(zaiStream)) {
-              usedStreaming = true
-              let sseBuffer = ''
-
-              for await (const chunk of zaiStream as AsyncIterable<Record<number, number>>) {
-                // Convert numeric-keyed object to string (raw SSE bytes)
-                const rawChars = Object.values(chunk)
-                  .map((v) => String.fromCharCode(Number(v)))
-                  .join('')
-                sseBuffer += rawChars
-
-                // Process complete SSE lines
-                const lines = sseBuffer.split('\n')
-                sseBuffer = lines.pop() || ''
-
-                for (const line of lines) {
-                  if (!line.startsWith('data: ')) continue
-                  const dataStr = line.slice(6).trim()
-
-                  if (dataStr === '[DONE]') {
-                    sendEvent('[DONE]')
-                    controller.close()
-                    return
-                  }
-
-                  try {
-                    const parsed = JSON.parse(dataStr)
-                    const token = parsed.choices?.[0]?.delta?.content
-                    if (token) {
-                      sendEvent({ token })
-                    }
-                  } catch {
-                    // Skip unparseable chunks
-                  }
-                }
-              }
+          for await (const token of generator) {
+            if (token) {
+              streamedAny = true
+              sendEvent({ token })
             }
-          } catch (streamErr) {
-            logger.warn('AI streaming failed, falling back to non-streaming', {
-              error: streamErr instanceof Error ? streamErr.message : String(streamErr),
-            })
-          }
-
-          // Non-streaming fallback
-          if (!usedStreaming) {
-            const completion = await zai.chat.completions.create({ messages })
-            const reply =
-              completion.choices?.[0]?.message?.content ||
-              "Sorry, I couldn't generate a response."
-            sendEvent({ reply })
           }
 
           sendEvent('[DONE]')
           controller.close()
         } catch (err) {
-          const errorMsg = err instanceof Error ? err.message : 'Unknown error'
-          sendEvent({ error: errorMsg })
+          // ClaudeError is a plain object { error, code, retryable }; Error has .message.
+          const msg =
+            err && typeof err === 'object' && 'error' in err
+              ? String((err as { error: unknown }).error)
+              : err instanceof Error
+                ? err.message
+                : 'Unknown error'
+          logger.error('AI Assistant stream error', { error: msg })
+
+          // Surface the failure honestly. The client reads content/token/reply,
+          // so a partial answer gets a trailing note; an empty one gets a reply.
+          if (streamedAny) {
+            sendEvent({ token: `\n\n[The assistant hit an error: ${msg}]` })
+          } else {
+            sendEvent({ reply: `Sorry, the assistant could not respond: ${msg}` })
+          }
+          sendEvent('[DONE]')
           controller.close()
         }
       },

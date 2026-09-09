@@ -16,17 +16,15 @@ export async function GET(request: NextRequest) {
   const configured = isConfigured();
   const stats = getUsageStats(user.id);
 
+  // The AI assistant runs solely on Claude (Anthropic), gated on ANTHROPIC_API_KEY.
+  // There is no secondary provider; report the truth rather than a fake fallback.
   return NextResponse.json({
     claude: {
       configured,
       model: configured ? getConfiguredModel() : null,
       status: configured ? 'ready' : 'not_configured',
     },
-    fallback: {
-      available: true,
-      provider: 'z-ai-web-dev-sdk',
-      status: 'ready',
-    },
+    provider: 'anthropic',
     usage: {
       totalRequests: stats.totalRequests,
       totalInputTokens: stats.totalInputTokens,

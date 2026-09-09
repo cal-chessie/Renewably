@@ -12,6 +12,7 @@
 // ============================================================================
 
 import Anthropic from '@anthropic-ai/sdk';
+import { getProductCanon } from '@/lib/product-canon';
 
 // ============================================================================
 // TYPES
@@ -197,7 +198,14 @@ export async function validateApiKey(apiKey?: string): Promise<{ valid: boolean;
 // ============================================================================
 
 function buildSystemPrompt(action: ClaudeAction, context?: CrmContext): string {
-  const base = `You are Renewably AI, the intelligent CRM assistant for Renewably - an AI-as-a-Service platform built specifically for Irish solar PV installers. You help the sales team be more productive by providing intelligent, actionable assistance.
+  // Ground every response in the product canon (offer, pricing, do-not-claim).
+  // Loaded from `.agents/product-marketing.md` so the assistant never fabricates.
+  const canon = getProductCanon();
+
+  const base = `${canon}
+
+--- Your role ---
+You are Renewably AI, the intelligent CRM assistant for Renewably - an AI-as-a-Service platform built specifically for Irish solar PV installers. You help the sales team be more productive by providing intelligent, actionable assistance. Stay strictly inside the product canon above: never invent pricing, figures, capabilities, customers or testimonials that are not stated there.
 
 ## Brand & Tone
 - Warm, professional, concise - match Irish business culture
@@ -374,6 +382,41 @@ For each objection, provide:
 }
 
 // ============================================================================
+// MESSAGE NORMALISATION
+// ============================================================================
+
+/**
+ * Normalise a message list into a shape the Anthropic Messages API accepts:
+ * only user/assistant turns, the first turn is 'user', and no two consecutive
+ * turns share a role (consecutive same-role turns are merged). Empty-content
+ * turns are dropped. This makes the wrapper robust to UI histories that open
+ * with an assistant greeting (e.g. the public chat widget) or contain gaps.
+ */
+export function normalizeClaudeMessages(messages: ClaudeMessage[]): ClaudeMessage[] {
+  const cleaned = messages
+    .map((m) => ({
+      role: m.role === 'assistant' ? ('assistant' as const) : ('user' as const),
+      content: typeof m.content === 'string' ? m.content : String(m.content ?? ''),
+    }))
+    .filter((m) => m.content.trim().length > 0);
+
+  // Anthropic requires the first turn to be a user turn.
+  while (cleaned.length && cleaned[0].role === 'assistant') cleaned.shift();
+
+  // Collapse consecutive same-role turns into one (strict alternation).
+  const out: ClaudeMessage[] = [];
+  for (const m of cleaned) {
+    const last = out[out.length - 1];
+    if (last && last.role === m.role) {
+      last.content += `\n\n${m.content}`;
+    } else {
+      out.push({ ...m });
+    }
+  }
+  return out;
+}
+
+// ============================================================================
 // CORE FUNCTIONS
 // ============================================================================
 
@@ -425,12 +468,17 @@ export async function claudeChat(
   // Add the current message
   messages.push({ role: 'user', content: request.message });
 
+  const finalMessages = normalizeClaudeMessages(messages);
+  if (finalMessages.length === 0) {
+    throw createError('No message content to send to Claude.', 'invalid_request', false);
+  }
+
   try {
     const response = await client.messages.create({
       model: getModel(),
       max_tokens: getMaxTokens(),
       system: systemPrompt,
-      messages: messages.map(m => ({
+      messages: finalMessages.map(m => ({
         role: m.role as 'user' | 'assistant',
         content: m.content,
       })),
@@ -488,12 +536,17 @@ export async function* claudeStream(
   }
   messages.push({ role: 'user', content: request.message });
 
+  const finalMessages = normalizeClaudeMessages(messages);
+  if (finalMessages.length === 0) {
+    throw createError('No message content to send to Claude.', 'invalid_request', false);
+  }
+
   try {
     const stream = client.messages.stream({
       model: getModel(),
       max_tokens: getMaxTokens(),
       system: systemPrompt,
-      messages: messages.map(m => ({
+      messages: finalMessages.map(m => ({
         role: m.role as 'user' | 'assistant',
         content: m.content,
       })),
@@ -531,6 +584,51 @@ export async function claudeQuick(
       max_tokens: getMaxTokens(),
       system: systemPrompt || 'You are a helpful assistant. Be concise and professional.',
       messages: [{ role: 'user', content: message }],
+    });
+
+    return response.content
+      .filter((block): block is Anthropic.TextBlock => block.type === 'text')
+      .map(block => block.text)
+      .join('');
+  } catch (err) {
+    throw mapError(err);
+  }
+}
+
+/**
+ * Multi-turn completion with a caller-supplied system prompt.
+ *
+ * Used by public-facing surfaces (e.g. the website chat widget) that need their
+ * own persona and page context while still routing through this single Claude
+ * wrapper. Messages are normalised to satisfy the Anthropic Messages API.
+ * Gated on ANTHROPIC_API_KEY via getClient().
+ */
+export async function claudeConverse(opts: {
+  system: string;
+  messages: ClaudeMessage[];
+  maxTokens?: number;
+  temperature?: number;
+}): Promise<string> {
+  const client = getClient();
+  if (!client) {
+    throw createError('Claude is not configured.', 'auth', false);
+  }
+
+  const finalMessages = normalizeClaudeMessages(opts.messages);
+  if (finalMessages.length === 0) {
+    throw createError('No message content to send to Claude.', 'invalid_request', false);
+  }
+
+  try {
+    const response = await client.messages.create({
+      model: getModel(),
+      max_tokens: opts.maxTokens ?? getMaxTokens(),
+      ...(opts.temperature !== undefined ? { temperature: opts.temperature } : {}),
+      system: opts.system,
+      messages: finalMessages.map(m => ({
+        role: m.role as 'user' | 'assistant',
+        content: m.content,
+      })),
     });
 
     return response.content

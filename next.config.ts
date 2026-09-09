@@ -1,7 +1,20 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Pin the file-tracing root to this project. There are two lockfiles in the
+  // tree (bun.lock + package-lock.json), so Next otherwise infers a higher root
+  // and nests the standalone output; pinning keeps traced files at the bundle
+  // root (and silences the "inferred your workspace root" warning).
+  outputFileTracingRoot: path.join(process.cwd()),
+  // Ship the product canon into the standalone bundle so the AI surfaces can read
+  // it at runtime. Without this, `.agents/` is not traced/copied and the loader
+  // (src/lib/product-canon.ts) falls back to its embedded copy.
+  outputFileTracingIncludes: {
+    "/api/chat-widget": ["./.agents/product-marketing.md"],
+    "/api/crm/ai": ["./.agents/product-marketing.md"],
+  },
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,

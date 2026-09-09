@@ -23,9 +23,16 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // TODO(relay): confirm Drive scope on the OAuth consent screen. `drive.file`
+    // lets Relay create/read the per-lead folders it makes under
+    // GOOGLE_DRIVE_FOLDER_ID (see src/lib/drive.ts). The scope must also be
+    // listed on the Google Cloud consent screen, and existing accounts must
+    // re-authorise, before Drive calls succeed. If the root folder was not
+    // created by this app, the broader `drive` scope may be required.
     const scopes = [
       'https://www.googleapis.com/auth/calendar.readonly',
       'https://www.googleapis.com/auth/calendar.events',
+      'https://www.googleapis.com/auth/drive.file',
     ].join(' ')
 
     const state = Buffer.from(JSON.stringify({ userId: user.id })).toString('base64')

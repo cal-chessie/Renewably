@@ -29,7 +29,7 @@ import { useCRM } from '@/components/crm/CRMProvider'
 import {
   Phone, PhoneCall, PhoneOff, Sun, Inbox, ListChecks, CheckCircle2,
   X, RefreshCw, Loader2, AlertTriangle, ChevronRight, Building2,
-  StickyNote, CalendarClock, FileText, Receipt, Mail, Sparkles,
+  StickyNote, CalendarClock, FileText, Receipt, Mail, Sparkles, FolderOpen,
 } from 'lucide-react'
 
 // ============================================================================
@@ -727,6 +727,22 @@ function LeadDetail({
     onSuccess: () => { router.push('/crm/invoices') },
   })
 
+  // Drive folder -> POST /api/crm/drive/folder { company }. When Drive is
+  // configured the route create-or-gets the per-lead folder and returns its
+  // link (opened in a new tab); when it is not, the route returns an honest
+  // { ok:false, reason:'Drive not connected' } which we surface below - never a
+  // fabricated link.
+  const driveMutation = useMutation({
+    mutationFn: () =>
+      crmFetch<{ ok: boolean; url?: string; reason?: string }>('/api/crm/drive/folder', {
+        method: 'POST',
+        body: JSON.stringify({ company: lead.companyName }),
+      }),
+    onSuccess: (res) => {
+      if (res.ok && res.url) window.open(res.url, '_blank', 'noopener,noreferrer')
+    },
+  })
+
   const actBtn = (disabled: boolean): React.CSSProperties => ({
     flex: 1, minWidth: 'calc(50% - 4px)', minHeight: 46, borderRadius: 11,
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
@@ -854,9 +870,19 @@ function LeadDetail({
           onClick={() => invoiceMutation.mutate()}>
           <Receipt size={16} /> {invoiceMutation.isPending ? 'Creating…' : 'New invoice'}
         </button>
+        <button style={actBtn(driveMutation.isPending)} disabled={driveMutation.isPending}
+          onClick={() => driveMutation.mutate()}>
+          <FolderOpen size={16} /> {driveMutation.isPending ? 'Opening…' : 'Drive folder'}
+        </button>
       </div>
       {proposalMutation.isError && errLine('Could not create the proposal. Try again.')}
       {invoiceMutation.isError && errLine('Could not create the invoice. Try again.')}
+      {driveMutation.isError && errLine('Could not reach Drive. Try again.')}
+      {driveMutation.data && !driveMutation.data.ok && (
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: FAINT, fontSize: 12.5, marginTop: 8 }}>
+          <FolderOpen size={14} /> {driveMutation.data.reason || 'Drive not connected'}
+        </div>
+      )}
       {noteMutation.isSuccess && panel !== 'note' && (
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: WON, fontSize: 12.5, marginTop: 8 }}>
           <CheckCircle2 size={14} /> Note saved

@@ -103,11 +103,11 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // ── AI (z-ai-web-dev-sdk) ─────────────────────────────────
-    const aiConfigured = true // Always available via z-ai-web-dev-sdk
-
     // ── Claude/Anthropic ─────────────────────────────────────────
+    // The built-in AI assistant and the public chat widget both run on Claude,
+    // gated on ANTHROPIC_API_KEY. No key means the assistant is not connected.
     const claudeConfigured = envVarSet('ANTHROPIC_API_KEY')
+    const aiConfigured = claudeConfigured
 
     // ── Google Analytics ──────────────────────────────────────
     const gaConfigured = envVarSet('GA_MEASUREMENT_ID')
@@ -189,12 +189,14 @@ export async function GET(request: NextRequest) {
         id: 'ai',
         name: 'AI Assistant',
         category: 'ai',
-        description: 'Built-in AI assistant for CRM automation',
+        description: 'Built-in AI assistant for CRM drafting and the public chat widget',
         icon: 'bot',
         colour: '#F3D840',
         configured: aiConfigured,
-        status: 'connected',
-        details: 'Powered by z-ai-web-dev-sdk — always active',
+        status: aiConfigured ? 'connected' : 'disconnected',
+        details: aiConfigured
+          ? 'Powered by Claude (Anthropic)'
+          : 'Anthropic API key not configured',
       },
       {
         id: 'google-analytics',
