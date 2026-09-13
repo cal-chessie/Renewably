@@ -7,16 +7,18 @@ import { pipelineMoveSchema, formatZodError } from '@/lib/crm-schemas'
 import { logger } from '@/lib/logger'
 import { sendStageChangeEmail, sendWelcomeEmail, sendInternalNotification, isPostmarkConfigured } from '@/lib/postmark'
 
+// Lean 7-stage pipeline (was 9). New -> Contacted -> Demo -> Proposal ->
+// Invoice -> Won, plus Lost. discovery_call / demo_done / negotiation were
+// dropped as columns; 'invoiced' added. Removed keys stay valid in the
+// validators/label maps so nothing else breaks, they just have no column.
 const PIPELINE_STAGES = [
-  { stageKey: 'new_lead', stageName: 'New Lead' },
+  { stageKey: 'new_lead', stageName: 'New' },
   { stageKey: 'contacted', stageName: 'Contacted' },
-  { stageKey: 'discovery_call', stageName: 'Discovery' },
-  { stageKey: 'demo_booked', stageName: 'Demo Booked' },
-  { stageKey: 'demo_done', stageName: 'Demo Done' },
-  { stageKey: 'proposal_sent', stageName: 'Proposal Sent' },
-  { stageKey: 'negotiation', stageName: 'Negotiation' },
-  { stageKey: 'closed_won', stageName: 'Closed Won' },
-  { stageKey: 'closed_lost', stageName: 'Closed Lost' },
+  { stageKey: 'demo_booked', stageName: 'Demo' },
+  { stageKey: 'proposal_sent', stageName: 'Proposal' },
+  { stageKey: 'invoiced', stageName: 'Invoice' },
+  { stageKey: 'closed_won', stageName: 'Won' },
+  { stageKey: 'closed_lost', stageName: 'Lost' },
 ] as const
 
 function computeDaysInStage(updatedAt: Date): number {
@@ -56,6 +58,9 @@ interface RawCompany {
   product_fit: string | null
   priority: string | null
   lead_source: string | null
+  energy_type: string | null
+  installs_per_year: number | null
+  website: string | null
   contacts: RawContact[]
 }
 
@@ -174,6 +179,9 @@ function enrichDeal(raw: RawDeal) {
           productFit: raw.companies.product_fit,
           priority: raw.companies.priority,
           leadSource: raw.companies.lead_source,
+          energyType: raw.companies.energy_type,
+          installsPerYear: raw.companies.installs_per_year,
+          website: raw.companies.website,
           contacts: allContacts.map(mapContact),
         }
       : null,
@@ -200,6 +208,7 @@ const DEAL_ENRICH_SELECT = `
   next_touch, mrr, setup_fee, stage, value, notes, updated_at, created_at,
   companies!company_id (
     id, name, counties, status, segment, product_fit, priority, lead_source,
+    energy_type, installs_per_year, website,
     contacts!company_id (id, company_id, name, greeting_name, email, phone, role, do_not_email, is_decision_maker)
   ),
   deal_activities!deal_id (

@@ -8,15 +8,17 @@ import { logger } from '@/lib/logger'
 import { sendStageChangeEmail, sendWelcomeEmail, sendProposalEmail, sendInternalNotification, isPostmarkConfigured } from '@/lib/postmark'
 
 const STAGE_NAMES: Record<string, string> = {
-  new_lead: 'New Lead',
+  new_lead: 'New',
   contacted: 'Contacted',
+  demo_booked: 'Demo',
+  proposal_sent: 'Proposal',
+  invoiced: 'Invoice',
+  closed_won: 'Won',
+  closed_lost: 'Lost',
+  // legacy keys kept so any historical lookup still resolves to a label
   discovery_call: 'Discovery',
-  demo_booked: 'Demo Booked',
-  demo_done: 'Demo Done',
-  proposal_sent: 'Proposal Sent',
-  negotiation: 'Negotiation',
-  closed_won: 'Closed Won',
-  closed_lost: 'Closed Lost',
+  demo_done: 'Demo',
+  negotiation: 'Proposal',
 }
 
 // PATCH: Update deal (pipeline drag-and-drop, field edits)

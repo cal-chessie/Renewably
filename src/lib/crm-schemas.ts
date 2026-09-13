@@ -71,7 +71,7 @@ export const createDealSchema = z.object({
   product: z.enum(['relay', 'ai_workforce', 'both', 'solarpilot']),
   mrr: blankToUndefined(currency.optional().default(0)),
   setupFee: blankToUndefined(currency.optional().default(0)),
-  stage: z.enum(['new_lead', 'contacted', 'discovery_call', 'demo_booked', 'demo_done', 'proposal_sent', 'negotiation', 'closed_won', 'closed_lost']),
+  stage: z.enum(['new_lead', 'contacted', 'discovery_call', 'demo_booked', 'demo_done', 'proposal_sent', 'invoiced', 'negotiation', 'closed_won', 'closed_lost']),
   qualifiedAnswers: z.record(z.string(), z.unknown()).nullable().optional().default(null),
   demoOutcome: blankToUndefined(z.enum(['positive', 'neutral', 'negative', '']).optional().default('')),
   closeReason: blankToUndefined(z.string().max(500).optional().default('')),
@@ -81,7 +81,7 @@ export const createDealSchema = z.object({
 })
 
 export const updateDealSchema = z.object({
-  stage: z.enum(['new_lead', 'contacted', 'discovery_call', 'demo_booked', 'demo_done', 'proposal_sent', 'negotiation', 'closed_won', 'closed_lost']).optional(),
+  stage: z.enum(['new_lead', 'contacted', 'discovery_call', 'demo_booked', 'demo_done', 'proposal_sent', 'invoiced', 'negotiation', 'closed_won', 'closed_lost']).optional(),
   mrr: blankToUndefined(currency.optional()),
   setupFee: blankToUndefined(currency.optional()),
   notes: notes.optional(),
@@ -367,7 +367,7 @@ export const pipelineMoveSchema = z.object({
   dealId: z.string().min(1, 'Deal ID is required'),
   stage: z.enum([
     'new_lead', 'contacted', 'discovery_call', 'demo_booked',
-    'demo_done', 'proposal_sent', 'negotiation', 'closed_won', 'closed_lost',
+    'demo_done', 'proposal_sent', 'invoiced', 'negotiation', 'closed_won', 'closed_lost',
   ]),
 })
 

@@ -71,6 +71,14 @@ interface PipelineCompany {
   id: string
   name: string
   status: string | null
+  segment: string | null
+  productFit: string | null
+  priority: string | null
+  leadSource: string | null
+  counties: string[] | null
+  energyType: string | null
+  installsPerYear: number | null
+  website: string | null
   contacts: PipelineContact[]
 }
 interface PipelineDeal {
@@ -128,9 +136,19 @@ interface Lead {
   stage: string
   isInbound: boolean
   nextTouch: string | null
+  priority: string | null
+  productFit: string | null
+  energyType: string | null
+  counties: string[] | null
+  installsPerYear: number | null
+  website: string | null
 }
 
 type FilterKey = 'all' | 'inbound' | 'open' | 'done'
+
+// Priority grade (A/B/C) colour: A hot, B warm, C cool-muted.
+const gradeColor = (g: string | null): string =>
+  g === 'A' ? WON : g === 'B' ? INBOUND : MUTED
 
 // ============================================================================
 // HELPERS
@@ -230,6 +248,12 @@ function buildLeads(pipeline: any, dealsResp: any): Lead[] {
       stage: pd.stage,
       isInbound,
       nextTouch,
+      priority: pd.company?.priority ?? null,
+      productFit: pd.company?.productFit ?? null,
+      energyType: pd.company?.energyType ?? null,
+      counties: pd.company?.counties ?? null,
+      installsPerYear: pd.company?.installsPerYear ?? null,
+      website: pd.company?.website ?? null,
     }
   })
 }
@@ -314,9 +338,19 @@ function LeadCard({ lead, selected, done, onOpen }: {
           ? <Chip color={INBOUND} bg={`${INBOUND}26`}>NEW · WEBSITE</Chip>
           : lead.workFirst ? <Chip color={ACCENT} bg={`${ACCENT}26`}>WORK FIRST</Chip> : null}
         {lead.doNotEmail && <Chip color={DNE} bg={`${DNE}24`}>DO NOT EMAIL</Chip>}
-        {lead.segment && <Chip color={MUTED} bg={SURFACE2}>{lead.segment}</Chip>}
-        {lead.fitScore != null && <Chip color={MUTED} bg={SURFACE2}>{`FIT ${lead.fitScore}`}</Chip>}
+        {lead.priority && <Chip color={gradeColor(lead.priority)} bg={`${gradeColor(lead.priority)}22`}>{`GRADE ${lead.priority}`}</Chip>}
+        {lead.energyType && <Chip color={MUTED} bg={SURFACE2}>{lead.energyType}</Chip>}
+        {lead.productFit && <Chip color={MUTED} bg={SURFACE2}>{lead.productFit}</Chip>}
+        {lead.segment && <Chip color={MUTED} bg={SURFACE2}>{lead.segment.replace(/_/g, ' ')}</Chip>}
       </div>
+
+      {(lead.counties?.length || lead.installsPerYear || lead.website) && (
+        <div style={{ marginTop: 8, fontSize: 12.5, color: FAINT, display: 'flex', flexWrap: 'wrap', gap: '2px 10px' }}>
+          {lead.counties?.length ? <span>{lead.counties.join(', ')}</span> : null}
+          {lead.installsPerYear ? <span>{`${lead.installsPerYear} installs/yr`}</span> : null}
+          {lead.website ? <span style={{ color: INBOUND }}>{lead.website.replace(/^https?:\/\//, '')}</span> : null}
+        </div>
+      )}
 
       {lead.angle && (
         <div style={{ margin: '10px 0 0', fontSize: 13.5, color: MUTED, lineHeight: 1.5 }}>
