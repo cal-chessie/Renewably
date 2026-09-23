@@ -98,16 +98,13 @@ export async function POST(request: NextRequest) {
 
     const supabase = createServiceClient()
 
-    // Canonical field is `body`; accept legacy `content` as an alias.
+    // Canonical field is `content`; accept legacy `body` as an alias on input.
     const text = (body.body ?? body.content ?? '').trim()
-    const author = (body.author ?? '').trim() || user.name || user.email || null
 
     const { data: note, error } = await supabase
       .from('notes')
       .insert({
-        body: text,
-        content: text, // back-compat: existing readers still read note.content
-        author,
+        content: text,
         contact_id: body.contactId || null,
         deal_id: body.dealId || null,
         company_id: body.companyId || null,

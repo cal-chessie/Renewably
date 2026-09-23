@@ -455,7 +455,7 @@ export default function TodayCockpitPage() {
   })
   const dealsQuery = useQuery({
     queryKey: ['cockpit', 'deals'],
-    queryFn: () => crmFetch<any>('/api/crm/deals?limit=50'),
+    queryFn: () => crmFetch<any>('/api/crm/deals?limit=200'),
   })
 
   const isLoading = pipelineQuery.isLoading || dealsQuery.isLoading
@@ -899,8 +899,10 @@ function LeadDetail({
           ? <Chip color={INBOUND} bg={`${INBOUND}26`}>NEW · WEBSITE</Chip>
           : lead.workFirst ? <Chip color={ACCENT} bg={`${ACCENT}26`}>WORK FIRST</Chip> : null}
         {lead.doNotEmail && <Chip color={DNE} bg={`${DNE}24`}>DO NOT EMAIL</Chip>}
-        {lead.segment && <Chip color={MUTED} bg={SURFACE2}>{lead.segment}</Chip>}
-        {lead.fitScore != null && <Chip color={MUTED} bg={SURFACE2}>{`FIT ${lead.fitScore}`}</Chip>}
+        {lead.priority && <Chip color={gradeColor(lead.priority)} bg={`${gradeColor(lead.priority)}22`}>{`GRADE ${lead.priority}`}</Chip>}
+        {lead.energyType && <Chip color={MUTED} bg={SURFACE2}>{lead.energyType}</Chip>}
+        {lead.productFit && <Chip color={MUTED} bg={SURFACE2}>{lead.productFit.replace(/_/g, ' ')}</Chip>}
+        {lead.segment && <Chip color={MUTED} bg={SURFACE2}>{lead.segment.replace(/_/g, ' ')}</Chip>}
       </div>
 
       {/* Primary: tap-to-call */}
@@ -929,8 +931,19 @@ function LeadDetail({
           </DetailRow>
         )}
         {lead.angle && <DetailRow k="Why call">{lead.angle}</DetailRow>}
-        {lead.segment && <DetailRow k="Segment">{lead.segment}</DetailRow>}
-        {lead.fitScore != null && <DetailRow k="Fit">{lead.fitScore}</DetailRow>}
+        {lead.priority && <DetailRow k="Grade">{`Priority ${lead.priority}`}</DetailRow>}
+        {lead.productFit && <DetailRow k="Fit">{lead.productFit.replace(/_/g, ' ')}</DetailRow>}
+        {lead.energyType && <DetailRow k="Tech">{lead.energyType}</DetailRow>}
+        {lead.segment && <DetailRow k="Segment">{lead.segment.replace(/_/g, ' ')}</DetailRow>}
+        {lead.counties?.length ? <DetailRow k="Counties">{lead.counties.join(', ')}</DetailRow> : null}
+        {lead.installsPerYear ? <DetailRow k="Installs/yr">{lead.installsPerYear}</DetailRow> : null}
+        {lead.website && (
+          <DetailRow k="Website">
+            <a href={lead.website.startsWith('http') ? lead.website : `https://${lead.website}`} target="_blank" rel="noreferrer" style={{ color: INBOUND, textDecoration: 'none' }}>
+              {lead.website.replace(/^https?:\/\//, '')}
+            </a>
+          </DetailRow>
+        )}
         {lead.channel && <DetailRow k="Channel">{lead.channel}</DetailRow>}
         {lead.source && <DetailRow k="Source">{lead.source}</DetailRow>}
       </div>

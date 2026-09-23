@@ -92,7 +92,7 @@ function mapInstallerStatsRow(
     subscriptionStatus: sub?.status as string | null,
     subscriptionPlanId: sub?.plan_id as string | null,
     subscriptionBillingCycle: sub?.billing_cycle as string | null,
-    subscriptionCancelledAt: sub?.cancelled_at as string | null,
+    subscriptionCancelledAt: sub?.canceled_at as string | null,
   }
 }
 
@@ -112,7 +112,7 @@ export async function GET(request: NextRequest) {
     // Fetch all installers with subscription data
     const { data: rows, error } = await supabase
       .from('installer_profiles')
-      .select('*, subscriptions(status, plan_id, billing_cycle, current_period_start, current_period_end, cancelled_at)')
+      .select('*, subscriptions(status, plan_id, billing_cycle, current_period_start, current_period_end, canceled_at)')
       .limit(500)
 
     if (error) {

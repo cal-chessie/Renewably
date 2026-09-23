@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
       // Email logs — emails sent this month (opened, clicked, bounced)
       supabase
         .from('email_logs')
-        .select('id, opened_at, clicked_at, bounced_at, created_at')
+        .select('id, opened_at, first_open_at, clicks_count, bounce_type, created_at')
         .gte('created_at', startOfMonth),
     ])
 
@@ -148,9 +148,9 @@ export async function GET(request: NextRequest) {
     // ===== EMAIL ANALYTICS =====
     const emailLogsData = emailLogsRes.data ?? []
     const emailsSent = emailLogsData.length
-    const emailsOpened = emailLogsData.filter((e) => e.opened_at !== null).length
-    const emailsClicked = emailLogsData.filter((e) => e.clicked_at !== null).length
-    const emailsBounced = emailLogsData.filter((e) => e.bounced_at !== null).length
+    const emailsOpened = emailLogsData.filter((e) => (e.first_open_at ?? e.opened_at) !== null).length
+    const emailsClicked = emailLogsData.filter((e) => (e.clicks_count ?? 0) > 0).length
+    const emailsBounced = emailLogsData.filter((e) => e.bounce_type !== null).length
 
     const kpis = {
       activeClients: activeCompanies,

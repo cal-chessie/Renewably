@@ -115,7 +115,7 @@ export async function POST(
     const sentAt = new Date().toISOString()
     const { data: updated, error: updateError } = await supabase
       .from('proposals')
-      .update({ status: 'sent', sent_at: sentAt, updated_at: sentAt })
+      .update({ status: 'sent', updated_at: sentAt })
       .eq('id', id)
       .select(
         '*, contact:contacts(id, name, email), company:companies(id, name), deal:deals(id, product), proposal_line_items:proposal_line_items(*)',

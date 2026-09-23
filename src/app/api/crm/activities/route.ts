@@ -8,7 +8,8 @@ import { logger } from '@/lib/logger'
 // Schema for creating an activity (supports both deal-level and company-level)
 const createActivityBody = z.object({
   type: z.enum(['note', 'call', 'email', 'meeting', 'demo', 'proposal', 'task']),
-  title: z.string().min(1, 'Title is required').max(500),
+  title: z.string().max(500).optional(),
+  subject: z.string().max(500).optional(),
   content: z.string().max(5000).optional().default(''),
   dealId: z.string().optional(),
   companyId: z.string().optional(),
@@ -30,7 +31,6 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
     const limit = clampPagination(parseInt(searchParams.get('limit') || '50'), 50)
     const dealId = searchParams.get('dealId') || ''
-    const companyId = searchParams.get('companyId') || ''
 
     const supabase = createServiceClient()
     const from = (page - 1) * limit
@@ -47,9 +47,6 @@ export async function GET(request: NextRequest) {
 
     if (dealId && isValidUuid(dealId)) {
       query = query.eq('deal_id', dealId)
-    }
-    if (companyId && isValidUuid(companyId)) {
-      query = query.eq('company_id', companyId)
     }
 
     const { data: activities, error, count } = await query
@@ -107,6 +104,12 @@ export async function POST(request: NextRequest) {
       throw error
     }
 
+    // The client may send either `title` or `subject`; accept either.
+    const title = (body.title ?? body.subject ?? '').trim()
+    if (!title) {
+      return NextResponse.json({ error: 'Title is required' }, { status: 400 })
+    }
+
     const supabase = createServiceClient()
 
     // Validate deal exists if provided
@@ -121,10 +124,9 @@ export async function POST(request: NextRequest) {
       .from('deal_activities')
       .insert({
         deal_id: body.dealId || null,
-        company_id: body.companyId || null,
         user_id: user.id,
         type: body.type,
-        title: body.title,
+        title,
         content: body.content || null,
       })
       .select()
