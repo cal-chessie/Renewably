@@ -61,6 +61,7 @@ interface RawCompany {
   energy_type: string | null
   installs_per_year: number | null
   website: string | null
+  notes: string | null
   contacts: RawContact[]
 }
 
@@ -182,6 +183,7 @@ function enrichDeal(raw: RawDeal) {
           energyType: raw.companies.energy_type,
           installsPerYear: raw.companies.installs_per_year,
           website: raw.companies.website,
+          notes: raw.companies.notes,
           contacts: allContacts.map(mapContact),
         }
       : null,
@@ -208,7 +210,7 @@ const DEAL_ENRICH_SELECT = `
   next_touch, mrr, setup_fee, stage, value, notes, updated_at, created_at,
   companies!company_id (
     id, name, counties, status, segment, product_fit, priority, lead_source,
-    energy_type, installs_per_year, website,
+    energy_type, installs_per_year, website, notes,
     contacts!company_id (id, company_id, name, greeting_name, email, phone, role, do_not_email, is_decision_maker)
   ),
   deal_activities!deal_id (

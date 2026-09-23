@@ -79,6 +79,7 @@ interface PipelineCompany {
   energyType: string | null
   installsPerYear: number | null
   website: string | null
+  notes: string | null
   contacts: PipelineContact[]
 }
 interface PipelineDeal {
@@ -95,8 +96,10 @@ interface PipelineDeal {
   fit_score?: number | null
   source?: string | null
   channel?: string | null
+  nextAction?: string | null
   contactId?: string | null
   contact_id?: string | null
+  createdAt?: string | Date | null
 }
 interface RawDeal {
   id: string
@@ -142,6 +145,9 @@ interface Lead {
   counties: string[] | null
   installsPerYear: number | null
   website: string | null
+  nextAction: string | null
+  researchNote: string | null
+  createdAt: number
 }
 
 type FilterKey = 'all' | 'inbound' | 'open' | 'done'
@@ -254,6 +260,9 @@ function buildLeads(pipeline: any, dealsResp: any): Lead[] {
       counties: pd.company?.counties ?? null,
       installsPerYear: pd.company?.installsPerYear ?? null,
       website: pd.company?.website ?? null,
+      nextAction: pd.nextAction ?? null,
+      researchNote: pd.company?.notes ?? null,
+      createdAt: pd.createdAt ? new Date(pd.createdAt).getTime() : 0,
     }
   })
 }
@@ -466,12 +475,25 @@ export default function TodayCockpitPage() {
     dealsQuery.refetch()
   }, [pipelineQuery, dealsQuery])
 
+  // Ordered by created_at ascending = the sequence you gave in the Work First
+  // sheet (import order). Recovers your outbound order, no rank column needed.
   const leads = useMemo(
-    () => buildLeads(pipelineQuery.data, dealsQuery.data),
+    () => buildLeads(pipelineQuery.data, dealsQuery.data).sort((a, b) => a.createdAt - b.createdAt),
     [pipelineQuery.data, dealsQuery.data],
   )
 
   const dublinToday = useMemo(() => dublinTodayISO(), [])
+
+  // Search across the list + a cap so the queue is never a 52-long scroll.
+  const [search, setSearch] = useState('')
+  const [showAllCalls, setShowAllCalls] = useState(false)
+  const q = search.trim().toLowerCase()
+  const matchesSearch = (l: Lead) =>
+    !q || l.companyName.toLowerCase().includes(q) ||
+    (l.greeting || '').toLowerCase().includes(q) ||
+    (l.angle || '').toLowerCase().includes(q) ||
+    (l.counties || []).join(' ').toLowerCase().includes(q)
+  const CALL_CAP = 15
 
   // "Worked today" from the server: any deal that already carries an outcome and
   // whose updated_at lands on today (Europe/Dublin). The deals are already
@@ -538,22 +560,24 @@ export default function TodayCockpitPage() {
   const doneCount = leads.filter((l) => effectiveDone[l.id]).length
 
   // ── Visible sections per filter ─────────────────────────────────────────────
-  const visibleInbound = filter === 'all' || filter === 'inbound'
+  const visibleInbound = (filter === 'all' || filter === 'inbound'
     ? (filter === 'inbound' ? inbound : inbound.filter((l) => !effectiveDone[l.id]).concat(inbound.filter((l) => effectiveDone[l.id])))
-    : []
-  const visibleDue = filter === 'all'
+    : []).filter(matchesSearch)
+  const visibleDue = (filter === 'all'
     ? dueToday
     : filter === 'open'
       ? dueToday.filter((l) => !effectiveDone[l.id])
-      : []
-  const visibleCalls = filter === 'all'
+      : []).filter(matchesSearch)
+  const visibleCallsAll = (filter === 'all'
     ? callQueue
     : filter === 'open'
       ? callQueue.filter((l) => !effectiveDone[l.id])
-      : []
-  const visibleDone = filter === 'done'
+      : []).filter(matchesSearch)
+  // Cap the call list unless searching or the user asked to see all.
+  const visibleCalls = (q || showAllCalls) ? visibleCallsAll : visibleCallsAll.slice(0, CALL_CAP)
+  const visibleDone = (filter === 'done'
     ? leads.filter((l) => effectiveDone[l.id])
-    : []
+    : []).filter(matchesSearch)
 
   // ── Rail / chip config ──────────────────────────────────────────────────────
   const sections: { key: FilterKey; label: string; icon: React.ElementType }[] = [
@@ -625,6 +649,19 @@ export default function TodayCockpitPage() {
                 </div>
               ))}
             </div>
+            {/* Search */}
+            <div style={{ marginTop: 12 }}>
+              <input
+                value={search}
+                onChange={(e) => { setSearch(e.target.value); setShowAllCalls(false) }}
+                placeholder="Search company, contact or county"
+                style={{
+                  width: '100%', boxSizing: 'border-box', height: 40, borderRadius: 10,
+                  background: APP, color: TEXT, border: `1px solid ${LINE2}`,
+                  padding: '0 12px', fontSize: 14, fontFamily: 'inherit', outline: 'none',
+                }}
+              />
+            </div>
           </div>
 
           {/* Mobile filter chips */}
@@ -692,10 +729,16 @@ export default function TodayCockpitPage() {
               )}
               {visibleCalls.length > 0 && (
                 <>
-                  <SectionHead>{`Call queue · work-first ${callQueue.length}`}</SectionHead>
+                  <SectionHead>{q ? `Matches ${visibleCallsAll.length}` : `Call queue · in your order ${visibleCallsAll.length}`}</SectionHead>
                   {visibleCalls.map((l) => (
                     <LeadCard key={l.id} lead={l} selected={l.id === selectedId} done={effectiveDone[l.id]} onOpen={() => openLead(l.id)} />
                   ))}
+                  {!q && !showAllCalls && visibleCallsAll.length > CALL_CAP && (
+                    <button onClick={() => setShowAllCalls(true)} className="rc-actionbtn" style={{
+                      width: '100%', marginTop: 4, padding: '11px', borderRadius: 10, cursor: 'pointer',
+                      background: SURFACE2, border: `1px solid ${LINE2}`, color: TEXT, fontWeight: 700, fontSize: 13.5, fontFamily: 'inherit',
+                    }}>Show all {visibleCallsAll.length}</button>
+                  )}
                 </>
               )}
               {visibleDone.length > 0 && (
@@ -937,6 +980,7 @@ function LeadDetail({
           </DetailRow>
         )}
         {lead.angle && <DetailRow k="Why call">{lead.angle}</DetailRow>}
+        {lead.nextAction && <DetailRow k="Next step">{lead.nextAction}</DetailRow>}
         {lead.priority && <DetailRow k="Grade">{`Priority ${lead.priority}`}</DetailRow>}
         {lead.productFit && <DetailRow k="Fit">{lead.productFit.replace(/_/g, ' ')}</DetailRow>}
         {lead.energyType && <DetailRow k="Tech">{lead.energyType}</DetailRow>}
@@ -952,6 +996,7 @@ function LeadDetail({
         )}
         {lead.channel && <DetailRow k="Channel">{lead.channel}</DetailRow>}
         {lead.source && <DetailRow k="Source">{lead.source}</DetailRow>}
+        {lead.researchNote && <DetailRow k="Research">{lead.researchNote}</DetailRow>}
       </div>
 
       {/* Log the outcome (real: PATCH /api/crm/deals/:id) */}
