@@ -769,6 +769,12 @@ function LeadDetail({
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['cockpit'] })
 
+  // Saved notes for this lead, read back so the log step is actually visible.
+  const notesQuery = useQuery({
+    queryKey: ['lead-notes', lead.id],
+    queryFn: () => crmFetch<any>(`/api/crm/notes?dealId=${lead.id}&limit=25`),
+  })
+
   // Log outcome -> the deal is the source of truth (outcome + stage + next_touch).
   const logMutation = useMutation({
     mutationFn: async (o: (typeof OUTCOMES)[number]) => {
@@ -796,7 +802,7 @@ function LeadDetail({
   const noteMutation = useMutation({
     mutationFn: (bodyText: string) =>
       crmFetch('/api/crm/notes', { method: 'POST', body: JSON.stringify({ dealId: lead.id, body: bodyText }) }),
-    onSuccess: () => { setNoteText(''); setPanel('none'); invalidate() },
+    onSuccess: () => { setNoteText(''); setPanel('none'); invalidate(); queryClient.invalidateQueries({ queryKey: ['lead-notes', lead.id] }) },
   })
 
   // Book demo -> persist the chosen slot on the deal (real Cal.com booking is Wave C).
@@ -1041,6 +1047,21 @@ function LeadDetail({
             >{noteMutation.isPending ? 'Saving…' : 'Save note'}</button>
           </div>
           {noteMutation.isError && errLine('Could not save the note. Try again.')}
+        </div>
+      )}
+
+      {/* Saved notes for this lead */}
+      {(notesQuery.data?.notes?.length ?? 0) > 0 && (
+        <div style={{ marginTop: 14 }}>
+          <SectionHead>Notes</SectionHead>
+          {notesQuery.data.notes.map((n: any) => (
+            <div key={n.id} style={{ background: SURFACE2, border: `1px solid ${LINE}`, borderRadius: 10, padding: '10px 12px', marginBottom: 8 }}>
+              <div style={{ fontSize: 14, color: TEXT, whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{n.content || n.body}</div>
+              <div style={{ fontSize: 11.5, color: FAINT, marginTop: 6, fontFamily: 'monospace' }}>
+                {new Date(n.createdAt || n.created_at).toLocaleString('en-IE', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
