@@ -201,7 +201,7 @@ export async function POST(request: NextRequest) {
 
       const { error: dealError } = await supabase.from("deals").insert({
         company_id: companyId,
-        product: "solarpilot",
+        product: "relay",
         mrr: Math.round(estimatedValue / 12),
         setup_fee: 0,
         stage: "new_lead",

@@ -613,9 +613,11 @@ interface ProductCyclerProps {
 export function ProductCycler({ product, onSave }: ProductCyclerProps) {
   const [isLoading, setIsLoading] = useState(false)
 
-  const productOrder = ['solarpilot', 'ai_workforce', 'both']
+  const productOrder = ['relay', 'ai_workforce', 'both']
 
+  // 'relay' is canonical; legacy 'solarpilot' kept so existing rows still display 'Relay'.
   const PRODUCTS: Record<string, { label: string; color: string }> = {
+    relay: { label: 'Relay', color: '#F3D840' },
     solarpilot: { label: 'Relay', color: '#F3D840' },
     ai_workforce: { label: 'AI Workforce', color: '#A78BFA' },
     both: { label: 'Both', color: '#22C55E' },
@@ -636,7 +638,7 @@ export function ProductCycler({ product, onSave }: ProductCyclerProps) {
     }
   }, [product, isLoading, onSave])
 
-  const p = PRODUCTS[product] || PRODUCTS.solarpilot
+  const p = PRODUCTS[product] || PRODUCTS.relay
 
   return (
     <button

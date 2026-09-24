@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
       .from('deals')
       .insert({
         company_id: companyId,
-        product: product || 'solarpilot',
+        product: product || 'relay',
         stage: 'new_lead',
         value: body.value || null,
         notes: notes || null,

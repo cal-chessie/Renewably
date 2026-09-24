@@ -47,6 +47,7 @@ interface TemplatePayload {
 
 function productLabel(product: string): string {
   const map: Record<string, string> = {
+    relay: 'Relay',
     solarpilot: 'Relay',
     ai_workforce: 'AI Workforce',
     both: 'Relay + AI Workforce',
