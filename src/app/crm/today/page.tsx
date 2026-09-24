@@ -344,9 +344,9 @@ function LeadCard({ lead, selected, done, onOpen }: {
         {lead.segment && <Chip color={MUTED} bg={SURFACE2}>{lead.segment.replace(/_/g, ' ')}</Chip>}
       </div>
 
-      {(lead.counties?.length || lead.installsPerYear || lead.website) && (
+      {(lead.counties || lead.installsPerYear || lead.website) && (
         <div style={{ marginTop: 8, fontSize: 12.5, color: FAINT, display: 'flex', flexWrap: 'wrap', gap: '2px 10px' }}>
-          {lead.counties?.length ? <span>{lead.counties.join(', ')}</span> : null}
+          {lead.counties ? <span>{Array.isArray(lead.counties) ? lead.counties.join(', ') : lead.counties}</span> : null}
           {lead.installsPerYear ? <span>{`${lead.installsPerYear} installs/yr`}</span> : null}
           {lead.website ? <span style={{ color: INBOUND }}>{lead.website.replace(/^https?:\/\//, '')}</span> : null}
         </div>
