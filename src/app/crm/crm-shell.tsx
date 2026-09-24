@@ -8,7 +8,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard, Building2, GitBranch, LogOut, Menu,
   ChevronLeft, ChevronRight, Users, Settings as SettingsIcon,
-  TrendingUp, Euro, Trophy, CalendarDays as CalendarIcon,
+  TrendingUp, Euro, Trophy, Target, Presentation, Receipt,
 } from 'lucide-react'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -49,10 +49,13 @@ const navSections = [
   {
     label: null,
     items: [
-      { href: '/crm/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-      { href: '/crm/companies', label: 'Companies', icon: Building2 },
+      { href: '/crm/today', label: 'Today', icon: LayoutDashboard },
       { href: '/crm/pipeline', label: 'Pipeline', icon: GitBranch },
-      { href: '/crm/calendar', label: 'Calendar', icon: CalendarIcon },
+      { href: '/crm/companies', label: 'Companies', icon: Building2 },
+      { href: '/crm/contacts', label: 'Contacts', icon: Users },
+      { href: '/crm/deals', label: 'Deals', icon: Target },
+      { href: '/crm/proposals', label: 'Proposals', icon: Presentation },
+      { href: '/crm/invoices', label: 'Invoices', icon: Receipt },
       { href: '/crm/settings', label: 'Settings', icon: SettingsIcon },
     ],
   },
