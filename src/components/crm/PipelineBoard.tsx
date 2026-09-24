@@ -111,10 +111,7 @@ const STAGE_PROBABILITIES: Record<string, number> = {
 // ═══════════════════════════════════════════════════════════════════
 // PRODUCT CONFIGURATION
 // ═══════════════════════════════════════════════════════════════════
-// 'relay' is the canonical product key; legacy 'solarpilot' is kept so existing
-// rows still resolve to the 'Relay' label during the data migration.
 const PRODUCTS: Record<string, { label: string; color: string; icon: typeof SunMedium }> = {
-  relay: { label: 'Relay', color: '#F3D840', icon: SunMedium },
   solarpilot: { label: 'Relay', color: '#F3D840', icon: SunMedium },
   ai_workforce: { label: 'AI Workforce', color: '#A78BFA', icon: Bot },
   both: { label: 'Both', color: '#22C55E', icon: Sparkles },
@@ -183,7 +180,7 @@ function ScoreDot({ score }: { score?: 'hot' | 'warm' | 'cold' | null }) {
 }
 
 function ProductBadge({ product }: { product: string }) {
-  const c = PRODUCTS[product] || PRODUCTS.relay
+  const c = PRODUCTS[product] || PRODUCTS.solarpilot
   return (
     <span
       className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-semibold"
@@ -1096,12 +1093,11 @@ function DealDetailPanel({ dealId, onClose }: { dealId: string | null; onClose: 
                   <InlineEdit
                     mode="select"
                     value={deal.product}
-                    displayValue={PRODUCTS[deal.product]?.label ?? PRODUCTS.relay.label}
                     onSave={async (v) => {
                       await updateMutation.mutateAsync({ product: String(v) })
                     }}
                     options={[
-                      { value: 'relay', label: 'Relay' },
+                      { value: 'solarpilot', label: 'Relay' },
                       { value: 'ai_workforce', label: 'AI Workforce' },
                       { value: 'both', label: 'Both' },
                     ]}
@@ -1997,7 +1993,7 @@ function NewDealDialog({
   const qc = useQueryClient()
   const [form, setForm] = useState({
     companyId: '',
-    product: 'relay',
+    product: 'solarpilot',
     mrr: '',
     setupFee: '',
     stage: defaultStage || 'new_lead',
@@ -2043,7 +2039,7 @@ function NewDealDialog({
       if (v) {
         setForm({
           companyId: '',
-          product: 'relay',
+          product: 'solarpilot',
           mrr: '',
           setupFee: '',
           stage: defaultStage || 'new_lead',
@@ -2063,7 +2059,7 @@ function NewDealDialog({
   const setup = parseFloat(form.setupFee) || 0
   const dealValue = mrr || setup ? setup + mrr * 6 : null
 
-  const productKeys = ['relay', 'ai_workforce', 'both'] as const
+  const productKeys = ['solarpilot', 'ai_workforce', 'both'] as const
   const stageOptions = STAGES.filter(s => s.key !== 'closed_lost')
 
   return (
@@ -2572,11 +2568,7 @@ export function PipelineBoard() {
           const q = search.toLowerCase()
           if (!d.company?.name?.toLowerCase().includes(q)) return false
         }
-        if (productFilter !== 'all') {
-          // Legacy 'solarpilot' rows count as 'relay' so the Relay filter shows them too.
-          const dp = d.product === 'solarpilot' ? 'relay' : d.product
-          if (dp !== productFilter) return false
-        }
+        if (productFilter !== 'all' && d.product !== productFilter) return false
         return true
       }),
     }))
@@ -2859,7 +2851,7 @@ export function PipelineBoard() {
           <div className="flex items-center gap-2">
             {[
               { key: 'all', label: 'All Products' },
-              { key: 'relay', label: 'Relay' },
+              { key: 'solarpilot', label: 'Relay' },
               { key: 'ai_workforce', label: 'AI Workforce' },
               { key: 'both', label: 'Both' },
             ].map((filter) => {

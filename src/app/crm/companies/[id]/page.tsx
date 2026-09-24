@@ -640,12 +640,12 @@ function AddDealDialog({ open, onOpenChange, companyId }: {
 }) {
   const queryClient = useQueryClient()
   const [form, setForm] = useState({
-    product: 'relay', stage: 'new_lead', mrr: '', setupFee: '', notes: '',
+    product: 'solarpilot', stage: 'new_lead', mrr: '', setupFee: '', notes: '',
   })
 
   useEffect(() => {
     if (open) {
-      setForm({ product: 'relay', stage: 'new_lead', mrr: '', setupFee: '', notes: '' })
+      setForm({ product: 'solarpilot', stage: 'new_lead', mrr: '', setupFee: '', notes: '' })
     }
   }, [open])
 
@@ -681,7 +681,7 @@ function AddDealDialog({ open, onOpenChange, companyId }: {
           <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: DS.TEXT2, marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.05 }}>Product</label>
           <div style={{ display: 'flex', gap: 8 }}>
             {[
-              { key: 'relay', label: 'Relay', color: DS.YELLOW },
+              { key: 'solarpilot', label: 'Relay', color: DS.YELLOW },
               { key: 'ai_workforce', label: 'AI Workforce', color: DS.PURPLE },
               { key: 'both', label: 'Both', color: DS.GREEN },
             ].map((opt) => {
@@ -1600,7 +1600,7 @@ export default function CompanyDetailPage() {
                   {allActivities.slice(0, 10).map((activity: any, i: number) => {
                     const cfg = actIcons[activity.type] || actIcons.note
                     const dealProduct = activity.dealProduct
-                    const productLabel = dealProduct === 'both' ? 'Both' : dealProduct === 'ai_workforce' ? 'AI' : 'Relay'
+                    const productLabel = dealProduct === 'both' ? 'Both' : dealProduct === 'ai_workforce' ? 'AI' : 'SP'
                     const productColor = dealProduct === 'both' ? DS.GREEN : dealProduct === 'ai_workforce' ? DS.PURPLE : DS.YELLOW
                     return (
                       <div key={activity.id} className="cd-animate-in" style={{ display: 'flex', gap: 16, paddingBottom: 18, position: 'relative', animationDelay: `${0.4 + i * 0.06}s` }}>

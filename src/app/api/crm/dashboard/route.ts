@@ -220,19 +220,18 @@ export async function GET(request: NextRequest) {
       })
 
     // By product — MRR per product from closed_won deals
-    // 'relay' is canonical; legacy 'solarpilot' rows fold into the relay bucket.
-    const byProduct = { relay: 0, ai_workforce: 0, both: 0 }
+    const byProduct = { solarpilot: 0, ai_workforce: 0, both: 0 }
     for (const d of closedWonData) {
       const mrrVal = d.mrr ?? 0
-      if (d.product === 'relay' || d.product === 'solarpilot') byProduct.relay += mrrVal
+      if (d.product === 'solarpilot') byProduct.solarpilot += mrrVal
       else if (d.product === 'ai_workforce') byProduct.ai_workforce += mrrVal
       else if (d.product === 'both') byProduct.both += mrrVal
     }
 
     // ===== LEAD SOURCES (by product from all deals) =====
-    const leadSources = { byProduct: { relay: 0, ai_workforce: 0, both: 0 }, total: allDealData.length }
+    const leadSources = { byProduct: { solarpilot: 0, ai_workforce: 0, both: 0 }, total: allDealData.length }
     for (const d of allDealData) {
-      if (d.product === 'relay' || d.product === 'solarpilot') leadSources.byProduct.relay++
+      if (d.product === 'solarpilot') leadSources.byProduct.solarpilot++
       else if (d.product === 'ai_workforce') leadSources.byProduct.ai_workforce++
       else if (d.product === 'both') leadSources.byProduct.both++
     }
